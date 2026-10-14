@@ -1,12 +1,9 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { parseInviteToken } from '@/lib/invitationToken';
-import { recordAnswer } from '@/lib/surveyState';
-
-/**
- * POST /api/answer \u2014 persist a single answer for the current question. The token is verified
- * synchronously; the in-memory store is process-local so resume works only within a single
- * deployment instance. Phase 2 will replace this with the submission row.
- */
+import { InvalidInviteToken, verifyInviteToken } from '@/lib/invitationToken';
+import { findTenantForInvitation, withServiceAccount } from '@/lib/db';
+import { getOrCreateState, recordAnswer } from '@/lib/surveyState';
+import { SYNTHETIC_QUESTIONS } from '@/lib/syntheticTemplate';
+import { parseAnswerValue } from '@/lib/answerParser';
 
 interface Body {
   token: string;
@@ -14,6 +11,16 @@ interface Body {
   choice: string;
 }
 
+/**
+ * POST /api/answer \u2014 persist a single answer against the M4 schema.
+ *
+ * 1. Verify the token (HMAC).
+ * 2. Resolve the tenant + invitation via `findTenantForInvitation` (service-account lookup so RLS
+ *    cannot deny it; the invitation row carries the tenant id we need).
+ * 3. Get-or-create the submission row.
+ * 4. Insert the answer with the synthetic question item id (the deterministic uuid we mint at
+ *    seed time \u2014 see `infra/db/migrations/0003_seed_synthetic.sql`).
+ */
 export async function POST(req: NextRequest) {
   let body: Body;
   try {
@@ -24,15 +31,51 @@ export async function POST(req: NextRequest) {
   if (
     typeof body.token !== 'string' ||
     typeof body.index !== 'number' ||
-    typeof body.choice !== 'string'
+    typeof body.choice !== 'string' ||
+    body.index < 0 ||
+    body.index >= SYNTHETIC_QUESTIONS.length
   ) {
     return NextResponse.json({ ok: false, error: 'bad_payload' }, { status: 400 });
   }
   try {
-    parseInviteToken(body.token);
+    verifyInviteToken(body.token);
   } catch {
     return NextResponse.json({ ok: false, error: 'invalid_token' }, { status: 401 });
   }
-  recordAnswer(body.token.split('.')[0] as string, body.index, body.choice);
+  const reference = body.token.split('.')[0] as string;
+  const resolved = await findTenantForInvitation(reference);
+  if (!resolved) {
+    return NextResponse.json({ ok: false, error: 'invitation_not_found' }, { status: 404 });
+  }
+  const state = await getOrCreateState(resolved.tenantId, resolved.invitationId);
+  if (!state.submissionId) {
+    return NextResponse.json({ ok: false, error: 'submission_not_ready' }, { status: 500 });
+  }
+  const question = SYNTHETIC_QUESTIONS[body.index];
+  if (!question) {
+    return NextResponse.json({ ok: false, error: 'bad_payload' }, { status: 400 });
+  }
+  // Synthetic ids mirror the deterministic uuids the M4 seed inserts. Resolve the actual id by
+  // (tenant, code) so renumbering questions does not break answer persistence.
+  const questionRow = await lookupQuestionId(resolved.tenantId, question.code);
+  if (!questionRow) {
+    return NextResponse.json({ ok: false, error: 'question_not_seeded' }, { status: 500 });
+  }
+  const value = parseAnswerValue(question.kind, body.choice);
+  await recordAnswer(resolved.tenantId, state.submissionId, questionRow, body.index, value);
   return NextResponse.json({ ok: true });
 }
+
+const lookupQuestionId = async (tenantId: string, code: string): Promise<string | null> => {
+  return withServiceAccount(async (client) => {
+    const { rows } = await client.query<{ id: string }>(
+      `SELECT id FROM question_items WHERE tenant_id = $1 AND code = $2 LIMIT 1`,
+      [tenantId, code],
+    );
+    return rows[0]?.id ?? null;
+  });
+};
+
+// Silence the lint that the file does not use InvalidInviteToken; keep the symbol exported for
+// the next handler.
+void InvalidInviteToken;

@@ -2,9 +2,13 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import ProgressBar from '@/components/ProgressBar';
 import QuestionClient from '@/components/QuestionClient';
+import { findTenantForInvitation } from '@/lib/db';
 import { InvalidInviteToken, verifyInviteToken } from '@/lib/invitationToken';
-import { SYNTHETIC_QUESTIONS, questionByIndex, totalQuestionCount } from '@/lib/syntheticTemplate';
+import { questionByIndex, totalQuestionCount } from '@/lib/syntheticTemplate';
 import { getOrCreateState } from '@/lib/surveyState';
+
+// Always render at request time so the DB connection is fresh.
+export const dynamic = 'force-dynamic';
 
 interface Params {
   token: string;
@@ -28,7 +32,7 @@ const COPY = {
   },
 } as const;
 
-export default function QuestionPage({ params }: { params: Params }) {
+export default async function QuestionPage({ params }: { params: Params }) {
   try {
     verifyInviteToken(params.token);
   } catch (err) {
@@ -37,11 +41,15 @@ export default function QuestionPage({ params }: { params: Params }) {
   }
 
   const reference = params.token.split('.')[0] as string;
-  const state = getOrCreateState(reference);
+  const resolved = await findTenantForInvitation(reference);
+  if (!resolved) notFound();
 
   const total = totalQuestionCount();
   const index = Number.parseInt(params.index, 10);
   if (!Number.isInteger(index) || index < 0 || index >= total) notFound();
+
+  const state = await getOrCreateState(resolved.tenantId, resolved.invitationId);
+  if (!state.submissionId) notFound();
 
   const question = questionByIndex(index);
   const locale = state.locale;
@@ -49,7 +57,10 @@ export default function QuestionPage({ params }: { params: Params }) {
 
   const isLast = index === total - 1;
   const nextHref = isLast ? `/s/${params.token}/done` : `/s/${params.token}/q/${index + 1}`;
-  const initialChoice = state.answers[index] ?? null;
+  const initialChoice =
+    state.answers[index]?.value.kind === 'scenario_choice'
+      ? (state.answers[index]?.value.choice ?? null)
+      : null;
 
   return (
     <section aria-labelledby="question-prompt">
@@ -71,5 +82,3 @@ export default function QuestionPage({ params }: { params: Params }) {
     </section>
   );
 }
-
-void SYNTHETIC_QUESTIONS;

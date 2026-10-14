@@ -1,11 +1,9 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { parseInviteToken } from '@/lib/invitationToken';
-import { setLocale } from '@/lib/surveyState';
+import { verifyInviteToken } from '@/lib/invitationToken';
+import { findTenantForInvitation } from '@/lib/db';
+import { getOrCreateState, setLocale } from '@/lib/surveyState';
 import { isSupportedLocale, supportedLocales } from '@auditai/i18n';
 
-/**
- * POST /api/locale \u2014 update the locale the respondent chose on the welcome screen.
- */
 interface Body {
   token: string;
   locale: string;
@@ -28,10 +26,19 @@ export async function POST(req: NextRequest) {
     );
   }
   try {
-    parseInviteToken(parsed.token);
+    verifyInviteToken(parsed.token);
   } catch {
     return NextResponse.json({ ok: false, error: 'invalid_token' }, { status: 401 });
   }
-  setLocale(parsed.token.split('.')[0] as string, parsed.locale);
+  const reference = parsed.token.split('.')[0] as string;
+  const resolved = await findTenantForInvitation(reference);
+  if (!resolved) {
+    return NextResponse.json({ ok: false, error: 'invitation_not_found' }, { status: 404 });
+  }
+  const state = await getOrCreateState(resolved.tenantId, resolved.invitationId);
+  if (!state.submissionId) {
+    return NextResponse.json({ ok: false, error: 'submission_not_ready' }, { status: 500 });
+  }
+  await setLocale(resolved.tenantId, state.submissionId, parsed.locale);
   return NextResponse.json({ ok: true, locale: parsed.locale });
 }

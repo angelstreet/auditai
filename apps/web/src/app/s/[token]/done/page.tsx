@@ -1,7 +1,11 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { findTenantForInvitation } from '@/lib/db';
 import { InvalidInviteToken, verifyInviteToken } from '@/lib/invitationToken';
 import { getOrCreateState, submitState } from '@/lib/surveyState';
+
+// Always render at request time so the DB connection is fresh.
+export const dynamic = 'force-dynamic';
 
 interface Params {
   token: string;
@@ -28,7 +32,7 @@ const COPY = {
   },
 } as const;
 
-export default function DonePage({ params }: { params: Params }) {
+export default async function DonePage({ params }: { params: Params }) {
   try {
     verifyInviteToken(params.token);
   } catch (err) {
@@ -37,12 +41,16 @@ export default function DonePage({ params }: { params: Params }) {
   }
 
   const reference = params.token.split('.')[0] as string;
-  const state = getOrCreateState(reference);
+  const resolved = await findTenantForInvitation(reference);
+  if (!resolved) notFound();
+
+  const state = await getOrCreateState(resolved.tenantId, resolved.invitationId);
   const locale = state.locale;
   const copy = COPY[locale];
 
-  // Mark submitted on first visit; later visits are idempotent.
-  submitState(reference);
+  if (state.submissionId) {
+    await submitState(resolved.tenantId, resolved.invitationId, state.submissionId);
+  }
 
   return (
     <section aria-labelledby="done-title">

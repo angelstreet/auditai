@@ -6,25 +6,27 @@ interface Props {
 }
 
 /**
- * Tenant switcher rendered above the engagements table. We pass `currentTenantId` from the page
- * (URL query parameter) and link to the same route with a different `?tenant=` value. The page
- * itself enforces tenant scoping; this component is purely a navigation helper.
+ * Tenant switcher rendered above the engagements table. The labels are loaded server-side
+ * from the tenants table so they always reflect the current data.
  */
-export default function TenantSwitcher({ currentTenantId }: Props) {
-  const tenants = listTenantIds();
+export default async function TenantSwitcher({ currentTenantId }: Props) {
+  const tenantIds = await listTenantIds();
+  const labels = await Promise.all(
+    tenantIds.map(async (id) => ({ id, label: await tenantLabel(id) })),
+  );
   return (
     <nav className="admin-tenant-switcher" aria-label="Select tenant">
       <p>
         <strong>Tenant:</strong>
       </p>
       <ul>
-        {tenants.map((tenantId) => (
-          <li key={tenantId}>
+        {labels.map(({ id, label }) => (
+          <li key={id}>
             <Link
-              href={`/admin/engagements?tenant=${encodeURIComponent(tenantId)}`}
-              aria-current={tenantId === currentTenantId ? 'page' : undefined}
+              href={`/admin/engagements?tenant=${encodeURIComponent(id)}`}
+              aria-current={id === currentTenantId ? 'page' : undefined}
             >
-              {tenantLabel(tenantId)}
+              {label}
             </Link>
           </li>
         ))}

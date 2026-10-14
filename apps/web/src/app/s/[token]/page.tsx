@@ -2,9 +2,13 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import PrivacyNotice from '@/components/PrivacyNotice';
 import WelcomeClient from '@/components/WelcomeClient';
+import { findTenantForInvitation } from '@/lib/db';
 import { InvalidInviteToken, verifyInviteToken } from '@/lib/invitationToken';
 import { SYNTHETIC_QUESTIONS, totalQuestionCount } from '@/lib/syntheticTemplate';
-import { getOrCreateState } from '@/lib/surveyState';
+import { getOrCreateState, isSubmitted } from '@/lib/surveyState';
+
+// Always render at request time so the DB connection is fresh.
+export const dynamic = 'force-dynamic';
 
 interface Params {
   token: string;
@@ -29,7 +33,7 @@ const COPY = {
   },
 } as const;
 
-export default function WelcomePage({ params }: { params: Params }) {
+export default async function WelcomePage({ params }: { params: Params }) {
   try {
     verifyInviteToken(params.token);
   } catch (err) {
@@ -37,20 +41,25 @@ export default function WelcomePage({ params }: { params: Params }) {
     throw err;
   }
   const reference = params.token.split('.')[0] as string;
-  const state = getOrCreateState(reference);
+  const resolved = await findTenantForInvitation(reference);
+  if (!resolved) notFound();
+  const state = await getOrCreateState(resolved.tenantId, resolved.invitationId);
   const locale = state.locale;
   const copy = COPY[locale];
   const total = totalQuestionCount();
 
-  if (state.submittedAt) {
-    return (
-      <section aria-labelledby="already-submitted-title">
-        <h1 id="already-submitted-title">{copy.alreadySubmitted}</h1>
-        <p>
-          <Link href={`/s/${params.token}/done`}>View your thank-you page</Link>.
-        </p>
-      </section>
-    );
+  if (state.submissionId) {
+    const submitted = await isSubmitted(resolved.tenantId, state.submissionId);
+    if (submitted) {
+      return (
+        <section aria-labelledby="already-submitted-title">
+          <h1 id="already-submitted-title">{copy.alreadySubmitted}</h1>
+          <p>
+            <Link href={`/s/${params.token}/done`}>View your thank-you page</Link>.
+          </p>
+        </section>
+      );
+    }
   }
 
   return (
