@@ -9,8 +9,9 @@ get validated opportunities, an adoption roadmap, governance artefacts and measu
 It is **not** an employee performance-ranking tool: it assesses work practices, readiness and improvement opportunities,
 with privacy thresholds, human review of every AI output, and strict tenant isolation.
 
-**Status:** specification and repository skeleton. Nothing is built yet. The product requirements are in
-[docs/PRD.md](docs/PRD.md).
+**Status:** Phase 1 foundation merged (M1\u2013M6 in [docs/ROADMAP.md](docs/ROADMAP.md)). Monorepo, contracts + domain,
+Postgres + RLS, mobile survey and admin page are all in `main` with green CI. The product requirements
+are in [docs/PRD.md](docs/PRD.md); the phased delivery plan is in [docs/ROADMAP.md](docs/ROADMAP.md).
 
 ## What it will do
 
