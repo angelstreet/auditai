@@ -1,0 +1,8 @@
+# Lines containing any of these substrings are ignored by the leak scan.
+# Use only for synthetic fixtures, RFC 5737/3849 documentation addresses,
+# or example user names that look like real addresses.
+#
+# Empty by default. Add lines like:
+#   192.0.2.10     # documentation IP used in fixtures
+#   test@example.com
+#   AKIAIOSFODNN7EXAMPLE   # AWS docs sample key

@@ -1,0 +1,21 @@
+# CODEOWNERS — required reviewers for sensitive areas. Use this to keep client-name review
+# gated on the maintainer; the leak-scan catches accidental commits, CODEOWNERS keeps intentional ones.
+
+# Default: maintainers review everything.
+/ @auditai/maintainers
+
+# ADRs, security policy, contribution policy — owners only.
+/AGENTS.md/                  @auditai/maintainers
+/SECURITY.md/                @auditai/maintainers
+/CONTRIBUTING.md/            @auditai/maintainers
+/CODE_OF_CONDUCT.md/         @auditai/maintainers
+
+# Database migrations, RLS, infra/db — review for tenant isolation.
+/infra/db/                   @auditai/maintainers
+/tests/db/                   @auditai/maintainers
+
+# CI, leak scan, monorepo plumbing.
+/.github/                    @auditai/maintainers
+/scripts/leak-scan.mjs      @auditai/maintainers
+/turbo.json                  @auditai/maintainers
+/pnpm-workspace.yaml        @auditai/maintainers

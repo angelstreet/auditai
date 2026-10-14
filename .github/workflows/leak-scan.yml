@@ -1,0 +1,37 @@
+name: Leak scan
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  leak-scan:
+    name: Secret / IP / email / banned-term scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Required to scan the working tree on a PR head, not a merge ref.
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Run leak scan
+        env:
+          # Comma-separated list of additional forbidden substrings, e.g. known client names.
+          # The repo never stores the words in plain text — they live as a repo secret.
+          BANNED_TERMS: ${{ secrets.BANNED_TERMS }}
+        run: node scripts/leak-scan.mjs

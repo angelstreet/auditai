@@ -10,3 +10,21 @@ coverage/
 .DS_Store
 playwright-report/
 test-results/
+
+# Tooling
+.vscode/
+.idea/
+*.tsbuildinfo
+
+# Turbo
+.turbo
+
+# Vitest
+coverage/
+*.lcov
+
+# OS
+Thumbs.db
+
+# Repo-policy files (the leak-allowlist is shared, but local scans can be overridden)
+.env*

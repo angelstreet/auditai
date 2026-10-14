@@ -10,27 +10,27 @@ Status: proposed product specification — for validation with pilot clients
 
 Build a mobile-first, multi-tenant platform for evidence-based AI adoption and operational audits. Employees answer short, adaptive questionnaires; auditors review AI-supported findings and map workflows; client leaders receive validated opportunities, adoption plans and outcome measures. The product is NOT an employee performance ranking system.
 
-| Dimension | Decision |
-| --- | --- |
-| Initial customer | Independent AI transformation consultant auditing multiple companies |
-| Pilot | the pilot client, starting with one team and one on-site day per week |
-| Product languages | English and French at launch |
-| Employee access | Mobile web/PWA by secure invite; no installation or password required |
-| Admin access | Responsive desktop-first web workspace |
-| Backend | PostgreSQL with tenant isolation, auditable AI processing |
-| MVP philosophy | Use small, verifiable workflows; human review before client-facing recommendations |
+| Dimension         | Decision                                                                           |
+| ----------------- | ---------------------------------------------------------------------------------- |
+| Initial customer  | Independent AI transformation consultant auditing multiple companies               |
+| Pilot             | the pilot client, starting with one team and one on-site day per week              |
+| Product languages | English and French at launch                                                       |
+| Employee access   | Mobile web/PWA by secure invite; no installation or password required              |
+| Admin access      | Responsive desktop-first web workspace                                             |
+| Backend           | PostgreSQL with tenant isolation, auditable AI processing                          |
+| MVP philosophy    | Use small, verifiable workflows; human review before client-facing recommendations |
 
 ## 1. Positioning and terminology
 
-| French | English | Product usage |
-| --- | --- | --- |
-| Accompagnement du changement IA | AI Change Enablement / AI Change Management | Overall service |
-| Acculturation à l’IA | AI Literacy & Awareness | Employee education |
-| Diagnostic de maturité IA | AI Readiness / Maturity Assessment | Baseline assessment |
-| Audit opérationnel IA | AI Opportunity & Workflow Audit | Team audits |
-| Conduite de l’adoption | AI Adoption Enablement | Guided learning and follow-up |
-| Cartographie des opportunités | AI Opportunity Mapping | Opportunity register |
-| Pilotage de la transformation | AI Transformation Management | Portfolio / roadmap |
+| French                          | English                                     | Product usage                 |
+| ------------------------------- | ------------------------------------------- | ----------------------------- |
+| Accompagnement du changement IA | AI Change Enablement / AI Change Management | Overall service               |
+| Acculturation à l’IA            | AI Literacy & Awareness                     | Employee education            |
+| Diagnostic de maturité IA       | AI Readiness / Maturity Assessment          | Baseline assessment           |
+| Audit opérationnel IA           | AI Opportunity & Workflow Audit             | Team audits                   |
+| Conduite de l’adoption          | AI Adoption Enablement                      | Guided learning and follow-up |
+| Cartographie des opportunités   | AI Opportunity Mapping                      | Opportunity register          |
+| Pilotage de la transformation   | AI Transformation Management                | Portfolio / roadmap           |
 
 Suggested tagline: “Discover how work really happens. Build AI confidence. Turn friction into measurable improvements.”
 
@@ -50,14 +50,14 @@ Non-goals (MVP): autonomous enterprise agents, enterprise-wide process mining, n
 
 ## 3. Personas and permissions
 
-| Persona | Needs | Access |
-| --- | --- | --- |
+| Persona                     | Needs                                                           | Access                                                        |
+| --------------------------- | --------------------------------------------------------------- | ------------------------------------------------------------- |
 | Platform owner / consultant | All assigned client engagements, cross-client private oversight | Client-specific access plus separate approved benchmark layer |
-| Client sponsor | Business overview, governance, roadmap | Own tenant aggregated reports |
-| Team manager | Team scheduling, workflow review, validation | Assigned team; privacy constraints apply |
-| Team referent | Coordinate prep, invite employees, verify process facts | Assigned team operational coordination |
-| Employee respondent | Fast, accessible, safe survey and feedback | Only own submission and allowed resources |
-| Security/privacy reviewer | Review data categories, processing and deletion | Approved governance metadata and authorized records |
+| Client sponsor              | Business overview, governance, roadmap                          | Own tenant aggregated reports                                 |
+| Team manager                | Team scheduling, workflow review, validation                    | Assigned team; privacy constraints apply                      |
+| Team referent               | Coordinate prep, invite employees, verify process facts         | Assigned team operational coordination                        |
+| Employee respondent         | Fast, accessible, safe survey and feedback                      | Only own submission and allowed resources                     |
+| Security/privacy reviewer   | Review data categories, processing and deletion                 | Approved governance metadata and authorized records           |
 
 Implement permissions server-side with tenant-scoped policies. Survey invite tokens do not confer browsing access to the tenant. Managers should not automatically receive identifiable individual maturity scores.
 
@@ -101,12 +101,12 @@ Open source-linked draft brief → confirm themes and contradictions → intervi
 
 Use three independent axes rather than one misleading score: Literacy (knowledge & judgment), Practice (observed/self-reported use), Readiness (organizational ability). An additional domain-specific Opportunity Index measures task suitability, not the employee.
 
-| Axis | Dimensions | Evidence |
-| --- | --- | --- |
-| AI Literacy | Concepts, prompting/context, verification, privacy/safety, workflow reasoning | Scenario answers + confidence calibration |
-| AI Practice | Frequency, variety, depth, review habits | Self-report and optional validated demonstrations |
-| Organizational readiness | Tool access, data quality, leadership support, governance, training | Referent/leader input + process observations |
-| Opportunity potential | Frequency, friction, volume, data availability, workflow criticality | Task answers + auditor verification |
+| Axis                     | Dimensions                                                                    | Evidence                                          |
+| ------------------------ | ----------------------------------------------------------------------------- | ------------------------------------------------- |
+| AI Literacy              | Concepts, prompting/context, verification, privacy/safety, workflow reasoning | Scenario answers + confidence calibration         |
+| AI Practice              | Frequency, variety, depth, review habits                                      | Self-report and optional validated demonstrations |
+| Organizational readiness | Tool access, data quality, leadership support, governance, training           | Referent/leader input + process observations      |
+| Opportunity potential    | Frequency, friction, volume, data availability, workflow criticality          | Task answers + auditor verification               |
 
 Proposed proficiency interpretation: L0 Unaware, L1 Explorer, L2 Practitioner, L3 Integrator, L4 Champion, L5 Strategic Leader. Do not treat levels as psychometrically validated or use for HR decisions without a dedicated validation and legal review.
 
@@ -128,13 +128,13 @@ Proposed proficiency interpretation: L0 Unaware, L1 Explorer, L2 Practitioner, L
 
 ### 6.2 Example calibration questions
 
-| Competency | Sample scenario | Evidence |
-| --- | --- | --- |
-| Verification | An AI produces a convincing but unsourced policy claim. What do you do? | Checks authoritative source and uncertainty |
-| Data safety | Colleague wants to paste client records into a public chatbot. What next? | Recognizes data policy/approval needs |
-| Prompting | Which request gives better context for summarizing customer feedback? | States audience, scope, output and constraints |
-| Workflow | A manual report spans 4 tools; first move? | Map problem, inputs and handoffs before solution |
-| Automation | A fixed data-copy task repeats daily. Must it use generative AI? | Distinguishes deterministic automation from AI |
+| Competency   | Sample scenario                                                           | Evidence                                         |
+| ------------ | ------------------------------------------------------------------------- | ------------------------------------------------ |
+| Verification | An AI produces a convincing but unsourced policy claim. What do you do?   | Checks authoritative source and uncertainty      |
+| Data safety  | Colleague wants to paste client records into a public chatbot. What next? | Recognizes data policy/approval needs            |
+| Prompting    | Which request gives better context for summarizing customer feedback?     | States audience, scope, output and constraints   |
+| Workflow     | A manual report spans 4 tools; first move?                                | Map problem, inputs and handoffs before solution |
+| Automation   | A fixed data-copy task repeats daily. Must it use generative AI?          | Distinguishes deterministic automation from AI   |
 
 ### 6.3 Reporting maturity
 
@@ -144,54 +144,54 @@ Show distribution by level only when group privacy thresholds are met. Report st
 
 Cover last seven working days with friendly, mobile-sized prompts. Begin with outcomes and activity categories; ask for a maximum of three task examples, then inspect only one in depth. This reduces fatigue while collecting useful structured evidence.
 
-| Block | Example prompt | Capture |
-| --- | --- | --- |
-| Role/context | What kind of work do you do? | Role category, department |
-| Last 7 days | Which 3 activities occupied most of your time? | Task descriptions/categories |
-| Friction | Which was most repetitive, painful, slow, boring or complex? | Friction type |
-| Measurement | How often and how long? | Frequency/time confidence |
-| Tools | Which applications/data did you use? | Tool categories; names where authorized |
-| Handoffs | Who do you wait for or pass work to? | Dependencies, not sensitive names |
-| Better future | If the process were redesigned, what outcome would matter? | Desired outcome |
-| AI imagination | Where might AI help? What non-AI alternative exists? | Hypotheses and alternatives |
-| Safety | Does it contain sensitive or regulated information? | Data classification |
+| Block          | Example prompt                                               | Capture                                 |
+| -------------- | ------------------------------------------------------------ | --------------------------------------- |
+| Role/context   | What kind of work do you do?                                 | Role category, department               |
+| Last 7 days    | Which 3 activities occupied most of your time?               | Task descriptions/categories            |
+| Friction       | Which was most repetitive, painful, slow, boring or complex? | Friction type                           |
+| Measurement    | How often and how long?                                      | Frequency/time confidence               |
+| Tools          | Which applications/data did you use?                         | Tool categories; names where authorized |
+| Handoffs       | Who do you wait for or pass work to?                         | Dependencies, not sensitive names       |
+| Better future  | If the process were redesigned, what outcome would matter?   | Desired outcome                         |
+| AI imagination | Where might AI help? What non-AI alternative exists?         | Hypotheses and alternatives             |
+| Safety         | Does it contain sensitive or regulated information?          | Data classification                     |
 
 Optional micro-follow-up 1–2 days after workshop: “Did we capture your task accurately?” + one suggested correction.
 
 ## 8. The six AI-first learning principles
 
-| Principle | Employee-facing wording |
-| --- | --- |
-| 1. Problem-first, AI-open | Describe the outcome before choosing a tool; invite AI and non-AI solutions. |
-| 2. Context wins | Share objective, audience, constraints and desired format, using approved information. |
-| 3. Challenge assumptions | Ask AI for alternatives, risks and what might be missing. |
-| 4. Map the whole workflow | Look before and after your own task; find bottlenecks and handoffs. |
-| 5. Experiment and verify | Test small, verify outputs against trusted evidence, then measure improvements. |
-| 6. Protect people and data | Use approved tools, protect confidential data and keep humans responsible. |
+| Principle                  | Employee-facing wording                                                                |
+| -------------------------- | -------------------------------------------------------------------------------------- |
+| 1. Problem-first, AI-open  | Describe the outcome before choosing a tool; invite AI and non-AI solutions.           |
+| 2. Context wins            | Share objective, audience, constraints and desired format, using approved information. |
+| 3. Challenge assumptions   | Ask AI for alternatives, risks and what might be missing.                              |
+| 4. Map the whole workflow  | Look before and after your own task; find bottlenecks and handoffs.                    |
+| 5. Experiment and verify   | Test small, verify outputs against trusted evidence, then measure improvements.        |
+| 6. Protect people and data | Use approved tools, protect confidential data and keep humans responsible.             |
 
 Present as one-sentence swipe cards after the survey, and attach an optional role-specific five-minute learning recommendation based on assessment gaps.
 
 ## 9. Functional requirements by priority
 
-| ID | Requirement | Phase |
-| --- | --- | --- |
-| FR-01 | Multi-tenant organizations, departments, teams, memberships and roles | MVP |
-| FR-02 | Survey template editor with localization and versioning | MVP |
-| FR-03 | Secure invitation links, expiry, reminders, response tracking | MVP |
-| FR-04 | Mobile one-question screens with adaptive branching | MVP |
-| FR-05 | AI literacy calibration and deterministic proficiency scoring | MVP |
-| FR-06 | Task/friction capture with structured data | MVP |
-| FR-07 | AI assisted extraction, clustering and briefing with citations to source answers | MVP |
-| FR-08 | Auditor review/accept/reject plus opportunity register | MVP |
-| FR-09 | Team report export; audit logs and deletion workflow | MVP |
-| FR-10 | On-site process map and interview notes | Phase 2 |
-| FR-11 | Improvement/automation/AI alternative comparison | Phase 2 |
-| FR-12 | Prioritization, approvals, owner, pilot tracking, measured benefits | Phase 2 |
-| FR-13 | Training recommendations and follow-up assessments | Phase 2 |
-| FR-14 | Cross-team synergy detection within tenant | Phase 2 |
-| FR-15 | Authorized cross-client benchmark knowledge base | Phase 3 |
-| FR-16 | Cohort benchmarking, reusable interventions and outcome analytics | Phase 3 |
-| FR-17 | Native mobile apps/offline capture if evidence justifies it | Phase 3 |
+| ID    | Requirement                                                                      | Phase   |
+| ----- | -------------------------------------------------------------------------------- | ------- |
+| FR-01 | Multi-tenant organizations, departments, teams, memberships and roles            | MVP     |
+| FR-02 | Survey template editor with localization and versioning                          | MVP     |
+| FR-03 | Secure invitation links, expiry, reminders, response tracking                    | MVP     |
+| FR-04 | Mobile one-question screens with adaptive branching                              | MVP     |
+| FR-05 | AI literacy calibration and deterministic proficiency scoring                    | MVP     |
+| FR-06 | Task/friction capture with structured data                                       | MVP     |
+| FR-07 | AI assisted extraction, clustering and briefing with citations to source answers | MVP     |
+| FR-08 | Auditor review/accept/reject plus opportunity register                           | MVP     |
+| FR-09 | Team report export; audit logs and deletion workflow                             | MVP     |
+| FR-10 | On-site process map and interview notes                                          | Phase 2 |
+| FR-11 | Improvement/automation/AI alternative comparison                                 | Phase 2 |
+| FR-12 | Prioritization, approvals, owner, pilot tracking, measured benefits              | Phase 2 |
+| FR-13 | Training recommendations and follow-up assessments                               | Phase 2 |
+| FR-14 | Cross-team synergy detection within tenant                                       | Phase 2 |
+| FR-15 | Authorized cross-client benchmark knowledge base                                 | Phase 3 |
+| FR-16 | Cohort benchmarking, reusable interventions and outcome analytics                | Phase 3 |
+| FR-17 | Native mobile apps/offline capture if evidence justifies it                      | Phase 3 |
 
 ## 10. AI workflow design
 
@@ -217,20 +217,20 @@ States: detected → auditor_reviewed → client_validated → shortlisted → p
 
 ## 12. Suggested stack and build-vs-buy
 
-| Layer | Recommended | Alternative / rationale |
-| --- | --- | --- |
-| Admin + public survey web | Next.js + TypeScript + React | Excellent responsive web/PWA control |
-| Mobile native later | Expo / React Native | Share TypeScript schemas and logic; app-store later |
-| UI | Tailwind CSS + accessible headless primitives | Mobile question flow custom components |
-| Backend | Next.js server routes or separate NestJS API | Separate API once complexity grows |
-| Database | PostgreSQL + migrations | Single source of truth; strong tenant scoping |
-| Auth | Supabase Auth or OIDC provider | Magic links for admins; invitation tokens for respondents |
-| Tenant isolation | Postgres RLS + application authorization | Defense in depth; verify isolation with tests |
-| AI workflows | Typed Python FastAPI workers or TypeScript jobs | Structured responses, validation and model adapters |
-| Background jobs | BullMQ/Redis or managed queue | Retries, idempotency, monitoring |
-| Storage | EU-region S3-compatible encrypted object storage | Signed URLs; retention + data classification |
-| Observability | OpenTelemetry + error tracking | Redact PII and prompts by default |
-| Infrastructure | EU hosted managed platform initially | Self-host options for strict enterprise clients |
+| Layer                     | Recommended                                      | Alternative / rationale                                   |
+| ------------------------- | ------------------------------------------------ | --------------------------------------------------------- |
+| Admin + public survey web | Next.js + TypeScript + React                     | Excellent responsive web/PWA control                      |
+| Mobile native later       | Expo / React Native                              | Share TypeScript schemas and logic; app-store later       |
+| UI                        | Tailwind CSS + accessible headless primitives    | Mobile question flow custom components                    |
+| Backend                   | Next.js server routes or separate NestJS API     | Separate API once complexity grows                        |
+| Database                  | PostgreSQL + migrations                          | Single source of truth; strong tenant scoping             |
+| Auth                      | Supabase Auth or OIDC provider                   | Magic links for admins; invitation tokens for respondents |
+| Tenant isolation          | Postgres RLS + application authorization         | Defense in depth; verify isolation with tests             |
+| AI workflows              | Typed Python FastAPI workers or TypeScript jobs  | Structured responses, validation and model adapters       |
+| Background jobs           | BullMQ/Redis or managed queue                    | Retries, idempotency, monitoring                          |
+| Storage                   | EU-region S3-compatible encrypted object storage | Signed URLs; retention + data classification              |
+| Observability             | OpenTelemetry + error tracking                   | Redact PII and prompts by default                         |
+| Infrastructure            | EU hosted managed platform initially             | Self-host options for strict enterprise clients           |
 
 Expo supports shared web/iOS/Android interfaces; do not force a single native-style UI on the complex desktop audit console. A web-first employee experience minimizes friction and launch cost.
 
@@ -288,17 +288,17 @@ Every client-owned entity must include tenant_id or enforce equivalent parent-sc
 
 ## 16. UX acceptance criteria
 
-| Scenario | Acceptance criterion |
-| --- | --- |
-| Invitation | Recipient opens on mobile browser without app install; expired/reused token states are clear |
-| Questionnaire | Phone viewport 360px wide: no horizontal scrolling or clipped labels |
-| Resume | Interrupted authorized session resumes without duplicate answers |
-| Branching | Beginner skips advanced jargon; advanced participant avoids repetitive basic screens |
-| Accessibility | Target WCAG 2.2 AA for flow and dashboard; keyboard and screen reader tested |
-| Localization | 100% survey UI and critical notices translated FR/EN; no mixed-language screens |
-| Privacy | Referent cannot view individual maturity results without explicitly granted access |
-| Evidence | Every generated opportunity displays linked source and review status |
-| Isolation | Tenant A cannot query, search, export or infer tenant B data |
+| Scenario      | Acceptance criterion                                                                         |
+| ------------- | -------------------------------------------------------------------------------------------- |
+| Invitation    | Recipient opens on mobile browser without app install; expired/reused token states are clear |
+| Questionnaire | Phone viewport 360px wide: no horizontal scrolling or clipped labels                         |
+| Resume        | Interrupted authorized session resumes without duplicate answers                             |
+| Branching     | Beginner skips advanced jargon; advanced participant avoids repetitive basic screens         |
+| Accessibility | Target WCAG 2.2 AA for flow and dashboard; keyboard and screen reader tested                 |
+| Localization  | 100% survey UI and critical notices translated FR/EN; no mixed-language screens              |
+| Privacy       | Referent cannot view individual maturity results without explicitly granted access           |
+| Evidence      | Every generated opportunity displays linked source and review status                         |
+| Isolation     | Tenant A cannot query, search, export or infer tenant B data                                 |
 
 ## 17. Non-functional requirements
 
@@ -316,28 +316,28 @@ Every client-owned entity must include tenant_id or enforce equivalent parent-sc
 
 ## 18. Rollout phases, timelines and gates
 
-| Phase | Indicative sequence | Scope / exit gate |
-| --- | --- | --- |
-| 0 — Discovery | 2–3 weeks | Interview 1–2 clients, settle questionnaire, consent, test 15–20 participants; signed PRD + prototype |
-| 1 — Pilot MVP | 6–10 weeks | the pilot client: multi-tenant foundation, survey, literacy score, AI brief, opportunity register; 2–3 team audits |
-| 2 — Audit operations | 6–8 weeks | Process mapping, opportunity prioritization, pilot and impact tracking; 2+ active clients |
-| 3 — Intelligence | 8–12 weeks | Authorized benchmarking, cross-client pattern library, advanced analytics; governance review |
-| 4 — Scale | As needed | SSO, procurement/security package, stronger tenant segregation, native apps if demanded |
+| Phase                | Indicative sequence | Scope / exit gate                                                                                                  |
+| -------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| 0 — Discovery        | 2–3 weeks           | Interview 1–2 clients, settle questionnaire, consent, test 15–20 participants; signed PRD + prototype              |
+| 1 — Pilot MVP        | 6–10 weeks          | the pilot client: multi-tenant foundation, survey, literacy score, AI brief, opportunity register; 2–3 team audits |
+| 2 — Audit operations | 6–8 weeks           | Process mapping, opportunity prioritization, pilot and impact tracking; 2+ active clients                          |
+| 3 — Intelligence     | 8–12 weeks          | Authorized benchmarking, cross-client pattern library, advanced analytics; governance review                       |
+| 4 — Scale            | As needed           | SSO, procurement/security package, stronger tenant segregation, native apps if demanded                            |
 
 These are planning ranges, not delivery promises. Gate to next phase using demonstrated adoption and utility rather than elapsed time.
 
 ## 19. Success metrics and instrumentation
 
-| Metric | Definition | Initial target |
-| --- | --- | --- |
-| Completion rate | Submitted surveys / valid opened invites | >= 70% in pilot |
-| Time to complete | Median active survey session duration | <= 8 min |
-| Drop-off | Starts without submission by screen | Identify and fix high-drop-off screens |
-| Brief usefulness | Auditor usefulness rating after session | >= 4/5 |
-| Grounded insight precision | Reviewed insight statements supported by evidence | >= 90% in sampled QA |
-| Opportunity conversion | Validated opportunities / generated candidates | Track baseline |
-| Pilot realized benefit | Measured change vs pre-pilot baseline | Track by opportunity |
-| Training improvement | Comparable literacy items at baseline/follow-up | Report uncertainty; no arbitrary target |
+| Metric                     | Definition                                        | Initial target                          |
+| -------------------------- | ------------------------------------------------- | --------------------------------------- |
+| Completion rate            | Submitted surveys / valid opened invites          | >= 70% in pilot                         |
+| Time to complete           | Median active survey session duration             | <= 8 min                                |
+| Drop-off                   | Starts without submission by screen               | Identify and fix high-drop-off screens  |
+| Brief usefulness           | Auditor usefulness rating after session           | >= 4/5                                  |
+| Grounded insight precision | Reviewed insight statements supported by evidence | >= 90% in sampled QA                    |
+| Opportunity conversion     | Validated opportunities / generated candidates    | Track baseline                          |
+| Pilot realized benefit     | Measured change vs pre-pilot baseline             | Track by opportunity                    |
+| Training improvement       | Comparable literacy items at baseline/follow-up   | Report uncertainty; no arbitrary target |
 
 ## 20. Detailed first pilot: the pilot client
 
@@ -369,15 +369,15 @@ These are planning ranges, not delivery promises. Gate to next phase using demon
 
 ## 22. Open decisions / product risks
 
-| Decision | Default for pilot |
-| --- | --- |
-| Employee anonymity | Prefer pseudonymous aggregated reporting; named follow-up only with clear notice/authorization |
-| Team size threshold | Do not show group maturity breakdown below a documented minimum cohort size |
-| AI model provider | Provider abstraction; choose only after DPA, region and cost evaluation |
-| Licensing | Review Formbricks/n8n restrictions if embedding/white-labeling; custom survey engine may be simpler |
-| Mobile strategy | PWA-first, native apps gated by actual enterprise requirement |
+| Decision              | Default for pilot                                                                                         |
+| --------------------- | --------------------------------------------------------------------------------------------------------- |
+| Employee anonymity    | Prefer pseudonymous aggregated reporting; named follow-up only with clear notice/authorization            |
+| Team size threshold   | Do not show group maturity breakdown below a documented minimum cohort size                               |
+| AI model provider     | Provider abstraction; choose only after DPA, region and cost evaluation                                   |
+| Licensing             | Review Formbricks/n8n restrictions if embedding/white-labeling; custom survey engine may be simpler       |
+| Mobile strategy       | PWA-first, native apps gated by actual enterprise requirement                                             |
 | Psychometric validity | Label as diagnostic index, not certification; commission item validation before external benchmark claims |
-| Benchmark ownership | Never assume client task data may be resold or reused; legal and procurement review first |
+| Benchmark ownership   | Never assume client task data may be resold or reused; legal and procurement review first                 |
 
 ## 23. Delivery acceptance / definition of done
 
@@ -399,8 +399,6 @@ These are planning ranges, not delivery promises. Gate to next phase using demon
 
 Official sources reviewed October 2026: Next.js App Router (https://nextjs.org/docs/app/getting-started); Expo web (https://docs.expo.dev/workflow/web/); Supabase PostgreSQL RLS (https://supabase.com/docs/guides/database/postgres/row-level-security); EU AI Act Art. 4 (https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-4); EDPB anonymisation guidance (https://www.edpb.europa.eu/topics/ai-and-technology/anonymisation-pseudonymisation_en). Regulatory and privacy requirements must be validated for each client and jurisdiction.
 
-
-
 ---
 
 # Part II — Security, governance, cost management, audit operations and evidence of value
@@ -419,11 +417,11 @@ Official sources reviewed October 2026: Next.js App Router (https://nextjs.org/d
 
 ### 24.1 Deployment modes
 
-| Mode | Who operates infrastructure | Data boundary | Typical service |
-|---|---|---|---|
-| Customer self-hosted | Client | Client infrastructure / credentials | Install, configure, audit and support |
-| Consultant-managed single tenant | Consultancy | Isolated DB / storage / encryption keys per customer | Managed deployment and audit |
-| Shared multi-tenant hosting | Consultancy | Application-level tenant and row policy isolation | Only after penetration testing and careful security review |
+| Mode                             | Who operates infrastructure | Data boundary                                        | Typical service                                            |
+| -------------------------------- | --------------------------- | ---------------------------------------------------- | ---------------------------------------------------------- |
+| Customer self-hosted             | Client                      | Client infrastructure / credentials                  | Install, configure, audit and support                      |
+| Consultant-managed single tenant | Consultancy                 | Isolated DB / storage / encryption keys per customer | Managed deployment and audit                               |
+| Shared multi-tenant hosting      | Consultancy                 | Application-level tenant and row policy isolation    | Only after penetration testing and careful security review |
 
 **Default recommendation for early customers:** separate customer deployments or databases, not one shared multi-tenant database. It costs a little more operationally but shrinks accidental cross-company exposure risk.
 
@@ -456,16 +454,16 @@ Official sources reviewed October 2026: Next.js App Router (https://nextjs.org/d
 
 ### 25.3 Governance responsibility matrix
 
-| Decision | Accountable | Consulted / executes |
-|---|---|---|
-| Audit scope, business goals, staff communication | Client sponsor | Auditor, team referent |
-| Employee notice and privacy legal basis | Client controller / counsel / DPO | Consultancy processor as applicable |
-| Technical platform security and releases | Product maintainer / hosting operator | Security reviewer |
-| Approve AI model and data route | Client security / DPO / sponsor | Product maintainer, auditor |
-| Classify and validate audit findings | Lead auditor | Team referent, process owner |
-| Authorize a pilot and its budget | Client sponsor / process owner | IT, security, auditor |
-| Accept measured business outcomes | Client process owner and sponsor | Finance/operations, auditor |
-| Approve benchmark reuse | Authorized client representative | Legal / DPO / product operator |
+| Decision                                         | Accountable                           | Consulted / executes                |
+| ------------------------------------------------ | ------------------------------------- | ----------------------------------- |
+| Audit scope, business goals, staff communication | Client sponsor                        | Auditor, team referent              |
+| Employee notice and privacy legal basis          | Client controller / counsel / DPO     | Consultancy processor as applicable |
+| Technical platform security and releases         | Product maintainer / hosting operator | Security reviewer                   |
+| Approve AI model and data route                  | Client security / DPO / sponsor       | Product maintainer, auditor         |
+| Classify and validate audit findings             | Lead auditor                          | Team referent, process owner        |
+| Authorize a pilot and its budget                 | Client sponsor / process owner        | IT, security, auditor               |
+| Accept measured business outcomes                | Client process owner and sponsor      | Finance/operations, auditor         |
+| Approve benchmark reuse                          | Authorized client representative      | Legal / DPO / product operator      |
 
 ### 25.4 Launch gates
 
@@ -480,15 +478,15 @@ Track **three separate ledgers**: (A) software operating cost; (B) consultancy d
 
 ### 26.1 Operational cost categories
 
-| Cost bucket | Driver | Control |
-|---|---|---|
-| Hosting / DB / storage | tenants, retained responses, attachments | tiered storage, retention, capacity alerts |
-| AI inference | input/output tokens, model, retries, embeddings | per-tenant quotas, cheap classification before premium synthesis, cache by response version |
-| Transcription | audio minutes | opt-in only, minute quotas, short recordings |
-| Notifications | emails, SMS | batched reminders, email-first |
-| Authentication | users, SSO features | open-source OIDC compatible stack |
-| Operations & security | patches, backup checks, monitoring | runbooks, automation, planned maintenance |
-| Human delivery | preparation, on-site days, analysis, reporting, meetings | scoped service packages, reusable templates |
+| Cost bucket            | Driver                                                   | Control                                                                                     |
+| ---------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Hosting / DB / storage | tenants, retained responses, attachments                 | tiered storage, retention, capacity alerts                                                  |
+| AI inference           | input/output tokens, model, retries, embeddings          | per-tenant quotas, cheap classification before premium synthesis, cache by response version |
+| Transcription          | audio minutes                                            | opt-in only, minute quotas, short recordings                                                |
+| Notifications          | emails, SMS                                              | batched reminders, email-first                                                              |
+| Authentication         | users, SSO features                                      | open-source OIDC compatible stack                                                           |
+| Operations & security  | patches, backup checks, monitoring                       | runbooks, automation, planned maintenance                                                   |
+| Human delivery         | preparation, on-site days, analysis, reporting, meetings | scoped service packages, reusable templates                                                 |
 
 ### 26.2 FinOps product requirements
 
@@ -505,13 +503,13 @@ Track **three separate ledgers**: (A) software operating cost; (B) consultancy d
 
 **Do not publish one universal price without scoping.** Price on team count, headcount, workflow complexity, sites, data sensitivity, languages, prep quality, access, level of observation and the depth of measurements/deliverables.
 
-| Service | Indicative scope | Working duration | Illustrative price range (EUR ex VAT) |
-|---|---|---|---|
-| Discovery workshop | Sponsor alignment, 1–2 target processes, scope proposal | 0.5–1 day + prep | €750–€1,500 |
-| Team AI & Workflow Audit | 1 team, survey, one on-site day, analysis + readout | 1 on-site day + 1–2 off-site days over 1–2 weeks | €2,500–€5,000 |
-| Department assessment | 3–5 teams, cross-team dependencies and prioritization | 4–8 weeks | €10,000–€25,000 |
-| Company roadmap | Multi-department assessment, readiness, governance and roadmap | 6–12+ weeks | Quote individually |
-| Adoption / measurement retainer | coaching, adoption pulse, KPI measurement, review | Monthly | €1,000–€4,000/month depending on work |
+| Service                         | Indicative scope                                               | Working duration                                 | Illustrative price range (EUR ex VAT) |
+| ------------------------------- | -------------------------------------------------------------- | ------------------------------------------------ | ------------------------------------- |
+| Discovery workshop              | Sponsor alignment, 1–2 target processes, scope proposal        | 0.5–1 day + prep                                 | €750–€1,500                           |
+| Team AI & Workflow Audit        | 1 team, survey, one on-site day, analysis + readout            | 1 on-site day + 1–2 off-site days over 1–2 weeks | €2,500–€5,000                         |
+| Department assessment           | 3–5 teams, cross-team dependencies and prioritization          | 4–8 weeks                                        | €10,000–€25,000                       |
+| Company roadmap                 | Multi-department assessment, readiness, governance and roadmap | 6–12+ weeks                                      | Quote individually                    |
+| Adoption / measurement retainer | coaching, adoption pulse, KPI measurement, review              | Monthly                                          | €1,000–€4,000/month depending on work |
 
 These are **proposed commercial positioning examples**, not verified regional market rates. Validate against your delivery rate, target client segment and actual effort. Travel, expenses, technical integration, licensing of third-party services and implementation are excluded unless in scope.
 
@@ -523,16 +521,16 @@ Every quote includes: staff count, team boundaries, onsite vs remote time, prepa
 
 ## 28. Repeatable audit process and timeline
 
-| Phase | Timing | Who | Exit criterion |
-|---|---|---|---|
-| 0. Scope and trust | Week 0 | Sponsor, auditor, IT/DPO as needed | goals, boundaries, data conditions, referent |
-| 1. Prepare | 5 business days ahead | Employees, referent | adequate response coverage, access booked |
-| 2. Baseline | Before/at visit | Auditor + process owners | task counts, time estimates, evidence sources |
-| 3. Observe | One on-site day/team | Auditor + employees | process map and pain points |
-| 4. Synthesize | 2–5 business days after | Auditor + AI draft tools | source-linked hypotheses, quantified opportunities |
-| 5. Validate | 30–60 min review/team | Referent + manager | confirmed findings and disagreements documented |
-| 6. Prioritize and commit | Following week | Sponsor + process owner | named owners, candidate pilots, success measures |
-| 7. Measure | 30/60/90 days after implementation | Process owner + auditor | verified outcome and adoption status |
+| Phase                    | Timing                             | Who                                | Exit criterion                                     |
+| ------------------------ | ---------------------------------- | ---------------------------------- | -------------------------------------------------- |
+| 0. Scope and trust       | Week 0                             | Sponsor, auditor, IT/DPO as needed | goals, boundaries, data conditions, referent       |
+| 1. Prepare               | 5 business days ahead              | Employees, referent                | adequate response coverage, access booked          |
+| 2. Baseline              | Before/at visit                    | Auditor + process owners           | task counts, time estimates, evidence sources      |
+| 3. Observe               | One on-site day/team               | Auditor + employees                | process map and pain points                        |
+| 4. Synthesize            | 2–5 business days after            | Auditor + AI draft tools           | source-linked hypotheses, quantified opportunities |
+| 5. Validate              | 30–60 min review/team              | Referent + manager                 | confirmed findings and disagreements documented    |
+| 6. Prioritize and commit | Following week                     | Sponsor + process owner            | named owners, candidate pilots, success measures   |
+| 7. Measure               | 30/60/90 days after implementation | Process owner + auditor            | verified outcome and adoption status               |
 
 **At a pace of one on-site day/week, do not confuse onsite cadence with delivery lead time.** For a 4-team engagement expect roughly 4 onsite weeks, plus preparation, analysis and reporting; the total elapsed calendar time may be 5–7 weeks or longer depending on client availability.
 
@@ -550,15 +548,15 @@ Every quote includes: staff count, team boundaries, onsite vs remote time, prepa
 
 Evaluate the **audit separately from any implementation**. A brilliant audit may identify that AI is not appropriate; its value lies in evidence and decision quality.
 
-| Dimension | Weight | Evidence of quality |
-|---|---:|---|
-| Coverage and representativeness | 15% | roles/functions represented, nonresponse biases noted |
-| Process fidelity | 20% | mapped actual work, not just manager descriptions |
-| Evidence quality | 20% | task frequency, timing samples, examples, source links |
-| Opportunity practicality | 15% | actionable actions with owner, constraints and feasibility |
-| Risk/governance quality | 10% | privacy, security, errors, labor and data limits evaluated |
-| Stakeholder validation | 10% | referent/process owner confirmed or disputed findings |
-| Measurement readiness | 10% | baseline, KPI, instrument, expected date and counterfactual |
+| Dimension                       | Weight | Evidence of quality                                         |
+| ------------------------------- | -----: | ----------------------------------------------------------- |
+| Coverage and representativeness |    15% | roles/functions represented, nonresponse biases noted       |
+| Process fidelity                |    20% | mapped actual work, not just manager descriptions           |
+| Evidence quality                |    20% | task frequency, timing samples, examples, source links      |
+| Opportunity practicality        |    15% | actionable actions with owner, constraints and feasibility  |
+| Risk/governance quality         |    10% | privacy, security, errors, labor and data limits evaluated  |
+| Stakeholder validation          |    10% | referent/process owner confirmed or disputed findings       |
+| Measurement readiness           |    10% | baseline, KPI, instrument, expected date and counterfactual |
 
 **Score:** `Audit Quality Score = Σ(weight × dimension_score / 5)`, with dimension scores 0–5; label `unscored` when evidence is insufficient. This is an **internal quality rubric**, not an industry certification or proof of financial value.
 
@@ -594,12 +592,12 @@ Required fields: problem statement; process owner; eligible task/user population
 
 ### 30.3 30/60/90-day follow-up
 
-| Time | Decision purpose | Required evidence |
-|---|---|---|
-| Day 0 | Freeze baseline and hypothesis | source data, owner, sample, goals, guardrails |
-| Day 30 | Usability and deployment check | active users, failures, feedback, security issues |
-| Day 60 | Early operations evidence | repeat task measurements, quality, adoption trends |
-| Day 90 | Accept, adapt or stop | before/after evidence, cost, employee feedback, risks |
+| Time   | Decision purpose               | Required evidence                                     |
+| ------ | ------------------------------ | ----------------------------------------------------- |
+| Day 0  | Freeze baseline and hypothesis | source data, owner, sample, goals, guardrails         |
+| Day 30 | Usability and deployment check | active users, failures, feedback, security issues     |
+| Day 60 | Early operations evidence      | repeat task measurements, quality, adoption trends    |
+| Day 90 | Accept, adapt or stop          | before/after evidence, cost, employee feedback, risks |
 
 **Status at day 90:** `validated benefit`, `mixed/inconclusive`, `no benefit`, `harm/risk`, or `not implemented`. Report all cases—not just success stories. Keep confidence labels (self-reported, sampled, system-measured, controlled comparison).
 
@@ -706,4 +704,3 @@ Offer anonymous feedback with privacy-safe aggregation and minimum display thres
 - NIST AI RMF: https://www.nist.gov/itl/ai-risk-management-framework
 - OWASP GenAI Security Project: https://genai.owasp.org/
 - EU AI Act official text: https://eur-lex.europa.eu/eli/reg/2024/1689/oj
-
