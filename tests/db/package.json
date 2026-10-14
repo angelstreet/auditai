@@ -1,0 +1,22 @@
+{
+  "name": "tests-db",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "echo \"(lint skips, db layer only)\" ",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "build": "echo \"(no build for db tests)\" ",
+    "clean": "echo \"(nothing to clean)\" "
+  },
+  "dependencies": {
+    "@auditai/contracts": "workspace:*",
+    "@auditai/domain": "workspace:*",
+    "pg": "8.13.1"
+  },
+  "devDependencies": {
+    "@types/pg": "8.11.10",
+    "vitest": "2.1.5"
+  }
+}

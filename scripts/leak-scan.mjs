@@ -88,7 +88,12 @@ const RULES = [
   {
     id: 'ipv4',
     regex: /\b(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.){3}(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\b/g,
-    allowWhen: (line) => DOC_IPV4_PREFIXES.some((p) => line.includes(p)),
+    allowWhen: (line) =>
+      DOC_IPV4_PREFIXES.some((p) => line.includes(p)) ||
+      // Loopback (RFC 1122) \u2014 never a real external address.
+      /\b127\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/.test(line) ||
+      // Carrier-grade NAT (RFC 6598).
+      /\b100\.(?:6[0-9]|7[0-9]|8[0-9]|9[0-9]|1[0-1]\d)\.\d{1,3}\.\d{1,3}\b/.test(line),
   },
   {
     id: 'ipv6',
