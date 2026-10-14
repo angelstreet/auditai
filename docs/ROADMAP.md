@@ -1,0 +1,49 @@
+# auditAI — Roadmap
+
+> Single source of truth for delivery. Mirrors [PRD §18](PRD.md#18-rollout-phases-timelines-and-gates);
+> the public copy of the PRD is anonymised ("the pilot client"); this roadmap never refers to a real client.
+
+Each milestone below is delivered as its own branch and pull request against `main`. CI must be green
+before merging. After a merge the **State** column and the README's **Status** block are updated in the
+next commit on `main` (or in the merging PR).
+
+## Phase 1 — Pilot MVP foundation (PRD §18)
+
+Goal: multi-tenant foundation, mobile survey, deterministic literacy scoring, AI brief skeleton, opportunity
+register skeleton. Maps to **FR-01 to FR-06**.
+
+| #   | Milestone                                                                                       | Owner block | PRD §           | State      | Done when                                                                                                                                                            |
+| --- | ----------------------------------------------------------------------------------------------- | ----------- | --------------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| M1  | Roadmap                                                                                         | —           | §18             | done       | `docs/ROADMAP.md` committed, merged, referenced from README.                                                                                                          |
+| M2  | Monorepo bootstrap + CI                                                                        | infra       | §12, §13, §17   | todo       | pnpm + Turborepo workspace, TS strict, lint + format configs, GitHub Actions install/lint/typecheck/test, leak scan (secrets, IPs, e-mails, banned client terms) green. |
+| M3  | Domain + contracts packages                                                                    | domain      | §11, §14        | todo       | Zod schemas + TS types for tenant/org/department/team/membership/role/audit-engagement/survey-template/version/question-item/invitation/respondent/submission/answer with ≥90% line coverage on each package. |
+| M4  | Database migrations + RLS + isolation test                                                      | infra       | §15, §16, §33   | todo       | Postgres migrations for M3 entities, every tenant table has `tenant_id` + RLS, automated cross-tenant deny test (`tests/db`) fails when a tenant query returns another tenant's rows. |
+| M5  | Employee mobile web survey skeleton                                                             | apps/web    | §5, §16         | todo       | Next.js app, secure invite token (HMAC + expiry + single-use), privacy notice, one question per screen, progress, FR/EN, resume; Playwright test at 360 px wide asserting no horizontal scroll and no clipped labels. |
+| M6  | Admin engagements page                                                                          | apps/web    | §9 (FR-01, 09)  | todo       | Server component lists audit engagements with completion counts (synthetic seed); page does not leak rows across tenants; Cypress-style smoke test for the route.        |
+
+## Phase 2 — Audit operations (FR-07 → FR-14)
+
+Detailed milestones to be drafted once Phase 1 is merged. Will cover the AI pipeline worker
+(`services/ai`), auditor review UI, opportunity register, retention/deletion workflow, training
+recommendations and on-site process maps.
+
+## Phase 3 — Intelligence (FR-15 → FR-17)
+
+To be drafted after Phase 2 sign-off. Covers authorised cross-client benchmark knowledge base,
+cohort analytics, optional native apps.
+
+## Gates (PRD §25.4)
+
+- **Gate A — survey pilot:** tenant isolation, retention, audit logs, approved AI data route.
+- **Gate B — AI synthesis:** redaction, prompt-injection tests, source traceability, model cost ceiling.
+- **Gate C — enterprise hosting:** recovery drill, SSO/MFA, penetration test, agreed SLA.
+- **Gate D — cross-company benchmarks:** aggregation thresholds, de-identification review.
+
+Each milestone explicitly records which gates its tests advance and which it does not.
+
+## Conventions
+
+- Branches: `m<number>-<short-name>` (e.g. `m2-monorepo-ci`).
+- One pull request per milestone; PR title prefixed with `[M#]`.
+- Record every significant technical choice as a new ADR in `docs/adr/`.
+- Synthetic fixtures only; never commit credentials, IPs, hostnames, e-mails or client names.
