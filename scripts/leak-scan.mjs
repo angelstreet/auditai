@@ -41,10 +41,9 @@ const SKIP_DIRS = new Set([
   'playwright-report',
   'test-results',
   '.vercel',
-  'pnpm-lock.yaml',
-  'package-lock.json',
-  'yarn.lock',
 ]);
+
+const SKIP_FILES = new Set(['pnpm-lock.yaml', 'package-lock.json', 'yarn.lock']);
 
 const TEXT_EXTENSIONS = new Set([
   '.ts',
@@ -173,6 +172,8 @@ async function* walk(dir) {
  */
 function shouldScan(relPath) {
   if (relPath.includes(`${sep}.git${sep}`)) return false;
+  const baseName = relPath.split(sep).pop();
+  if (baseName && SKIP_FILES.has(baseName)) return false;
   const lastDot = relPath.lastIndexOf('.');
   const ext = lastDot >= 0 ? relPath.slice(lastDot) : '';
   return TEXT_EXTENSIONS.has(ext);

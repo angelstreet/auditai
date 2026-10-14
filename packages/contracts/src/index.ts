@@ -1,12 +1,15 @@
 /**
- * Placeholder for `@auditai/contracts`. M3 fills in tenant, organisation, engagement, template, etc.
- * The placeholder keeps the package importable so the workspace, lint, typecheck and test pipelines
- * are exercised from day one. M3 deletes this export and adds the real schemas.
+ * Public surface of `@auditai/contracts`. Every entity is exported as both its Zod schema and
+ * the inferred TypeScript type. Other packages import from here so they share the same validation
+ * logic as the API layer.
  */
-export interface IdentifierPlaceholder {
-  readonly note: 'replaced by Zod schemas in M3';
-}
 
-export const contractPlaceholder: IdentifierPlaceholder = {
-  note: 'replaced by Zod schemas in M3',
-};
+export * from './ids.js';
+export * from './roles.js';
+export * from './tenant.js';
+export * from './organisation.js';
+export * from './team.js';
+export * from './engagement.js';
+export * from './template.js';
+export * from './invitation.js';
+export * from './submission.js';
