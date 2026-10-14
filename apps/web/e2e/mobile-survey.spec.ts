@@ -45,23 +45,24 @@ test.describe('employee mobile survey @ 360 px', () => {
 
     await page.getByRole('button', { name: /start the survey/i }).click();
 
-    // Q1
+    // Q1 \u2014 wait for the question heading and the option list to be rendered.
+    await expect(page).toHaveURL(/\/q\/0$/);
     await expect(page.getByRole('progressbar')).toBeVisible();
-    const firstOption = page.locator('button.option-button').first();
-    await expect(firstOption).toBeVisible();
-    const box1 = await firstOption.boundingBox();
-    expect(box1?.width).toBeLessThanOrEqual(360);
+    const option1 = page.locator('button.option-button').first();
+    await expect(option1).toBeVisible();
+    const box1 = await option1.boundingBox();
+    expect(box1).not.toBeNull();
+    expect(box1?.width ?? 0).toBeLessThanOrEqual(360);
     await page.locator('button.option-button').nth(1).click();
     await page.getByRole('button', { name: /continue/i }).click();
 
-    // Q2
-    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    // Q2 \u2014 URL changes to /q/1 once the answer is saved. We then measure the option button.
+    await expect(page).toHaveURL(/\/q\/1$/);
     const option2 = page.locator('button.option-button').first();
     await expect(option2).toBeVisible();
     const box2 = await option2.boundingBox();
-    expect(box2?.width).toBeLessThanOrEqual(360);
-    await page.locator('button.option-button').nth(1).click();
-    await page.getByRole('button', { name: /continue/i }).click();
+    expect(box2).not.toBeNull();
+    expect(box2?.width ?? 0).toBeLessThanOrEqual(360);
 
     const { scrollWidth, clientWidth } = await page.evaluate(() => ({
       scrollWidth: document.documentElement.scrollWidth,

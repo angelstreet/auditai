@@ -35,5 +35,11 @@ export default defineConfig({
         hasTouch: true,
       },
     },
+    {
+      name: 'desktop-admin',
+      use: {
+        viewport: { width: 1280, height: 800 },
+      },
+    },
   ],
 });
