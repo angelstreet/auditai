@@ -1,5 +1,10 @@
-// Placeholder. M3 fills in tenant, organisation, department, team, membership, role,
-// audit engagement, survey template/version, question item, invitation, respondent,
-// submission and answer entities.
+/**
+ * Public surface of `@auditai/domain`. Wraps the Zod schemas from `@auditai/contracts` with
+ * domain-side helpers: branded-ID parsing, tenant guards, role/capability matrix, deterministic
+ * scoring, and template versioning.
+ */
 
-export const domainPlaceholder = 'replaced in M3';
+export * from './ids.js';
+export * from './permissions.js';
+export * from './scoring.js';
+export * from './template-versioning.js';
