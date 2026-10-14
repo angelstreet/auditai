@@ -18,6 +18,22 @@ jobs:
     name: Lint / typecheck / test
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: auditai
+          POSTGRES_PASSWORD: auditai
+          POSTGRES_DB: auditai_test
+        ports:
+          - 5432:54329
+        options: >-
+          --health-cmd "pg_isready -U auditai"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgres://auditai:auditai@127.0.0.1:54329/auditai_test
     steps:
       - uses: actions/checkout@v4
 

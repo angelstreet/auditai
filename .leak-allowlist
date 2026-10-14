@@ -2,7 +2,10 @@
 # Use only for synthetic fixtures, RFC 5737/3849 documentation addresses,
 # or example user names that look like real addresses.
 #
-# Empty by default. Add lines like:
-#   192.0.2.10     # documentation IP used in fixtures
-#   test@example.com
-#   AKIAIOSFODNN7EXAMPLE   # AWS docs sample key
+# Synthetic tenant slugs used in infra/db/migrations/0003_seed_synthetic.sql.
+synthetic-tenant-a
+synthetic-tenant-b
+synthetic-employee-001
+# Empty fixture strings used by RLS tests
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
