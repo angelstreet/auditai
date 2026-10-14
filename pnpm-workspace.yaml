@@ -1,0 +1,9 @@
+packages:
+  - 'apps/*'
+  - 'packages/*'
+  - 'services/*'
+  - 'infra/*'
+  - 'tests/*'
+# apps/mobile, services/ai, infra/deploy, tests/e2e are Phase 2/3 directories. They are kept in the
+# repository layout to match PRD §13, but are added to the workspace only once a milestone needs them.
+# See docs/ROADMAP.md.

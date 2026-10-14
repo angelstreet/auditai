@@ -14,16 +14,16 @@ with privacy thresholds, human review of every AI output, and strict tenant isol
 
 ## What it will do
 
-| Area | Summary | PRD |
-|---|---|---|
-| Mobile assessment | Loginless secure invite, one question per screen, adaptive branching, FR/EN, about 8 minutes | §4–§7 |
-| AI maturity model | Three axes (literacy, practice, organisational readiness) plus a task-level opportunity index; levels L0–L5 are descriptive, not certification | §6 |
-| Workflow discovery | Last 7 days of work, friction, tools, hand-offs, safety classification | §7 |
-| AI-assisted synthesis | Sensitivity classification → schema-validated extraction → themes → contradictions → interview prompts, every claim linked to its source; human approval | §10 |
-| Opportunity register | From employee evidence to validated, measured outcomes (detected → … → measured / rejected) | §11 |
-| Governance & security | Tenant isolation, minimal personal data, audit trail, retention/deletion, prompt-injection resilience, launch gates | §15, §25 |
-| Cost management | Per-tenant AI budgets, model routing, unit economics, three separate ledgers | §26 |
-| Audit quality & value | Audit-quality rubric, 30/60/90-day measurement, honest ROI formulas | §29–§30 |
+| Area                  | Summary                                                                                                                                                  | PRD      |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| Mobile assessment     | Loginless secure invite, one question per screen, adaptive branching, FR/EN, about 8 minutes                                                             | §4–§7    |
+| AI maturity model     | Three axes (literacy, practice, organisational readiness) plus a task-level opportunity index; levels L0–L5 are descriptive, not certification           | §6       |
+| Workflow discovery    | Last 7 days of work, friction, tools, hand-offs, safety classification                                                                                   | §7       |
+| AI-assisted synthesis | Sensitivity classification → schema-validated extraction → themes → contradictions → interview prompts, every claim linked to its source; human approval | §10      |
+| Opportunity register  | From employee evidence to validated, measured outcomes (detected → … → measured / rejected)                                                              | §11      |
+| Governance & security | Tenant isolation, minimal personal data, audit trail, retention/deletion, prompt-injection resilience, launch gates                                      | §15, §25 |
+| Cost management       | Per-tenant AI budgets, model routing, unit economics, three separate ledgers                                                                             | §26      |
+| Audit quality & value | Audit-quality rubric, 30/60/90-day measurement, honest ROI formulas                                                                                      | §29–§30  |
 
 ## Repository layout
 
