@@ -3,16 +3,8 @@ import EngagementRow from '@/components/admin/EngagementRow';
 import TenantSwitcher from '@/components/admin/TenantSwitcher';
 import { listEngagements, listTenantIds, tenantLabel } from '@/lib/adminData';
 
-/**
- * Admin \u2014 list audit engagements with completion counts (PRD FR-01, FR-09).
- *
- * The page accepts a `?tenant=<uuid>` query parameter. When omitted, the first synthetic tenant
- * wins; an unknown value redirects to the default. The data is in-memory in M6 and becomes a
- * Postgres query in Phase 2 (the underlying schema already lives in `infra/db/migrations`).
- *
- * Tenant isolation is enforced server-side: `listEngagements(tenantId)` only returns rows whose
- * `tenant_id` matches. There is no client-side filter that could leak rows.
- */
+// Always render at request time so the DB connection is fresh.
+export const dynamic = 'force-dynamic';
 
 const PERCENT_FORMAT = new Intl.NumberFormat('en', {
   style: 'percent',
@@ -23,23 +15,30 @@ interface SearchParams {
   tenant?: string;
 }
 
-export default function AdminEngagementsPage({ searchParams }: { searchParams: SearchParams }) {
-  const tenants = listTenantIds();
+export default async function AdminEngagementsPage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
+  const tenants = await listTenantIds();
+  if (tenants.length === 0) {
+    return (
+      <section aria-labelledby="admin-empty-title" className="admin">
+        <h1 id="admin-empty-title">Admin \u2014 no tenants</h1>
+        <p>No tenants are configured yet. Run \`pnpm local:reset\` to seed synthetic data.</p>
+      </section>
+    );
+  }
   const requested = searchParams.tenant;
   const current = tenants.find((t) => t === requested) ?? tenants[0];
   if (!current) {
-    return (
-      <section aria-labelledby="admin-empty-title">
-        <h1 id="admin-empty-title">Admin \u2014 no tenants</h1>
-        <p>No tenants are configured yet. Add one via the onboarding flow.</p>
-      </section>
-    );
+    redirect('/admin/engagements');
   }
   if (requested && tenants.find((t) => t === requested) === undefined) {
     redirect(`/admin/engagements?tenant=${current}`);
   }
 
-  const summaries = listEngagements(current);
+  const [summaries, label] = await Promise.all([listEngagements(current), tenantLabel(current)]);
 
   const totalExpected = summaries.reduce((acc, s) => acc + s.expectedHeadcount, 0);
   const totalSubmitted = summaries.reduce((acc, s) => acc + s.invitationsSubmitted, 0);
@@ -48,12 +47,10 @@ export default function AdminEngagementsPage({ searchParams }: { searchParams: S
   return (
     <section aria-labelledby="admin-title" className="admin">
       <h1 id="admin-title">Admin \u2014 audit engagements</h1>
-      <p className="muted">
-        Synthetic fixtures; production data comes from Postgres (M4 schema) in Phase 2.
-      </p>
+      <p className="muted">Data from Postgres; the M4 schema drives the queries.</p>
       <TenantSwitcher currentTenantId={current} />
       <p>
-        Viewing <strong>{tenantLabel(current)}</strong>. Overall completion:{' '}
+        Viewing <strong>{label}</strong>. Overall completion:{' '}
         <strong>{PERCENT_FORMAT.format(totalRatio)}</strong>{' '}
         <span className="muted">
           ({totalSubmitted} / {totalExpected} expected responses)

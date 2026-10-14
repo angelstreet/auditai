@@ -9,9 +9,11 @@ get validated opportunities, an adoption roadmap, governance artefacts and measu
 It is **not** an employee performance-ranking tool: it assesses work practices, readiness and improvement opportunities,
 with privacy thresholds, human review of every AI output, and strict tenant isolation.
 
-**Status:** Phase 1 foundation merged (M1\u2013M6 in [docs/ROADMAP.md](docs/ROADMAP.md)). Monorepo, contracts + domain,
-Postgres + RLS, mobile survey and admin page are all in `main` with green CI. The product requirements
-are in [docs/PRD.md](docs/PRD.md); the phased delivery plan is in [docs/ROADMAP.md](docs/ROADMAP.md).
+**Status:** Phase 1 foundation merged (M1\u2013M7 in [docs/ROADMAP.md](docs/ROADMAP.md)). Monorepo, contracts + domain,
+Postgres + RLS, mobile survey, admin page, and the local one-command runner are all in `main` with
+green CI. The product requirements are in [docs/PRD.md](docs/PRD.md); the phased delivery plan is in
+[docs/ROADMAP.md](docs/ROADMAP.md); the rationale for the local runner is in
+[ADR 0006](docs/adr/0006-local-dev-runner.md).
 
 ## What it will do
 
@@ -54,6 +56,54 @@ docs                PRD, architecture decisions, threat model, data dictionary
 
 See [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 AI coding agents: read [AGENTS.md](AGENTS.md) first.
+
+## Run it locally
+
+The local one-command runner brings up the entire stack on a single machine \u2014 embedded
+PostgreSQL 17 with the migrations, the seeded synthetic tenants, and a production build of the
+Next.js app. No Docker, no external services. See [ADR 0006](docs/adr/0006-local-dev-runner.md)
+for the rationale and the architecture.
+
+Prerequisites: Node 20+, pnpm 9+.
+
+```bash
+# 1. Install dependencies (first time only).
+pnpm install --frozen-lockfile
+
+# 2. Build the web app (first time only, or after editing apps/web).
+pnpm --filter @auditai/web build
+
+# 3. Bring the stack up. Auto-discovers free ports and prints them when READY.
+pnpm local:up
+#   READY postgres=postgres://auditai:auditai@127.0.0.1:54340/auditai_local;
+#          web=http://127.0.0.1:3101;
+#          admin=http://127.0.0.1:3101/admin/engagements
+
+# 4. In another terminal, exercise the stack end-to-end.
+export LOCAL_WEB_URL=http://127.0.0.1:3101           # or whatever `local:up` printed
+export DATABASE_URL=postgres://auditai:auditai@127.0.0.1:54340/auditai_local
+pnpm local:smoke   # walks /about \u2192 /s/[token] \u2192 6 answers \u2192 /done \u2192 /admin/engagements
+
+# 5. Tear down.
+pnpm local:down
+```
+
+Useful subcommands:
+
+| Command             | What it does                                                                                                            |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `pnpm local:up`     | Boot embedded Postgres + apply migrations + build (if needed) + start `next start`                                      |
+| `pnpm local:status` | Probe web and Postgres; exit 0 only when both respond (reads ports from `/tmp/auditai-local-stack.ports.json`)          |
+| `pnpm local:smoke`  | End-to-end walk: about \u2192 welcome \u2192 6 answers \u2192 done \u2192 admin; needs `LOCAL_WEB_URL` + `DATABASE_URL` |
+| `pnpm local:reset`  | Drop the database, recreate, re-apply migrations + seed                                                                 |
+| `pnpm local:down`   | Stop the `next start` process and the embedded Postgres data dir                                                        |
+
+If port `3101` is already taken, the runner discovers a free port and writes it to
+`/tmp/auditai-local-stack.ports.json`; `pnpm local:status` reads that file so it always probes the
+right address.
+
+The CI workflow does not depend on the local runner: it uses a `postgres:17` service container on
+port 54329 and `pnpm test` (unit + integration). See `.github/workflows/ci.yml`.
 
 ## License
 

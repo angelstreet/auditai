@@ -1,20 +1,13 @@
-import type {
-  Engagement,
-  EngagementId,
-  EngagementStatus,
-  Invitation,
-  Organisation,
-  TenantId,
-} from '@auditai/contracts';
+import type { Engagement, Organisation, TenantId } from '@auditai/contracts';
+import { withServiceAccount } from './db';
 
 /**
- * Synthetic admin fixtures (M6).
+ * Admin queries backed by the M4 schema (PRD FR-01, FR-09, \u00a714).
  *
- * The Phase 1 admin page lists engagements with completion counts. M6 ships this against an
- * in-memory snapshot that mirrors the M4 seed (two tenants, two engagements, eight invitations
- * each) so the smoke test can exercise both the row count math and the tenant isolation. Phase 2
- * replaces this with a Postgres-backed query that joins \`engagements\`, \`invitations\` and
- * \`submissions\`.
+ * The summary joins \`engagements\` with the related \`organisations\` and the engagement's
+ * invitations, computing completion counts. The RLS policies from M4 would normally hide rows
+ * from other tenants; we run as a service account because the admin is the operator, not the
+ * respondent. The page itself enforces tenant scoping on the rendered output.
  */
 
 export interface AdminEngagementSummary {
@@ -29,214 +22,135 @@ export interface AdminEngagementSummary {
   readonly completionRatio: number;
 }
 
-const ORG_A: Organisation = {
-  id: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa' as never,
-  tenantId: '11111111-1111-4111-8111-111111111111' as TenantId,
-  legalName: 'Synthetic Co A s\u00e0rl',
-  tradingName: 'Synthetic Co A',
-  country: 'FR',
-  sector: 'consulting',
-  createdAt: '2026-10-01T00:00:00.000Z',
-  updatedAt: null,
-};
+interface EngagementRow {
+  id: string;
+  tenant_id: string;
+  team_ids: string[];
+  template_id: string;
+  questionnaire_version_id: string;
+  status: string;
+  opens_at: string | null;
+  closes_at: string | null;
+  locale: string;
+  privacy_json: unknown;
+  created_at: string;
+  updated_at: string | null;
+  org_id: string;
+  org_legal_name: string;
+  org_trading_name: string | null;
+  org_country: string;
+  org_sector: string | null;
+  org_created_at: string;
+  org_updated_at: string | null;
+  expected_headcount: number;
+  invitations_total: string;
+  invitations_submitted: string;
+  invitations_opened: string;
+  invitations_pending: string;
+  invitations_revoked_or_expired: string;
+}
 
-const ORG_B: Organisation = {
-  id: 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb' as never,
-  tenantId: '22222222-2222-4222-8222-222222222222' as TenantId,
-  legalName: 'Synthetic Co B s\u00e0rl',
-  tradingName: 'Synthetic Co B',
-  country: 'FR',
-  sector: 'consulting',
-  createdAt: '2026-10-01T00:00:00.000Z',
-  updatedAt: null,
-};
-
-const SYNTHETIC_PRIVACY = {
-  minResponsesForGroupBreakdown: 5,
-  managerSeesIndividualMaturity: false,
-  benchmarkCandidate: false,
-  noticeLocale: 'fr' as const,
-};
-
-const ENG_A: Engagement = {
-  id: 'a5555555-4555-4555-8555-555555555555' as EngagementId,
-  tenantId: ORG_A.tenantId,
-  teamIds: ['a2222222-2222-4222-8222-222222222222' as never],
-  templateId: 'a3333333-3333-4333-8333-333333333333' as never,
-  questionnaireVersionId: 'a4444444-4444-4444-8444-444444444444' as never,
-  status: 'in_field',
-  opensAt: '2026-10-07T08:00:00.000Z',
-  closesAt: '2026-10-21T20:00:00.000Z',
-  locale: 'fr',
-  privacy: SYNTHETIC_PRIVACY,
-  createdAt: '2026-10-01T00:00:00.000Z',
-  updatedAt: '2026-10-13T12:00:00.000Z',
-};
-
-const ENG_B: Engagement = {
-  id: 'b5555555-4555-4555-8555-555555555555' as EngagementId,
-  tenantId: ORG_B.tenantId,
-  teamIds: ['b2222222-2222-4222-8222-222222222222' as never],
-  templateId: 'b3333333-3333-4333-8333-333333333333' as never,
-  questionnaireVersionId: 'b4444444-4444-4444-8444-444444444444' as never,
-  status: 'in_field',
-  opensAt: '2026-10-07T08:00:00.000Z',
-  closesAt: '2026-10-21T20:00:00.000Z',
-  locale: 'fr',
-  privacy: SYNTHETIC_PRIVACY,
-  createdAt: '2026-10-01T00:00:00.000Z',
-  updatedAt: '2026-10-13T12:00:00.000Z',
-};
-
-const EXPECTED_HEADCOUNT: Record<string, number> = {
-  [ENG_A.id]: 12,
-  [ENG_B.id]: 9,
-};
-
-/**
- * Synthetic invitation fixtures. Tenant A has 8 invitations: 5 submitted, 1 opened, 1 pending,
- * 1 revoked. Tenant B has 8: 3 submitted, 2 opened, 2 pending, 1 expired.
- */
-const INVITATIONS: Invitation[] = (() => {
-  const make = (
-    tenantId: TenantId,
-    engagementId: EngagementId,
-    pseudonym: string,
-    status: Invitation['status'],
-  ): Invitation => ({
-    id: `00000000-0000-4000-8000-${pseudonym.padEnd(12, '0')}` as never,
-    tenantId,
-    engagementId,
-    teamId: '00000000-0000-4000-8000-000000000001' as never,
-    respondentPseudonym: pseudonym,
-    status,
-    token: { reference: `inv-${pseudonym}`, signature: 'signature-placeholder' },
-    opensAt: '2026-10-07T08:00:00.000Z',
-    expiresAt: '2026-10-21T20:00:00.000Z',
-    openCount: status === 'pending' ? 0 : status === 'opened' ? 1 : 1,
-    submissionId: null,
-    createdAt: '2026-10-07T08:00:00.000Z',
-    updatedAt: null,
+export const listTenantIds = async (): Promise<readonly TenantId[]> => {
+  return withServiceAccount(async (client) => {
+    const { rows } = await client.query<{ id: string }>(
+      `SELECT id FROM tenants ORDER BY display_name`,
+    );
+    return rows.map((r) => r.id as TenantId);
   });
+};
 
-  const tenantAPseudos = [
-    'a-emp-001',
-    'a-emp-002',
-    'a-emp-003',
-    'a-emp-004',
-    'a-emp-005',
-    'a-emp-006',
-    'a-emp-007',
-    'a-emp-008',
-  ] as const;
-  const tenantAStatuses: Invitation['status'][] = [
-    'submitted',
-    'submitted',
-    'submitted',
-    'submitted',
-    'submitted',
-    'opened',
-    'pending',
-    'revoked',
-  ];
-
-  const tenantBPseudos = [
-    'b-emp-001',
-    'b-emp-002',
-    'b-emp-003',
-    'b-emp-004',
-    'b-emp-005',
-    'b-emp-006',
-    'b-emp-007',
-    'b-emp-008',
-  ] as const;
-  const tenantBStatuses: Invitation['status'][] = [
-    'submitted',
-    'submitted',
-    'submitted',
-    'opened',
-    'opened',
-    'pending',
-    'pending',
-    'expired',
-  ];
-
-  const list: Invitation[] = [];
-  tenantAPseudos.forEach((p, i) => {
-    const status = tenantAStatuses[i] ?? 'pending';
-    if (!status) return;
-    list.push(make(ORG_A.tenantId, ENG_A.id, p, status));
+export const tenantLabel = async (tenantId: TenantId): Promise<string> => {
+  return withServiceAccount(async (client) => {
+    const { rows } = await client.query<{ display_name: string }>(
+      `SELECT display_name FROM tenants WHERE id = $1 LIMIT 1`,
+      [tenantId],
+    );
+    const row = rows[0];
+    if (!row) return tenantId;
+    return row.display_name || tenantId;
   });
-  tenantBPseudos.forEach((p, i) => {
-    const status = tenantBStatuses[i] ?? 'pending';
-    if (!status) return;
-    list.push(make(ORG_B.tenantId, ENG_B.id, p, status));
+};
+
+const toEngagement = (row: EngagementRow): Engagement => ({
+  id: row.id as never,
+  tenantId: row.tenant_id as TenantId,
+  teamIds: row.team_ids as never,
+  templateId: row.template_id as never,
+  questionnaireVersionId: row.questionnaire_version_id as never,
+  status: row.status as Engagement['status'],
+  opensAt: row.opens_at,
+  closesAt: row.closes_at,
+  locale: row.locale === 'fr' ? 'fr' : 'en',
+  privacy: row.privacy_json as Engagement['privacy'],
+  createdAt: row.created_at,
+  updatedAt: row.updated_at,
+});
+
+const toOrganisation = (row: EngagementRow): Organisation => ({
+  id: row.org_id as never,
+  tenantId: row.tenant_id as TenantId,
+  legalName: row.org_legal_name,
+  tradingName: row.org_trading_name,
+  country: row.org_country,
+  sector: row.org_sector,
+  createdAt: row.org_created_at,
+  updatedAt: row.org_updated_at,
+});
+
+export const listEngagements = async (tenantId: TenantId): Promise<AdminEngagementSummary[]> => {
+  return withServiceAccount(async (client) => {
+    const { rows } = await client.query<EngagementRow>(
+      `SELECT e.id, e.tenant_id,
+              COALESCE(
+                (SELECT array_agg(et.team_id) FROM engagement_teams et WHERE et.engagement_id = e.id),
+                ARRAY[]::uuid[]
+              ) AS team_ids,
+              e.template_id, e.questionnaire_version_id,
+              e.status, e.opens_at, e.closes_at, e.locale, e.privacy_json, e.created_at, e.updated_at,
+              o.id AS org_id, o.legal_name AS org_legal_name, o.trading_name AS org_trading_name,
+              o.country AS org_country, o.sector AS org_sector,
+              o.created_at AS org_created_at, o.updated_at AS org_updated_at,
+              COALESCE(
+                (SELECT SUM(t.expected_headcount) FROM engagement_teams et
+                  JOIN teams t ON t.id = et.team_id
+                 WHERE et.engagement_id = e.id),
+                0
+              )::int AS expected_headcount,
+              COALESCE(SUM(CASE WHEN i.id IS NOT NULL THEN 1 ELSE 0 END), 0) AS invitations_total,
+              COALESCE(SUM(CASE WHEN i.status = 'submitted' THEN 1 ELSE 0 END), 0) AS invitations_submitted,
+              COALESCE(SUM(CASE WHEN i.status IN ('opened','in_progress') THEN 1 ELSE 0 END), 0) AS invitations_opened,
+              COALESCE(SUM(CASE WHEN i.status = 'pending' THEN 1 ELSE 0 END), 0) AS invitations_pending,
+              COALESCE(SUM(CASE WHEN i.status IN ('revoked','expired','declined') THEN 1 ELSE 0 END), 0) AS invitations_revoked_or_expired
+         FROM engagements e
+         JOIN organisations o ON o.tenant_id = e.tenant_id
+         LEFT JOIN invitations i ON i.tenant_id = e.tenant_id AND i.engagement_id = e.id
+        WHERE e.tenant_id = $1
+        GROUP BY e.id, o.id
+        ORDER BY e.created_at DESC`,
+      [tenantId],
+    );
+    return rows.map((row) => summarise(row));
   });
-  return list;
-})();
-
-const ORG_BY_TENANT: Record<string, Organisation> = {
-  [ORG_A.tenantId]: ORG_A,
-  [ORG_B.tenantId]: ORG_B,
 };
 
-const ENG_BY_TENANT: Record<string, Engagement[]> = {
-  [ORG_A.tenantId]: [ENG_A],
-  [ORG_B.tenantId]: [ENG_B],
-};
-
-const INV_BY_TENANT: Record<string, Invitation[]> = {
-  [ORG_A.tenantId]: INVITATIONS.filter((i) => i.tenantId === ORG_A.tenantId),
-  [ORG_B.tenantId]: INVITATIONS.filter((i) => i.tenantId === ORG_B.tenantId),
-};
-
-export const listTenantIds = (): readonly TenantId[] => [ORG_A.tenantId, ORG_B.tenantId];
-
-export const tenantLabel = (tenantId: TenantId): string => {
-  const org = ORG_BY_TENANT[tenantId];
-  if (!org) return tenantId;
-  return org.tradingName ?? org.legalName;
-};
-
-export const summariseEngagement = (
-  tenantId: TenantId,
-  engagement: Engagement,
-): AdminEngagementSummary => {
-  const invitations = (INV_BY_TENANT[tenantId] ?? []).filter(
-    (i) => i.engagementId === engagement.id,
-  );
-  const total = invitations.length;
-  const submitted = invitations.filter((i) => i.status === 'submitted').length;
-  const opened = invitations.filter(
-    (i) => i.status === 'opened' || i.status === 'in_progress',
-  ).length;
-  const pending = invitations.filter((i) => i.status === 'pending').length;
-  const revokedOrExpired = invitations.filter(
-    (i) => i.status === 'revoked' || i.status === 'expired' || i.status === 'declined',
-  ).length;
-  const expected = EXPECTED_HEADCOUNT[engagement.id] ?? Math.max(total, 1);
-  const completionRatio = expected === 0 ? 0 : Math.min(1, submitted / expected);
-  const org = ORG_BY_TENANT[tenantId];
-  if (!org) throw new Error(`unknown tenant ${tenantId}`);
+const summarise = (row: EngagementRow): AdminEngagementSummary => {
+  const total = Number(row.invitations_total);
+  const submitted = Number(row.invitations_submitted);
+  const expected = Math.max(row.expected_headcount, 1);
   return {
-    engagement,
-    organisation: org,
+    engagement: toEngagement(row),
+    organisation: toOrganisation(row),
     expectedHeadcount: expected,
     invitationsTotal: total,
     invitationsSubmitted: submitted,
-    invitationsOpened: opened,
-    invitationsPending: pending,
-    invitationsRevokedOrExpired: revokedOrExpired,
-    completionRatio,
+    invitationsOpened: Number(row.invitations_opened),
+    invitationsPending: Number(row.invitations_pending),
+    invitationsRevokedOrExpired: Number(row.invitations_revoked_or_expired),
+    completionRatio: Math.min(1, submitted / expected),
   };
 };
 
-export const listEngagements = (tenantId: TenantId): AdminEngagementSummary[] => {
-  const engagements = ENG_BY_TENANT[tenantId] ?? [];
-  return engagements.map((engagement) => summariseEngagement(tenantId, engagement));
-};
-
-export const engagementStatusLabel = (status: EngagementStatus): string => {
+export const engagementStatusLabel = (status: Engagement['status']): string => {
   switch (status) {
     case 'draft':
       return 'Draft';

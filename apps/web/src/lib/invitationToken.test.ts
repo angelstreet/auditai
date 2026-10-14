@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { InvalidInviteToken, signInviteToken, verifyInviteToken } from './invitationToken.js';
+import { InvalidInviteToken, signInviteToken, verifyInviteToken } from './invitationToken';
 
 const REFERENCE = 'inv-synthetic-pilot-001';
 
