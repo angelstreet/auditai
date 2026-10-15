@@ -1,22 +1,30 @@
+import Link from 'next/link';
 import { engagementStatusLabel, type AdminEngagementSummary } from '@/lib/adminData';
+import type { TenantId } from '@auditai/contracts';
 
 interface Props {
   summary: AdminEngagementSummary;
+  tenantId: TenantId;
 }
 
 /**
  * One row in the admin engagements table. Pure server component; the page passes the summary
  * computed by `summariseEngagement`. Numbers come from the in-memory snapshot in M6; Phase 2
  * will swap the snapshot for a Postgres query that joins engagements / invitations / submissions.
+ *
+ * M10 adds a "View analyses" link so the auditor can drill from the engagement list to the
+ * per-engagement analysis review queue.
  */
-export default function EngagementRow({ summary }: Props) {
+export default function EngagementRow({ summary, tenantId }: Props) {
   const submittedPct = Math.round(summary.completionRatio * 100);
   return (
     <tr>
       <th scope="row">
         <span>{summary.organisation.tradingName ?? summary.organisation.legalName}</span>
         <br />
-        <span className="muted">{summary.engagement.id}</span>
+        <Link href={`/admin/engagements/${summary.engagement.id}/analyses?tenant=${tenantId}`}>
+          {summary.engagement.id}
+        </Link>
       </th>
       <td>{engagementStatusLabel(summary.engagement.status)}</td>
       <td>{summary.expectedHeadcount}</td>

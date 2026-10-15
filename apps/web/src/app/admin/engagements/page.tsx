@@ -83,7 +83,7 @@ export default async function AdminEngagementsPage({
             </tr>
           ) : (
             summaries.map((summary) => (
-              <EngagementRow key={summary.engagement.id} summary={summary} />
+              <EngagementRow key={summary.engagement.id} summary={summary} tenantId={current} />
             ))
           )}
         </tbody>

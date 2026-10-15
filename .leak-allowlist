@@ -6,6 +6,10 @@
 synthetic-tenant-a
 synthetic-tenant-b
 synthetic-employee-001
+# Synthetic auditor email hashes seeded by infra/db/migrations/0006_audit_log_and_opportunities.sql.
+# The .invalid TLD is RFC 2606 reserved and the addresses are obviously fake.
+synthetic-auditor-a@synthetic.invalid
+synthetic-auditor-b@synthetic.invalid
 # Empty fixture strings used by RLS tests
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb

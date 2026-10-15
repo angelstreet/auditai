@@ -13,3 +13,5 @@ export * from './engagement.js';
 export * from './template.js';
 export * from './invitation.js';
 export * from './submission.js';
+export * from './auditLog.js';
+export * from './opportunity.js';

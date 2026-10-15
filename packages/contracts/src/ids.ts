@@ -75,6 +75,15 @@ export type SubmissionId = z.infer<typeof submissionIdSchema>;
 export const answerIdSchema = brandedId('AnswerId');
 export type AnswerId = z.infer<typeof answerIdSchema>;
 
+export const analysisIdSchema = brandedId('AnalysisId');
+export type AnalysisId = z.infer<typeof analysisIdSchema>;
+
+export const opportunityIdSchema = brandedId('OpportunityId');
+export type OpportunityId = z.infer<typeof opportunityIdSchema>;
+
+export const auditLogIdSchema = brandedId('AuditLogId');
+export type AuditLogId = z.infer<typeof auditLogIdSchema>;
+
 /**
  * `respondentPseudonymSchema` is a non-identifying handle the platform issues for an employee so
  * the audit can reference the submission without storing the real name. PRD \u00a715 forbids
