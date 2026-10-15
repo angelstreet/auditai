@@ -1,8 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import {
   impactScoreSchema,
+  nextOpportunityStatuses,
+  OPPORTUNITY_STATUS_LABELS,
   opportunitySchema,
   opportunityStatusSchema,
+  opportunityStatusTransitionSchema,
   opportunityWriteSchema,
 } from './opportunity.js';
 
@@ -103,5 +106,80 @@ describe('opportunity schema (M10, FR-08)', () => {
       expect(result.data.status).toBe('draft');
       expect(result.data.analysisId).toBeNull();
     }
+  });
+});
+
+describe('opportunity status workflow (M11, FR-08)', () => {
+  it('exposes the five workflow states', () => {
+    expect(opportunityStatusSchema.options).toEqual([
+      'draft',
+      'approved',
+      'in_progress',
+      'delivered',
+      'archived',
+    ]);
+  });
+
+  it('labels every status with a human-readable name', () => {
+    expect(OPPORTUNITY_STATUS_LABELS.draft).toBe('Draft');
+    expect(OPPORTUNITY_STATUS_LABELS.approved).toBe('Approved');
+    expect(OPPORTUNITY_STATUS_LABELS.in_progress).toBe('In progress');
+    expect(OPPORTUNITY_STATUS_LABELS.delivered).toBe('Delivered');
+    expect(OPPORTUNITY_STATUS_LABELS.archived).toBe('Archived');
+  });
+
+  it('allows the happy path draft -> approved -> in_progress -> delivered', () => {
+    expect(
+      opportunityStatusTransitionSchema.safeParse({ from: 'draft', to: 'approved' }).success,
+    ).toBe(true);
+    expect(
+      opportunityStatusTransitionSchema.safeParse({ from: 'approved', to: 'in_progress' }).success,
+    ).toBe(true);
+    expect(
+      opportunityStatusTransitionSchema.safeParse({ from: 'in_progress', to: 'delivered' }).success,
+    ).toBe(true);
+  });
+
+  it('allows archive from any non-terminal state', () => {
+    for (const from of ['draft', 'approved', 'in_progress', 'delivered'] as const) {
+      expect(opportunityStatusTransitionSchema.safeParse({ from, to: 'archived' }).success).toBe(
+        true,
+      );
+    }
+  });
+
+  it('rejects skipping states', () => {
+    expect(
+      opportunityStatusTransitionSchema.safeParse({ from: 'draft', to: 'in_progress' }).success,
+    ).toBe(false);
+    expect(
+      opportunityStatusTransitionSchema.safeParse({ from: 'draft', to: 'delivered' }).success,
+    ).toBe(false);
+    expect(
+      opportunityStatusTransitionSchema.safeParse({ from: 'approved', to: 'delivered' }).success,
+    ).toBe(false);
+  });
+
+  it('rejects reverse transitions', () => {
+    expect(
+      opportunityStatusTransitionSchema.safeParse({ from: 'approved', to: 'draft' }).success,
+    ).toBe(false);
+    expect(
+      opportunityStatusTransitionSchema.safeParse({ from: 'in_progress', to: 'approved' }).success,
+    ).toBe(false);
+  });
+
+  it('treats archived as terminal', () => {
+    expect(nextOpportunityStatuses('archived')).toEqual([]);
+    expect(
+      opportunityStatusTransitionSchema.safeParse({ from: 'archived', to: 'draft' }).success,
+    ).toBe(false);
+  });
+
+  it('nextOpportunityStatuses enumerates the buttons the UI should render', () => {
+    expect(nextOpportunityStatuses('draft')).toEqual(['approved', 'archived']);
+    expect(nextOpportunityStatuses('approved')).toEqual(['in_progress', 'archived']);
+    expect(nextOpportunityStatuses('in_progress')).toEqual(['delivered', 'archived']);
+    expect(nextOpportunityStatuses('delivered')).toEqual(['archived']);
   });
 });

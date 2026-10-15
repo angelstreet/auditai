@@ -64,3 +64,50 @@ export const opportunityWriteSchema = z.object({
   createdBy: userIdSchema,
 });
 export type OpportunityWrite = z.infer<typeof opportunityWriteSchema>;
+
+/**
+ * Allowed status transitions (M11, FR-08, FR-12).
+ *
+ * The graph:
+ *
+ *   draft  ──> approved  ──> in_progress  ──> delivered
+ *     │         │                │                │
+ *     └─────────┴────────────────┴────────────────┴────> archived
+ *
+ * `archived` is a terminal state but reachable from any other state. `delivered` is also
+ * terminal in the workflow; an opportunity that needs to come back into the loop is
+ * archived (and a new opportunity is opened if appropriate). The auditor cannot un-archive
+ * from the UI; undo is a new row in the audit log.
+ */
+const OPPORTUNITY_TRANSITIONS: Record<OpportunityStatus, ReadonlyArray<OpportunityStatus>> = {
+  draft: ['approved', 'archived'],
+  approved: ['in_progress', 'archived'],
+  in_progress: ['delivered', 'archived'],
+  delivered: ['archived'],
+  archived: [],
+};
+
+export const opportunityStatusTransitionSchema = z
+  .object({
+    from: opportunityStatusSchema,
+    to: opportunityStatusSchema,
+  })
+  .refine((v) => OPPORTUNITY_TRANSITIONS[v.from].includes(v.to), {
+    message: 'transition is not permitted by the opportunity workflow',
+  });
+export type OpportunityStatusTransition = z.infer<typeof opportunityStatusTransitionSchema>;
+
+/** The valid "next" statuses from a given current status (used by the UI to render buttons). */
+export const nextOpportunityStatuses = (
+  current: OpportunityStatus,
+): ReadonlyArray<OpportunityStatus> => OPPORTUNITY_TRANSITIONS[current];
+
+/** Human-readable label for the status (kept in the contracts package so the admin UI
+ *  never has to duplicate the mapping). */
+export const OPPORTUNITY_STATUS_LABELS: Record<OpportunityStatus, string> = {
+  draft: 'Draft',
+  approved: 'Approved',
+  in_progress: 'In progress',
+  delivered: 'Delivered',
+  archived: 'Archived',
+};

@@ -82,6 +82,10 @@ export default async function AnalysesListPage({ params, searchParams }: PagePro
       </p>
       <p>
         <Link href={`/admin/engagements?tenant=${tenantId}`}>\u2190 Back to engagements</Link>
+        {' \u00b7 '}
+        <Link href={`/admin/engagements/${params.id}/opportunities?tenant=${tenantId}`}>
+          View opportunities
+        </Link>
       </p>
       <table>
         <thead>
