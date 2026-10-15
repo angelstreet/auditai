@@ -1,4 +1,4 @@
-# auditAI
+# EvolAI
 
 > Working name. Discover how work really happens. Build AI confidence. Turn friction into measurable improvements.
 
@@ -9,11 +9,15 @@ get validated opportunities, an adoption roadmap, governance artefacts and measu
 It is **not** an employee performance-ranking tool: it assesses work practices, readiness and improvement opportunities,
 with privacy thresholds, human review of every AI output, and strict tenant isolation.
 
-**Status:** Phase 1 foundation merged (M1\u2013M7 in [docs/ROADMAP.md](docs/ROADMAP.md)). Monorepo, contracts + domain,
+**Status:** Phase 1 foundation merged (M1\u2013M8 in [docs/ROADMAP.md](docs/ROADMAP.md)). Monorepo, contracts + domain,
 Postgres + RLS, mobile survey, admin page, and the local one-command runner are all in `main` with
 green CI. The product requirements are in [docs/PRD.md](docs/PRD.md); the phased delivery plan is in
 [docs/ROADMAP.md](docs/ROADMAP.md); the rationale for the local runner is in
 [ADR 0006](docs/adr/0006-local-dev-runner.md).
+
+**Live landing page:** [bai7w0jcu7s8e.space.minimax.io](https://bai7w0jcu7s8e.space.minimax.io) — a
+public static showcase of the brand. The dynamic survey + admin app is run locally via
+`pnpm local:up` (see below).
 
 ## What it will do
 

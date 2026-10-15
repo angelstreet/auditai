@@ -64,7 +64,7 @@ export default async function WelcomePage({ params }: { params: Params }) {
 
   return (
     <section aria-labelledby="welcome-title">
-      <h1 id="welcome-title">auditAI</h1>
+      <h1 id="welcome-title">EvolAI</h1>
       <p className="muted">
         {copy.questionsCount(total)} \u00b7 {copy.estimated}
       </p>

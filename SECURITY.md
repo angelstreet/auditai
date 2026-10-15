@@ -1,6 +1,6 @@
 # Security policy
 
-auditAI will handle workplace survey data, so security reports are taken seriously.
+EvolAI will handle workplace survey data, so security reports are taken seriously.
 
 - **Report privately** through GitHub's "Report a vulnerability" (Security tab → Advisories). Do not open a public issue.
 - Include affected version/commit, reproduction steps and impact. We aim to acknowledge within 5 working days.

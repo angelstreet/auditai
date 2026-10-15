@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for helping. auditAI is at specification stage; read [docs/PRD.md](docs/PRD.md) and the
+Thank you for helping. EvolAI is at specification stage; read [docs/PRD.md](docs/PRD.md) and the
 [architecture decisions](docs/adr/) first.
 
 - Open an issue before large changes; small fixes can go straight to a pull request.

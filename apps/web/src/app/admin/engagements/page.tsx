@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import EngagementRow from '@/components/admin/EngagementRow';
 import TenantSwitcher from '@/components/admin/TenantSwitcher';
+import { Logo } from '@/components/Logo';
 import { listEngagements, listTenantIds, tenantLabel } from '@/lib/adminData';
 
 // Always render at request time so the DB connection is fresh.
@@ -46,7 +47,10 @@ export default async function AdminEngagementsPage({
 
   return (
     <section aria-labelledby="admin-title" className="admin">
-      <h1 id="admin-title">Admin \u2014 audit engagements</h1>
+      <Logo />
+      <h1 id="admin-title" style={{ marginTop: 'var(--space-4)' }}>
+        EvolAI \u2014 audit engagements
+      </h1>
       <p className="muted">Data from Postgres; the M4 schema drives the queries.</p>
       <TenantSwitcher currentTenantId={current} />
       <p>

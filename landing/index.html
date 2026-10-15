@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EvolAI — Understand. Adapt. Evolve.</title>
+    <meta
+      name="description"
+      content="EvolAI is an open-source platform for evidence-based AI adoption audits and AI change enablement. Adaptive AI maturity assessment, workflow discovery, and governance — without ranking employees."
+    />
+    <meta name="theme-color" content="#172B3A" />
+    <meta property="og:title" content="EvolAI — Understand. Adapt. Evolve." />
+    <meta
+      property="og:description"
+      content="Open-source evidence-based AI adoption audits. Privacy-first, tenant-isolated, AI-open."
+    />
+    <meta property="og:image" content="./brand/og.png" />
+    <meta property="og:type" content="website" />
+    <link rel="icon" type="image/svg+xml" href="./brand/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --navy: #172b3a;
+        --teal: #19a999;
+        --blue: #4a7fe8;
+        --amber: #ffb86a;
+        --off-white: #f7fafc;
+        --supporting: #536575;
+        --line: #e3e8ee;
+        --shadow: 0 18px 48px rgba(23, 43, 58, 0.08);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--off-white);
+        color: var(--navy);
+        font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+        font-feature-settings: 'cv11', 'ss01';
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+      a {
+        color: var(--teal);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      .container {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+      header.nav {
+        position: sticky;
+        top: 0;
+        background: rgba(247, 250, 252, 0.92);
+        backdrop-filter: saturate(180%) blur(10px);
+        border-bottom: 1px solid var(--line);
+        z-index: 10;
+      }
+      header.nav .row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 72px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 700;
+        font-size: 20px;
+        letter-spacing: -0.01em;
+        color: var(--navy);
+      }
+      .brand svg {
+        width: 36px;
+        height: 36px;
+      }
+      .brand .name .ai {
+        color: var(--teal);
+      }
+      .nav-links {
+        display: flex;
+        gap: 24px;
+        font-size: 15px;
+        color: var(--supporting);
+      }
+      .nav-links a {
+        color: var(--supporting);
+        font-weight: 500;
+      }
+      .cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 18px;
+        background: var(--navy);
+        color: var(--off-white);
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 14px;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+      }
+      .cta:hover {
+        text-decoration: none;
+        transform: translateY(-1px);
+        box-shadow: var(--shadow);
+      }
+      .cta.secondary {
+        background: var(--off-white);
+        color: var(--navy);
+        border: 1px solid var(--line);
+      }
+      .hero {
+        padding: 96px 0 64px;
+      }
+      .hero .grid {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 64px;
+        align-items: center;
+      }
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(25, 169, 153, 0.1);
+        color: var(--teal);
+        font-weight: 600;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        padding: 6px 14px;
+        border-radius: 999px;
+        margin-bottom: 24px;
+      }
+      .eyebrow::before {
+        content: '';
+        width: 6px;
+        height: 6px;
+        background: var(--teal);
+        border-radius: 50%;
+      }
+      h1.headline {
+        font-size: 56px;
+        line-height: 1.05;
+        letter-spacing: -0.025em;
+        font-weight: 800;
+        margin: 0 0 24px;
+      }
+      h1.headline .accent {
+        color: var(--teal);
+      }
+      p.lede {
+        font-size: 19px;
+        color: var(--supporting);
+        margin: 0 0 32px;
+        max-width: 540px;
+      }
+      .hero-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .hero-art {
+        position: relative;
+        aspect-ratio: 4 / 3;
+        background: linear-gradient(135deg, var(--navy) 0%, #234159 100%);
+        border-radius: 24px;
+        padding: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .hero-art::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+            circle at 80% 20%,
+            rgba(25, 169, 153, 0.25) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 20% 80%,
+            rgba(74, 127, 232, 0.2) 0%,
+            transparent 50%
+          );
+        pointer-events: none;
+      }
+      .hero-art .icon-stack {
+        display: flex;
+        align-items: flex-end;
+        gap: 18px;
+        z-index: 1;
+      }
+      .hero-art .icon-stack .leaf {
+        width: 76px;
+      }
+      .hero-art .icon-stack .leaf--amber {
+        height: 70px;
+      }
+      .hero-art .icon-stack .leaf--blue {
+        height: 110px;
+      }
+      .hero-art .icon-stack .leaf--teal {
+        height: 152px;
+      }
+      section.pillars {
+        padding: 64px 0;
+      }
+      section.pillars h2,
+      section.values h2,
+      section.try h2,
+      section.status h2 {
+        font-size: 36px;
+        letter-spacing: -0.02em;
+        margin: 0 0 8px;
+      }
+      .section-lede {
+        color: var(--supporting);
+        font-size: 17px;
+        margin: 0 0 40px;
+        max-width: 680px;
+      }
+      .pillars-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+      }
+      .pillar {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 28px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .pillar:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow);
+      }
+      .pillar .num {
+        font-size: 13px;
+        color: var(--supporting);
+        font-weight: 600;
+        letter-spacing: 0.08em;
+      }
+      .pillar h3 {
+        font-size: 19px;
+        margin: 8px 0 8px;
+        letter-spacing: -0.01em;
+      }
+      .pillar p {
+        color: var(--supporting);
+        font-size: 15px;
+        margin: 0;
+      }
+      .pillar .accent {
+        display: block;
+        width: 24px;
+        height: 3px;
+        border-radius: 2px;
+        margin-top: 16px;
+      }
+      .pillar--teal .accent {
+        background: var(--teal);
+      }
+      .pillar--blue .accent {
+        background: var(--blue);
+      }
+      .pillar--amber .accent {
+        background: var(--amber);
+      }
+      section.values {
+        background: #fff;
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+        padding: 64px 0;
+      }
+      .values-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+      }
+      .value {
+        padding: 20px;
+      }
+      .value .label {
+        font-size: 13px;
+        color: var(--supporting);
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+      }
+      .value h4 {
+        font-size: 17px;
+        margin: 0 0 6px;
+        letter-spacing: -0.01em;
+      }
+      .value p {
+        color: var(--supporting);
+        font-size: 14px;
+        margin: 0;
+      }
+      section.status {
+        padding: 64px 0;
+      }
+      .status-card {
+        background: var(--navy);
+        color: var(--off-white);
+        border-radius: 16px;
+        padding: 32px;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 24px;
+        align-items: center;
+      }
+      .status-card .badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 12px;
+      }
+      .status-card .badge {
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--off-white);
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+      .status-card .badge--teal {
+        background: rgba(25, 169, 153, 0.25);
+        color: #aef0e8;
+      }
+      .status-card .badge--amber {
+        background: rgba(255, 184, 106, 0.25);
+        color: #ffd9a8;
+      }
+      section.try {
+        padding: 64px 0 96px;
+      }
+      .try-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+      .try-card {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 28px;
+      }
+      .try-card .step {
+        font-size: 13px;
+        color: var(--supporting);
+        font-weight: 600;
+        letter-spacing: 0.08em;
+      }
+      .try-card h3 {
+        font-size: 18px;
+        margin: 8px 0 8px;
+        letter-spacing: -0.01em;
+      }
+      .try-card pre {
+        background: #0d1a25;
+        color: #d2dde7;
+        padding: 16px;
+        border-radius: 10px;
+        font-size: 13px;
+        overflow-x: auto;
+        margin: 12px 0 0;
+        font-family: 'SF Mono', Menlo, Consolas, monospace;
+      }
+      footer {
+        background: var(--navy);
+        color: rgba(247, 250, 252, 0.7);
+        padding: 32px 0;
+        font-size: 14px;
+      }
+      footer .row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      footer a {
+        color: var(--off-white);
+      }
+      @media (max-width: 900px) {
+        .hero {
+          padding: 56px 0 32px;
+        }
+        .hero .grid {
+          grid-template-columns: 1fr;
+          gap: 32px;
+        }
+        h1.headline {
+          font-size: 40px;
+        }
+        .pillars-grid,
+        .values-grid,
+        .try-grid {
+          grid-template-columns: 1fr;
+        }
+        .status-card {
+          grid-template-columns: 1fr;
+        }
+        .nav-links {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="nav">
+      <div class="container row">
+        <a class="brand" href="#top" aria-label="EvolAI home">
+          <svg viewBox="0 0 60 60" aria-hidden="true">
+            <path
+              d="M16 50 C 6 50, 2 38, 10 30 C 16 24, 22 26, 26 32 C 28 36, 28 44, 22 48 C 20 49.5, 18 50, 16 50 Z"
+              fill="#FFB86A"
+            />
+            <path
+              d="M28 44 C 18 44, 14 30, 22 22 C 28 16, 34 18, 38 24 C 40 28, 40 38, 34 42 C 32 43.5, 30 44, 28 44 Z"
+              fill="#4A7FE8"
+            />
+            <path
+              d="M40 38 C 28 38, 24 22, 32 12 C 38 4, 46 6, 50 14 C 52 18, 52 30, 46 36 C 44 37.5, 42 38, 40 38 Z"
+              fill="#19A999"
+            />
+          </svg>
+          <span class="name">Evol<span class="ai">AI</span></span>
+        </a>
+        <nav class="nav-links">
+          <a href="#pillars">What it does</a>
+          <a href="#values">Principles</a>
+          <a href="#status">Status</a>
+          <a href="#try">Try it</a>
+        </nav>
+        <a class="cta" href="https://github.com/angelstreet/auditai">View on GitHub</a>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="container grid">
+          <div>
+            <span class="eyebrow">Phase 1 foundation · Apache-2.0</span>
+            <h1 class="headline">
+              Evidence-based <span class="accent">AI adoption</span> for teams that take
+              change seriously.
+            </h1>
+            <p class="lede">
+              EvolAI is an open-source platform for AI adoption audits and change enablement.
+              Employees answer short, adaptive questionnaires. Auditors review AI-assisted,
+              source-linked findings. Leaders get validated opportunities, an adoption roadmap,
+              governance artefacts and measured outcomes.
+            </p>
+            <div class="hero-actions">
+              <a class="cta" href="#try">Try the sample survey</a>
+              <a class="cta secondary" href="https://github.com/angelstreet/auditai"
+                >Read the docs →</a
+              >
+            </div>
+          </div>
+          <div class="hero-art" aria-hidden="true">
+            <div class="icon-stack">
+              <svg class="leaf leaf--amber" viewBox="0 0 60 70">
+                <path
+                  d="M16 65 C -2 65, -2 40, 12 25 C 22 14, 36 14, 44 22 C 50 28, 50 50, 38 60 C 32 64, 22 66, 16 65 Z"
+                  fill="#FFB86A"
+                />
+              </svg>
+              <svg class="leaf leaf--blue" viewBox="0 0 60 110">
+                <path
+                  d="M16 105 C -4 105, -4 70, 12 50 C 24 36, 40 36, 48 46 C 56 56, 56 88, 42 100 C 34 106, 24 108, 16 105 Z"
+                  fill="#4A7FE8"
+                />
+              </svg>
+              <svg class="leaf leaf--teal" viewBox="0 0 60 152">
+                <path
+                  d="M16 145 C -6 145, -6 100, 12 74 C 26 56, 44 56, 52 68 C 62 82, 62 122, 46 138 C 38 146, 26 148, 16 145 Z"
+                  fill="#19A999"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="pillars" id="pillars">
+        <div class="container">
+          <h2>What it does</h2>
+          <p class="section-lede">
+            Six core surfaces, each designed to be evidence-first, privacy-respecting and
+            auditable.
+          </p>
+          <div class="pillars-grid">
+            <article class="pillar pillar--teal">
+              <span class="num">01</span>
+              <h3>Mobile assessment</h3>
+              <p>
+                Loginless secure invite, one question per screen, adaptive branching, FR/EN,
+                about 8 minutes.
+              </p>
+              <span class="accent"></span>
+            </article>
+            <article class="pillar pillar--blue">
+              <span class="num">02</span>
+              <h3>AI maturity model</h3>
+              <p>
+                Three axes (literacy, practice, organisational readiness) plus a task-level
+                opportunity index; levels L0–L5 are descriptive, not certification.
+              </p>
+              <span class="accent"></span>
+            </article>
+            <article class="pillar pillar--amber">
+              <span class="num">03</span>
+              <h3>Workflow discovery</h3>
+              <p>
+                Last 7 days of work, friction, tools, hand-offs and safety classification —
+                surfaced as evidence, not as judgement.
+              </p>
+              <span class="accent"></span>
+            </article>
+            <article class="pillar pillar--teal">
+              <span class="num">04</span>
+              <h3>AI-assisted synthesis</h3>
+              <p>
+                Sensitivity classification → schema-validated extraction → themes →
+                contradictions → interview prompts. Every claim is linked to its source; human
+                approval is mandatory.
+              </p>
+              <span class="accent"></span>
+            </article>
+            <article class="pillar pillar--blue">
+              <span class="num">05</span>
+              <h3>Opportunity register</h3>
+              <p>
+                From employee evidence to validated, measured outcomes: detected → … → measured
+                or rejected. No AI-generated ROI.
+              </p>
+              <span class="accent"></span>
+            </article>
+            <article class="pillar pillar--amber">
+              <span class="num">06</span>
+              <h3>Governance &amp; security</h3>
+              <p>
+                Tenant isolation, minimal personal data, audit trail, retention/deletion,
+                prompt-injection resilience, launch gates.
+              </p>
+              <span class="accent"></span>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="values" id="values">
+        <div class="container">
+          <h2>Principles</h2>
+          <p class="section-lede">Four rules the codebase is held to.</p>
+          <div class="values-grid">
+            <div class="value">
+              <div class="label">01</div>
+              <h4>Problem-first, AI-open</h4>
+              <p>AI is one option among simplification and plain automation.</p>
+            </div>
+            <div class="value">
+              <div class="label">02</div>
+              <h4>Evidence before claims</h4>
+              <p>
+                No AI-generated counts, timings or ROI. Self-reported until verified.
+              </p>
+            </div>
+            <div class="value">
+              <div class="label">03</div>
+              <h4>People &amp; data protected</h4>
+              <p>No ranking, aggregation thresholds, human approval, EU hosting.</p>
+            </div>
+            <div class="value">
+              <div class="label">04</div>
+              <h4>No lock-in</h4>
+              <p>Self-hostable, portable exports, documented APIs, provider-neutral AI.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="status" id="status">
+        <div class="container">
+          <h2>Status</h2>
+          <p class="section-lede">
+            Phase 1 foundation is shipped. Phase 2 (AI pipeline, auditor review, opportunity
+            register) is next.
+          </p>
+          <div class="status-card">
+            <div>
+              <h3 style="margin: 0; font-size: 22px">Phase 1 — foundation</h3>
+              <p style="margin: 6px 0 0; color: rgba(247, 250, 252, 0.7)">
+                Monorepo, contracts + domain, Postgres + RLS, mobile survey, admin page,
+                one-command local runner. Seven milestones, all green on CI.
+              </p>
+              <div class="badges">
+                <span class="badge badge--teal">contracts · 96%</span>
+                <span class="badge badge--teal">domain · 95%</span>
+                <span class="badge">db isolation · 20/20</span>
+                <span class="badge">smoke · 14/14</span>
+                <span class="badge badge--amber">CI · green</span>
+              </div>
+            </div>
+            <a class="cta" href="https://github.com/angelstreet/auditai/pulls?q=is%3Apr+is%3Aclosed"
+              >View the milestones →</a
+            >
+          </div>
+        </div>
+      </section>
+
+      <section class="try" id="try">
+        <div class="container">
+          <h2>Try it</h2>
+          <p class="section-lede">
+            Run the full stack on your machine in under two minutes. One command, no Docker,
+            no external services.
+          </p>
+          <div class="try-grid">
+            <div class="try-card">
+              <span class="step">STEP 1</span>
+              <h3>Install &amp; build</h3>
+              <pre>pnpm install --frozen-lockfile
+pnpm --filter @auditai/web build</pre>
+            </div>
+            <div class="try-card">
+              <span class="step">STEP 2</span>
+              <h3>Boot the local runner</h3>
+              <pre>pnpm local:up
+# READY postgres=...; web=http://127.0.0.1:3101; admin=...</pre>
+            </div>
+            <div class="try-card">
+              <span class="step">STEP 3</span>
+              <h3>Walk the sample survey</h3>
+              <pre>open http://127.0.0.1:3101/about
+# click "synthetic sample survey"
+# answer the six questions
+# view the admin page at /admin/engagements</pre>
+            </div>
+            <div class="try-card">
+              <span class="step">STEP 4</span>
+              <h3>End-to-end smoke</h3>
+              <pre>export LOCAL_WEB_URL=http://127.0.0.1:3101
+export DATABASE_URL=postgres://auditai:auditai@127.0.0.1:54340/auditai_local
+pnpm local:smoke   # 14 OK lines, exit 0</pre>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container row">
+        <div>© 2026 EvolAI · Apache-2.0</div>
+        <div>
+          <a href="https://github.com/angelstreet/auditai">GitHub</a>
+          &nbsp;·&nbsp;
+          <a href="https://github.com/angelstreet/auditai/blob/main/docs/PRD.md">PRD</a>
+          &nbsp;·&nbsp;
+          <a href="https://github.com/angelstreet/auditai/blob/main/docs/ROADMAP.md">Roadmap</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
