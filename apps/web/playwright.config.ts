@@ -32,15 +32,10 @@ export default defineConfig({
     screenshot: 'only-on-failure',
   },
   webServer: {
-    command: 'pnpm exec next start --port 3200',
+    command: 'node ./scripts/playwright-webserver.mjs 3200',
     url: 'http://127.0.0.1:3200',
     reuseExistingServer: !process.env['CI'],
     timeout: 120_000,
-    env: {
-      // DATABASE_URL is inherited from the parent process. global-setup.ts sets it
-      // before this webServer is spawned. SURVEY_SIGNING_SECRET inherits too so the
-      // sign/verify pair agree end-to-end.
-    },
   },
   projects: [
     {
