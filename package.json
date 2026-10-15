@@ -23,7 +23,8 @@
     "local:down": "node apps/web/scripts/local-stack.mjs down",
     "local:reset": "node apps/web/scripts/local-stack.mjs reset",
     "local:status": "node apps/web/scripts/local-stack.mjs status",
-    "local:smoke": "node apps/web/scripts/local-smoke.mjs"
+    "local:smoke": "node apps/web/scripts/local-smoke.mjs",
+    "m10:smoke": "node apps/web/scripts/m10-smoke.mjs"
   },
   "devDependencies": {
     "@types/node": "20.14.10",
