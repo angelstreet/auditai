@@ -247,7 +247,12 @@ export default async function AnalysisDetailPage({ params, searchParams }: PageP
       {detail.approvedAt ? (
         <p>
           <strong>Approved</strong> at {formatDateTime(detail.approvedAt)} by{' '}
-          <code>{detail.approvedBy}</code>.
+          <code>{detail.approvedBy}</code>.{' '}
+          <Link
+            href={`/admin/engagements/${params.id}/opportunities/new?tenant=${tenantId}&analysis=${analysisId}`}
+          >
+            Create opportunity from this analysis \u2192
+          </Link>
         </p>
       ) : (
         <ApproveForm tenantId={tenantId} analysisId={analysisId} />
