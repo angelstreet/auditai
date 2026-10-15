@@ -1,0 +1,28 @@
+{
+  "name": "@auditai/ai",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src --max-warnings=0",
+    "test": "vitest run",
+    "smoke": "node --import tsx scripts/smoke.ts"
+  },
+  "dependencies": {
+    "@auditai/contracts": "workspace:*",
+    "pg": "8.13.1"
+  },
+  "devDependencies": {
+    "@auditai/contracts": "workspace:*",
+    "@types/node": "20.14.10",
+    "@types/pg": "8.11.10",
+    "@typescript-eslint/eslint-plugin": "8.13.0",
+    "@typescript-eslint/parser": "8.13.0",
+    "eslint": "9.13.0",
+    "tsx": "4.19.2",
+    "typescript": "5.6.3",
+    "vitest": "2.1.5"
+  }
+}

@@ -1,4 +1,9 @@
 import { z } from 'zod';
+
+/** Sensitivity classification (PRD §10). `sensitive` items are excluded from free-text exports. */
+export const sensitivitySchema = z.enum(['public', 'internal', 'sensitive']);
+export type Sensitivity = z.infer<typeof sensitivitySchema>;
+
 import {
   isoDateTimeSchema,
   localeSchema,
@@ -93,7 +98,7 @@ export const questionItemSchema = z.object({
     reverse: z.boolean().default(false),
   }),
   /** Sensitivity classification (PRD \u00a710). `sensitive` items are excluded from free-text exports. */
-  sensitivity: z.enum(['public', 'internal', 'sensitive']),
+  sensitivity: sensitivitySchema,
   /** Marks whether the item is in the rotation pool (used for retest/follow-up). */
   retestable: z.boolean(),
   createdAt: isoDateTimeSchema,
