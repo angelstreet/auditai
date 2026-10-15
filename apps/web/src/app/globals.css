@@ -1,16 +1,26 @@
 /* Mobile-first globals for the employee survey (PRD \u00a75).
  * No Tailwind in M5 \u2014 plain CSS keeps the bundle small and the 360 px viewport
  * constraints easier to audit. Single column, generous tap targets, WCAG 2.2 AA contrast.
+ *
+ * M8 rebrand: the brand palette is documented in ADR 0006. The legacy `--color-accent`
+ * variable is kept for back-compat with the existing M5 mobile styles; new code should
+ * prefer the `--color-brand-*` tokens.
  */
 
 :root {
   --color-bg: #ffffff;
   --color-fg: #111111;
   --color-muted: #5a5a5a;
-  --color-accent: #1f3a5f;
+  --color-accent: #172b3a; /* migrated to brand navy in M8 */
   --color-accent-fg: #ffffff;
   --color-border: #d0d0d0;
   --color-card: #f4f6fa;
+  --color-brand-navy: #172b3a;
+  --color-brand-teal: #19a999;
+  --color-brand-blue: #4a7fe8;
+  --color-brand-amber: #ffb86a;
+  --color-brand-off-white: #f7fafc;
+  --color-brand-supporting: #536575;
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;

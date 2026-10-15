@@ -10,7 +10,7 @@ const COPY: Record<SupportedLocale, { title: string; bullets: string[] }> = {
     bullets: [
       'Vos r\u00e9ponses sont li\u00e9es \u00e0 un pseudonyme, pas \u00e0 votre nom.',
       'Le r\u00e9f\u00e9rent de l\u2019\u00e9quipe voit les taux de participation, pas vos r\u00e9ponses individuelles.',
-      'L\u2019\u00e9quipe auditAI utilise vos r\u00e9ponses uniquement pour cartographier les opportunit\u00e9s d\u2019am\u00e9lioration.',
+      'L\u2019\u00e9quipe EvolAI utilise vos r\u00e9ponses uniquement pour cartographier les opportunit\u00e9s d\u2019am\u00e9lioration.',
     ],
   },
   en: {
@@ -18,7 +18,7 @@ const COPY: Record<SupportedLocale, { title: string; bullets: string[] }> = {
     bullets: [
       'Your answers are tied to a pseudonym, not your name.',
       'Your team referent sees completion counts, not individual answers.',
-      'The auditAI team uses your answers only to map improvement opportunities.',
+      'The EvolAI team uses your answers only to map improvement opportunities.',
     ],
   },
 };

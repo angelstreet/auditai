@@ -1,11 +1,15 @@
 import Link from 'next/link';
+import { Logo } from '@/components/Logo';
 
 export default function PrivacyPage() {
   return (
     <section aria-labelledby="privacy-title">
-      <h1 id="privacy-title">Privacy notice (synthetic)</h1>
+      <Logo />
+      <h1 id="privacy-title" style={{ marginTop: 'var(--space-4)' }}>
+        Privacy notice (synthetic)
+      </h1>
       <p>
-        auditAI is designed to assess work practices and improvement opportunities, not to rank
+        EvolAI is designed to assess work practices and improvement opportunities, not to rank
         employees. The platform stores a non-identifying pseudonym rather than your name; the
         referent sees completion statistics, never individual answers, unless explicitly granted
         that access.

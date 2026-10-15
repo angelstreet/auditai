@@ -1,4 +1,4 @@
-# auditAI — Roadmap
+# EvolAI — Roadmap
 
 > Single source of truth for delivery. Mirrors [PRD §18](PRD.md#18-rollout-phases-timelines-and-gates);
 > the public copy of the PRD is anonymised ("the pilot client"); this roadmap never refers to a real client.
@@ -21,6 +21,7 @@ register skeleton. Maps to **FR-01 to FR-06**.
 | M5  | Employee mobile web survey skeleton        | apps/web    | §5, §16        | done  | Next.js app, secure invite token (HMAC + expiry + single-use), privacy notice, one question per screen, progress, FR/EN, resume; Playwright test at 360 px wide asserting no horizontal scroll and no clipped labels.                                                                                    |
 | M6  | Admin engagements page                     | apps/web    | §9 (FR-01, 09) | done  | Server component lists audit engagements with completion counts (synthetic seed); page does not leak rows across tenants; Playwright smoke test for the route (mobile-360 + desktop-admin projects).                                                                                                     |
 | M7  | One-command local runner + smoke           | infra+web   | §12, §17, §18  | done  | `pnpm local:up` boots embedded Postgres 17 + applies M4 migrations + serves the production Next.js build on a free port; `pnpm local:smoke` walks the survey end-to-end and asserts the submission count increased; `pnpm local:status` reports both sides; ADR 0006 captures the design and trade-offs. |
+| M8  | EvolAI rebrand + public landing page       | apps/web    | §12, §18       | done  | Replace the `auditAI` wordmark with the EvolAI adaptive-steps logo + tagline; add a `<Logo>` component + brand colour tokens; ship a public static landing page on `space.minimax.io` that mirrors the brand; update README / SECURITY / CONTRIBUTING / ROADMAP to the new name.                         |
 
 ## Phase 2 — Audit operations (FR-07 → FR-14)
 

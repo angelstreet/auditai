@@ -78,7 +78,7 @@ const main = async () => {
   // 1. About page.
   const about = await fetchJson('/about');
   const aboutHtml = await about.text();
-  assert(aboutHtml.includes('auditAI'), 'about page renders the product name');
+  assert(aboutHtml.includes('EvolAI'), 'about page renders the product name');
   const linkMatch = aboutHtml.match(/href="(\/s\/[^"]+)"/);
   assert(Boolean(linkMatch), 'about page links to the synthetic sample survey');
   const token = linkMatch[1].replace('/s/', '');
@@ -86,7 +86,7 @@ const main = async () => {
   // 2. Welcome.
   const welcome = await fetchJson(`/s/${token}`);
   const welcomeHtml = await welcome.text();
-  assert(welcomeHtml.includes('auditAI'), 'welcome page renders');
+  assert(welcomeHtml.includes('EvolAI'), 'welcome page renders');
 
   // 3. Locale.
   const localeRes = await fetchJson('/api/locale', {
@@ -140,6 +140,7 @@ const main = async () => {
   const admin = await fetchJson('/admin/engagements');
   const adminHtml = await admin.text();
   assert(adminHtml.includes('audit engagements'), 'admin page renders');
+  assert(adminHtml.includes('EvolAI'), 'admin page shows the brand wordmark');
   process.stdout.write(`OK   admin page rendered (${adminHtml.length} bytes)\n`);
 
   await sleep(100);

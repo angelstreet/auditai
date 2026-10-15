@@ -5,11 +5,24 @@ import { defineConfig, devices } from '@playwright/test';
  *
  * The base project targets a 360 px wide viewport, the minimum mobile size in the PRD. We boot
  * the production build (`next start`) so the test exercises the same code path the deploy will
- * run; CI uses port 3200 to avoid collisions with other workspace services on 3100.
+ * run.
+ *
+ * M8: `e2e/global-setup.ts` boots an embedded PostgreSQL 17, applies the M4 migrations,
+ * seeds the synthetic tenants, and writes the resolved `DATABASE_URL` to the parent process
+ * environment. The `webServer` block inherits it from the parent. The same convention
+ * (`tests/db/src/global-setup.ts`) is used by the unit-test suite.
+ *
+ * If `DATABASE_URL` is already in the environment (CI service container, developer-supplied
+ * Postgres), `global-setup.ts` short-circuits and we trust it.
  */
+
 export default defineConfig({
   testDir: './e2e',
-  fullyParallel: true,
+  testIgnore: ['**/global-setup.ts', '**/global-teardown.ts'],
+  globalSetup: './e2e/global-setup.ts',
+  globalTeardown: './e2e/global-teardown.ts',
+  fullyParallel: false,
+  workers: 1,
   forbidOnly: !!process.env['CI'],
   retries: process.env['CI'] ? 2 : 0,
   reporter: process.env['CI'] ? 'github' : 'list',
@@ -23,6 +36,11 @@ export default defineConfig({
     url: 'http://127.0.0.1:3200',
     reuseExistingServer: !process.env['CI'],
     timeout: 120_000,
+    env: {
+      // DATABASE_URL is inherited from the parent process. global-setup.ts sets it
+      // before this webServer is spawned. SURVEY_SIGNING_SECRET inherits too so the
+      // sign/verify pair agree end-to-end.
+    },
   },
   projects: [
     {
