@@ -122,7 +122,11 @@ const main = async () => {
     fail('/quiz/result did not render the Owl heading');
   }
   // Hard rule: raw score NEVER visible to the respondent.
-  if (/\b88\b/.test(resultHtml)) {
+  // Visible text only: Next's inline script payloads legitimately contain digits.
+  const visibleText = resultHtml
+    .replace(/<(script|style)[\s\S]*?<\/\1>/g, ' ')
+    .replace(/<[^>]+>/g, ' ');
+  if (/\b88\b/.test(visibleText)) {
     fail('/quiz/result rendered the raw quiz_score (88); privacy regression');
   }
   if (!/Pseudonym/.test(resultHtml) || !resultHtml.includes(pseudonym)) {
@@ -187,7 +191,10 @@ const main = async () => {
   if (!/>Tortoise</.test(resultHtml)) {
     fail('/quiz/result did not render the Tortoise heading after re-take');
   }
-  if (/\b40\b/.test(resultHtml) || /\b88\b/.test(resultHtml)) {
+  const visibleAfter = resultHtml
+    .replace(/<(script|style)[\s\S]*?<\/\1>/g, ' ')
+    .replace(/<[^>]+>/g, ' ');
+  if (/\b40\b/.test(visibleAfter) || /\b88\b/.test(visibleAfter)) {
     fail('/quiz/result rendered a raw quiz_score after the re-take; privacy regression');
   }
   ok('/quiz/result re-take flow surfaces the new mascot, hides both raw scores');
@@ -263,7 +270,10 @@ const main = async () => {
     fail('/admin/teams did not render the Synthetic team A card');
   }
   // Hard privacy rule: NO raw quiz_score on the team page.
-  if (/\b88\b/.test(teamsHtml)) {
+  const teamsText = teamsHtml
+    .replace(/<(script|style)[\s\S]*?<\/\1>/g, ' ')
+    .replace(/<[^>]+>/g, ' ');
+  if (/\b88\b/.test(teamsText)) {
     fail('/admin/teams rendered a raw quiz_score (88); privacy regression');
   }
   // The page should mention at least one of the tier pills.

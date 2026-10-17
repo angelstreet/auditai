@@ -82,7 +82,11 @@ export const detectCrossTeamSynergies = async (
     if (ownsClient) {
       await client.query('SET ROLE auditai_app');
     }
-    await client.query(`SET LOCAL app.is_service_account = 'on'`);
+    // SET LOCAL is a no-op outside a transaction; a client we own runs in autocommit, so use a
+    // session-level setting there (a caller-supplied client is already inside its transaction).
+    await client.query(
+      ownsClient ? `SET app.is_service_account = 'on'` : `SET LOCAL app.is_service_account = 'on'`,
+    );
 
     // 1. Pull every approved analysis for the tenant.
     const analysesRes = await client.query<ApprovedAnalysisRow>(

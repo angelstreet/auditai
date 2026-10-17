@@ -24,7 +24,7 @@ import { default as pg } from 'pg';
 import { spawnSync } from 'node:child_process';
 import { loginCookie } from './smoke-auth.mjs';
 
-const base = process.env['LOCAL_WEB_URL'] ?? 'http://127.0.0.1:44771';
+const base = process.env['LOCAL_WEB_URL'] ?? 'http://127.0.0.1:3101';
 const cookiePromise = loginCookie(base);
 const databaseUrl = process.env['DATABASE_URL'];
 if (!databaseUrl) {

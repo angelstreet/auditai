@@ -66,7 +66,11 @@ export const rollupTeamBadges = async (
     if (ownsClient) {
       await client.query('SET ROLE auditai_app');
     }
-    await client.query(`SET LOCAL app.is_service_account = 'on'`);
+    // SET LOCAL is a no-op outside a transaction; a client we own runs in autocommit, so use a
+    // session-level setting there (a caller-supplied client is already inside its transaction).
+    await client.query(
+      ownsClient ? `SET app.is_service_account = 'on'` : `SET LOCAL app.is_service_account = 'on'`,
+    );
 
     // Pull every team in the tenant (RLS honours the role flag).
     const teamsRes = await client.query<TeamRow>(`SELECT id FROM teams WHERE tenant_id = $1`, [
