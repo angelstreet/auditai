@@ -1,0 +1,69 @@
+# docker-compose.yml \u2014 single-host stack for demo + pilot use.
+#
+# Brings up:
+#   * db      \u2014 PostgreSQL 17 (the same major as M4 / M7).
+#   * migrate \u2014 runs once, applies all infra/db/migrations/*.sql +
+#                       the synthetic seed in 0003. The container exits
+#                       after a successful run; `web` waits for it.
+#   * web     \u2014 the production Next.js server (built by Dockerfile).
+#
+# Run:
+#   DATABASE_URL=postgres://auditai:auditai@db:5432/auditai \
+#   docker compose up --build
+#
+# Tear down:
+#   docker compose down -v   (the -v wipes the embedded pgdata volume)
+#
+# The local one-command runner (ADR 0006) still ships `pnpm local:up` and
+# is the recommended developer path; this file exists for self-host
+# pilots.
+
+version: '3.9'
+
+services:
+  db:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: auditai
+      POSTGRES_PASSWORD: auditai
+      POSTGRES_DB: auditai
+    ports:
+      - '54329:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U auditai -d auditai']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  migrate:
+    build:
+      context: .
+    image: auditai-web:latest
+    command: ['node', 'infra/db/scripts/migrate.mjs']
+    environment:
+      DATABASE_URL: postgres://auditai:auditai@db:5432/auditai
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: 'no'
+
+  web:
+    image: auditai-web:latest
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgres://auditai:auditai@db:5432/auditai
+      NODE_ENV: production
+      PORT: '3000'
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    ports:
+      - '3000:3000'
+
+volumes:
+  pgdata:
