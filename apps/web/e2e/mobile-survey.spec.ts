@@ -43,7 +43,7 @@ test.describe('employee mobile survey @ 360 px', () => {
     const href = (await link.getAttribute('href')) ?? '/';
     await page.goto(href);
 
-    await page.getByRole('button', { name: /start the survey/i }).click();
+    await page.getByRole('button', { name: /start the survey|commencer/i }).click();
 
     // Q1 \u2014 wait for the question heading and the option list to be rendered.
     await expect(page).toHaveURL(/\/q\/0$/);
@@ -54,7 +54,7 @@ test.describe('employee mobile survey @ 360 px', () => {
     expect(box1).not.toBeNull();
     expect(box1?.width ?? 0).toBeLessThanOrEqual(360);
     await page.locator('button.option-button').nth(1).click();
-    await page.getByRole('button', { name: /continue/i }).click();
+    await page.getByRole('button', { name: /continue|continuer|suivant/i }).click();
 
     // Q2 \u2014 URL changes to /q/1 once the answer is saved. We then measure the option button.
     await expect(page).toHaveURL(/\/q\/1$/);

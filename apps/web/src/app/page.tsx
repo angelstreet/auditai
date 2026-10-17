@@ -8,6 +8,9 @@ import { redirect } from 'next/navigation';
  * the static `/about` page. Visitors land on `/welcome` so the brand
  * story + the survey entry points are visible immediately.
  */
+// Dynamic so the redirect carries a real Location header (a prerendered one has none).
+export const dynamic = 'force-dynamic';
+
 export default function HomePage(): never {
   redirect('/welcome');
 }

@@ -35,6 +35,12 @@ export const resolveAppPassword = (
   return configured ?? DEV_APP_PASSWORD;
 };
 
+// Row types in this app declare timestamps as ISO strings, and React cannot render a Date child
+// (it crashed /admin/synergies and /admin/teams once rows existed). Parse timestamptz/timestamp
+// to ISO strings once, here, instead of in every page.
+pg.types.setTypeParser(1184, (v) => new Date(v).toISOString());
+pg.types.setTypeParser(1114, (v) => new Date(`${v}Z`).toISOString());
+
 let poolInstance: pg.Pool | null = null;
 
 const buildPoolConfig = (): pg.PoolConfig => {

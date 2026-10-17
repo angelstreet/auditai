@@ -41,7 +41,8 @@ const templateId = 'a3333333-3333-4333-8333-333333333333';
 const questionnaireVersionId = 'a4444444-4444-4444-8444-444444444444';
 const analysisIdA1 = 'c3333333-4333-4333-8333-aaaaaaaaaa01';
 const analysisIdA2 = 'c3333333-4333-4333-8333-aaaaaaaaaa02';
-const submissionIdA1 = 'a8888888-4555-4555-8555-bbbbbbbbbb01';
+// Seeded tenant-A submission (migration 0003); the analysis below attaches to it.
+const submissionIdA1 = 'a8888888-4555-4555-8555-aaaaaaaaaa01';
 const submissionIdA2 = 'a8888888-4555-4555-8555-bbbbbbbbbb02';
 const invitationIdA2 = 'a6666666-6666-4666-8666-777777777777';
 const pseudonymA2 = 'synthetic-employee-m13';
