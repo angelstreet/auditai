@@ -11,7 +11,8 @@
     "smoke": "node --import tsx scripts/smoke.ts",
     "synergy-smoke": "node --import tsx scripts/synergy-smoke.ts",
     "team-rollup-smoke": "node --import tsx scripts/team-rollup-smoke.ts",
-    "retention-smoke": "node --import tsx scripts/retention-smoke.ts"
+    "retention-smoke": "node --import tsx scripts/retention-smoke.ts",
+    "retention-run": "node --import tsx scripts/retention-run.ts"
   },
   "dependencies": {
     "@auditai/contracts": "workspace:*",

@@ -27,6 +27,10 @@ describe('deletion trail (M15, FR-09)', () => {
       'analysis',
       'audit_log',
       'export_request',
+      'invitation',
+      'respondent',
+      'submission',
+      'answer',
     ]);
   });
 

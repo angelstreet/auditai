@@ -77,9 +77,10 @@ export default async function DataPage({ searchParams }: PageProps) {
       <section className="card">
         <h2>2. Right-to-erasure (single pseudonym)</h2>
         <p className="muted">
-          Removes every <code>respondent_badges</code> row for that pseudonym in this tenant, writes
-          one <code>deletion_events</code>
-          row per badge + one <code>audit_log</code> row per action.
+          Removes everything held for that pseudonym in this tenant (invitation, respondent,
+          submission, answers, analyses, badges, derived draft opportunities) and trims synergies.
+          Writes one <code>deletion_events</code> row per kind and one <code>audit_log</code> row;
+          both keep only a hash of the pseudonym.
         </p>
         <DeleteForm tenantId={current} />
       </section>

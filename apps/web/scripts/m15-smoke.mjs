@@ -21,6 +21,7 @@
  */
 import { default as pg } from 'pg';
 import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 
 const base = process.env['LOCAL_WEB_URL'] ?? 'http://127.0.0.1:3101';
 const databaseUrl = process.env['DATABASE_URL'];
@@ -30,6 +31,8 @@ if (!databaseUrl) {
 }
 const tenantId = process.env['SMOKE_TENANT_ID'] ?? '11111111-1111-4111-8111-111111111111';
 const auditorId = '99999999-9999-4999-8999-999999999999';
+
+const hashOf = (p) => createHash('sha256').update(`${tenantId}:${p}`).digest('hex');
 
 const ok = (m) => process.stdout.write(`\u2713 ${m}\n`);
 const fail = (m) => {
@@ -60,15 +63,15 @@ const main = async () => {
   await c.query(
     `DELETE FROM deletion_events
       WHERE tenant_id = $1
-        AND respondent_pseudonym IN ($2, $3, $4)`,
-    [tenantId, expiredPseudonym, freshPseudonym, erasePseudonym],
+        AND respondent_pseudonym = ANY ($2)`,
+    [tenantId, [expiredPseudonym, freshPseudonym, erasePseudonym].map(hashOf)],
   );
   await c.query(
     `DELETE FROM audit_log
       WHERE tenant_id = $1
-        AND (action IN ('badge.erase', 'export.complete')
-             OR payload_json->>'pseudonym' IN ($2, $3, $4))`,
-    [tenantId, expiredPseudonym, freshPseudonym, erasePseudonym],
+        AND (action IN ('badge.erase', 'pseudonym.erase', 'export.complete')
+             OR payload_json->>'pseudonym_hash' = ANY ($2))`,
+    [tenantId, [expiredPseudonym, freshPseudonym, erasePseudonym].map(hashOf)],
   );
   await c.query(
     `DELETE FROM respondent_badges
@@ -140,7 +143,7 @@ const main = async () => {
     `SELECT target_kind, scope, respondent_pseudonym, audit_log_id
        FROM deletion_events
       WHERE tenant_id = $1 AND respondent_pseudonym = $2`,
-    [tenantId, expiredPseudonym],
+    [tenantId, hashOf(expiredPseudonym)],
   );
   if (evs.rows.length === 0) {
     fail(`no deletion_events row written for ${expiredPseudonym}`);
@@ -155,14 +158,14 @@ const main = async () => {
 
   const audits = await c.query(
     `SELECT action, target_kind FROM audit_log
-      WHERE tenant_id = $1 AND action = 'badge.erase' AND target_kind = 'respondent_badge'
-        AND payload_json->>'pseudonym' = $2`,
-    [tenantId, expiredPseudonym],
+      WHERE tenant_id = $1 AND action = 'pseudonym.erase' AND target_kind = 'respondent_badge'
+        AND payload_json->>'pseudonym_hash' = $2`,
+    [tenantId, hashOf(expiredPseudonym)],
   );
   if (audits.rows.length === 0) {
     fail(`no audit_log row written for the retention purge`);
   }
-  ok(`audit_log wrote ${audits.rows.length} badge.erase row(s)`);
+  ok(`audit_log wrote ${audits.rows.length} pseudonym.erase row(s)`);
 
   // Right-to-erasure: mirror the server action via SQL.
   const eraseBefore = await c.query(
@@ -170,27 +173,11 @@ const main = async () => {
     [tenantId, erasePseudonym],
   );
   if (eraseBefore.rows[0].n < 1) fail('seed: erasePseudonym row missing');
-  await c.query(
-    `INSERT INTO audit_log (tenant_id, actor_user_id, action, target_kind, target_id, payload_json)
-     VALUES ($1, $2, 'badge.erase', 'respondent_badge', NULL, $3::jsonb)`,
-    [
-      tenantId,
-      auditorId,
-      JSON.stringify({ pseudonym: erasePseudonym, scope: 'respondent_pseudonym' }),
-    ],
-  );
-  await c.query(
-    `INSERT INTO deletion_events (tenant_id, requested_by, scope, respondent_pseudonym, target_kind, target_id, audit_log_id, created_at)
-     VALUES ($1, $2, 'respondent_pseudonym', $3, 'respondent_badge', NULL,
-             (SELECT id FROM audit_log WHERE tenant_id = $1 AND action = 'badge.erase'
-                AND payload_json->>'pseudonym' = $3 ORDER BY created_at DESC LIMIT 1),
-             now())`,
-    [tenantId, auditorId, erasePseudonym],
-  );
-  await c.query(
-    `DELETE FROM respondent_badges WHERE tenant_id = $1 AND respondent_pseudonym = $2`,
-    [tenantId, erasePseudonym],
-  );
+  await c.query(`SELECT erase_respondent_pseudonym($1, $2, $3, 'respondent_pseudonym')`, [
+    tenantId,
+    erasePseudonym,
+    auditorId,
+  ]);
   const eraseAfter = await c.query(
     `SELECT count(*)::int AS n FROM respondent_badges WHERE tenant_id = $1 AND respondent_pseudonym = $2`,
     [tenantId, erasePseudonym],
@@ -200,7 +187,7 @@ const main = async () => {
   }
   const evErase = await c.query(
     `SELECT scope FROM deletion_events WHERE tenant_id = $1 AND respondent_pseudonym = $2`,
-    [tenantId, erasePseudonym],
+    [tenantId, hashOf(erasePseudonym)],
   );
   if (evErase.rows.length === 0 || evErase.rows[0].scope !== 'respondent_pseudonym') {
     fail('deletePseudonym did not write a deletion_events row with scope=respondent_pseudonym');
@@ -208,15 +195,15 @@ const main = async () => {
   ok('right-to-erasure removed the badge + wrote deletion_events + audit_log');
 
   // Export: run a SQL-only export via a small inline script that mirrors runExport.
-  await c.query(
+  const exportRow = await c.query(
     `INSERT INTO export_requests (tenant_id, requested_by, kind, status, row_count)
-     VALUES ($1, $2, 'opportunities', 'completed', 5)`,
+     VALUES ($1, $2, 'opportunities', 'completed', 5) RETURNING id`,
     [tenantId, auditorId],
   );
   await c.query(
     `INSERT INTO audit_log (tenant_id, actor_user_id, action, target_kind, target_id, payload_json)
-     VALUES ($1, $2, 'export.complete', 'export_request', NULL, $3::jsonb)`,
-    [tenantId, auditorId, JSON.stringify({ kind: 'opportunities' })],
+     VALUES ($1, $2, 'export.complete', 'export_request', $3, $4::jsonb)`,
+    [tenantId, auditorId, exportRow.rows[0].id, JSON.stringify({ kind: 'opportunities' })],
   );
   const exp = await c.query(
     `SELECT count(*)::int AS n, max(row_count)::int AS r FROM export_requests WHERE tenant_id = $1`,
@@ -233,15 +220,15 @@ const main = async () => {
   // Cleanup.
   await c.query(
     `DELETE FROM deletion_events
-      WHERE tenant_id = $1 AND respondent_pseudonym IN ($2, $3, $4)`,
-    [tenantId, expiredPseudonym, freshPseudonym, erasePseudonym],
+      WHERE tenant_id = $1 AND respondent_pseudonym = ANY ($2)`,
+    [tenantId, [expiredPseudonym, freshPseudonym, erasePseudonym].map(hashOf)],
   );
   await c.query(
     `DELETE FROM audit_log
       WHERE tenant_id = $1
-        AND (action IN ('badge.erase', 'export.complete')
-             OR payload_json->>'pseudonym' IN ($2, $3, $4))`,
-    [tenantId, expiredPseudonym, freshPseudonym, erasePseudonym],
+        AND (action IN ('badge.erase', 'pseudonym.erase', 'export.complete')
+             OR payload_json->>'pseudonym_hash' = ANY ($2))`,
+    [tenantId, [expiredPseudonym, freshPseudonym, erasePseudonym].map(hashOf)],
   );
   await c.query(
     `DELETE FROM respondent_badges

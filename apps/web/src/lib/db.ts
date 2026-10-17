@@ -16,6 +16,22 @@ import { type TenantId, type InvitationId, type SubmissionId } from '@auditai/co
  * tooling can still find it.
  */
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const DEV_APP_PASSWORD = 'auditai';
+
+/** Dev-only default; production must supply a real secret (fails closed). */
+export const resolveAppPassword = (
+  env: Record<string, string | undefined> = process.env,
+): string => {
+  const configured = env['DATABASE_APP_PASSWORD'];
+  if (env['NODE_ENV'] === 'production' && (!configured || configured === DEV_APP_PASSWORD)) {
+    throw new Error(
+      'DATABASE_APP_PASSWORD must be set to a non-default value when NODE_ENV=production.',
+    );
+  }
+  return configured ?? DEV_APP_PASSWORD;
+};
+
 let poolInstance: pg.Pool | null = null;
 
 const buildPoolConfig = (): pg.PoolConfig => {
@@ -31,7 +47,7 @@ const buildPoolConfig = (): pg.PoolConfig => {
   return {
     connectionString: url,
     user,
-    password: process.env['DATABASE_APP_PASSWORD'] ?? 'auditai',
+    password: resolveAppPassword(),
     max: 10,
     idleTimeoutMillis: 10_000,
     application_name: 'auditai-web',
@@ -61,10 +77,11 @@ export const withTenant = async <T>(
   tenantId: TenantId,
   fn: (client: pg.PoolClient) => Promise<T>,
 ): Promise<T> => {
+  if (!UUID_RE.test(tenantId)) throw new Error('withTenant: tenantId is not a UUID');
   const client = await getPool().connect();
   try {
     await client.query('BEGIN');
-    await client.query(`SET LOCAL app.tenant_id = '${tenantId}'`);
+    await client.query(`SELECT set_config('app.tenant_id', $1, true)`, [tenantId]);
     const result = await fn(client);
     await client.query('COMMIT');
     return result;
@@ -87,7 +104,7 @@ export const withServiceAccount = async <T>(
   const client = await getPool().connect();
   try {
     await client.query('BEGIN');
-    await client.query(`SET LOCAL app.is_service_account = 'on'`);
+    await client.query(`SELECT set_config('app.is_service_account', 'on', true)`);
     const result = await fn(client);
     await client.query('COMMIT');
     return result;

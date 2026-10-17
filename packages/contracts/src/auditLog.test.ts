@@ -31,6 +31,7 @@ describe('audit log schema (M10, FR-08, PRD §25.4)', () => {
       'synergy.archive',
       'export.complete',
       'badge.erase',
+      'pseudonym.erase',
     ]);
     expect(auditTargetKindSchema.options).toEqual([
       'analysis',
@@ -38,6 +39,7 @@ describe('audit log schema (M10, FR-08, PRD §25.4)', () => {
       'synergy',
       'respondent_badge',
       'export_request',
+      'invitation',
     ]);
   });
 
