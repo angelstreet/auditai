@@ -8,6 +8,10 @@ const nextConfig = {
     // path because the server action layer only landed in M10.)
     '@auditai/contracts',
     '@auditai/domain',
+    // TASK-C: web imports catalogs from @auditai/i18n and mascots from @auditai/ui; both are
+    // consumed from source with NodeNext-style specifiers.
+    '@auditai/i18n',
+    '@auditai/ui',
   ],
   webpack(config) {
     // The contracts / domain packages use NodeNext import specifiers (`./team.js`). Webpack

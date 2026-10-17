@@ -1,4 +1,5 @@
 import { Logo } from '@/components/Logo';
+import { getT } from '@/lib/i18n';
 
 export const dynamic = 'force-dynamic';
 
@@ -6,18 +7,19 @@ interface PageProps {
   searchParams: { next?: string; error?: string };
 }
 
-const MESSAGES: Record<string, string> = {
-  invalid: 'Email or password is incorrect.',
-  'no-access': 'This account has no auditor access to any tenant.',
-};
+const MESSAGE_KEYS = { invalid: 'login.invalid', 'no-access': 'login.noAccess' } as const;
 
-/** /login: auditor sign-in (ADR 0023). Plain EN copy until the i18n helper covers admin. */
+/** /login: auditor sign-in (ADR 0023), localised FR/EN (ADR 0024). */
 export default function LoginPage({ searchParams }: PageProps) {
-  const error = searchParams.error ? (MESSAGES[searchParams.error] ?? 'Sign-in failed.') : null;
+  const { t } = getT();
+  const errorKey = searchParams.error
+    ? (MESSAGE_KEYS[searchParams.error as keyof typeof MESSAGE_KEYS] ?? 'login.failed')
+    : null;
+  const error = errorKey ? t(errorKey) : null;
   return (
     <main className="container">
       <Logo />
-      <h1 style={{ marginTop: 'var(--space-4)' }}>Auditor sign-in</h1>
+      <h1 style={{ marginTop: 'var(--space-4)' }}>{t('login.title')}</h1>
       {error ? (
         <p role="alert" style={{ color: 'crimson' }}>
           {error}
@@ -30,14 +32,14 @@ export default function LoginPage({ searchParams }: PageProps) {
       >
         <input type="hidden" name="next" value={searchParams.next ?? ''} />
         <label>
-          Email
+          {t('login.email')}
           <input name="email" type="email" autoComplete="username" required />
         </label>
         <label>
-          Password
+          {t('login.password')}
           <input name="password" type="password" autoComplete="current-password" required />
         </label>
-        <button type="submit">Sign in</button>
+        <button type="submit">{t('login.submit')}</button>
       </form>
     </main>
   );

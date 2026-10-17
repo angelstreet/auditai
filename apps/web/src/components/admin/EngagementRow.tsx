@@ -1,5 +1,7 @@
 import Link from 'next/link';
-import { engagementStatusLabel, type AdminEngagementSummary } from '@/lib/adminData';
+import type { AdminEngagementSummary } from '@/lib/adminData';
+import { enumLabel, getT } from '@/lib/i18n';
+import { formatDate, formatNumber } from '@auditai/i18n';
 import type { TenantId } from '@auditai/contracts';
 
 interface Props {
@@ -16,7 +18,11 @@ interface Props {
  * per-engagement analysis review queue.
  */
 export default function EngagementRow({ summary, tenantId }: Props) {
-  const submittedPct = Math.round(summary.completionRatio * 100);
+  const { t, locale } = getT();
+  const submittedPct = formatNumber(locale, summary.completionRatio, {
+    style: 'percent',
+    maximumFractionDigits: 0,
+  });
   return (
     <tr>
       <th scope="row">
@@ -26,7 +32,7 @@ export default function EngagementRow({ summary, tenantId }: Props) {
           {summary.engagement.id}
         </Link>
       </th>
-      <td>{engagementStatusLabel(summary.engagement.status)}</td>
+      <td>{enumLabel(t, 'engagementStatus', summary.engagement.status)}</td>
       <td>{summary.expectedHeadcount}</td>
       <td>{summary.invitationsTotal}</td>
       <td>{summary.invitationsSubmitted}</td>
@@ -34,19 +40,17 @@ export default function EngagementRow({ summary, tenantId }: Props) {
       <td>{summary.invitationsPending}</td>
       <td>{summary.invitationsRevokedOrExpired}</td>
       <td>
-        <strong>{submittedPct}%</strong>
+        <strong>{submittedPct}</strong>
         <span className="muted">
           {' '}
           ({summary.invitationsSubmitted} / {summary.expectedHeadcount})
         </span>
       </td>
-      <td>{summary.engagement.closesAt ? formatDate(summary.engagement.closesAt) : '\u2014'}</td>
+      <td>
+        {summary.engagement.closesAt
+          ? formatDate(locale, summary.engagement.closesAt)
+          : t('common.dash')}
+      </td>
     </tr>
   );
 }
-
-const formatDate = (iso: string): string => {
-  const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return iso;
-  return date.toISOString().slice(0, 10);
-};

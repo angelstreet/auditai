@@ -1,6 +1,12 @@
 import Link from 'next/link';
 import { signInviteToken } from '@/lib/invitationToken';
 import { Logo } from '@/components/Logo';
+import { getT } from '@/lib/i18n';
+import { aroundLink } from '@/lib/richText';
+
+export function generateMetadata() {
+  return { title: getT().t('meta.pages.about') };
+}
 
 const SYNTHETIC_REFERENCE = 'inv-synthetic-pilot-001';
 
@@ -11,7 +17,9 @@ const SYNTHETIC_REFERENCE = 'inv-synthetic-pilot-001';
  * M8 rebrand: header is the EvolAI wordmark, tagline is the brand line.
  */
 export default function AboutPage() {
+  const { t } = getT();
   const token = signInviteToken(SYNTHETIC_REFERENCE);
+  const [before, after] = aroundLink((vars) => t('about.seePrivacy', vars));
   return (
     <section aria-labelledby="about-title">
       <Logo size="hero" />
@@ -23,20 +31,19 @@ export default function AboutPage() {
           letterSpacing: '0.02em',
         }}
       >
-        Understand. Adapt. Evolve.
+        {t('common.tagline')}
       </p>
       <h1 id="about-title" style={{ marginTop: 'var(--space-5)' }}>
-        EvolAI \u2014 invitation-only
+        {t('about.title')}
       </h1>
+      <p>{t('about.body')}</p>
       <p>
-        This survey is opened from a secure invitation link sent by your team referent. If you
-        arrived here without a link, please contact your referent.
-      </p>
-      <p>
-        <Link href={`/s/${token}`}>Open the synthetic sample survey (development only)</Link>
+        <Link href={`/s/${token}`}>{t('about.sample')}</Link>
       </p>
       <p className="muted">
-        See <Link href="/privacy">privacy notice</Link> for how your answers are handled.
+        {before}
+        <Link href="/privacy">{t('about.privacyLink')}</Link>
+        {after}
       </p>
     </section>
   );

@@ -1,11 +1,13 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import LocaleSync from '@/components/LocaleSync';
 import PrivacyNotice from '@/components/PrivacyNotice';
 import WelcomeClient from '@/components/WelcomeClient';
 import { findTenantForInvitation } from '@/lib/db';
 import { InvalidInviteToken, verifyInviteToken } from '@/lib/invitationToken';
 import { SYNTHETIC_QUESTIONS, totalQuestionCount } from '@/lib/syntheticTemplate';
 import { getOrCreateState, isSubmitted } from '@/lib/surveyState';
+import { createTranslator } from '@auditai/i18n';
 
 // Always render at request time so the DB connection is fresh.
 export const dynamic = 'force-dynamic';
@@ -13,25 +15,6 @@ export const dynamic = 'force-dynamic';
 interface Params {
   token: string;
 }
-
-const COPY = {
-  fr: {
-    start: 'Commencer le questionnaire',
-    estimated: 'Environ 6 \u00e0 8 minutes, six questions.',
-    skip: 'Vous pouvez passer les questions \u00e0 tout moment.',
-    alreadySubmitted: 'Ce questionnaire a d\u00e9j\u00e0 \u00e9t\u00e9 soumis. Merci.',
-    languageHeading: 'Langue',
-    questionsCount: (n: number) => `${n} questions`,
-  },
-  en: {
-    start: 'Start the survey',
-    estimated: 'About 6 to 8 minutes, six questions.',
-    skip: 'You can skip any question at any time.',
-    alreadySubmitted: 'This survey has already been submitted. Thank you.',
-    languageHeading: 'Language',
-    questionsCount: (n: number) => `${n} questions`,
-  },
-} as const;
 
 export default async function WelcomePage({ params }: { params: Params }) {
   try {
@@ -45,7 +28,7 @@ export default async function WelcomePage({ params }: { params: Params }) {
   if (!resolved) notFound();
   const state = await getOrCreateState(resolved.tenantId, resolved.invitationId);
   const locale = state.locale;
-  const copy = COPY[locale];
+  const t = createTranslator(locale);
   const total = totalQuestionCount();
 
   if (state.submissionId) {
@@ -53,9 +36,10 @@ export default async function WelcomePage({ params }: { params: Params }) {
     if (submitted) {
       return (
         <section aria-labelledby="already-submitted-title">
-          <h1 id="already-submitted-title">{copy.alreadySubmitted}</h1>
+          <LocaleSync locale={locale} />
+          <h1 id="already-submitted-title">{t('survey.alreadySubmitted')}</h1>
           <p>
-            <Link href={`/s/${params.token}/done`}>View your thank-you page</Link>.
+            <Link href={`/s/${params.token}/done`}>{t('survey.viewThanks')}</Link>.
           </p>
         </section>
       );
@@ -64,20 +48,13 @@ export default async function WelcomePage({ params }: { params: Params }) {
 
   return (
     <section aria-labelledby="welcome-title">
+      <LocaleSync locale={locale} />
       <h1 id="welcome-title">EvolAI</h1>
       <p className="muted">
-        {copy.questionsCount(total)} \u00b7 {copy.estimated}
+        {t('survey.questionsCount', { n: total })} · {t('survey.estimated')}
       </p>
       <PrivacyNotice locale={locale} />
-      <WelcomeClient
-        token={params.token}
-        initialLocale={locale}
-        totalQuestions={total}
-        startLabel={copy.start}
-        estimatedLabel={copy.estimated}
-        skipLabel={copy.skip}
-        languageHeading={copy.languageHeading}
-      />
+      <WelcomeClient token={params.token} initialLocale={locale} totalQuestions={total} />
     </section>
   );
 }

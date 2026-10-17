@@ -1,15 +1,11 @@
 import Link from 'next/link';
 import { Logo } from '@/components/Logo';
 import { Mascot } from '@auditai/ui';
-import {
-  mascotTierOrder,
-  mascotTierSchema,
-  tierDescriptorFromType,
-  type MascotTier,
-  type TenantId,
-} from '@auditai/contracts';
+import { mascotTierOrder, type MascotTier, type TenantId } from '@auditai/contracts';
 import { tenantLabel } from '@/lib/adminData';
 import { sessionTenantIds } from '@/lib/authServer';
+import { getT } from '@/lib/i18n';
+import { formatDate } from '@auditai/i18n';
 import { listTeamBadges, listTeamsInTenant } from '@/lib/teamBadgeData';
 
 export const dynamic = 'force-dynamic';
@@ -27,6 +23,7 @@ interface PageProps {
  * the `respondent_badges` table directly.
  */
 export default async function TeamsPage({ searchParams }: PageProps) {
+  const { t, locale } = getT();
   const tenants = await sessionTenantIds();
   const current = (tenants.find((t) => t === requested(searchParams.tenant)) ?? tenants[0]) as
     | TenantId
@@ -35,9 +32,7 @@ export default async function TeamsPage({ searchParams }: PageProps) {
     return (
       <main className="container">
         <Logo />
-        <p>
-          No tenants configured. Run <code>pnpm local:reset</code> to seed.
-        </p>
+        <p>{t('common.noTenants', { command: 'pnpm local:reset' })}</p>
       </main>
     );
   }
@@ -50,81 +45,68 @@ export default async function TeamsPage({ searchParams }: PageProps) {
   return (
     <main className="container">
       <Logo />
-      <h1 style={{ marginTop: 'var(--space-4)' }}>Team profiles</h1>
-      <p className="muted">
-        Tenant <strong>{label}</strong>. Each team is collapsed to its dominant mascot (Tortoise /
-        Fox / Owl). The team profile never shows raw quiz scores \u2014 only the dominant tier and
-        the per-tier composition.
-      </p>
+      <h1 style={{ marginTop: 'var(--space-4)' }}>{t('admin.teams.title')}</h1>
+      <p className="muted">{t('admin.teams.intro', { label })}</p>
       <p>
         <Link className="btn-ghost" href="/board">
-          \u2190 Portfolio board
+          {t('admin.common.backToBoard')}
         </Link>{' '}
         <Link className="btn-ghost" href="/quiz">
-          Take the literacy quiz
+          {t('admin.teams.takeQuiz')}
         </Link>
       </p>
       {teams.length === 0 ? (
         <section className="empty-state">
-          <p className="muted">No teams configured for this tenant.</p>
+          <p className="muted">{t('admin.teams.none')}</p>
         </section>
       ) : (
         <ul className="team-list">
-          {teams.map((t) => {
-            const b = badgeByTeam.get(t.id);
+          {teams.map((team) => {
+            const b = badgeByTeam.get(team.id);
             const tier = b?.dominantTier ?? null;
             return (
-              <li key={t.id} className={`team-row ${tier ? `tier-${tier}` : 'tier-none'}`}>
+              <li key={team.id} className={`team-row ${tier ? `tier-${tier}` : 'tier-none'}`}>
                 <header>
-                  <h3>{t.name}</h3>
+                  <h3>{team.name}</h3>
                   {tier ? (
-                    <span className={`pill tier-${tier}`}>{tier}</span>
+                    <span className={`pill tier-${tier}`}>{t(`quiz.tier.${tier}`)}</span>
                   ) : (
-                    <span className="pill muted-pill">no badges yet</span>
+                    <span className="pill muted-pill">{t('admin.teams.noBadgesPill')}</span>
                   )}
                 </header>
                 {b ? (
                   <>
-                    <Mascot tier={tier as MascotTier} size={96} />
-                    <p className="desc">{tierDescriptorFromType(tier as MascotTier)}</p>
+                    <Mascot
+                      tier={tier as MascotTier}
+                      size={96}
+                      label={t(`quiz.mascotAlt.${tier as MascotTier}`)}
+                    />
+                    <p className="desc">{t(`quiz.tierDescriptor.${tier as MascotTier}`)}</p>
                     <dl>
-                      <dt>Members</dt>
+                      <dt>{t('admin.teams.members')}</dt>
                       <dd>{b.memberCount}</dd>
-                      <dt>Tortoise</dt>
+                      <dt>{t('quiz.tier.tortoise')}</dt>
                       <dd>{b.tortoiseCount}</dd>
-                      <dt>Fox</dt>
+                      <dt>{t('quiz.tier.fox')}</dt>
                       <dd>{b.foxCount}</dd>
-                      <dt>Owl</dt>
+                      <dt>{t('quiz.tier.owl')}</dt>
                       <dd>{b.owlCount}</dd>
-                      <dt>Computed</dt>
-                      <dd>{b.computedAt}</dd>
+                      <dt>{t('admin.teams.computed')}</dt>
+                      <dd>{formatDate(locale, b.computedAt)}</dd>
                     </dl>
                   </>
                 ) : (
-                  <p className="muted">
-                    No current badges yet for this team. Once at least one pseudonym from this team
-                    takes the literacy quiz and the rollup worker runs, the dominant mascot will
-                    appear here.
-                  </p>
+                  <p className="muted">{t('admin.teams.noBadges')}</p>
                 )}
               </li>
             );
           })}
         </ul>
       )}
-      <p className="footnote">
-        <strong>What this shows.</strong> Team is the modal mascot tier across the team&apos;s{' '}
-        <code>is_current = TRUE</code>
-        <code>respondent_badges</code> rows. Tie-break: fox &gt; owl &gt; tortoise. Raw quiz_score
-        is internal; the analyst reads <code>respondent_badges</code>
-        directly when needed.
-      </p>
+      <p className="footnote">{t('admin.teams.footnote')}</p>
       <p className="muted">
-        All three mascot tiers:{' '}
-        {mascotTierOrder
-          .map((t) => `${t} (${mascotTierSchema.options.includes(t) ? t : ''})`)
-          .join(', ')}
-        .
+        {t('admin.teams.allTiers')}{' '}
+        {mascotTierOrder.map((tier) => t(`quiz.tier.${tier}`)).join(', ')}.
       </p>
       <style>{`
         .empty-state { padding: 24px; border: 1px dashed var(--color-border); border-radius: 8px; }

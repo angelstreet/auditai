@@ -17,6 +17,7 @@ import {
   type TenantId,
 } from '@auditai/contracts';
 import { createOpportunityFromAnalysis, transitionOpportunity } from '@/lib/opportunityData';
+import { getT } from '@/lib/i18n';
 
 const isUuidV4 = (v: string): boolean =>
   /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(v);
@@ -32,6 +33,7 @@ export async function createOpportunityAction(
   _prev: CreateOpportunityActionState,
   formData: FormData,
 ): Promise<CreateOpportunityActionState> {
+  const { t } = getT();
   const tenantId = String(formData.get('tenantId') ?? '');
   const analysisId = String(formData.get('analysisId') ?? '');
   const engagementId = String(formData.get('engagementId') ?? '');
@@ -40,16 +42,16 @@ export async function createOpportunityAction(
   const impactRaw = String(formData.get('impactScore') ?? '').trim();
 
   if (!isUuidV4(tenantId) || !isUuidV4(analysisId) || !isUuidV4(engagementId)) {
-    return { ok: false, message: 'Invalid tenant, analysis, or engagement id' };
+    return { ok: false, message: t('admin.oppNew.errInvalidIds') };
   }
   if (title.length < 3 || title.length > 200) {
-    return { ok: false, message: 'Title must be 3 \u2013 200 characters' };
+    return { ok: false, message: t('admin.oppNew.errTitle') };
   }
   let impactScore: number | null = null;
   if (impactRaw) {
     const n = Number(impactRaw);
     if (!Number.isFinite(n) || n < 0 || n > 1) {
-      return { ok: false, message: 'Impact score must be between 0 and 1' };
+      return { ok: false, message: t('admin.oppNew.errImpact') };
     }
     impactScore = n;
   }
@@ -70,7 +72,7 @@ export async function createOpportunityAction(
       },
     );
     if (!result) {
-      return { ok: false, message: 'Analysis not found in this tenant' };
+      return { ok: false, message: t('admin.oppNew.errNotFound') };
     }
     revalidatePath(`/admin/engagements/${engagementId}/opportunities`, 'page');
     revalidatePath(
@@ -80,15 +82,13 @@ export async function createOpportunityAction(
     revalidatePath(`/admin/engagements/${engagementId}/analyses/${analysisId}`, 'page');
     return {
       ok: true,
-      message: 'Opportunity created',
+      message: t('admin.oppNew.created'),
       opportunityId: result.opportunity.id,
       auditLogId: result.auditLogId,
     };
   } catch (err) {
-    return {
-      ok: false,
-      message: `Create failed: ${err instanceof Error ? err.message : String(err)}`,
-    };
+    console.error('opportunity creation failed', err);
+    return { ok: false, message: t('admin.oppNew.errCreate') };
   }
 }
 
@@ -102,15 +102,16 @@ export async function transitionOpportunityAction(
   _prev: TransitionActionState,
   formData: FormData,
 ): Promise<TransitionActionState> {
+  const { t } = getT();
   const tenantId = String(formData.get('tenantId') ?? '');
   const opportunityId = String(formData.get('opportunityId') ?? '');
   const to = String(formData.get('to') ?? '');
   if (!isUuidV4(tenantId) || !isUuidV4(opportunityId)) {
-    return { ok: false, message: 'Invalid tenant or opportunity id' };
+    return { ok: false, message: t('admin.oppDetail.errInvalidIds') };
   }
   const parsed = opportunityStatusSchema.safeParse(to);
   if (!parsed.success) {
-    return { ok: false, message: `Invalid target status: ${to}` };
+    return { ok: false, message: t('admin.oppDetail.errInvalidStatus') };
   }
   const who = await resolveActor(tenantId);
   if (!who.ok) return { ok: false, message: who.message };
@@ -124,18 +125,16 @@ export async function transitionOpportunityAction(
       actor,
     );
     if (!result) {
-      return { ok: false, message: 'Opportunity not found in this tenant' };
+      return { ok: false, message: t('admin.oppDetail.errNotFound') };
     }
     revalidatePath(`/admin/engagements/[id]/opportunities`, 'page');
     revalidatePath(`/admin/engagements/[id]/opportunities/${opportunityId}`, 'page');
     return {
       ok: true,
-      message: `Status set to ${result.opportunity.status}`,
+      message: t('admin.oppDetail.statusSet', { status: t(`status.${result.opportunity.status}`) }),
     };
   } catch (err) {
-    return {
-      ok: false,
-      message: `Transition failed: ${err instanceof Error ? err.message : String(err)}`,
-    };
+    console.error('opportunity transition failed', err);
+    return { ok: false, message: t('admin.oppDetail.errTransition') };
   }
 }

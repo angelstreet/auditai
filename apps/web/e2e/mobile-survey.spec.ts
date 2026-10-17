@@ -33,7 +33,7 @@ test.describe('employee mobile survey @ 360 px', () => {
     // Privacy notice and language toggle render fully.
     const privacy = page.locator('section.privacy');
     await expect(privacy).toBeVisible();
-    const toggle = page.locator('[role="group"][aria-label="Survey language"]');
+    const toggle = page.getByRole('group', { name: /Survey language|Langue du questionnaire/ });
     await expect(toggle).toBeVisible();
   });
 

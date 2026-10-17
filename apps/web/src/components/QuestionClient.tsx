@@ -20,6 +20,7 @@ interface Props {
   /** Localised label for the continue button. */
   ctaLabel: string;
   ariaQuestionLabel: string;
+  messages: { pickOption: string; saveFailed: string };
 }
 
 /**
@@ -81,12 +82,12 @@ export default function QuestionClient(props: Props) {
       </p>
       {error === 'choose_one' ? (
         <p role="alert" className="muted">
-          Please pick an option.
+          {props.messages.pickOption}
         </p>
       ) : null}
       {error === 'save_failed' ? (
         <p role="alert" className="muted">
-          Could not save your answer. Please try again.
+          {props.messages.saveFailed}
         </p>
       ) : null}
     </section>

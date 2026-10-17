@@ -4,6 +4,8 @@ import { tenantLabel } from '@/lib/adminData';
 import { sessionTenantIds } from '@/lib/authServer';
 import { listDeletionEvents } from '@/lib/deletionData';
 import { listExportRequests } from '@/lib/exportData';
+import { enumLabel, getT } from '@/lib/i18n';
+import { formatDate } from '@auditai/i18n';
 import { DeleteForm, ExportForm } from './DataAdminClient';
 import type { TenantId } from '@auditai/contracts';
 
@@ -26,17 +28,18 @@ interface PageProps {
  * trail without leaving the page.
  */
 export default async function DataPage({ searchParams }: PageProps) {
+  const { t, locale } = getT();
+  const when = (iso: string): string =>
+    formatDate(locale, iso, { dateStyle: 'medium', timeStyle: 'short' });
   const tenants = await sessionTenantIds();
-  const current = (tenants.find((t) => t === requested(searchParams.tenant)) ?? tenants[0]) as
+  const current = (tenants.find((x) => x === requested(searchParams.tenant)) ?? tenants[0]) as
     | TenantId
     | undefined;
   if (!current) {
     return (
       <main className="container">
         <Logo />
-        <p>
-          No tenants configured. Run <code>pnpm local:reset</code> to seed.
-        </p>
+        <p>{t('common.noTenants', { command: 'pnpm local:reset' })}</p>
       </main>
     );
   }
@@ -48,68 +51,56 @@ export default async function DataPage({ searchParams }: PageProps) {
   return (
     <main className="container">
       <Logo />
-      <h1 style={{ marginTop: 'var(--space-4)' }}>Data exports + retention</h1>
-      <p className="muted">
-        Tenant <strong>{label}</strong>. M15 slice B closes FR-09 for the audit team: every export
-        and every right-to-erasure is recorded in
-        <code>export_requests</code> and <code>deletion_events</code>.
-      </p>
+      <h1 style={{ marginTop: 'var(--space-4)' }}>{t('admin.data.title')}</h1>
+      <p className="muted">{t('admin.data.intro', { label })}</p>
       <p>
         <Link className="btn-ghost" href="/board">
-          \u2190 Portfolio board
+          {t('admin.common.backToBoard')}
         </Link>{' '}
         <Link className="btn-ghost" href="/admin/synergies">
-          Synergies
+          {t('admin.data.synergiesLink')}
         </Link>{' '}
         <Link className="btn-ghost" href="/admin/teams">
-          Teams
+          {t('admin.data.teamsLink')}
         </Link>
       </p>
 
       <section className="card">
-        <h2>1. Export a tenant table</h2>
-        <p className="muted">
-          CSV \u2014 RFC 4180 escaping. Each export is one row in
-          <code>export_requests</code> with the row count and the actor.
-        </p>
+        <h2>{t('admin.data.exportTitle')}</h2>
+        <p className="muted">{t('admin.data.exportBody')}</p>
         <ExportForm tenantId={current} />
       </section>
 
       <section className="card">
-        <h2>2. Right-to-erasure (single pseudonym)</h2>
-        <p className="muted">
-          Removes everything held for that pseudonym in this tenant (invitation, respondent,
-          submission, answers, analyses, badges, derived draft opportunities) and trims synergies.
-          Writes one <code>deletion_events</code> row per kind and one <code>audit_log</code> row;
-          both keep only a hash of the pseudonym.
-        </p>
+        <h2>{t('admin.data.eraseTitle')}</h2>
+        <p className="muted">{t('admin.data.eraseBody')}</p>
         <DeleteForm tenantId={current} />
       </section>
 
       <section className="card">
-        <h3>Recent exports ({exports.length})</h3>
+        <h3>{t('admin.data.recentExports', { n: exports.length })}</h3>
         {exports.length === 0 ? (
-          <p className="muted">No exports yet for this tenant.</p>
+          <p className="muted">{t('admin.data.noExports')}</p>
         ) : (
           <div style={{ overflowX: 'auto' }}>
             <table className="data-table">
               <thead>
                 <tr>
-                  <th>When</th>
-                  <th>Kind</th>
-                  <th>Status</th>
-                  <th>Rows</th>
-                  <th>Error</th>
+                  <th>{t('admin.data.colWhen')}</th>
+                  <th>{t('admin.data.colKind')}</th>
+                  <th>{t('admin.data.colStatus')}</th>
+                  <th>{t('admin.data.colRows')}</th>
+                  <th>{t('admin.data.colError')}</th>
                 </tr>
               </thead>
               <tbody>
                 {exports.slice(0, 20).map((e) => (
                   <tr key={e.id}>
-                    <td>{stamp(e.createdAt)}</td>
-                    <td>{e.kind}</td>
+                    <td>{when(e.createdAt)}</td>
+                    <td>{enumLabel(t, 'exportKind', e.kind)}</td>
                     <td>{e.status}</td>
                     <td>{e.rowCount}</td>
-                    <td className="muted">{e.error ?? '\u2014'}</td>
+                    <td className="muted">{e.error ?? t('common.dash')}</td>
                   </tr>
                 ))}
               </tbody>
@@ -119,26 +110,26 @@ export default async function DataPage({ searchParams }: PageProps) {
       </section>
 
       <section className="card">
-        <h3>Recent deletions ({deletions.length})</h3>
+        <h3>{t('admin.data.recentDeletions', { n: deletions.length })}</h3>
         {deletions.length === 0 ? (
-          <p className="muted">No deletions yet for this tenant.</p>
+          <p className="muted">{t('admin.data.noDeletions')}</p>
         ) : (
           <div style={{ overflowX: 'auto' }}>
             <table className="data-table">
               <thead>
                 <tr>
-                  <th>When</th>
-                  <th>Scope</th>
-                  <th>Pseudonym</th>
-                  <th>Target kind</th>
+                  <th>{t('admin.data.colWhen')}</th>
+                  <th>{t('admin.data.colScope')}</th>
+                  <th>{t('admin.data.colPseudonym')}</th>
+                  <th>{t('admin.data.colTarget')}</th>
                 </tr>
               </thead>
               <tbody>
                 {deletions.slice(0, 20).map((d) => (
                   <tr key={d.id}>
-                    <td>{stamp(d.createdAt)}</td>
+                    <td>{when(d.createdAt)}</td>
                     <td>{d.scope}</td>
-                    <td>{d.respondentPseudonym ?? '\u2014'}</td>
+                    <td>{d.respondentPseudonym ?? t('common.dash')}</td>
                     <td>{d.targetKind}</td>
                   </tr>
                 ))}
@@ -155,8 +146,9 @@ export default async function DataPage({ searchParams }: PageProps) {
         .card h3 { margin: 0 0 8px; font-size: 15px; }
         .data-form { display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
           margin-top: 12px; }
-        .data-form label { display: flex; flex-direction: column; font-size: 12px; min-width: 0; max-width: 100%;
-          color: var(--color-muted); gap: 4px; }
+        .data-form label { display: flex; flex-direction: column; font-size: 12px;
+          color: var(--color-muted); gap: 4px; min-width: 0; width: 100%; max-width: 420px; }
+        .data-form input, .data-form select { width: 100%; box-sizing: border-box; }
         .data-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
         .data-table th, .data-table td { padding: 6px 8px; border-bottom: 1px solid var(--color-border);
           text-align: left; font-size: 12px; }
@@ -166,9 +158,5 @@ export default async function DataPage({ searchParams }: PageProps) {
     </main>
   );
 }
-
-/** pg returns Date objects; render a short UTC stamp (React cannot render a Date). */
-const stamp = (v: unknown): string =>
-  new Date(v as string).toISOString().slice(0, 16).replace('T', ' ');
 
 const requested = (raw: string | undefined): string | undefined => raw;

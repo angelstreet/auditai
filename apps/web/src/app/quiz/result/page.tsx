@@ -4,7 +4,11 @@ import { Mascot } from '@auditai/ui';
 import { mascotTierOrder, mascotTierSchema, type TenantId } from '@auditai/contracts';
 import { listTenantIds, tenantLabel } from '@/lib/adminData';
 import { getCurrentBadgeForPseudonym } from '@/lib/respondentBadgeData';
-import { tierDescriptor } from '@auditai/domain';
+import { getT } from '@/lib/i18n';
+
+export function generateMetadata() {
+  return { title: getT().t('meta.pages.quizResult') };
+}
 
 export const dynamic = 'force-dynamic';
 
@@ -22,6 +26,7 @@ interface PageProps {
  * tier descriptor; the team profile uses the same tier aggregated.
  */
 export default async function QuizResult({ searchParams }: PageProps) {
+  const { t } = getT();
   const tenants = await listTenantIds();
   const current = (tenants.find((t) => t === requestedTenant(searchParams.tenant)) ??
     tenants[0]) as TenantId | undefined;
@@ -29,7 +34,7 @@ export default async function QuizResult({ searchParams }: PageProps) {
     return (
       <main className="container">
         <Logo />
-        <p>No tenants configured.</p>
+        <p>{t('quiz.noTenants')}</p>
       </main>
     );
   }
@@ -43,13 +48,11 @@ export default async function QuizResult({ searchParams }: PageProps) {
     return (
       <main className="container">
         <Logo />
-        <h1 style={{ marginTop: 'var(--space-4)' }}>Quiz result</h1>
-        <p className="muted">
-          We couldn't find a result for that pseudonym in tenant <strong>{label}</strong>.
-        </p>
+        <h1 style={{ marginTop: 'var(--space-4)' }}>{t('quiz.resultTitle')}</h1>
+        <p className="muted">{t('quiz.resultMissing', { label })}</p>
         <p>
           <Link className="btn-ghost" href={`/quiz?tenant=${current}`}>
-            Take the quiz
+            {t('quiz.take')}
           </Link>
         </p>
       </main>
@@ -58,37 +61,32 @@ export default async function QuizResult({ searchParams }: PageProps) {
   return (
     <main className="container">
       <Logo />
-      <h1 style={{ marginTop: 'var(--space-4)' }}>Your mascot</h1>
-      <p className="muted">
-        Pseudonym <code>{pseudonym}</code> \u00b7 tenant <strong>{label}</strong>. Raw scores stay
-        internal \u2014 the tier is what your team and your organisation see.
-      </p>
+      <h1 style={{ marginTop: 'var(--space-4)' }}>{t('quiz.mascotTitle')}</h1>
+      <p className="muted">{t('quiz.mascotIntro', { pseudonym, label })}</p>
       <section className={`reveal tier-${tier}`}>
-        <Mascot tier={tier} size={160} />
+        <Mascot tier={tier} size={160} label={t(`quiz.mascotAlt.${tier}`)} />
         <div>
-          <h2 className="tier-name">
-            {tier === 'tortoise' ? 'Tortoise' : tier === 'fox' ? 'Fox' : 'Owl'}
-          </h2>
-          <p className="tier-desc">{tierDescriptor(tier)}</p>
+          <h2 className="tier-name">{t(`quiz.tier.${tier}`)}</h2>
+          <p className="tier-desc">{t(`quiz.tierDescriptor.${tier}`)}</p>
         </div>
       </section>
       <p>
         <Link className="btn-ghost" href={`/quiz?tenant=${current}&pseudonym=${pseudonym}`}>
-          Retake the quiz
+          {t('quiz.retake')}
         </Link>{' '}
         <Link className="btn-ghost" href="/about">
-          About the framework
+          {t('quiz.aboutFramework')}
         </Link>
       </p>
       <aside className="all-tiers">
-        <h3>The three tiers</h3>
+        <h3>{t('quiz.threeTiers')}</h3>
         <ul>
-          {mascotTierOrder.map((t) => (
-            <li key={t} className={t === tier ? 'current' : ''}>
-              <Mascot tier={t} size={48} />
+          {mascotTierOrder.map((tierKey) => (
+            <li key={tierKey} className={tierKey === tier ? 'current' : ''}>
+              <Mascot tier={tierKey} size={48} label={t(`quiz.mascotAlt.${tierKey}`)} />
               <span>
-                <strong>{t === 'tortoise' ? 'Tortoise' : t === 'fox' ? 'Fox' : 'Owl'}</strong>
-                <span className="muted"> &mdash; {tierDescriptor(t)}</span>
+                <strong>{t(`quiz.tier.${tierKey}`)}</strong>
+                <span className="muted"> &mdash; {t(`quiz.tierDescriptor.${tierKey}`)}</span>
               </span>
             </li>
           ))}

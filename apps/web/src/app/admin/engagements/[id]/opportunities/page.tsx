@@ -1,11 +1,15 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { Logo } from '@/components/Logo';
+import { enumLabel, getT } from '@/lib/i18n';
+import { aroundLink } from '@/lib/richText';
+import { formatDate, formatNumber } from '@auditai/i18n';
+
 import { engagementLabelFor } from '@/lib/auditorData';
 import { tenantLabel } from '@/lib/adminData';
 import { sessionTenantIds } from '@/lib/authServer';
 import { listOpportunitiesForEngagement, opportunityStatusCounts } from '@/lib/opportunityData';
-import { OPPORTUNITY_STATUS_LABELS, type EngagementId, type TenantId } from '@auditai/contracts';
+import { type EngagementId, type TenantId } from '@auditai/contracts';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,27 +18,29 @@ interface PageProps {
   searchParams: { tenant?: string };
 }
 
-const formatDateTime = (iso: string | null): string => {
-  if (!iso) return '\u2014';
-  const d = new Date(iso);
-  if (Number.isNaN(d.valueOf())) return iso;
-  return d.toISOString().slice(0, 10);
-};
-
 export default async function OpportunitiesListPage({ params, searchParams }: PageProps) {
+  const { t, locale } = getT();
+  const formatDateTime = (iso: string | null, long = false): string =>
+    iso
+      ? formatDate(locale, iso, long ? { dateStyle: 'medium', timeStyle: 'short' } : undefined)
+      : t('common.dash');
+  const impact = (n: number | null): string =>
+    n === null
+      ? t('common.dash')
+      : formatNumber(locale, n, { minimumFractionDigits: 3, maximumFractionDigits: 3 });
   const tenants = await sessionTenantIds();
   if (tenants.length === 0) {
     return (
       <section aria-labelledby="empty-title" className="container admin">
         <Logo />
-        <h1 id="empty-title">Opportunities \u2014 no tenants</h1>
+        <h1 id="empty-title">{t('admin.common.noTenantsTitle')}</h1>
       </section>
     );
   }
   const requested = searchParams.tenant;
-  const current = tenants.find((t) => t === requested) ?? tenants[0];
+  const current = tenants.find((x) => x === requested) ?? tenants[0];
   if (!current) redirect('/admin/engagements');
-  if (requested && tenants.find((t) => t === requested) === undefined) {
+  if (requested && tenants.find((x) => x === requested) === undefined) {
     redirect(`/admin/engagements/${params.id}/opportunities?tenant=${current}`);
   }
   const tenantId = current as TenantId;
@@ -49,36 +55,36 @@ export default async function OpportunitiesListPage({ params, searchParams }: Pa
     return (
       <section aria-labelledby="missing-title" className="container admin">
         <Logo />
-        <h1 id="missing-title">Engagement not found</h1>
-        <p>
-          <code>{params.id}</code> is not in tenant <strong>{tenantName}</strong>.
-        </p>
+        <h1 id="missing-title">{t('admin.common.engagementNotFound')}</h1>
+        <p>{t('admin.common.notInTenant', { id: params.id, tenant: tenantName })}</p>
       </section>
     );
   }
 
   const counts = opportunityStatusCounts(opportunities);
+  const [noneBefore, noneAfter] = aroundLink((vars) => t('admin.opps.none', vars));
 
   return (
     <section aria-labelledby="opp-title" className="container admin">
       <Logo />
       <h1 id="opp-title" style={{ marginTop: 'var(--space-4)' }}>
-        Opportunities \u2014 {label.organisation}
+        {t('admin.opps.title', { org: label.organisation })}
       </h1>
       <p className="muted">
-        Tenant <strong>{tenantName}</strong> \u00b7 engagement <code>{params.id}</code> \u00b7{' '}
-        {opportunities.length} opportunity record(s).
+        {t('admin.opps.meta', { tenant: tenantName, id: params.id, n: opportunities.length })}
       </p>
       <p>
-        <Link href={`/admin/engagements?tenant=${tenantId}`}>\u2190 Back to engagements</Link>
+        <Link href={`/admin/engagements?tenant=${tenantId}`}>
+          {t('admin.common.backToEngagements')}
+        </Link>
         {' \u00b7 '}
         <Link href={`/admin/engagements/${params.id}/analyses?tenant=${tenantId}`}>
-          View analyses
+          {t('admin.opps.viewAnalyses')}
         </Link>
       </p>
 
       <ul
-        aria-label="Status counts"
+        aria-label={t('admin.opps.countsAria')}
         style={{ display: 'flex', gap: 8, flexWrap: 'wrap', listStyle: 'none', padding: 0 }}
       >
         {(['draft', 'approved', 'in_progress', 'delivered', 'archived'] as const).map((s) => (
@@ -91,7 +97,7 @@ export default async function OpportunitiesListPage({ params, searchParams }: Pa
               fontSize: 13,
             }}
           >
-            <strong>{counts[s]}</strong> {OPPORTUNITY_STATUS_LABELS[s]}
+            <strong>{counts[s]}</strong> {t(`status.${s}`)}
           </li>
         ))}
       </ul>
@@ -99,24 +105,24 @@ export default async function OpportunitiesListPage({ params, searchParams }: Pa
       <table>
         <thead>
           <tr>
-            <th scope="col">Title</th>
-            <th scope="col">Status</th>
-            <th scope="col">Axis</th>
-            <th scope="col">Impact</th>
-            <th scope="col">Created</th>
-            <th scope="col">Updated</th>
-            <th scope="col">Action</th>
+            <th scope="col">{t('admin.opps.colTitle')}</th>
+            <th scope="col">{t('admin.opps.colStatus')}</th>
+            <th scope="col">{t('admin.opps.colAxis')}</th>
+            <th scope="col">{t('admin.opps.colImpact')}</th>
+            <th scope="col">{t('admin.opps.colCreated')}</th>
+            <th scope="col">{t('admin.opps.colUpdated')}</th>
+            <th scope="col">{t('admin.opps.colAction')}</th>
           </tr>
         </thead>
         <tbody>
           {opportunities.length === 0 ? (
             <tr>
               <td colSpan={7}>
-                No opportunities yet. Approve an analysis on the{' '}
+                {noneBefore}
                 <Link href={`/admin/engagements/${params.id}/analyses?tenant=${tenantId}`}>
-                  analyses page
-                </Link>{' '}
-                and use <em>Create opportunity</em>.
+                  {t('admin.opps.analysesPage')}
+                </Link>
+                {noneAfter}
               </td>
             </tr>
           ) : (
@@ -131,18 +137,18 @@ export default async function OpportunitiesListPage({ params, searchParams }: Pa
                   <br />
                   <span className="muted">{o.id}</span>
                 </th>
-                <td>{OPPORTUNITY_STATUS_LABELS[o.status]}</td>
+                <td>{t(`status.${o.status}`)}</td>
                 <td>
-                  <code>{o.axis ?? '\u2014'}</code>
+                  <code>{o.axis ? enumLabel(t, 'axis', o.axis) : t('common.dash')}</code>
                 </td>
-                <td>{o.impactScore === null ? '\u2014' : o.impactScore.toFixed(3)}</td>
+                <td>{impact(o.impactScore)}</td>
                 <td>{formatDateTime(o.createdAt)}</td>
                 <td>{formatDateTime(o.updatedAt)}</td>
                 <td>
                   <Link
                     href={`/admin/engagements/${params.id}/opportunities/${o.id}?tenant=${tenantId}`}
                   >
-                    Open
+                    {t('admin.opps.open')}
                   </Link>
                 </td>
               </tr>

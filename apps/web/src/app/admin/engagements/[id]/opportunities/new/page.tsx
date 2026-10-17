@@ -1,6 +1,9 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { Logo } from '@/components/Logo';
+import { enumLabel, getT } from '@/lib/i18n';
+import { aroundLink } from '@/lib/richText';
+
 import { engagementLabelFor, getAnalysis } from '@/lib/auditorData';
 import { tenantLabel } from '@/lib/adminData';
 import { sessionTenantIds } from '@/lib/authServer';
@@ -15,19 +18,20 @@ interface PageProps {
 }
 
 export default async function NewOpportunityPage({ params, searchParams }: PageProps) {
+  const { t } = getT();
   const tenants = await sessionTenantIds();
   if (tenants.length === 0) {
     return (
       <section aria-labelledby="empty-title" className="container admin">
         <Logo />
-        <h1 id="empty-title">New opportunity \u2014 no tenants</h1>
+        <h1 id="empty-title">{t('admin.common.noTenantsTitle')}</h1>
       </section>
     );
   }
   const requested = searchParams.tenant;
-  const current = tenants.find((t) => t === requested) ?? tenants[0];
+  const current = tenants.find((x) => x === requested) ?? tenants[0];
   if (!current) redirect('/admin/engagements');
-  if (requested && tenants.find((t) => t === requested) === undefined) {
+  if (requested && tenants.find((x) => x === requested) === undefined) {
     redirect(`/admin/engagements/${params.id}/opportunities/new?tenant=${current}`);
   }
   const tenantId = current as TenantId;
@@ -44,48 +48,54 @@ export default async function NewOpportunityPage({ params, searchParams }: PageP
     return (
       <section aria-labelledby="missing-title" className="container admin">
         <Logo />
-        <h1 id="missing-title">Engagement not found</h1>
+        <h1 id="missing-title">{t('admin.common.engagementNotFound')}</h1>
       </section>
     );
   }
 
   if (!analysisId || !analysis) {
+    const [noAnalysisBefore, noAnalysisAfter] = aroundLink((vars) =>
+      t('admin.oppNew.noAnalysisBody', vars),
+    );
     return (
       <section aria-labelledby="missing-title" className="container admin">
         <Logo />
-        <h1 id="missing-title">No analysis selected</h1>
+        <h1 id="missing-title">{t('admin.oppNew.noAnalysis')}</h1>
         <p>
-          The create-from-analysis flow needs an analysis id. Open the{' '}
+          {noAnalysisBefore}
           <Link href={`/admin/engagements/${params.id}/analyses?tenant=${tenantId}`}>
-            analyses page
-          </Link>{' '}
-          and click <em>Create opportunity</em> on an approved analysis.
+            {t('admin.opps.analysesPage')}
+          </Link>
+          {noAnalysisAfter}
         </p>
       </section>
     );
   }
 
-  const defaultTitle = analysis.respondentPseudonym
-    ? `Opportunity from ${analysis.respondentPseudonym}`
-    : `Opportunity from ${analysis.analysisId.slice(0, 8)}`;
+  const defaultTitle = t('admin.oppNew.defaultFromPseudonym', {
+    name: analysis.respondentPseudonym || analysis.analysisId.slice(0, 8),
+  });
 
   return (
     <section aria-labelledby="new-title" className="container admin">
       <Logo />
       <h1 id="new-title" style={{ marginTop: 'var(--space-4)' }}>
-        New opportunity \u2014 {label.organisation}
+        {t('admin.oppNew.title', { org: label.organisation })}
       </h1>
       <p className="muted">
-        Tenant <strong>{tenantName}</strong> \u00b7 engagement <code>{params.id}</code> \u00b7
-        source analysis <code>{analysis.analysisId}</code> \u00b7 sensitivity{' '}
-        <strong>{analysis.sensitivity}</strong> \u00b7 model route{' '}
-        <code>{analysis.modelRoute}</code>.
+        {t('admin.oppNew.meta', {
+          tenant: tenantName,
+          id: params.id,
+          analysis: analysis.analysisId,
+          sensitivity: enumLabel(t, 'sensitivity', analysis.sensitivity),
+          route: analysis.modelRoute,
+        })}
       </p>
       <p>
         <Link
           href={`/admin/engagements/${params.id}/analyses/${analysis.analysisId}?tenant=${tenantId}`}
         >
-          \u2190 Back to analysis
+          {t('admin.oppNew.backToAnalysis')}
         </Link>
       </p>
       <CreateOpportunityForm
