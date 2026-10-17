@@ -12,12 +12,12 @@ the `audit_log` table as the source of truth and on `respondent_badges`
 as the gamified layer's storage. PRD FR-09 names three explicit
 deliverables that were not in any earlier slice:
 
-1. **Team report export** \u2014 the analyst / sponsor can pull a CSV of
+1. **Team report export** — the analyst / sponsor can pull a CSV of
    `opportunities`, `analyses`, `respondent_badges`, `team_badges`,
    `synergies`, or `audit_log` for one tenant.
-2. **Audit logs** \u2014 already in `main` (`audit_log` table, append-only
+2. **Audit logs** — already in `main` (`audit_log` table, append-only
    via RLS). The FR-09 expectation is the _exportable_ surface.
-3. **Deletion workflow** \u2014 a right-to-erasure flow per pseudonym and a
+3. **Deletion workflow** — a right-to-erasure flow per pseudonym and a
    retention-driven purge for the badge table.
 
 This ADR covers **Slice A** of M15: the schema + data layer + worker,
@@ -29,8 +29,8 @@ them; Slice C adds the schedule + alerting (Phase 3).
 ### 1. The schema (migrations `0012_export_and_deletion.sql` + `0013_export_audit_actions.sql`)
 
 Two new tenant-scoped tables, both following the standard four-policy RLS
-pattern. `deletion_events` is **append-only** \u2014 UPDATE / DELETE blocked
-by RLS \u2014 so the trail is the source of truth (PRD \u00a725.4).
+pattern. `deletion_events` is **append-only** — UPDATE / DELETE blocked
+by RLS — so the trail is the source of truth (PRD §25.4).
 
 ```
 export_requests(
@@ -124,7 +124,7 @@ M4 RLS posture + service-account flag is preserved.
 
 - `/admin/data` page that exposes the export + delete actions in the
   UI. Slice B.
-- A scheduled cron for `runRetentionWorker`. Phase 3 \u2014 today the
+- A scheduled cron for `runRetentionWorker`. Phase 3 — today the
   worker is invoked via CLI / smoke / ops job.
 - An audit_log visualisation page. Slice B can aggregate the existing
   per-target audit trail into a single page.

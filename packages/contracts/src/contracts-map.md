@@ -18,41 +18,41 @@
 
 ```
 contracts/src/
-\u251c\u2500\u2500 ids.ts              \u2190 identifier primitives + branded factories + Locale
-\u251c\u2500\u2500 roles.ts           \u2190 Role + Capability enums
-\u251c\u2500\u2500 tenant.ts          \u2190 Tenant + RetentionPolicy
-\u251c\u2500\u2500 organisation.ts   \u2190 Organisation + Department
-\u251c\u2500\u2500 team.ts            \u2190 Team
-\u251c\u2500\u2500 engagement.ts      \u2190 Engagement + EngagementPrivacy + EngagementStatus
-\u251c\u2500\u2500 template.ts        \u2190 Template + QuestionnaireVersion + QuestionItem + Sensitivity + CompetencyAxis
-\u251c\u2500\u2500 invitation.ts      \u2190 Invitation + InvitationStatus + InvitationTokenShape + Respondent
-\u251c\u2500\u2500 submission.ts      \u2190 Submission + SubmissionStatus + AnswerValue
-\u251c\u2500\u2500 auditLog.ts        \u2190 AuditLog + AuditAction + AuditTargetKind + discriminated variants
-\u251c\u2500\u2500 opportunity.ts     \u2190 Opportunity + OpportunityStatus + ImpactScore + status transitions + OPPORTUNITY_STATUS_LABELS
-\u251c\u2500\u2500 sponsorBrief.ts    \u2190 SponsorBrief + sponsor enums + MaturityScore (M12)
-\u251c\u2500\u2500 synergy.ts         \u2190 Synergy + SynergyStatus + SynergyId + SynergyKey + status transitions (M13)
-\u251c\u2500\u2500 respondentBadge.ts \u2190 MascotTier + QuizScore + RespondentBadge + TeamBadge + score \u2192 tier mapping (M14)
-\u2514\u2500\u2500 index.ts           \u2190 the public barrel re-export of the above
+├── ids.ts              ← identifier primitives + branded factories + Locale
+├── roles.ts           ← Role + Capability enums
+├── tenant.ts          ← Tenant + RetentionPolicy
+├── organisation.ts   ← Organisation + Department
+├── team.ts            ← Team
+├── engagement.ts      ← Engagement + EngagementPrivacy + EngagementStatus
+├── template.ts        ← Template + QuestionnaireVersion + QuestionItem + Sensitivity + CompetencyAxis
+├── invitation.ts      ← Invitation + InvitationStatus + InvitationTokenShape + Respondent
+├── submission.ts      ← Submission + SubmissionStatus + AnswerValue
+├── auditLog.ts        ← AuditLog + AuditAction + AuditTargetKind + discriminated variants
+├── opportunity.ts     ← Opportunity + OpportunityStatus + ImpactScore + status transitions + OPPORTUNITY_STATUS_LABELS
+├── sponsorBrief.ts    ← SponsorBrief + sponsor enums + MaturityScore (M12)
+├── synergy.ts         ← Synergy + SynergyStatus + SynergyId + SynergyKey + status transitions (M13)
+├── respondentBadge.ts ← MascotTier + QuizScore + RespondentBadge + TeamBadge + score → tier mapping (M14)
+└── index.ts           ← the public barrel re-export of the above
 ```
 
 ## Per-file exports (consumed by other packages + server actions)
 
-### `ids.ts` \u2014 identifier primitives
+### `ids.ts` — identifier primitives
 
-| Export                                     | Type               | Purpose                                                                                                                                                                                   |
-| ------------------------------------------ | ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ulidRegex`                                | regex              | ULID format check.                                                                                                                                                                        |
-| `localeSchema`                             | Zod enum           | `'fr' \| 'en'`.                                                                                                                                                                           |
-| `Locale`                                   | TS type            | Inferred from `localeSchema`.                                                                                                                                                             |
-| `isoDateTimeSchema`                        | Zod string         | ISO-8601 with timezone offset.                                                                                                                                                            |
-| `uuidV4Schema`                             | Zod string         | UUID v4 only.                                                                                                                                                                             |
-| `brandedId(brand)`                         | factory            | Branded UUID factory.                                                                                                                                                                     |
-| `isUuidV4(v)`                              | helper             | Test-only UUID v4 check.                                                                                                                                                                  |
-| `tenantIdSchema` \u2026 `auditLogIdSchema` | Zod branded string | 14 branded IDs (Tenant, Organisation, Department, Team, User, Engagement, Template, QuestionnaireVersion, QuestionItem, Invitation, Submission, Answer, Analysis, Opportunity, AuditLog). |
-| `respondentPseudonymSchema`                | Zod string         | Lowercase letters / digits / hyphens, 8-64 chars (per-platform pseudonym, no FK to a real person).                                                                                        |
-| `paginationCursorSchema`                   | Zod string         | Opaque base64url cursor.                                                                                                                                                                  |
+| Export                                | Type               | Purpose                                                                                                                                                                                   |
+| ------------------------------------- | ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ulidRegex`                           | regex              | ULID format check.                                                                                                                                                                        |
+| `localeSchema`                        | Zod enum           | `'fr' \| 'en'`.                                                                                                                                                                           |
+| `Locale`                              | TS type            | Inferred from `localeSchema`.                                                                                                                                                             |
+| `isoDateTimeSchema`                   | Zod string         | ISO-8601 with timezone offset.                                                                                                                                                            |
+| `uuidV4Schema`                        | Zod string         | UUID v4 only.                                                                                                                                                                             |
+| `brandedId(brand)`                    | factory            | Branded UUID factory.                                                                                                                                                                     |
+| `isUuidV4(v)`                         | helper             | Test-only UUID v4 check.                                                                                                                                                                  |
+| `tenantIdSchema` … `auditLogIdSchema` | Zod branded string | 14 branded IDs (Tenant, Organisation, Department, Team, User, Engagement, Template, QuestionnaireVersion, QuestionItem, Invitation, Submission, Answer, Analysis, Opportunity, AuditLog). |
+| `respondentPseudonymSchema`           | Zod string         | Lowercase letters / digits / hyphens, 8-64 chars (per-platform pseudonym, no FK to a real person).                                                                                        |
+| `paginationCursorSchema`              | Zod string         | Opaque base64url cursor.                                                                                                                                                                  |
 
-### `roles.ts` \u2014 RBAC
+### `roles.ts` — RBAC
 
 | Export             | Type     | Purpose                                                                              |
 | ------------------ | -------- | ------------------------------------------------------------------------------------ |
@@ -99,7 +99,7 @@ contracts/src/
 
 | Export                       | Type       | Purpose                                                                                          |
 | ---------------------------- | ---------- | ------------------------------------------------------------------------------------------------ |
-| `sensitivitySchema`          | Zod enum   | `public \| internal \| sensitive` \u2014 maps to `M9` redaction.                                 |
+| `sensitivitySchema`          | Zod enum   | `public \| internal \| sensitive` — maps to `M9` redaction.                                      |
 | `Sensitivity`                | TS type    | Inferred.                                                                                        |
 | `questionKindSchema`         | Zod enum   | `scenario_choice`, `free_text` (free_text redacted at export).                                   |
 | `QuestionKind`               | TS type    | Inferred.                                                                                        |
@@ -137,10 +137,10 @@ contracts/src/
 | `AnswerValue`            | TS type    | Inferred.                                                                        |
 
 > **Privacy boundary:** `AnswerValueSchema` accepts `free_text` but the
-> server-side filter (PRD \u00a715) MUST redact it from any export pipeline
+> server-side filter (PRD §15) MUST redact it from any export pipeline
 > before the analyst ever sees it.
 
-### `auditLog.ts` \u2014 PRD \u00a725.4
+### `auditLog.ts` — PRD §25.4
 
 | Export                      | Type          | Purpose                                                                                                                                                                              |
 | --------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -161,7 +161,7 @@ contracts/src/
 | `approvalResultSchema`      | Zod object    | The approve / reject action result (M10).                                                                                                                                            |
 | `ApprovalResult`            | TS type       | Inferred.                                                                                                                                                                            |
 
-### `opportunity.ts` \u2014 PRD \u00a711, FR-08, FR-12
+### `opportunity.ts` — PRD §11, FR-08, FR-12
 
 | Export                              | Type       | Purpose                                                                                                             |
 | ----------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------- |
@@ -178,7 +178,7 @@ contracts/src/
 | `nextOpportunityStatuses(from)`     | helper     | Allowed next statuses from a given state.                                                                           |
 | `OPPORTUNITY_STATUS_LABELS`         | const map  | Display labels per status (FR `OPPORTUNITY_STATUS_LABELS`).                                                         |
 
-### `sponsorBrief.ts` \u2014 M12, FR-08
+### `sponsorBrief.ts` — M12, FR-08
 
 | Export                               | Type       | Purpose                                                                                                                                    |
 | ------------------------------------ | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -201,7 +201,7 @@ contracts/src/
 | `sponsorBriefWriteSchema`            | Zod object | Write shape (tenant, sponsor user, optional engagement id, defaults).                                                                      |
 | `SponsorBriefWrite`                  | TS type    | Inferred.                                                                                                                                  |
 
-### `synergy.ts` \u2014 M13, FR-14
+### `synergy.ts` — M13, FR-14
 
 | Export                          | Type         | Purpose                                                                                                                         |
 | ------------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------- |
@@ -215,11 +215,11 @@ contracts/src/
 | `Synergy`                       | TS type      | Inferred.                                                                                                                       |
 | `synergyWriteSchema`            | Zod object   | Write shape (worker input).                                                                                                     |
 | `SynergyWrite`                  | TS type      | Inferred.                                                                                                                       |
-| `SYNERGY_STATUS_TRANSITIONS`    | const map    | Allowed status graph moves (detected \u2192 surfaced/dismissed \u2192 archived).                                                |
-| `synergyStatusTransitionSchema` | Zod refine   | Refines the move (from \u2192 to).                                                                                              |
+| `SYNERGY_STATUS_TRANSITIONS`    | const map    | Allowed status graph moves (detected → surfaced/dismissed → archived).                                                          |
+| `synergyStatusTransitionSchema` | Zod refine   | Refines the move (from → to).                                                                                                   |
 | `SynergyStatusTransition`       | TS type      | Inferred.                                                                                                                       |
 
-### `respondentBadge.ts` \u2014 M14, PRD \u00a76, \u00a79, \u00a715
+### `respondentBadge.ts` — M14, PRD §6, §9, §15
 
 | Export                       | Type        | Purpose                                                                                                       |
 | ---------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------- |
@@ -230,7 +230,7 @@ contracts/src/
 | `QuizScore`                  | TS type     | Inferred.                                                                                                     |
 | `quizAnswerSchema`           | Zod object  | One `{questionCode, value}` pair (no free-text).                                                              |
 | `QuizAnswer`                 | TS type     | Inferred.                                                                                                     |
-| `mascotTierForScore(s)`      | helper      | Maps a `QuizScore` to a `MascotTier`. \u226450 tortoise, 51\u201380 fox, \u226581 owl.                        |
+| `mascotTierForScore(s)`      | helper      | Maps a `QuizScore` to a `MascotTier`. ≤50 tortoise, 51–80 fox, ≥81 owl.                                       |
 | `tierDescriptorFromType(t)`  | helper      | One-line EN description per tier (mirrors `@auditai/domain.tierDescriptor`).                                  |
 | `respondentBadgeSchema`      | Zod object  | Wire shape (tenant, pseudonym, engagement_id, quiz_score, mascot_tier, source_answers, is_current).           |
 | `RespondentBadge`            | TS type     | Inferred.                                                                                                     |
@@ -245,7 +245,7 @@ contracts/src/
   only the mascot tier + descriptor; raw `quiz_score` lives only on the
   server and is read by the analyst via the Postgres layer.
 - **No export pipeline keeps free-text.** `AnswerValueSchema.accepts(free_text)`
-  but PRD \u00a715 forbids the analyst from ever seeing it. Free-text is
+  but PRD §15 forbids the analyst from ever seeing it. Free-text is
   captured by the schema so the validator accepts the form payload but
   the export workers MUST strip it.
 - **Discriminated unions for audit logs.** `analysisAuditLogSchema` etc.

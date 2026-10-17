@@ -26,7 +26,7 @@ jobs:
           POSTGRES_PASSWORD: auditai
           POSTGRES_DB: auditai_test
         ports:
-          - 5432:54329
+          - 54329:5432
         options: >-
           --health-cmd "pg_isready -U auditai"
           --health-interval 5s
@@ -62,3 +62,6 @@ jobs:
 
       - name: Test
         run: pnpm test
+
+      - name: Coverage gate
+        run: pnpm coverage

@@ -1,10 +1,10 @@
-# ADR 0004 \u2014 Mobile web survey stack
+# ADR 0004 — Mobile web survey stack
 
 Status: proposed (2026-10-14). Created as part of M5 ([roadmap](../ROADMAP.md)).
 
 ## Context
 
-PRD \u00a75, \u00a716 and FR-04 require a mobile web survey with a secure token, one question per screen, FR/EN, resume, and a 360 px acceptance test. M5 delivers the skeleton; Phase 2 replaces the in-memory store with Postgres-backed submissions.
+PRD §5, §16 and FR-04 require a mobile web survey with a secure token, one question per screen, FR/EN, resume, and a 360 px acceptance test. M5 delivers the skeleton; Phase 2 replaces the in-memory store with Postgres-backed submissions.
 
 ## Decisions
 
@@ -22,7 +22,7 @@ PRD \u00a75, \u00a716 and FR-04 require a mobile web survey with a secure token,
 - **Tailwind:** faster prototyping but a heavyweight dependency for a six-question survey. Adopted in M6 or Phase 2 when the admin UI needs design tokens.
 - **React Hook Form:** not needed yet; one question per page has a single controlled input.
 - **Server Actions instead of /api routes:** the App Router supports them, but a thin JSON endpoint keeps the test surface small and matches how Phase 2 will talk to the database layer.
-- **Native Expo app:** out of scope for Phase 1. PRD \u00a76.4 says native apps are only added after validated need.
+- **Native Expo app:** out of scope for Phase 1. PRD §6.4 says native apps are only added after validated need.
 
 ## Consequences
 

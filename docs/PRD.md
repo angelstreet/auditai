@@ -8,10 +8,10 @@ Status: proposed product specification — for validation with pilot clients
 
 > **Reading paths**
 >
-> - One-sentence product summary \u2192 [PRD \u00a70. Executive decision](#executive-decision)
-> - Top-level docs map (PRD \u2194 ROADMAP \u2194 ADRs) \u2192 [docs/INDEX.md](INDEX.md)
-> - Public contract surface of `@auditai/contracts` \u2192 [packages/contracts/src/contracts-map.md](../packages/contracts/src/contracts-map.md)
-> - Shipping plan + gate state \u2192 [docs/ROADMAP.md](ROADMAP.md)
+> - One-sentence product summary → [PRD §0. Executive decision](#executive-decision)
+> - Top-level docs map (PRD ↔ ROADMAP ↔ ADRs) → [docs/INDEX.md](INDEX.md)
+> - Public contract surface of `@auditai/contracts` → [packages/contracts/src/contracts-map.md](../packages/contracts/src/contracts-map.md)
+> - Shipping plan + gate state → [docs/ROADMAP.md](ROADMAP.md)
 
 ## Table of contents
 
@@ -26,7 +26,7 @@ Status: proposed product specification — for validation with pilot clients
 - [6. Adaptive AI maturity model](#6-adaptive-ai-maturity-model)
 - [7. Workflow discovery questionnaire](#7-workflow-discovery-questionnaire)
 - [8. The six AI-first learning principles](#8-the-six-ai-first-learning-principles)
-- [9. Functional requirements by priority (FR-01 \u2026 FR-17)](#9-functional-requirements-by-priority)
+- [9. Functional requirements by priority (FR-01 … FR-17)](#9-functional-requirements-by-priority)
 - [10. AI workflow design](#10-ai-workflow-design)
 - [11. Opportunity data contract](#11-opportunity-data-contract)
 - [12. Suggested stack and build-vs-buy](#12-suggested-stack-and-build-vs-buy)

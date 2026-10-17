@@ -1,4 +1,4 @@
-# ADR 0005 \u2014 Admin engagements page
+# ADR 0005 — Admin engagements page
 
 Status: proposed (2026-10-14). Created as part of M6 ([roadmap](../ROADMAP.md)).
 
@@ -13,7 +13,7 @@ PRD FR-01 and FR-09 require an admin view that lists audit engagements and their
 - **Server component:** the page is a Next.js Server Component so the data is fetched on the server and the response is a complete HTML table. The tenant switcher is a `<Link>` that re-fetches with a different query parameter.
 - **Accessibility:** the table uses `<th scope="col">` and `<th scope="row">` so screen readers announce both axes; the tenant switcher exposes `aria-current="page"`; the overall completion line uses a single `<strong>` percentage.
 - **Style:** the admin section uses the same colour palette as the survey but widens the container to 960 px so a desktop admin can read the table without horizontal scrolling.
-- **Smoke test:** Playwright with two projects: `mobile-360` (regression \u2014 the admin page must not break the 360 px survey path) and `desktop-admin` (the actual admin route). The desktop test asserts row counts, computed completion percentages, tenant switching and the unknown-tenant redirect. The mobile suite cross-checks that the admin route does not regress the survey clipping invariant by visiting `/admin/engagements` from the mobile viewport.
+- **Smoke test:** Playwright with two projects: `mobile-360` (regression — the admin page must not break the 360 px survey path) and `desktop-admin` (the actual admin route). The desktop test asserts row counts, computed completion percentages, tenant switching and the unknown-tenant redirect. The mobile suite cross-checks that the admin route does not regress the survey clipping invariant by visiting `/admin/engagements` from the mobile viewport.
 
 ## Alternatives
 

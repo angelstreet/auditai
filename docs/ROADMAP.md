@@ -1,5 +1,7 @@
 # EvolAI — Roadmap
 
+[![CI](https://github.com/angelstreet/auditai/actions/workflows/ci.yml/badge.svg)](https://github.com/angelstreet/auditai/actions/workflows/ci.yml) [![Leak scan](https://github.com/angelstreet/auditai/actions/workflows/leak-scan.yml/badge.svg)](https://github.com/angelstreet/auditai/actions/workflows/leak-scan.yml)
+
 > Single source of truth for delivery. Mirrors [PRD §18](PRD.md#18-rollout-phases-timelines-and-gates);
 > the public copy of the PRD is anonymised ("the pilot client"); this roadmap never refers to a real client.
 

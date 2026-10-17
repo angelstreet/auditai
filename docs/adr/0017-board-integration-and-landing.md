@@ -48,15 +48,15 @@ visitors hit on `https://<host>/`. A new smoke script
 
 The export + retention trail is exposed at `/admin/data`:
 
-- **Export widget** \u2014 pick one of the six `ExportKind`s, run the
+- **Export widget** — pick one of the six `ExportKind`s, run the
   `runExport` server action, preview the first 1,200 chars of the
   CSV in a `<pre>` block. The row count + actor are recorded in
   `export_requests`.
-- **Erase widget** \u2014 enter a respondent pseudonym; runs
+- **Erase widget** — enter a respondent pseudonym; runs
   `deletePseudonym`, removes the respondent_badges rows in one
   transaction, writes one `audit_log` + one `deletion_events` row
   per badge.
-- **Recent tables** \u2014 the last 20 export_requests + the last 20
+- **Recent tables** — the last 20 export_requests + the last 20
   deletion_events for the actor's tenant, in `created_at DESC` order.
 
 The read-only tables read through `listExportRequests` +
@@ -102,6 +102,6 @@ asserts the redirect chain. Pure Node; idempotent; no DB writes.
 
 ## What's NOT in this PR
 
-- A scheduled retention worker (PRD FR-09 schedule) \u2014 Phase 3.
-- Playwright coverage of these routes \u2014 follow-up.
-- Dockerfile + docker-compose \u2014 follow-up.
+- A scheduled retention worker (PRD FR-09 schedule) — Phase 3.
+- Playwright coverage of these routes — follow-up.
+- Dockerfile + docker-compose — follow-up.
