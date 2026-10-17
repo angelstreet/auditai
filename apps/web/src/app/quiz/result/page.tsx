@@ -1,11 +1,7 @@
 import Link from 'next/link';
 import { Logo } from '@/components/Logo';
 import { Mascot } from '@auditai/ui';
-import {
-  mascotTierOrder,
-  mascotTierSchema,
-  type TenantId,
-} from '@auditai/contracts';
+import { mascotTierOrder, mascotTierSchema, type TenantId } from '@auditai/contracts';
 import { listTenantIds, tenantLabel } from '@/lib/adminData';
 import { getCurrentBadgeForPseudonym } from '@/lib/respondentBadgeData';
 import { tierDescriptor } from '@auditai/domain';
