@@ -44,6 +44,7 @@ export default defineConfig({
       // Synthetic, test-only session settings (ADR 0023).
       AUTH_SESSION_SECRET: 'playwright-synthetic-session-secret',
       AUTH_COOKIE_SECURE: '0',
+      ALLOW_DEV_DB_PASSWORD: '1',
       // DATABASE_URL is inherited from the parent process. global-setup.ts sets it
       // before this webServer is spawned. SURVEY_SIGNING_SECRET inherits too so the
       // sign/verify pair agree end-to-end.

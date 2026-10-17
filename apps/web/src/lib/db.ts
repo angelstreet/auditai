@@ -24,6 +24,9 @@ export const resolveAppPassword = (
   env: Record<string, string | undefined> = process.env,
 ): string => {
   const configured = env['DATABASE_APP_PASSWORD'];
+  // ALLOW_DEV_DB_PASSWORD=1 is for the local runner and Playwright, which boot an embedded
+  // Postgres whose password is the dev default under `next start`. Never set it in a deployment.
+  if (env['ALLOW_DEV_DB_PASSWORD'] === '1') return configured ?? DEV_APP_PASSWORD;
   if (env['NODE_ENV'] === 'production' && (!configured || configured === DEV_APP_PASSWORD)) {
     throw new Error(
       'DATABASE_APP_PASSWORD must be set to a non-default value when NODE_ENV=production.',
