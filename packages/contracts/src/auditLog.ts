@@ -31,10 +31,18 @@ export const auditActionSchema = z.enum([
   'synergy.surface',
   'synergy.dismiss',
   'synergy.archive',
+  'export.complete',
+  'badge.erase',
 ]);
 export type AuditAction = z.infer<typeof auditActionSchema>;
 
-export const auditTargetKindSchema = z.enum(['analysis', 'opportunity', 'synergy']);
+export const auditTargetKindSchema = z.enum([
+  'analysis',
+  'opportunity',
+  'synergy',
+  'respondent_badge',
+  'export_request',
+]);
 export type AuditTargetKind = z.infer<typeof auditTargetKindSchema>;
 
 /**

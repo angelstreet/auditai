@@ -27,3 +27,8 @@ export {
   type TeamBadgeRollupOptions,
   type TeamBadgeRollupResult,
 } from './teamBadgeRollup.js';
+export {
+  runRetentionWorker,
+  type RetentionWorkerOptions,
+  type RetentionWorkerResult,
+} from './retentionWorker.js';
