@@ -17,3 +17,8 @@ export {
   type QuestionItemRow,
 } from './pipeline.js';
 export { processSubmission, processAllSubmitted, defaultWorker } from './worker.js';
+export {
+  detectCrossTeamSynergies,
+  type SynergyDetectionOptions,
+  type SynergyDetectionResult,
+} from './synergyDetector.js';
