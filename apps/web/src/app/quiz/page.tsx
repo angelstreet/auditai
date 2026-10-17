@@ -2,6 +2,7 @@ import { Logo } from '@/components/Logo';
 import { listTenantIds, tenantLabel } from '@/lib/adminData';
 import { LITERACY_QUIZ } from '@auditai/domain';
 import { QuizForm } from './QuizForm';
+import { getT } from '@/lib/i18n';
 import type { TenantId } from '@auditai/contracts';
 
 export const dynamic = 'force-dynamic';
@@ -20,7 +21,12 @@ interface PageProps {
  * the mascot tier via `mascotTierForScore`, and redirects to the
  * result page with the tier in the query string.
  */
+export function generateMetadata() {
+  return { title: getT().t('meta.pages.quiz') };
+}
+
 export default async function QuizLanding({ searchParams }: PageProps) {
+  const { t } = getT();
   const tenants = await listTenantIds();
   const requested = searchParams.tenant;
   const current = (tenants.find((t) => t === requested) ?? tenants[0]) as TenantId | undefined;
@@ -28,9 +34,7 @@ export default async function QuizLanding({ searchParams }: PageProps) {
     return (
       <main className="container">
         <Logo />
-        <p>
-          No tenants configured. Run <code>pnpm local:reset</code> to seed.
-        </p>
+        <p>{t('common.noTenants', { command: 'pnpm local:reset' })}</p>
       </main>
     );
   }
@@ -41,14 +45,10 @@ export default async function QuizLanding({ searchParams }: PageProps) {
   return (
     <main className="container">
       <Logo />
-      <h1 style={{ marginTop: 'var(--space-4)' }}>Quick literacy check</h1>
+      <h1 style={{ marginTop: 'var(--space-4)' }}>{t('quiz.title')}</h1>
+      <p className="muted">{t('quiz.intro', { label })}</p>
       <p className="muted">
-        Five short questions for tenant <strong>{label}</strong>. Your answers are pseudonymised —
-        no name, no email — and you'll see your mascot at the end. We never display the raw score
-        externally; your team profile only ever shows the dominant mascot tier across the team.
-      </p>
-      <p className="muted">
-        <strong>Pseudonym:</strong> <code>{pseudonym}</code>
+        <strong>{t('quiz.pseudonym')}</strong> <code>{pseudonym}</code>
       </p>
       <QuizForm tenantId={current} pseudonym={pseudonym} questions={LITERACY_QUIZ} />
     </main>

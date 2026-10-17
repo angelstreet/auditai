@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { sponsorBriefWriteSchema, type TenantId } from '@auditai/contracts';
 import { createSponsorBrief } from '@/lib/sponsorBriefData';
+import { getT } from '@/lib/i18n';
 
 const isUuidV4 = (v: string): boolean =>
   /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(v);
@@ -26,14 +27,15 @@ export async function saveSponsorBriefAction(
   _prev: IntakeActionState,
   formData: FormData,
 ): Promise<IntakeActionState> {
+  const { t } = getT();
   const tenantId = String(formData.get('tenantId') ?? '');
   if (!isUuidV4(tenantId)) {
-    return { ok: false, message: 'Invalid tenant id' };
+    return { ok: false, message: t('intake.errInvalidTenant') };
   }
   const budgetRaw = String(formData.get('annualBudgetEur') ?? '').trim();
   const annualBudgetEur = budgetRaw === '' ? null : Number(budgetRaw);
   if (annualBudgetEur !== null && (!Number.isFinite(annualBudgetEur) || annualBudgetEur < 0)) {
-    return { ok: false, message: 'Annual budget must be a non-negative number' };
+    return { ok: false, message: t('intake.errBudget') };
   }
   const maturityField = (key: string): number | null => {
     const raw = String(formData.get(key) ?? '').trim();
@@ -67,7 +69,9 @@ export async function saveSponsorBriefAction(
   if (!parsed.success) {
     return {
       ok: false,
-      message: `Invalid input: ${parsed.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`).join('; ')}`,
+      message: t('intake.errInvalidInput', {
+        fields: parsed.error.issues.map((i) => i.path.join('.')).join(', '),
+      }),
     };
   }
   try {
@@ -88,11 +92,10 @@ export async function saveSponsorBriefAction(
     revalidatePath('/board');
     revalidatePath('/welcome');
     revalidatePath('/intake');
-    return { ok: true, message: 'Brief saved', briefId: brief.id };
+    return { ok: true, message: t('intake.saved'), briefId: brief.id };
   } catch (err) {
-    return {
-      ok: false,
-      message: `Save failed: ${err instanceof Error ? err.message : String(err)}`,
-    };
+    // Raw error stays server-side: it may carry SQL or tenant details.
+    console.error('sponsor brief save failed', err);
+    return { ok: false, message: t('intake.errSaveFailed') };
   }
 }

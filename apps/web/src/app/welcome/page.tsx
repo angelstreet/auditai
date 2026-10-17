@@ -1,11 +1,17 @@
 import Link from 'next/link';
 import { Logo } from '@/components/Logo';
 import { listTenantIds, tenantLabel } from '@/lib/adminData';
+import { getT } from '@/lib/i18n';
 import type { TenantId } from '@auditai/contracts';
 
 export const dynamic = 'force-dynamic';
 
+export function generateMetadata() {
+  return { title: getT().t('meta.pages.welcome') };
+}
+
 export default async function WelcomePage() {
+  const { t } = getT();
   const tenants = await listTenantIds();
   const current = (tenants[0] ?? '11111111-1111-4111-8111-111111111111') as TenantId;
   const label = tenants[0] ? await tenantLabel(current) : 'Synthetic Co A';
@@ -13,58 +19,36 @@ export default async function WelcomePage() {
     <main className="container">
       <Logo />
       <section aria-labelledby="welcome-title" className="welcome-hero">
-        <span className="eyebrow">M12 — sponsor onboarding</span>
-        <h1 id="welcome-title">
-          Discover how work <em>really</em> happens. Build AI confidence. Turn friction into
-          measurable improvements.
-        </h1>
-        <p className="lede">
-          EvolAI walks every stakeholder from <strong>knowing yourself</strong> through audit,
-          review and solution delivery. The welcome screen below is the front door of that journey —
-          the entry point every client sponsor / team manager / auditor sees first.
-        </p>
-        <ol className="steps" aria-label="Four steps of the journey">
+        <span className="eyebrow">{t('welcome.eyebrow')}</span>
+        <h1 id="welcome-title">{t('welcome.heading')}</h1>
+        <p className="lede">{t('welcome.lede')}</p>
+        <ol className="steps" aria-label={t('welcome.stepsAria')}>
           <li>
-            <strong>1 · Know yourself first</strong>
-            <p>
-              Short sponsor intake: AI requirements, budget envelope, security posture, current
-              maturity.
-            </p>
+            <strong>{t('welcome.step1Title')}</strong>
+            <p>{t('welcome.step1Body')}</p>
           </li>
           <li>
-            <strong>2 · Audit people · teams · process</strong>
-            <p>
-              Mobile evidence capture from every employee; AI surfaces themes, contradictions,
-              interview prompts.
-            </p>
+            <strong>{t('welcome.step2Title')}</strong>
+            <p>{t('welcome.step2Body')}</p>
           </li>
           <li>
-            <strong>3 · Review &amp; approve</strong>
-            <p>
-              Every AI claim is source-linked. The auditor approves; the model route + evidence
-              trail is preserved.
-            </p>
+            <strong>{t('welcome.step3Title')}</strong>
+            <p>{t('welcome.step3Body')}</p>
           </li>
           <li>
-            <strong>4 · Solution · training · use cases</strong>
-            <p>
-              Opportunities tracked to delivery, with owner, pilot, measured benefits and cross-team
-              synergies.
-            </p>
+            <strong>{t('welcome.step4Title')}</strong>
+            <p>{t('welcome.step4Body')}</p>
           </li>
         </ol>
         <p className="cta-row">
           <Link className="btn btn-primary" href={`/intake?tenant=${current}`}>
-            Start the intake
+            {t('welcome.ctaIntake')}
           </Link>
           <Link className="btn btn-ghost" href={`/board`}>
-            See the portfolio board
+            {t('welcome.ctaBoard')}
           </Link>
         </p>
-        <p className="muted">
-          Viewing <strong>{label}</strong>. Use the tenant switcher on the admin pages to see the
-          other synthetic tenant.
-        </p>
+        <p className="muted">{t('welcome.viewing', { label })}</p>
       </section>
       <style>{`
         .welcome-hero { padding: 32px 0; max-width: 720px; }

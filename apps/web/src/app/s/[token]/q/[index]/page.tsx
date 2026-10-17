@@ -6,6 +6,7 @@ import { findTenantForInvitation } from '@/lib/db';
 import { InvalidInviteToken, verifyInviteToken } from '@/lib/invitationToken';
 import { questionByIndex, totalQuestionCount } from '@/lib/syntheticTemplate';
 import { getOrCreateState } from '@/lib/surveyState';
+import { createTranslator } from '@auditai/i18n';
 
 // Always render at request time so the DB connection is fresh.
 export const dynamic = 'force-dynamic';
@@ -14,23 +15,6 @@ interface Params {
   token: string;
   index: string;
 }
-
-const COPY = {
-  fr: {
-    done: 'Termin\u00e9',
-    continue: 'Continuer',
-    skip: 'Passer cette question',
-    ariaQuestion: 'Choix de r\u00e9ponse',
-    progressAria: 'Progression du questionnaire',
-  },
-  en: {
-    done: 'Finish',
-    continue: 'Continue',
-    skip: 'Skip this question',
-    ariaQuestion: 'Answer options',
-    progressAria: 'Survey progress',
-  },
-} as const;
 
 export default async function QuestionPage({ params }: { params: Params }) {
   try {
@@ -53,7 +37,7 @@ export default async function QuestionPage({ params }: { params: Params }) {
 
   const question = questionByIndex(index);
   const locale = state.locale;
-  const copy = COPY[locale];
+  const t = createTranslator(locale);
 
   const isLast = index === total - 1;
   const nextHref = isLast ? `/s/${params.token}/done` : `/s/${params.token}/q/${index + 1}`;
@@ -64,7 +48,7 @@ export default async function QuestionPage({ params }: { params: Params }) {
 
   return (
     <section aria-labelledby="question-prompt">
-      <ProgressBar current={index + 1} total={total} ariaLabel={copy.progressAria} />
+      <ProgressBar current={index + 1} total={total} ariaLabel={t('survey.progress')} />
       <QuestionClient
         token={params.token}
         index={index}
@@ -73,11 +57,15 @@ export default async function QuestionPage({ params }: { params: Params }) {
         options={question.options.map((o) => ({ value: o.value, label: o.label[locale] }))}
         initialChoice={initialChoice}
         nextHref={nextHref}
-        ctaLabel={isLast ? copy.done : copy.continue}
-        ariaQuestionLabel={copy.ariaQuestion}
+        ctaLabel={isLast ? t('survey.finish') : t('survey.continue')}
+        ariaQuestionLabel={t('survey.answerOptions')}
+        messages={{
+          pickOption: t('survey.pickOption'),
+          saveFailed: t('survey.saveFailed'),
+        }}
       />
       <p className="muted" style={{ marginTop: '16px' }}>
-        <Link href={`/s/${params.token}`}>Back to welcome</Link>
+        <Link href={`/s/${params.token}`}>{t('survey.backToWelcome')}</Link>
       </p>
     </section>
   );

@@ -2,15 +2,17 @@
 
 import { useFormState, useFormStatus } from 'react-dom';
 import type { TenantId } from '@auditai/contracts';
+import { useI18n } from '@/components/I18nProvider';
 import { saveSponsorBriefAction, type IntakeActionState } from './actions';
 
 const INITIAL: IntakeActionState = { ok: false, message: '' };
 
 function SubmitButton() {
+  const { t } = useI18n();
   const { pending } = useFormStatus();
   return (
     <button type="submit" disabled={pending} className="btn-primary">
-      {pending ? 'Saving\u2026' : 'Save brief'}
+      {pending ? t('intake.saving') : t('intake.save')}
     </button>
   );
 }
@@ -42,132 +44,164 @@ interface Props {
 }
 
 export function IntakeForm({ tenantId }: Props) {
+  const { t } = useI18n();
   const [state, formAction] = useFormState(saveSponsorBriefAction, INITIAL);
   return (
     <form action={formAction}>
       <input type="hidden" name="tenantId" value={tenantId} />
 
       <div className="card">
-        <h3>1 · AI requirements</h3>
-        <p className="desc">
-          Which processes or outcomes does leadership want AI to improve first?
-        </p>
+        <h3>{t('intake.s1Title')}</h3>
+        <p className="desc">{t('intake.s1Desc')}</p>
         <p>
-          <label htmlFor="topPriorityWorkflow">Top priority workflow</label>
+          <label htmlFor="topPriorityWorkflow">{t('intake.topPriorityLabel')}</label>
           <input
             id="topPriorityWorkflow"
             name="topPriorityWorkflow"
             type="text"
-            placeholder="e.g. Reduce source-checking time on outbound client deliverables"
+            placeholder={t('intake.topPriorityPlaceholder')}
           />
         </p>
         <p>
-          <label>Departments in scope</label>
+          <label>{t('intake.departmentsLabel')}</label>
           <div className="chips">
-            <Chip name="departmentsInScope" value="operations" label="Operations" defaultChecked />
-            <Chip name="departmentsInScope" value="sales" label="Sales" defaultChecked />
-            <Chip name="departmentsInScope" value="finance" label="Finance" />
-            <Chip name="departmentsInScope" value="legal" label="Legal" />
-            <Chip name="departmentsInScope" value="engineering" label="Engineering" />
-            <Chip name="departmentsInScope" value="people" label="People" />
+            <Chip
+              name="departmentsInScope"
+              value="operations"
+              label={t('intake.dept.operations')}
+              defaultChecked
+            />
+            <Chip
+              name="departmentsInScope"
+              value="sales"
+              label={t('intake.dept.sales')}
+              defaultChecked
+            />
+            <Chip name="departmentsInScope" value="finance" label={t('intake.dept.finance')} />
+            <Chip name="departmentsInScope" value="legal" label={t('intake.dept.legal')} />
+            <Chip
+              name="departmentsInScope"
+              value="engineering"
+              label={t('intake.dept.engineering')}
+            />
+            <Chip name="departmentsInScope" value="people" label={t('intake.dept.people')} />
           </div>
         </p>
         <p>
-          <label>Data sensitivity boundary</label>
+          <label>{t('intake.sensitivityLabel')}</label>
           <div className="chips">
             <Chip
               name="dataSensitivityBoundary"
               value="internal_only"
-              label="Internal only"
+              label={t('intake.sens.internal_only')}
               defaultChecked
             />
-            <Chip name="dataSensitivityBoundary" value="public_web" label="Public web" />
-            <Chip name="dataSensitivityBoundary" value="customer_pii" label="Customer PII" />
-            <Chip name="dataSensitivityBoundary" value="regulated" label="Regulated" />
+            <Chip
+              name="dataSensitivityBoundary"
+              value="public_web"
+              label={t('intake.sens.public_web')}
+            />
+            <Chip
+              name="dataSensitivityBoundary"
+              value="customer_pii"
+              label={t('intake.sens.customer_pii')}
+            />
+            <Chip
+              name="dataSensitivityBoundary"
+              value="regulated"
+              label={t('intake.sens.regulated')}
+            />
           </div>
         </p>
       </div>
 
       <div className="card">
-        <h3>2 · Budget envelope</h3>
-        <p className="desc">Optional. Used to rank opportunities, never to gate them.</p>
+        <h3>{t('intake.s2Title')}</h3>
+        <p className="desc">{t('intake.s2Desc')}</p>
         <p>
-          <label htmlFor="annualBudgetEur">Annual AI tooling &amp; advisory budget (\u20ac)</label>
+          <label htmlFor="annualBudgetEur">{t('intake.budgetLabel')}</label>
           <input
             id="annualBudgetEur"
             name="annualBudgetEur"
             type="text"
             defaultValue=""
-            placeholder="e.g. 45000"
+            placeholder={t('intake.budgetPlaceholder')}
           />
         </p>
         <p>
-          <label htmlFor="onsiteAppetite">Appetite for one off-site audit day per week</label>
+          <label htmlFor="onsiteAppetite">{t('intake.onsiteLabel')}</label>
           <select id="onsiteAppetite" name="onsiteAppetite" defaultValue="limited_team">
-            <option value="">\u2014</option>
-            <option value="full_pilot">Yes \u2014 full pilot</option>
-            <option value="limited_team">Yes \u2014 limited team</option>
-            <option value="remote_only">Remote only</option>
+            <option value="">{t('common.dash')}</option>
+            <option value="full_pilot">{t('intake.onsiteOpt.full_pilot')}</option>
+            <option value="limited_team">{t('intake.onsiteOpt.limited_team')}</option>
+            <option value="remote_only">{t('intake.onsiteOpt.remote_only')}</option>
           </select>
         </p>
       </div>
 
       <div className="card">
-        <h3>3 · Security posture</h3>
-        <p className="desc">Hard constraints. Anything checked here is enforced in the platform.</p>
+        <h3>{t('intake.s3Title')}</h3>
+        <p className="desc">{t('intake.s3Desc')}</p>
         <p>
-          <label>Approved model regions</label>
+          <label>{t('intake.regionsLabel')}</label>
           <div className="chips">
-            <Chip name="approvedModelRegions" value="eu_only" label="EU only" defaultChecked />
+            <Chip
+              name="approvedModelRegions"
+              value="eu_only"
+              label={t('intake.region.eu_only')}
+              defaultChecked
+            />
             <Chip
               name="approvedModelRegions"
               value="us_enterprise"
-              label="US (enterprise contract)"
+              label={t('intake.region.us_enterprise')}
             />
-            <Chip name="approvedModelRegions" value="self_hosted" label="Self-hosted" />
-            <Chip name="approvedModelRegions" value="no_constraint" label="No constraint" />
+            <Chip
+              name="approvedModelRegions"
+              value="self_hosted"
+              label={t('intake.region.self_hosted')}
+            />
+            <Chip
+              name="approvedModelRegions"
+              value="no_constraint"
+              label={t('intake.region.no_constraint')}
+            />
           </div>
         </p>
         <p>
-          <label>Data residency</label>
+          <label>{t('intake.residencyLabel')}</label>
           <div className="chips">
-            <Chip name="dataResidency" value="eu_frankfurt" label="EU (Frankfurt)" defaultChecked />
-            <Chip name="dataResidency" value="us" label="US" />
-            <Chip name="dataResidency" value="client_vpc" label="Client VPC" />
+            <Chip
+              name="dataResidency"
+              value="eu_frankfurt"
+              label={t('intake.res.eu_frankfurt')}
+              defaultChecked
+            />
+            <Chip name="dataResidency" value="us" label={t('intake.res.us')} />
+            <Chip name="dataResidency" value="client_vpc" label={t('intake.res.client_vpc')} />
           </div>
         </p>
         <p>
-          <label htmlFor="promptInjectionReview">Prompt-injection review process</label>
+          <label htmlFor="promptInjectionReview">{t('intake.injectionLabel')}</label>
           <select
             id="promptInjectionReview"
             name="promptInjectionReview"
             defaultValue="external_auditor"
           >
-            <option value="">\u2014</option>
-            <option value="external_auditor">Quarterly red-team by external auditor</option>
-            <option value="internal">Internal review only</option>
-            <option value="none_yet">No formal process yet \u2014 please propose</option>
+            <option value="">{t('common.dash')}</option>
+            <option value="external_auditor">{t('intake.injection.external_auditor')}</option>
+            <option value="internal">{t('intake.injection.internal')}</option>
+            <option value="none_yet">{t('intake.injection.none_yet')}</option>
           </select>
         </p>
       </div>
 
       <div className="card">
-        <h3>4 · Current AI maturity (self-assessment, 0 \u2013 5)</h3>
-        <p className="desc">
-          Calibrates the questionnaire rotation. The first survey to every team will be tuned to
-          this baseline.
-        </p>
+        <h3>{t('intake.s4Title')}</h3>
+        <p className="desc">{t('intake.s4Desc')}</p>
         {(['leadershipLiteracy', 'operationalAdoption', 'policyGovernance'] as const).map((k) => (
           <p key={k}>
-            <label htmlFor={k}>
-              {
-                {
-                  leadershipLiteracy: 'Leadership literacy',
-                  operationalAdoption: 'Operational adoption',
-                  policyGovernance: 'Policy & governance',
-                }[k]
-              }
-            </label>
+            <label htmlFor={k}>{t(`intake.${k}`)}</label>
             <input id={k} name={k} type="range" min={0} max={5} defaultValue={2} />
           </p>
         ))}

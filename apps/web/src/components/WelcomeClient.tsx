@@ -2,17 +2,13 @@
 
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
-import type { SupportedLocale } from '@auditai/i18n';
+import { LOCALE_COOKIE, createTranslator, type SupportedLocale } from '@auditai/i18n';
 import LocaleToggle from './LocaleToggle';
 
 interface Props {
   token: string;
   initialLocale: SupportedLocale;
   totalQuestions: number;
-  startLabel: string;
-  estimatedLabel: string;
-  skipLabel: string;
-  languageHeading: string;
 }
 
 /**
@@ -23,14 +19,17 @@ export default function WelcomeClient(props: Props) {
   const [locale, setLocale] = useState<SupportedLocale>(props.initialLocale);
   const [pending, startTransition] = useTransition();
   const router = useRouter();
+  const t = createTranslator(locale);
 
   const handleLocale = async (next: SupportedLocale) => {
     setLocale(next);
+    document.cookie = `${LOCALE_COOKIE}=${next}; Path=/; Max-Age=31536000; SameSite=Lax`;
     await fetch('/api/locale', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ token: props.token, locale: next }),
     });
+    router.refresh();
   };
 
   const handleStart = () => {
@@ -40,21 +39,17 @@ export default function WelcomeClient(props: Props) {
   return (
     <div>
       <p>
-        <strong>{props.languageHeading}</strong>
+        <strong>{t('survey.languageHeading')}</strong>
       </p>
-      <LocaleToggle value={locale} onChange={handleLocale} />
-      <p className="muted">{props.estimatedLabel}</p>
-      <p className="muted">{props.skipLabel}</p>
+      <LocaleToggle value={locale} locale={locale} onChange={handleLocale} />
+      <p className="muted">{t('survey.estimated')}</p>
+      <p className="muted">{t('survey.skip')}</p>
       <p>
         <button type="button" className="cta" onClick={handleStart} disabled={pending}>
-          {props.startLabel}
+          {t('survey.start')}
         </button>
       </p>
-      <p className="muted">
-        {props.totalQuestions === 1
-          ? `${props.totalQuestions} question`
-          : `${props.totalQuestions} questions`}
-      </p>
+      <p className="muted">{t('survey.questionsCount', { n: props.totalQuestions })}</p>
     </div>
   );
 }

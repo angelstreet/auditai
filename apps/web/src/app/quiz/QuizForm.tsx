@@ -3,15 +3,18 @@
 import { useFormState, useFormStatus } from 'react-dom';
 import type { TenantId } from '@auditai/contracts';
 import type { QuizQuestion } from '@auditai/domain';
+import { quizItems } from '@auditai/i18n';
+import { useI18n } from '@/components/I18nProvider';
 import { submitQuizAction, type QuizActionState } from './actions';
 
 const INITIAL: QuizActionState = { ok: false, message: '' };
 
 function SubmitButton() {
+  const { t } = useI18n();
   const { pending } = useFormStatus();
   return (
     <button type="submit" disabled={pending} className="btn-primary">
-      {pending ? 'Saving…' : 'Submit quiz'}
+      {pending ? t('quiz.saving') : t('quiz.submit')}
     </button>
   );
 }
@@ -23,6 +26,8 @@ interface Props {
 }
 
 export function QuizForm({ tenantId, pseudonym, questions }: Props) {
+  const { locale } = useI18n();
+  const copy = quizItems[locale];
   const [state, formAction] = useFormState(submitQuizAction, INITIAL);
   return (
     <form action={formAction} className="quiz-form">
@@ -31,12 +36,12 @@ export function QuizForm({ tenantId, pseudonym, questions }: Props) {
       {questions.map((q, idx) => (
         <fieldset key={q.code} className="quiz-q">
           <legend>
-            <span className="num">{idx + 1}</span> {q.prompt}
+            <span className="num">{idx + 1}</span> {copy[q.code]?.prompt ?? q.prompt}
           </legend>
           {q.options.map((o) => (
             <label key={o.value} className="opt">
               <input type="radio" name={q.code} value={o.value} required />
-              <span>{o.label}</span>
+              <span>{copy[q.code]?.options[o.value] ?? o.label}</span>
             </label>
           ))}
         </fieldset>

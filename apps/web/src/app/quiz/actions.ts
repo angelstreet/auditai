@@ -10,6 +10,7 @@ import {
 } from '@auditai/contracts';
 import { computeQuizScore, isCompleteQuizSubmission, LITERACY_QUIZ } from '@auditai/domain';
 import { writeRespondentBadge } from '@/lib/respondentBadgeData';
+import { getT } from '@/lib/i18n';
 
 export interface QuizActionState {
   ok: boolean;
@@ -27,10 +28,11 @@ export async function submitQuizAction(
   _prev: QuizActionState,
   formData: FormData,
 ): Promise<QuizActionState> {
+  const { t } = getT();
   const tenantId = String(formData.get('tenantId') ?? '');
   const pseudonym = String(formData.get('respondentPseudonym') ?? '');
-  if (!isUuidV4(tenantId)) return { ok: false, message: 'Invalid tenant id' };
-  if (!isPseudonym(pseudonym)) return { ok: false, message: 'Invalid pseudonym' };
+  if (!isUuidV4(tenantId)) return { ok: false, message: t('quiz.errInvalidTenant') };
+  if (!isPseudonym(pseudonym)) return { ok: false, message: t('quiz.errInvalidPseudonym') };
   const answers: Record<string, string> = {};
   for (const q of LITERACY_QUIZ) {
     const v = formData.get(q.code);
@@ -38,12 +40,12 @@ export async function submitQuizAction(
     if (s) answers[q.code] = s;
   }
   if (!isCompleteQuizSubmission(answers)) {
-    return { ok: false, message: 'Please answer every question before submitting.' };
+    return { ok: false, message: t('quiz.errIncomplete') };
   }
   for (const q of LITERACY_QUIZ) {
     const v = answers[q.code] ?? '';
     if (!findOption(q.code, v)) {
-      return { ok: false, message: `Unknown answer for ${q.code}: ${v}` };
+      return { ok: false, message: t('quiz.errUnknownAnswer', { code: q.code, value: v }) };
     }
   }
   const sourceAnswers: QuizAnswer[] = LITERACY_QUIZ.map((q) => {
@@ -63,10 +65,9 @@ export async function submitQuizAction(
     revalidatePath('/quiz');
     revalidatePath('/quiz/result');
   } catch (err) {
-    return {
-      ok: false,
-      message: `Save failed: ${err instanceof Error ? err.message : String(err)}`,
-    };
+    // The raw error stays server-side: it may contain SQL or tenant details.
+    console.error('quiz save failed', err);
+    return { ok: false, message: t('quiz.errSaveFailed') };
   }
   // Redirect after successful submission; the result page reads the badge back.
   const tier = mascotTierForScore(quizScore);
