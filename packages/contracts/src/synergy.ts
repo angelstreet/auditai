@@ -68,3 +68,30 @@ export const synergyWriteSchema = z.object({
   proposedFollowupPrompt: z.string().min(10).max(1_000),
 });
 export type SynergyWrite = z.infer<typeof synergyWriteSchema>;
+
+/**
+ * Allowed status transitions (M13 slice C). Mirrors the opportunity-status graph:
+ *
+ *   detected  ──> surfaced  ──> archived
+ *      │            │
+ *      └──> dismissed ──> archived
+ *
+ * `archived` is terminal; a re-opening is a new row. The auditor cannot un-dismiss
+ * or un-surface without explicit consent — undo is a new row.
+ */
+export const SYNERGY_STATUS_TRANSITIONS: Record<SynergyStatus, ReadonlyArray<SynergyStatus>> = {
+  detected: ['surfaced', 'dismissed'],
+  surfaced: ['dismissed', 'archived'],
+  dismissed: ['surfaced', 'archived'],
+  archived: [],
+};
+
+export const synergyStatusTransitionSchema = z
+  .object({
+    from: synergyStatusSchema,
+    to: synergyStatusSchema,
+  })
+  .refine((v) => SYNERGY_STATUS_TRANSITIONS[v.from].includes(v.to), {
+    message: 'illegal synergy status transition',
+  });
+export type SynergyStatusTransition = z.infer<typeof synergyStatusTransitionSchema>;

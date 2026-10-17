@@ -26,6 +26,9 @@ describe('audit log schema (M10, FR-08, PRD §25.4)', () => {
       'opportunity.update',
       'opportunity.archive',
       'synergy.detect',
+      'synergy.surface',
+      'synergy.dismiss',
+      'synergy.archive',
     ]);
     expect(auditTargetKindSchema.options).toEqual(['analysis', 'opportunity', 'synergy']);
   });

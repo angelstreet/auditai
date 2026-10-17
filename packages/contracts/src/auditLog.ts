@@ -28,6 +28,9 @@ export const auditActionSchema = z.enum([
   'opportunity.update',
   'opportunity.archive',
   'synergy.detect',
+  'synergy.surface',
+  'synergy.dismiss',
+  'synergy.archive',
 ]);
 export type AuditAction = z.infer<typeof auditActionSchema>;
 
