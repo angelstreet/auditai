@@ -9,7 +9,8 @@
     "lint": "eslint src --max-warnings=0",
     "test": "vitest run",
     "smoke": "node --import tsx scripts/smoke.ts",
-    "synergy-smoke": "node --import tsx scripts/synergy-smoke.ts"
+    "synergy-smoke": "node --import tsx scripts/synergy-smoke.ts",
+    "team-rollup-smoke": "node --import tsx scripts/team-rollup-smoke.ts"
   },
   "dependencies": {
     "@auditai/contracts": "workspace:*",

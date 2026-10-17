@@ -22,3 +22,8 @@ export {
   type SynergyDetectionOptions,
   type SynergyDetectionResult,
 } from './synergyDetector.js';
+export {
+  rollupTeamBadges,
+  type TeamBadgeRollupOptions,
+  type TeamBadgeRollupResult,
+} from './teamBadgeRollup.js';
