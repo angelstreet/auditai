@@ -6,6 +6,7 @@ import {
   auditLogWriteSchema,
   auditTargetKindSchema,
   opportunityAuditLogSchema,
+  synergyAuditLogSchema,
 } from './auditLog.js';
 
 const TENANT = '11111111-1111-4111-8111-111111111111';
@@ -13,6 +14,7 @@ const USER = '99999999-9999-4999-8999-999999999999';
 const ENG = 'a5555555-4555-4555-8555-555555555555';
 const ANALYSIS = 'b0000000-0000-4000-8000-000000000001';
 const OPPORTUNITY = 'c0000000-0000-4000-8000-000000000001';
+const SYNERGY = '10000000-0000-4000-8000-000000000001';
 const AUDIT_ID = 'd0000000-0000-4000-8000-000000000001';
 
 describe('audit log schema (M10, FR-08, PRD §25.4)', () => {
@@ -23,8 +25,9 @@ describe('audit log schema (M10, FR-08, PRD §25.4)', () => {
       'opportunity.create',
       'opportunity.update',
       'opportunity.archive',
+      'synergy.detect',
     ]);
-    expect(auditTargetKindSchema.options).toEqual(['analysis', 'opportunity']);
+    expect(auditTargetKindSchema.options).toEqual(['analysis', 'opportunity', 'synergy']);
   });
 
   it('parses a complete audit log row', () => {
@@ -69,6 +72,24 @@ describe('audit log schema (M10, FR-08, PRD §25.4)', () => {
       createdAt: '2026-10-15T06:00:00.000Z',
     });
     expect(row.targetId).toBe(OPPORTUNITY);
+  });
+
+  it('synergy audit log refines targetId to SynergyId and accepts synergy.detect', () => {
+    const row = synergyAuditLogSchema.parse({
+      id: AUDIT_ID,
+      tenantId: TENANT,
+      actorUserId: USER,
+      action: 'synergy.detect',
+      targetKind: 'synergy',
+      targetId: SYNERGY,
+      payload: {
+        themeLabel: 'Source-checking practice',
+        engagements: 2,
+      },
+      createdAt: '2026-10-17T10:00:00.000Z',
+    });
+    expect(row.action).toBe('synergy.detect');
+    expect(row.targetId).toBe(SYNERGY);
   });
 
   it('rejects an unknown action verb', () => {

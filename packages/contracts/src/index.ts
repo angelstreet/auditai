@@ -16,3 +16,4 @@ export * from './submission.js';
 export * from './auditLog.js';
 export * from './opportunity.js';
 export * from './sponsorBrief.js';
+export * from './synergy.js';
