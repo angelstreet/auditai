@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { listTenantIds, tenantLabel } from '@/lib/adminData';
+import { tenantLabel } from '@/lib/adminData';
+import { sessionTenantIds } from '@/lib/authServer';
 
 interface Props {
   currentTenantId: string;
@@ -10,7 +11,7 @@ interface Props {
  * from the tenants table so they always reflect the current data.
  */
 export default async function TenantSwitcher({ currentTenantId }: Props) {
-  const tenantIds = await listTenantIds();
+  const tenantIds = await sessionTenantIds();
   const labels = await Promise.all(
     tenantIds.map(async (id) => ({ id, label: await tenantLabel(id) })),
   );

@@ -54,6 +54,9 @@ const env = (extra = {}) => ({
   DATABASE_URL: `postgres://${PG_USER}:${PG_PASSWORD}@127.0.0.1:${PG_PORT}/${PG_DATABASE}`,
   DATABASE_APP_USER: PG_USER,
   DATABASE_APP_PASSWORD: PG_PASSWORD,
+  // Synthetic, local-only. Real deployments set their own AUTH_SESSION_SECRET.
+  AUTH_SESSION_SECRET: process.env.AUTH_SESSION_SECRET ?? 'local-stack-synthetic-session-secret',
+  AUTH_COOKIE_SECURE: '0',
   ...extra,
 });
 

@@ -94,7 +94,7 @@ export function DeleteForm({ tenantId }: Props) {
         .btn-primary { padding: 6px 12px; background: #b03a2e; color: var(--color-brand-off-white);
           border: 0; border-radius: 6px; font: inherit; cursor: pointer; }
         input[type=text] { padding: 6px 8px; border: 1px solid var(--color-border); border-radius: 6px;
-          font: inherit; min-width: 320px; }
+          font: inherit; width: 100%; max-width: 320px; box-sizing: border-box; }
       `}</style>
     </form>
   );

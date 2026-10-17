@@ -12,7 +12,10 @@
  *
  * No DB writes; this is a read-only smoke over the production build.
  */
+import { loginCookie } from './smoke-auth.mjs';
+
 const base = process.env['LOCAL_WEB_URL'] ?? 'http://127.0.0.1:3101';
+const cookiePromise = loginCookie(base);
 
 const ok = (m) => process.stdout.write(`\u2713 ${m}\n`);
 const fail = (m) => {
@@ -21,12 +24,15 @@ const fail = (m) => {
 };
 
 const fetchHead = async (path) => {
-  const res = await fetch(`${base}${path}`, { redirect: 'manual' });
+  const res = await fetch(`${base}${path}`, {
+    redirect: 'manual',
+    headers: { cookie: await cookiePromise },
+  });
   return { status: res.status, location: res.headers.get('location') };
 };
 
 const fetchText = async (path) => {
-  const res = await fetch(`${base}${path}`);
+  const res = await fetch(`${base}${path}`, { headers: { cookie: await cookiePromise } });
   if (!res.ok) {
     const text = await res.text();
     throw new Error(`${path} returned HTTP ${res.status}: ${text.slice(0, 200)}`);

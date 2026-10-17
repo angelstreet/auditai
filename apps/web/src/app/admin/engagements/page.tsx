@@ -2,7 +2,8 @@ import { redirect } from 'next/navigation';
 import EngagementRow from '@/components/admin/EngagementRow';
 import TenantSwitcher from '@/components/admin/TenantSwitcher';
 import { Logo } from '@/components/Logo';
-import { listEngagements, listTenantIds, tenantLabel } from '@/lib/adminData';
+import { listEngagements, tenantLabel } from '@/lib/adminData';
+import { sessionTenantIds } from '@/lib/authServer';
 
 // Always render at request time so the DB connection is fresh.
 export const dynamic = 'force-dynamic';
@@ -21,7 +22,7 @@ export default async function AdminEngagementsPage({
 }: {
   searchParams: SearchParams;
 }) {
-  const tenants = await listTenantIds();
+  const tenants = await sessionTenantIds();
   if (tenants.length === 0) {
     return (
       <section aria-labelledby="admin-empty-title" className="admin">

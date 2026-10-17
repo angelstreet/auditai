@@ -3,7 +3,8 @@ import Link from 'next/link';
 import { Logo } from '@/components/Logo';
 import { engagementLabelFor, listAuditLogForTarget } from '@/lib/auditorData';
 import { getOpportunity } from '@/lib/opportunityData';
-import { listTenantIds, tenantLabel } from '@/lib/adminData';
+import { tenantLabel } from '@/lib/adminData';
+import { sessionTenantIds } from '@/lib/authServer';
 import { TransitionForm } from './TransitionForm';
 import {
   OPPORTUNITY_STATUS_LABELS,
@@ -28,7 +29,7 @@ const formatDateTime = (iso: string | null): string => {
 };
 
 export default async function OpportunityDetailPage({ params, searchParams }: PageProps) {
-  const tenants = await listTenantIds();
+  const tenants = await sessionTenantIds();
   if (tenants.length === 0) {
     return (
       <section aria-labelledby="empty-title" className="container admin">

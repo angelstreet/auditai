@@ -24,8 +24,10 @@
  */
 import { default as pg } from 'pg';
 import { spawnSync } from 'node:child_process';
+import { loginCookie } from './smoke-auth.mjs';
 
 const base = process.env['LOCAL_WEB_URL'] ?? 'http://127.0.0.1:3101';
+const cookiePromise = loginCookie(base);
 const databaseUrl = process.env['DATABASE_URL'];
 if (!databaseUrl) {
   process.stderr.write('DATABASE_URL is required\n');
@@ -52,7 +54,7 @@ const fail = (m) => {
 };
 
 const fetchText = async (p) => {
-  const res = await fetch(`${base}${p}`);
+  const res = await fetch(`${base}${p}`, { headers: { cookie: await cookiePromise } });
   if (!res.ok) {
     const t = await res.text();
     throw new Error(`${p} returned HTTP ${res.status}: ${t.slice(0, 200)}`);
