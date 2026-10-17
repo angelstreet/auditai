@@ -1,10 +1,10 @@
-# ADR 0003 \u2014 PostgreSQL migrations, RLS, isolation tests
+# ADR 0003 — PostgreSQL migrations, RLS, isolation tests
 
 Status: proposed (2026-10-14). Created as part of M4 ([roadmap](../ROADMAP.md)).
 
 ## Context
 
-PRD \u00a714, \u00a715, \u00a716, \u00a725.1 and \u00a733 require:
+PRD §14, §15, §16, §25.1 and §33 require:
 
 - Multi-tenant data model with `tenant_id` on every client-owned row.
 - PostgreSQL row-level security as the boundary (deny by default).
@@ -27,9 +27,9 @@ M3 produced the schemas; M4 commits the migrations and the test.
 
 ### RLS model
 
-- Every tenant-scoped table runs `ALTER TABLE \u2026 ENABLE ROW LEVEL SECURITY` and
-  `ALTER TABLE \u2026 FORCE ROW LEVEL SECURITY`.
-- The application sets `SET LOCAL app.tenant_id = '\u2026'` at the start of every transaction.
+- Every tenant-scoped table runs `ALTER TABLE … ENABLE ROW LEVEL SECURITY` and
+  `ALTER TABLE … FORCE ROW LEVEL SECURITY`.
+- The application sets `SET LOCAL app.tenant_id = '…'` at the start of every transaction.
 - Policies compare `tenant_id = app_current_tenant_id()`. A second setting
   `SET LOCAL app.is_service_account = 'on'` bypasses the filter so admin / migration jobs can read
   or repair any tenant's data; INSERT still enforces `WITH CHECK` so the application cannot insert
@@ -47,7 +47,7 @@ M3 produced the schemas; M4 commits the migrations and the test.
 - `initdb -U auditai` creates a _superuser_. Superusers bypass RLS even with `FORCE`.
 - Migration 0004 creates `auditai_app NOSUPERUSER NOBYPASSRLS` and grants table-level CRUD on
   `public`. The migration runner keeps using the bootstrap user (it needs DDL); the API and the
-  isolation test connect (or `SET ROLE`) as `auditai_app`. Defence in depth \u2014 even if a service
+  isolation test connect (or `SET ROLE`) as `auditai_app`. Defence in depth — even if a service
   forgets to set `app.tenant_id`, the policy yields zero rows, not every tenant's data.
 
 ### Cross-tenant deny test (`tests/db/isolation.test.ts`)
@@ -56,7 +56,7 @@ M3 produced the schemas; M4 commits the migrations and the test.
   Docker. The same test runs against the CI `postgres:17` service container because the global
   setup only spins up the embedded cluster when `DATABASE_URL` is unset.
 - The test exercises:
-  - SELECT in tenant A only returns rows whose `id` starts with `a\u2026`, and likewise for B.
+  - SELECT in tenant A only returns rows whose `id` starts with `a…`, and likewise for B.
   - UPDATE/DELETE on rows belonging to another tenant reports zero rows affected.
   - INSERT with a `tenant_id` different from `app.tenant_id` is rejected by the WITH CHECK policy.
   - SELECT with no `app.tenant_id` set returns zero rows (fail closed).
@@ -74,10 +74,10 @@ M3 produced the schemas; M4 commits the migrations and the test.
 - **Prisma / Drizzle migrations**: faster authoring but their generated SQL is opaque and the
   schemas would have to mirror the Zod contracts in M3. Rejected for Phase 1; we can revisit
   once migrations outgrow a single directory.
-- **Per-tenant databases (PRD \u00a724.1)**: cleaner blast radius but doubles infra cost and complicates
+- **Per-tenant databases (PRD §24.1)**: cleaner blast radius but doubles infra cost and complicates
   cross-tenant admin views. Acceptable for enterprise self-hosting; not for the consultant-managed
   pilot.
-- **Application-layer authorisation only**: rejected. PRD \u00a725.1 #1 explicitly says RLS is the boundary
+- **Application-layer authorisation only**: rejected. PRD §25.1 #1 explicitly says RLS is the boundary
   and the application guard is defence in depth.
 
 ## Consequences

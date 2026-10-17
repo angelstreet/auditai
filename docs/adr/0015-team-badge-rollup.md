@@ -12,7 +12,7 @@ submission, with the `is_current` partition) and the respondent-facing
 quiz + mascot reveal. Slice C closes the loop:
 
 1. A read surface the analyst can scan to see how the team's
-   literacy clusters \u2014 without ever surfacing a raw score externally.
+   literacy clusters — without ever surfacing a raw score externally.
 2. A worker that fills the `team_badges` table deterministically.
 
 Both arrive in this PR.
@@ -33,7 +33,7 @@ Both arrive in this PR.
   constraint from migration `0011`).
 - The worker is idempotent: re-running only updates `computed_at`.
 
-The worker is pure \u2014 no external LLM, no per-team variation in cut
+The worker is pure — no external LLM, no per-team variation in cut
 points, deterministic results.
 
 Unit tests in `teamBadgeRollup.test.ts` lock in the tie-break and the
@@ -60,7 +60,7 @@ truth in the contracts layer so it ships with the mascot tier enum.
 - `listTeamBadges(tenantId)` ordered by `dominant_tier ASC, computed_at DESC`.
 - `listTeamsInTenant(tenantId)` for the admin directory.
 - `listAllTeamsAcrossTenants()` (service-account read) for the future
-  M14.x board integration \u2014 not used yet.
+  M14.x board integration — not used yet.
 
 Read helpers never traverse to `respondent_badges.quiz_score`, so the
 team profile naturally never surfaces a raw number.

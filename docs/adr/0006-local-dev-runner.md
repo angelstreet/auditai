@@ -60,13 +60,13 @@ set in the root `package.json`. The runner:
 
 A separate `apps/web/scripts/local-smoke.mjs` walks the survey end-to-end:
 
-1. `GET /about` \u2192 confirm the product name + the synthetic sample-survey link.
-2. `GET /s/<token>` \u2192 confirm the welcome page renders.
-3. `POST /api/locale` \u2192 switch to French.
+1. `GET /about` → confirm the product name + the synthetic sample-survey link.
+2. `GET /s/<token>` → confirm the welcome page renders.
+3. `POST /api/locale` → switch to French.
 4. `POST /api/answer` for each of the six synthetic questions.
-5. `GET /s/<token>/done` \u2192 confirm the thank-you page.
+5. `GET /s/<token>/done` → confirm the thank-you page.
 6. Query `submissions` directly via `pg` to assert the row count increased by exactly one.
-7. `GET /admin/engagements` \u2192 confirm the admin page renders and reflects the new submission.
+7. `GET /admin/engagements` → confirm the admin page renders and reflects the new submission.
 
 The smoke script is self-resetting: before running, it deletes any prior submission + answers for
 the synthetic-pilot invitation so the count check is idempotent across runs. The count query
@@ -150,5 +150,5 @@ Negative / known trade-offs:
   their own launcher; the runner itself does not write to those paths.
 - The runner is intentionally not invoked from `pnpm install` or `pnpm dev`; it is a separate
   workflow. CI does not run it.
-- Migration files are still the source of truth. The runner does not migrate "in code" \u2014 it
+- Migration files are still the source of truth. The runner does not migrate "in code" — it
   always runs `infra/db/scripts/migrate.mjs`, which is the same path CI uses.

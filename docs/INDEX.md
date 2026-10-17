@@ -26,32 +26,32 @@ security / governance / operations / value). Below is the section-by-section ind
 
 ### Part I — Product requirements
 
-| §                          | Title                                                    | Mirrors in the roadmap     | ADRs                                                                                                                                                                                                           |
-| -------------------------- | -------------------------------------------------------- | -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1                          | Positioning and terminology                              |                            |                                                                                                                                                                                                                |
-| 2                          | Product goals and non-goals                              |                            |                                                                                                                                                                                                                |
-| 3                          | Personas and permissions                                 |                            |                                                                                                                                                                                                                |
-| 4                          | Core user journeys                                       | M5, M10, M11, M12, M14     | [0004](adr/0004-mobile-web-survey-stack.md), [0008](adr/0008-auditor-review.md), [0009](adr/0009-opportunity-register.md), [0010](adr/0010-sponsor-onboarding.md), [0013](adr/0013-quiz-badges-and-mascots.md) |
-| 5                          | Mobile-first experience requirements                     | M5                         | [0004](adr/0004-mobile-web-survey-stack.md)                                                                                                                                                                    |
-| 6                          | Adaptive AI maturity model                               | M2, M14                    | [0002](adr/0002-monorepo-tooling.md), [0013](adr/0013-quiz-badges-and-mascots.md)                                                                                                                              |
-| 7                          | Workflow discovery questionnaire                         | M5                         | [0004](adr/0004-mobile-web-survey-stack.md)                                                                                                                                                                    |
-| 8                          | The six AI-first learning principles                     |                            |                                                                                                                                                                                                                |
-| 9                          | Functional requirements by priority (FR-01 \u2026 FR-17) | All milestones             | All ADRs                                                                                                                                                                                                       |
-| 10                         | AI workflow design                                       | M9                         | [0007](adr/0007-ai-pipeline.md)                                                                                                                                                                                |
-| 11                         | Opportunity data contract                                | M11                        | [0009](adr/0009-opportunity-register.md)                                                                                                                                                                       |
-| 12                         | Suggested stack and build-vs-buy                         | M2                         | [0002](adr/0002-monorepo-tooling.md)                                                                                                                                                                           |
-| 13                         | Repository / code organization                           | M2                         | [0002](adr/0002-monorepo-tooling.md)                                                                                                                                                                           |
-| 14                         | Data model (logical)                                     | M3, M4                     | [0003](adr/0003-postgres-migrations-and-rls.md)                                                                                                                                                                |
-| 15                         | Security, privacy, and governance                        | All milestones             | [0003](adr/0003-postgres-migrations-and-rls.md), [0006](adr/0006-local-dev-runner.md), [0010](adr/0010-sponsor-onboarding.md), [0013](adr/0013-quiz-badges-and-mascots.md)                                     |
-| 16                         | UX acceptance criteria                                   | M5, M6                     | [0004](adr/0004-mobile-web-survey-stack.md), [0005](adr/0005-admin-engagements-page.md)                                                                                                                        |
-| 17                         | Non-functional requirements                              | M7, M8                     | [0006](adr/0006-local-dev-runner.md)                                                                                                                                                                           |
-| 18                         | Rollout phases, timelines and gates                      | [ROADMAP.md](ROADMAP.md)   |                                                                                                                                                                                                                |
-| 19                         | Success metrics and instrumentation                      | M14 (literacy tier rollup) | [0015](adr/0015-team-badge-rollup.md)                                                                                                                                                                          |
-| 20                         | Detailed first pilot                                     | M12 (sponsor onboarding)   | [0010](adr/0010-sponsor-onboarding.md)                                                                                                                                                                         |
-| 21                         | Example user stories                                     |                            |                                                                                                                                                                                                                |
-| 22                         | Open decisions / product risks                           |                            |                                                                                                                                                                                                                |
-| 23                         | Delivery acceptance / definition of done                 |                            |                                                                                                                                                                                                                |
-| References and assumptions |                                                          |                            |
+| §                          | Title                                               | Mirrors in the roadmap     | ADRs                                                                                                                                                                                                           |
+| -------------------------- | --------------------------------------------------- | -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1                          | Positioning and terminology                         |                            |                                                                                                                                                                                                                |
+| 2                          | Product goals and non-goals                         |                            |                                                                                                                                                                                                                |
+| 3                          | Personas and permissions                            |                            |                                                                                                                                                                                                                |
+| 4                          | Core user journeys                                  | M5, M10, M11, M12, M14     | [0004](adr/0004-mobile-web-survey-stack.md), [0008](adr/0008-auditor-review.md), [0009](adr/0009-opportunity-register.md), [0010](adr/0010-sponsor-onboarding.md), [0013](adr/0013-quiz-badges-and-mascots.md) |
+| 5                          | Mobile-first experience requirements                | M5                         | [0004](adr/0004-mobile-web-survey-stack.md)                                                                                                                                                                    |
+| 6                          | Adaptive AI maturity model                          | M2, M14                    | [0002](adr/0002-monorepo-tooling.md), [0013](adr/0013-quiz-badges-and-mascots.md)                                                                                                                              |
+| 7                          | Workflow discovery questionnaire                    | M5                         | [0004](adr/0004-mobile-web-survey-stack.md)                                                                                                                                                                    |
+| 8                          | The six AI-first learning principles                |                            |                                                                                                                                                                                                                |
+| 9                          | Functional requirements by priority (FR-01 … FR-17) | All milestones             | All ADRs                                                                                                                                                                                                       |
+| 10                         | AI workflow design                                  | M9                         | [0007](adr/0007-ai-pipeline.md)                                                                                                                                                                                |
+| 11                         | Opportunity data contract                           | M11                        | [0009](adr/0009-opportunity-register.md)                                                                                                                                                                       |
+| 12                         | Suggested stack and build-vs-buy                    | M2                         | [0002](adr/0002-monorepo-tooling.md)                                                                                                                                                                           |
+| 13                         | Repository / code organization                      | M2                         | [0002](adr/0002-monorepo-tooling.md)                                                                                                                                                                           |
+| 14                         | Data model (logical)                                | M3, M4                     | [0003](adr/0003-postgres-migrations-and-rls.md)                                                                                                                                                                |
+| 15                         | Security, privacy, and governance                   | All milestones             | [0003](adr/0003-postgres-migrations-and-rls.md), [0006](adr/0006-local-dev-runner.md), [0010](adr/0010-sponsor-onboarding.md), [0013](adr/0013-quiz-badges-and-mascots.md)                                     |
+| 16                         | UX acceptance criteria                              | M5, M6                     | [0004](adr/0004-mobile-web-survey-stack.md), [0005](adr/0005-admin-engagements-page.md)                                                                                                                        |
+| 17                         | Non-functional requirements                         | M7, M8                     | [0006](adr/0006-local-dev-runner.md)                                                                                                                                                                           |
+| 18                         | Rollout phases, timelines and gates                 | [ROADMAP.md](ROADMAP.md)   |                                                                                                                                                                                                                |
+| 19                         | Success metrics and instrumentation                 | M14 (literacy tier rollup) | [0015](adr/0015-team-badge-rollup.md)                                                                                                                                                                          |
+| 20                         | Detailed first pilot                                | M12 (sponsor onboarding)   | [0010](adr/0010-sponsor-onboarding.md)                                                                                                                                                                         |
+| 21                         | Example user stories                                |                            |                                                                                                                                                                                                                |
+| 22                         | Open decisions / product risks                      |                            |                                                                                                                                                                                                                |
+| 23                         | Delivery acceptance / definition of done            |                            |                                                                                                                                                                                                                |
+| References and assumptions |                                                     |                            |
 
 ### Part II — Security, governance, cost, ops, value
 
@@ -76,35 +76,42 @@ Numbered, current, and tied to the milestone that introduced them. Order
 is also the chronology of design choices. **Never amend** an old ADR;
 write a new one that supersedes it.
 
-| #    | Title                                                                         | Milestone    | Status   |
-| ---- | ----------------------------------------------------------------------------- | ------------ | -------- |
-| 0001 | [License & stack](adr/0001-license-and-stack.md)                              | M1 (initial) | Accepted |
-| 0002 | [Monorepo + tooling](adr/0002-monorepo-tooling.md)                            | M2           | Accepted |
-| 0003 | [Postgres migrations + RLS](adr/0003-postgres-migrations-and-rls.md)          | M4           | Accepted |
-| 0004 | [Mobile web survey stack](adr/0004-mobile-web-survey-stack.md)                | M5           | Accepted |
-| 0005 | [Admin engagements page](adr/0005-admin-engagements-page.md)                  | M6           | Accepted |
-| 0006 | [Local one-command runner](adr/0006-local-dev-runner.md)                      | M7           | Accepted |
-| 0007 | [AI pipeline worker](adr/0007-ai-pipeline.md)                                 | M9           | Accepted |
-| 0008 | [Auditor review surface](adr/0008-auditor-review.md)                          | M10          | Accepted |
-| 0009 | [Opportunity register](adr/0009-opportunity-register.md)                      | M11          | Accepted |
-| 0010 | [Sponsor onboarding + portfolio board](adr/0010-sponsor-onboarding.md)        | M12          | Accepted |
-| 0011 | [Cross-team synergy \u2014 schema + contract](adr/0011-cross-team-synergy.md) | M13 slice A  | Accepted |
-| 0012 | [Cross-team synergy \u2014 admin surface](adr/0012-synergy-admin-surface.md)  | M13 slice C  | Accepted |
-| 0013 | [Quiz badges + mascot SVGs](adr/0013-quiz-badges-and-mascots.md)              | M14 slice A  | Accepted |
-| 0014 | [Quiz form + result reveal](adr/0014-quiz-form-and-result.md)                 | M14 slice B  | Accepted |
-| 0015 | [Team badge rollup + profile](adr/0015-team-badge-rollup.md)                  | M14 slice C  | Accepted |
+| #    | Title                                                                             | Milestone             | Status   |
+| ---- | --------------------------------------------------------------------------------- | --------------------- | -------- |
+| 0001 | [License & stack](adr/0001-license-and-stack.md)                                  | M1 (initial)          | Accepted |
+| 0002 | [Monorepo + tooling](adr/0002-monorepo-tooling.md)                                | M2                    | Accepted |
+| 0003 | [Postgres migrations + RLS](adr/0003-postgres-migrations-and-rls.md)              | M4                    | Accepted |
+| 0004 | [Mobile web survey stack](adr/0004-mobile-web-survey-stack.md)                    | M5                    | Accepted |
+| 0005 | [Admin engagements page](adr/0005-admin-engagements-page.md)                      | M6                    | Accepted |
+| 0006 | [Local one-command runner](adr/0006-local-dev-runner.md)                          | M7                    | Accepted |
+| 0007 | [AI pipeline worker](adr/0007-ai-pipeline.md)                                     | M9                    | Accepted |
+| 0008 | [Auditor review surface](adr/0008-auditor-review.md)                              | M10                   | Accepted |
+| 0009 | [Opportunity register](adr/0009-opportunity-register.md)                          | M11                   | Accepted |
+| 0010 | [Sponsor onboarding + portfolio board](adr/0010-sponsor-onboarding.md)            | M12                   | Accepted |
+| 0011 | [Cross-team synergy — schema + contract](adr/0011-cross-team-synergy.md)          | M13 slice A           | Accepted |
+| 0012 | [Cross-team synergy — admin surface](adr/0012-synergy-admin-surface.md)           | M13 slice C           | Accepted |
+| 0013 | [Quiz badges + mascot SVGs](adr/0013-quiz-badges-and-mascots.md)                  | M14 slice A           | Accepted |
+| 0014 | [Quiz form + result reveal](adr/0014-quiz-form-and-result.md)                     | M14 slice B           | Accepted |
+| 0015 | [Team badge rollup + profile](adr/0015-team-badge-rollup.md)                      | M14 slice C           | Accepted |
+| 0016 | [FR-09 retention + export + deletion](adr/0016-fr09-retention-export-deletion.md) | M15 slice A           | Accepted |
+| 0017 | [Board integration + landing](adr/0017-board-integration-and-landing.md)          | M15 slice B           | Accepted |
+| 0018 | [DevX + deploy](adr/0018-devx-and-deploy.md)                                      | M15 slice C           | Accepted |
+| 0019 | [Public-routes Playwright suite](adr/0019-public-routes-playwright.md)            | M15 slice D           | Accepted |
+| 0020 | [Coverage gate scope](adr/0020-coverage-gate-scope.md)                            | M15 review (CI gates) | Accepted |
+| 0021 | [Manual e2e workflow](adr/0021-manual-e2e-workflow.md)                            | M15 review (CI gates) | Accepted |
+| 0022 | [Deploy token + static hosting](adr/0022-deploy-token-and-static-hosting.md)      | M15 review (CI gates) | Accepted |
 
-## 4. The gates map (PRD \u00a725.4)
+## 4. The gates map (PRD §25.4)
 
-ROADMAP \u00a7 [Gates](ROADMAP.md#gates-prd-254) names four launch gates. The
+ROADMAP § [Gates](ROADMAP.md#gates-prd-254) names four launch gates. The
 map below ties each gate to the evidence already in `main`.
 
-| Gate                                  | What it gates                                                              | Evidence already in `main`                                                                                                                 | Owner track next                                                                                                                                              |
-| ------------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **A** \u2014 survey pilot             | Tenant isolation, retention, audit logs, approved AI data route            | `tests/db` isolation suite (RLS deny) + `audit_log` table + `retention_at` on `respondent_badges` + rule-based `model_route` on `analyses` | M15 follow-ups: explicit deletion workflow (PRD FR-09) + retention cleanup worker                                                                             |
-| **B** \u2014 AI synthesis             | Redaction, prompt-injection tests, source traceability, model cost ceiling | `analyses.evidence_json` (sourceKind/sourceId/quote per claim) + `model_route` column + service-account worker posture                     | LLM-backed swap of the four `synthesize*` functions in `services/ai/src/pipeline.ts` (ADR 0007); prompt-injection harness (Phase 2)                           |
-| **C** \u2014 enterprise hosting       | Recovery drill, SSO/MFA, pen test, agreed SLA                              | Embedded Postgres local runner (M7) provides recovery drill substrate                                                                      | Real auth provider (no SSO yet), real pen test (out of scope), SLA contract (out of scope). Currently actor resolution is `x-audit-actor-id` header fallback. |
-| **D** \u2014 cross-company benchmarks | Aggregation thresholds, de-identification review                           | Cross-team synergy detection (M13) is the in-tenant precursor; cross-tenant rollups not started                                            | FR-15 / FR-16 (Phase 3)                                                                                                                                       |
+| Gate                             | What it gates                                                              | Evidence already in `main`                                                                                                                 | Owner track next                                                                                                                                              |
+| -------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **A** — survey pilot             | Tenant isolation, retention, audit logs, approved AI data route            | `tests/db` isolation suite (RLS deny) + `audit_log` table + `retention_at` on `respondent_badges` + rule-based `model_route` on `analyses` | M15 follow-ups: explicit deletion workflow (PRD FR-09) + retention cleanup worker                                                                             |
+| **B** — AI synthesis             | Redaction, prompt-injection tests, source traceability, model cost ceiling | `analyses.evidence_json` (sourceKind/sourceId/quote per claim) + `model_route` column + service-account worker posture                     | LLM-backed swap of the four `synthesize*` functions in `services/ai/src/pipeline.ts` (ADR 0007); prompt-injection harness (Phase 2)                           |
+| **C** — enterprise hosting       | Recovery drill, SSO/MFA, pen test, agreed SLA                              | Embedded Postgres local runner (M7) provides recovery drill substrate                                                                      | Real auth provider (no SSO yet), real pen test (out of scope), SLA contract (out of scope). Currently actor resolution is `x-audit-actor-id` header fallback. |
+| **D** — cross-company benchmarks | Aggregation thresholds, de-identification review                           | Cross-team synergy detection (M13) is the in-tenant precursor; cross-tenant rollups not started                                            | FR-15 / FR-16 (Phase 3)                                                                                                                                       |
 
 ## 5. The "how to test it" quick links
 
@@ -117,19 +124,19 @@ pnpm local:up                    # embedded Postgres + migrations + production b
 
 After `READY postgres=... web=... admin=...` prints, exercise:
 
-| Command                                           | What it covers                                                    | Skill anchor                                    |
-| ------------------------------------------------- | ----------------------------------------------------------------- | ----------------------------------------------- |
-| `pnpm local:smoke`                                | full mobile-survey walk (`/about \u2192 /s/[token] \u2192 /done`) | [M5](adr/0004-mobile-web-survey-stack.md), M7   |
-| `pnpm m10:smoke`                                  | auditor review + approve                                          | [M10](adr/0008-auditor-review.md)               |
-| `pnpm m11:smoke`                                  | opportunity register + status workflow                            | [M11](adr/0009-opportunity-register.md)         |
-| `pnpm m12:smoke`                                  | sponsor intake + portfolio board + 2nd engagement teardown        | [M12](adr/0010-sponsor-onboarding.md)           |
-| `pnpm m13:smoke`                                  | cross-team synergy worker + admin surface + transition flow       | [M11/M13 ADRs](adr/0011-cross-team-synergy.md)  |
-| `pnpm m14:smoke`                                  | quiz form + result reveal + team rollup + profile                 | [M14 ADRs](adr/0013-quiz-badges-and-mascots.md) |
-| `pnpm --filter @auditai/ai run smoke`             | rule-based AI pipeline end-to-end                                 | [M9](adr/0007-ai-pipeline.md)                   |
-| `pnpm --filter @auditai/ai run synergy-smoke`     | cross-engagement synergy worker                                   | [M13](adr/0011-cross-team-synergy.md)           |
-| `pnpm --filter @auditai/ai run team-rollup-smoke` | team-mascot rollup worker                                         | [M14](adr/0015-team-badge-rollup.md)            |
-| `pnpm local:status`                               | probes web + Postgres                                             | [M7](adr/0006-local-dev-runner.md)              |
-| `pnpm local:down`                                 | tears everything down                                             | [M7](adr/0006-local-dev-runner.md)              |
+| Command                                           | What it covers                                              | Skill anchor                                    |
+| ------------------------------------------------- | ----------------------------------------------------------- | ----------------------------------------------- |
+| `pnpm local:smoke`                                | full mobile-survey walk (`/about → /s/[token] → /done`)     | [M5](adr/0004-mobile-web-survey-stack.md), M7   |
+| `pnpm m10:smoke`                                  | auditor review + approve                                    | [M10](adr/0008-auditor-review.md)               |
+| `pnpm m11:smoke`                                  | opportunity register + status workflow                      | [M11](adr/0009-opportunity-register.md)         |
+| `pnpm m12:smoke`                                  | sponsor intake + portfolio board + 2nd engagement teardown  | [M12](adr/0010-sponsor-onboarding.md)           |
+| `pnpm m13:smoke`                                  | cross-team synergy worker + admin surface + transition flow | [M11/M13 ADRs](adr/0011-cross-team-synergy.md)  |
+| `pnpm m14:smoke`                                  | quiz form + result reveal + team rollup + profile           | [M14 ADRs](adr/0013-quiz-badges-and-mascots.md) |
+| `pnpm --filter @auditai/ai run smoke`             | rule-based AI pipeline end-to-end                           | [M9](adr/0007-ai-pipeline.md)                   |
+| `pnpm --filter @auditai/ai run synergy-smoke`     | cross-engagement synergy worker                             | [M13](adr/0011-cross-team-synergy.md)           |
+| `pnpm --filter @auditai/ai run team-rollup-smoke` | team-mascot rollup worker                                   | [M14](adr/0015-team-badge-rollup.md)            |
+| `pnpm local:status`                               | probes web + Postgres                                       | [M7](adr/0006-local-dev-runner.md)              |
+| `pnpm local:down`                                 | tears everything down                                       | [M7](adr/0006-local-dev-runner.md)              |
 
 Manual URLs (ports come from the `READY` line):
 
@@ -139,26 +146,26 @@ Manual URLs (ports come from the `READY` line):
 /board                     M12 portfolio kanban
 /quiz                      M14 5-question literacy quiz
 /quiz/result               M14 mascot reveal (Tortoise / Fox / Owl)
-/admin/engagements         M6 + M9\u2013M11 audit surfaces
+/admin/engagements         M6 + M9–M11 audit surfaces
 /admin/synergies           M13 detected synergies + transitions
 /admin/teams               M14 team profile (only dominant mascot, no raw scores)
 ```
 
 ## 6. Conventions in this docs tree
 
-- **Names** \u2014 Pseudonym-only everywhere; the public PRD talks about
+- **Names** — Pseudonym-only everywhere; the public PRD talks about
   "the pilot client" and the ROADMAP / ADRs never refer to a real
   client. See [AGENTS.md](../AGENTS.md).
-- **Privacy** \u2014 The respondent-facing surfaces (`/quiz`, `/quiz/result`,
+- **Privacy** — The respondent-facing surfaces (`/quiz`, `/quiz/result`,
   `/admin/teams`) never render raw quiz scores. The smoke scripts
   `m14-smoke.mjs`, `m12-smoke.mjs`, and `m13-smoke.mjs` enforce this
   with regex assertions.
-- **RLS** \u2014 Every tenant-scoped table has a four-policy RLS pattern
+- **RLS** — Every tenant-scoped table has a four-policy RLS pattern
   (`SELECT`, `INSERT`, `UPDATE`, `DELETE`) plus a `SET LOCAL
 app.tenant_id` / `app.is_service_account` switch. See ADR 0003.
-- **ADR numbering** \u2014 Next free is `0016`. One decision per ADR; never
+- **ADR numbering** — Next free is `0023`. One decision per ADR; never
   amend an old one.
-- **ROADMAP updates** \u2014 The State column flips and the README Status
+- **ROADMAP updates** — The State column flips and the README Status
   block updates in the same PR (or the immediately-following commit
   on `main`) the milestone lands.
 
@@ -167,7 +174,7 @@ app.tenant_id` / `app.is_service_account` switch. See ADR 0003.
 These are **NOT** blockers for the current shipment but are explicit
 follow-ups the owner should consider before any external pilot:
 
-- **FR-09 (PRD \u00a79) \u2014 team report export + retention / deletion workflow.**
+- **FR-09 (PRD §9) — team report export + retention / deletion workflow.**
   Audit logs are done (M10/M11). Export (CSV / PDF), the explicit
   _deletion_ workflow per tenant, and a periodic cleanup worker that
   honours `retention_at` on `respondent_badges` (and the matching date
@@ -183,7 +190,7 @@ follow-ups the owner should consider before any external pilot:
 - **Real SSO / MFA (Gate C).** Today `x-audit-actor-id` is the
   stand-in; Gate C requires an integration with a real IdP.
 - **Playwright coverage of slice B/C smoke paths.** Today each milestone
-  ships a Node smoke (`apps/web/scripts/m*\u2011smoke.mjs`). A
+  ships a Node smoke (`apps/web/scripts/m*‑smoke.mjs`). A
   Playwright suite that exercises the **rendered UI** end-to-end
   (especially the 360 px mobile layout, FR-09 in admin views) would
   complement the data-layer assertions.
@@ -191,32 +198,32 @@ follow-ups the owner should consider before any external pilot:
   `/admin/synergies`, and `/admin/teams` are good candidates for an a11y
   pass (focus order, contrast, screen-reader labels on the `<Mascot>`
   SVGs).
-- **Phase 3 (PRD \u00a718) \u2014 cross-client benchmark knowledge base, cohort
+- **Phase 3 (PRD §18) — cross-client benchmark knowledge base, cohort
   analytics, optional native mobile apps.** Not started.
 
 ## 8. File-system layout
 
 ```
 docs/
-\u251c\u2500\u2500 INDEX.md          \u2190 this file (map contract)
-\u251c\u2500\u2500 PRD.md            \u2190 product requirements (35 sections)
-\u251c\u2500\u2500 ROADMAP.md       \u2190 milestone / phase / gate state
-\u2514\u2500\u2500 adr/
-   \u251c\u2500\u2500 0001-license-and-stack.md
-   \u251c\u2500\u2500 0002-monorepo-tooling.md
-   \u251c\u2500\u2500 0003-postgres-migrations-and-rls.md
-   \u251c\u2500\u2500 0004-mobile-web-survey-stack.md
-   \u251c\u2500\u2500 0005-admin-engagements-page.md
-   \u251c\u2500\u2500 0006-local-dev-runner.md
-   \u251c\u2500\u2500 0007-ai-pipeline.md
-   \u251c\u2500\u2500 0008-auditor-review.md
-   \u251c\u2500\u2500 0009-opportunity-register.md
-   \u251c\u2500\u2500 0010-sponsor-onboarding.md
-   \u251c\u2500\u2500 0011-cross-team-synergy.md
-   \u251c\u2500\u2500 0012-synergy-admin-surface.md
-   \u251c\u2500\u2500 0013-quiz-badges-and-mascots.md
-   \u251c\u2500\u2500 0014-quiz-form-and-result.md
-   \u2514\u2500\u2500 0015-team-badge-rollup.md
+├── INDEX.md          ← this file (map contract)
+├── PRD.md            ← product requirements (35 sections)
+├── ROADMAP.md       ← milestone / phase / gate state
+└── adr/
+   ├── 0001-license-and-stack.md
+   ├── 0002-monorepo-tooling.md
+   ├── 0003-postgres-migrations-and-rls.md
+   ├── 0004-mobile-web-survey-stack.md
+   ├── 0005-admin-engagements-page.md
+   ├── 0006-local-dev-runner.md
+   ├── 0007-ai-pipeline.md
+   ├── 0008-auditor-review.md
+   ├── 0009-opportunity-register.md
+   ├── 0010-sponsor-onboarding.md
+   ├── 0011-cross-team-synergy.md
+   ├── 0012-synergy-admin-surface.md
+   ├── 0013-quiz-badges-and-mascots.md
+   ├── 0014-quiz-form-and-result.md
+   └── 0015-team-badge-rollup.md
 ```
 
 The contract map of every Zod schema and TS type in `@auditai/contracts`

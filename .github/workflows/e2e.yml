@@ -1,0 +1,61 @@
+name: E2E (manual)
+
+# Manually triggered only (ADR 0021). Boots the local stack (embedded Postgres
+# + the web app) and runs the milestone smoke chain. Not a PR gate yet: the
+# web build needs a fix first (see ADR 0021 "Status").
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    name: Local stack + milestone smokes
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.3
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Boot local stack
+        run: |
+          pnpm local:up > local-stack.log 2>&1 &
+          for i in $(seq 1 120); do
+            if pnpm local:status > /dev/null 2>&1; then exit 0; fi
+            sleep 5
+          done
+          echo "local stack did not become ready"; tail -100 local-stack.log; exit 1
+
+      - name: Milestone smokes
+        run: pnpm test:e2e
+
+      - name: Stop local stack
+        if: always()
+        run: pnpm local:down || true
+
+      - name: Upload stack log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: local-stack-log
+          path: local-stack.log
+          if-no-files-found: ignore

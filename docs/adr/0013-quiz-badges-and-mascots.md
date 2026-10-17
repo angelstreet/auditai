@@ -9,10 +9,10 @@
 
 Phase 2 closes with M14: the gamified literacy layer that turns the
 analyses + opportunity stream into a respondent-facing showcase.
-The hard rules from PRD \u00a76, \u00a79, \u00a715:
+The hard rules from PRD §6, §9, §15:
 
-- The respondent sees a 3-tier mascot (Tortoise / Fox / Owl) \u2014 NEVER a
-  raw 0\u201310 score, even on their personal result page.
+- The respondent sees a 3-tier mascot (Tortoise / Fox / Owl) — NEVER a
+  raw 0–10 score, even on their personal result page.
 - Teams and organisations aggregate to the same 3-tier mascot set. Raw
   numbers never appear externally.
 - Mascots are inline SVG. No emoji. No external image.
@@ -25,8 +25,8 @@ The hard rules from PRD \u00a76, \u00a79, \u00a715:
 The static mockup at https://w7jzvtg0dhdfg.space.minimax.io is the
 design reference; the dynamic shape must match.
 
-This ADR covers Slice A \u2014 the data model + mascot component +
-contracts \u2014 and outlines the slice-B (quiz form + server action +
+This ADR covers Slice A — the data model + mascot component +
+contracts — and outlines the slice-B (quiz form + server action +
 result reveal) and slice-C (team rollup worker + admin surface) plans.
 
 ## Decision
@@ -70,10 +70,10 @@ team_badges(
 - `mascotTierSchema` (enum 'tortoise' | 'fox' | 'owl').
 - `quizScoreSchema` (smallint 1..100; Zod min/max).
 - `quizAnswerSchema` (questionCode + value; no free-text).
-- `mascotTierForScore(score): MascotTier` \u2014 the score \u2192 tier function
+- `mascotTierForScore(score): MascotTier` — the score → tier function
   lives in the contracts layer so the server action and the data
-  layer agree byte-for-byte. Cut points: \u2264 50 tortoise, 51\u201380 fox,
-  \u2265 81 owl.
+  layer agree byte-for-byte. Cut points: ≤ 50 tortoise, 51–80 fox,
+  ≥ 81 owl.
 - `respondentBadgeSchema` + `respondentBadgeWriteSchema` (wire / write
   shapes).
 - `teamBadgeSchema` (the rollup wire shape).
@@ -84,9 +84,9 @@ team_badges(
 `packages/ui/src/mascots.tsx` exposes a single `Mascot` React component
 that renders one of three inline SVGs depending on the tier:
 
-- **Tortoise** \u2014 navy shell, teal accents, slow and steady.
-- **Fox** \u2014 amber body, white belly, pragmatic learner.
-- **Owl** \u2014 teal body, white eye discs, the engaged practitioner.
+- **Tortoise** — navy shell, teal accents, slow and steady.
+- **Fox** — amber body, white belly, pragmatic learner.
+- **Owl** — teal body, white eye discs, the engaged practitioner.
 
 Rules:
 
@@ -103,7 +103,7 @@ Rules:
 
 This slice ships the schema + the mascot assets. Slice B adds:
 
-- The respondent-facing `/quiz` form (5\u20136 questions, all multiple
+- The respondent-facing `/quiz` form (5–6 questions, all multiple
   choice, no free-text).
 - The `submitQuiz` server action that validates the answers, computes
   the score, writes the `respondent_badges` row, and reveals the

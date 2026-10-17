@@ -1,52 +1,50 @@
 #!/usr/bin/env bash
 # scripts/deploy-contracts-map.sh
 #
-# One-shot deploy for the static `landing/m15-contracts/index.html` page
-# via the `mavis-website_deploy` tool (a Mavis App on the local surface
-# that publishes HTML to a public URL on `space.minimax.io`).
+# WARNING: this script only works in the MiniMax-hosted agent environment that
+# provides the `mavis-website_deploy` tool. Anywhere else it exits with code 3.
+# It is not a general deploy path. For any other host, see
+# docs/static-hosting.md (static hosting of landing/ through any provider).
 #
-# The script is a thin wrapper: it copies the page to a known staging
-# directory and asks the deploy tool to publish from there. Owner
-# credentials live in `M15_DEPLOY_TOKEN` (owner-only) and are read by
-# the deploy tool, not by this script.
+# One-shot deploy for the static `landing/m15-contracts/index.html` page via the
+# `mavis-website_deploy` App. The owner token is read from the environment
+# (`M15_DEPLOY_TOKEN`) and is passed to the tool through its environment, never
+# as a command-line argument, so it does not show up in `ps` output. The script
+# never prints the token.
 #
-# Usage:
-#   export M15_DEPLOY_TOKEN=...
+# Usage (inside that environment only):
+#   export M15_DEPLOY_TOKEN=...   # set by the owner, never committed
 #   ./scripts/deploy-contracts-map.sh
 #
-# After a successful run, the page is reachable at the URL the tool
-# prints (typically https://<id>.space.minimax.io).
+# After a successful run, the page is reachable at the URL the tool prints.
 
 set -euo pipefail
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 SRC="${REPO_ROOT}/landing/m15-contracts/index.html"
-STAGE_DIR="${TMPDIR:-/tmp}/auditai-contracts-map-$$"
+STAGE_DIR="$(mktemp -d "${TMPDIR:-/tmp}/auditai-contracts-map.XXXXXX")"
+trap 'rm -rf "${STAGE_DIR}"' EXIT
 
 if [[ ! -f "${SRC}" ]]; then
   echo "ERROR: missing ${SRC}" >&2
   exit 2
 fi
 
-mkdir -p "${STAGE_DIR}"
-cp "${SRC}" "${STAGE_DIR}/index.html"
-
 if ! command -v mavis-website_deploy >/dev/null 2>&1; then
-  echo "ERROR: mavis-website_deploy is not on PATH; install via App install." >&2
-  rm -rf "${STAGE_DIR}"
+  echo "ERROR: mavis-website_deploy is not on PATH (only available in the MiniMax agent environment)." >&2
   exit 3
 fi
 
 if [[ -z "${M15_DEPLOY_TOKEN:-}" ]]; then
-  echo "ERROR: M15_DEPLOY_TOKEN is required (owner-only)." >&2
-  rm -rf "${STAGE_DIR}"
+  echo "ERROR: M15_DEPLOY_TOKEN is required (owner-only). Value not printed." >&2
   exit 4
 fi
 
-mavis-website_deploy \
-  --source "${STAGE_DIR}" \
-  --project "auditai-contracts-map" \
-  --token "${M15_DEPLOY_TOKEN}"
+cp "${SRC}" "${STAGE_DIR}/index.html"
 
-rm -rf "${STAGE_DIR}"
+# The token travels in the environment of the child process only.
+M15_DEPLOY_TOKEN="${M15_DEPLOY_TOKEN}" mavis-website_deploy \
+  --source "${STAGE_DIR}" \
+  --project "auditai-contracts-map"
+
 echo "Deployed: landing/m15-contracts/index.html"

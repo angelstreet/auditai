@@ -23,8 +23,8 @@ ships them with a deterministic scorer and an audited re-take flow.
   `ai_chatbot_use`, `ai_assisted_coding`, `ai_built_projects`). Each
   question carries 3-4 multiple-choice options with `weight` (0..22).
 - `computeQuizScore(answers): number` — sums the weights and
-  normalises to 1..100 so the `mascotTierForScore` cut points (\u2264 50
-  tortoise / 51..80 fox / \u2265 81 owl) hold regardless of the question set.
+  normalises to 1..100 so the `mascotTierForScore` cut points (≤ 50
+  tortoise / 51..80 fox / ≥ 81 owl) hold regardless of the question set.
 - `isCompleteQuizSubmission(answers): boolean` — the server action
   refuses partial submissions.
 - `tierDescriptor(tier): string` — the one-line FR description shown
@@ -62,7 +62,7 @@ the mascot.
 
 `apps/web/src/app/quiz/QuizForm.tsx` is the client form: one
 `<fieldset>` per question, a `useFormState` action, the standard
-`Save\u2026` pending button. Pseudonym and tenant are hidden inputs.
+`Save…` pending button. Pseudonym and tenant are hidden inputs.
 
 `apps/web/src/app/quiz/actions.ts` validates every answer, computes
 the score, calls `writeRespondentBadge`, and `redirect`s to
@@ -106,8 +106,8 @@ the score, calls `writeRespondentBadge`, and `redirect`s to
 
 ## Consequences
 
-- The end-to-end loop closes for the respondent: pseudonym \u2192
-  submit \u2192 mascot. Five-question quiz + deterministic scorer.
+- The end-to-end loop closes for the respondent: pseudonym →
+  submit → mascot. Five-question quiz + deterministic scorer.
 - A respondent retaking the quiz preserves history (`is_current`
   partition) so retrospective analysis still works without polluting
   the team rollup.

@@ -9,7 +9,7 @@
 
 The M5 mobile-survey test (`e2e/mobile-survey.spec.ts`) and the M6 admin
 test (`e2e/admin-engagements.spec.ts`) cover one route each at one
-viewport. PRD \u00a716 calls for explicit acceptance at 360 px, mobile +
+viewport. PRD §16 calls for explicit acceptance at 360 px, mobile +
 desktop. The M15 slice-D inventory leaves three public surfaces
 without any layout gate: `/welcome`, `/board`, `/admin/synergies`,
 `/admin/teams`, `/admin/data` (each added in M12 / M13 / M14 / M15).
@@ -26,7 +26,7 @@ Six cheap assertions per surface:
   returns HTTP 200.
 - The page renders at least one `<h1>`/`<h2>`/`<h3>` (catches a 4xx that
   slipped past the status assertion).
-- `/` 30x-redirects to `/welcome` (PRD \u00a75; M15b landing change).
+- `/` 30x-redirects to `/welcome` (PRD §5; M15b landing change).
 - On `mobile-360` the page never exceeds the viewport width (no
   horizontal scroll) for every public surface.
 - The hero heading is `inViewport()` on `/welcome`.
@@ -36,11 +36,11 @@ The deeper per-route smoke (data assertions) is covered by the Node
 
 ### 2. `apps/web/playwright.config.ts` gains a `tablet-768` project
 
-| Project         | Viewport   | Use                          |
-| --------------- | ---------- | ---------------------------- |
-| `mobile-360`    | 360 x 800  | PRD \u00a716 minimum mobile  |
-| `tablet-768`    | 768 x 1024 | consultant / iPad landscape  |
-| `desktop-admin` | 1280 x 800 | PRD \u00a716 admin workspace |
+| Project         | Viewport   | Use                         |
+| --------------- | ---------- | --------------------------- |
+| `mobile-360`    | 360 x 800  | PRD §16 minimum mobile      |
+| `tablet-768`    | 768 x 1024 | consultant / iPad landscape |
+| `desktop-admin` | 1280 x 800 | PRD §16 admin workspace     |
 
 Each surface is exercised at every viewport because the M5 spec only
 covered one; the matrix gate keeps future regressions honest.
@@ -51,10 +51,10 @@ One-shot deploy for `landing/m15-contracts/index.html` via the
 Mavis `mavis-website_deploy` App. Owner-only `M15_DEPLOY_TOKEN`
 keeps credentials out of the repo. Failure paths:
 
-- missing page \u2192 exit 2
-- App missing \u2192 exit 3
-- missing token \u2192 exit 4
-- deploy failure \u2192 propagates from the App
+- missing page → exit 2
+- App missing → exit 3
+- missing token → exit 4
+- deploy failure → propagates from the App
 
 The script copies the page to a unique staging dir so repeated runs
 do not collide, invokes the App, then tears the staging dir down.
@@ -70,7 +70,7 @@ once the owner is confident the suite is stable.
 
 ## Consequences
 
-- Three viewports \u00d7 six routes \u00d7 one assertion-per-viewport locks in
+- Three viewports × six routes × one assertion-per-viewport locks in
   the layout gate at minimal runtime cost.
 - The deploy script is the single entry point for the contracts-map
   page; deploying the M8 / M12 / M14 mockups stays as-is (different

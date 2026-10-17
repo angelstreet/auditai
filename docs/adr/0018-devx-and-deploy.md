@@ -10,7 +10,7 @@
 The previous slices shipped tests, lint, typecheck, format, leak-scan
 as the CI gate, but:
 
-- The owner still has to invoke each milestone smoke (`m10:smoke` \u2026
+- The owner still has to invoke each milestone smoke (`m10:smoke` …
   `m15b:smoke`) individually.
 - There is no coverage gate in CI; test counts grow but no enforcement
   on shrinking coverage.
@@ -45,22 +45,22 @@ intentionally package-scoped (the only `tsc --noEmit` packages) so
 the threshold is meaningful, not noise.
 
 `pnpm coverage` is the on-demand invocation. CI is not yet enforced
-to call it \u2014 the gate exists for the owner and for future PRs.
+to call it — the gate exists for the owner and for future PRs.
 
 ### 3. Dockerfile + docker-compose.yml
 
 `Dockerfile` is a two-stage Node 20 image:
 
-- **builder** \u2014 installs via pnpm, builds `@auditai/web`.
-- **runtime** \u2014 copies the artefacts; `pnpm --filter @auditai/web start`
+- **builder** — installs via pnpm, builds `@auditai/web`.
+- **runtime** — copies the artefacts; `pnpm --filter @auditai/web start`
   on port 3000; a `HEALTHCHECK` that hits `/about`.
 
 Postgres is **not bundled** in the API image. `docker-compose.yml`
 brings up:
 
-- `db` \u2014 Postgres 17 on host port 54329.
-- `migrate` \u2014 runs `infra/db/scripts/migrate.mjs` once and exits.
-- `web` \u2014 production server on host port 3000, depends on
+- `db` — Postgres 17 on host port 54329.
+- `migrate` — runs `infra/db/scripts/migrate.mjs` once and exits.
+- `web` — production server on host port 3000, depends on
   `migrate` + `db`.
 
 The local one-command runner (ADR 0006) remains the developer path;
@@ -77,7 +77,7 @@ legend. No emoji, no external image, no JS.
 
 ## Consequences
 
-- The owner can run `pnpm test:e2e` once and exercise M9 \u2192 M15b.
+- The owner can run `pnpm test:e2e` once and exercise M9 → M15b.
 - Coverage drops below 80% on a tracked package now surfaces as a
   failing command, not as a silent regression.
 - Self-host pilots have a one-line Docker deployment story.
@@ -86,7 +86,7 @@ legend. No emoji, no external image, no JS.
 
 ## Alternatives considered
 
-- **Bundle Postgres in the Dockerfile.** Rejected: PRD \u00a717 calls for
+- **Bundle Postgres in the Dockerfile.** Rejected: PRD §17 calls for
   portable, single-tenant deployments; externalising Postgres makes
   the API stateless.
 - **Promote the contracts map to a Next.js route.** Rejected for the
@@ -102,7 +102,7 @@ legend. No emoji, no external image, no JS.
 
 ## What's NOT in this PR
 
-- **Playwright coverage of the public URLs at 3 sizes \u00d7 3 browsers.**
+- **Playwright coverage of the public URLs at 3 sizes × 3 browsers.**
   Deferred; the dependency footprint is non-trivial and would need
   its own slice.
 - **CI integration of the coverage gate.** Deferred; the gate is a
