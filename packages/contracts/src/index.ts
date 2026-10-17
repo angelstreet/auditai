@@ -15,3 +15,4 @@ export * from './invitation.js';
 export * from './submission.js';
 export * from './auditLog.js';
 export * from './opportunity.js';
+export * from './sponsorBrief.js';
