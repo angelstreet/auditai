@@ -38,6 +38,19 @@ export const mascotTierForScore = (score: QuizScore): MascotTier => {
   return 'owl';
 };
 
+/** One-line EN description per tier. Mirrors `@auditai/domain`'s `tierDescriptor`
+ * so web consumers that import only contracts stay consistent. */
+export const tierDescriptorFromType = (tier: MascotTier): string => {
+  switch (tier) {
+    case 'tortoise':
+      return "You're at the start of the curve \u2014 a little exposure goes a long way.";
+    case 'fox':
+      return "You're a regular explorer \u2014 pragmatic, curious, learning as you go.";
+    case 'owl':
+      return "You're an engaged practitioner \u2014 keep sharing what works.";
+  }
+};
+
 /** Wire shape of `respondent_badges`. */
 export const respondentBadgeSchema = z.object({
   id: z.string().uuid(),

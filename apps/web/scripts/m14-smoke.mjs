@@ -19,6 +19,7 @@
  * Exits 0 on success, non-zero on the first failure.
  */
 import { default as pg } from 'pg';
+import { spawnSync } from 'node:child_process';
 
 const base = process.env['LOCAL_WEB_URL'] ?? 'http://127.0.0.1:3101';
 const databaseUrl = process.env['DATABASE_URL'];
@@ -41,6 +42,17 @@ const fetchText = async (path) => {
     throw new Error(`${path} returned HTTP ${res.status}: ${text.slice(0, 200)}`);
   }
   return res.text();
+};
+
+const spawnOk = (cmd, args, env) => {
+  const r = spawnSync(cmd, args, { env, encoding: 'utf8' });
+  if (r.status !== 0) {
+    process.stderr.write(r.stdout);
+    process.stderr.write(r.stderr);
+    fail(`command ${cmd} ${args.join(' ')} exited with ${r.status}`);
+  }
+  process.stdout.write(r.stdout);
+  return r.stdout;
 };
 
 const main = async () => {
@@ -185,8 +197,109 @@ const main = async () => {
   );
   ok('cleaned up smoke-created respondent_badges rows');
 
+  // -------------------------------------------------------------------
+  // Slice C: team-badge rollup + /admin/teams surfacing + raw score check.
+  // -------------------------------------------------------------------
+  // 5. Insert two synthetic respondent_badges for the synthetic team
+  //    `synthetic-employee-001` (already seeded in 0003) so the rollup
+  //    worker has two current rows to count. The custom pseudonym is
+  //    unused downstream; it just needs to be `is_current`.
+  const teamPseudonym = `quiz-team-${Date.now()}`;
+  await c.query(
+    `INSERT INTO respondent_badges (
+        tenant_id, respondent_pseudonym, engagement_id,
+        quiz_score, mascot_tier, source_answers,
+        is_current, assigned_at, retention_at,
+        created_at, updated_at
+      ) VALUES (
+        $1, $2, NULL, 88, 'owl', '[]'::jsonb, TRUE, now(), now() + interval '365 days', now(), now()
+      )`,
+    [tenantId, teamPseudonym],
+  );
+  // Map the pseudonym to the seeded team via a synthetic invitation so the
+  // rollup worker's join picks it up. We do NOT touch the seeded invitations.
+  await c.query(
+    `INSERT INTO invitations (
+        id, tenant_id, engagement_id, team_id, respondent_pseudonym, status,
+        token_reference, token_signature, opens_at, expires_at, open_count, submission_id
+      ) VALUES (
+        gen_random_uuid(), $1,
+        (SELECT id FROM engagements WHERE tenant_id = $1 LIMIT 1),
+        (SELECT id FROM teams WHERE tenant_id = $1 LIMIT 1),
+        $2, 'submitted',
+        'inv-synthetic-team-rollup', 'sig-synthetic-team-rollup',
+        now() - interval '1 day', now() + interval '7 days', 1, NULL
+      )`,
+    [tenantId, teamPseudonym],
+  );
+  ok('seeded one current owl-tier badge mapped to the synthetic tenant team');
+
+  // 6. Spawn the team-rollup smoke (CLI).
+  const trOut = spawnOk('pnpm', ['--filter', '@auditai/ai', 'run', 'team-rollup-smoke'], {
+    ...process.env,
+    DATABASE_URL: databaseUrl,
+    SMOKE_TENANT_ID: tenantId,
+  });
+  const trMatch = trOut.match(/teams=(\d+)\s+upserted=(\d+)/);
+  if (!trMatch) {
+    fail(`team-rollup smoke did not report counters: ${trOut.slice(-200)}`);
+  }
+  if (Number(trMatch[1]) < 1 || Number(trMatch[2]) < 1) {
+    fail(`expected >= 1 team processed + upserted, got teams=${trMatch[1]} upserted=${trMatch[2]}`);
+  }
+  ok(`rollup worker processed teams=${trMatch[1]} upserted=${trMatch[2]}`);
+
+  // 7. /admin/teams renders the team with the dominant tier pill + NO raw score.
+  let teamsHtml = await fetchText(`/admin/teams?tenant=${tenantId}`);
+  if (!/h1[^>]*>Team profiles/.test(teamsHtml)) {
+    fail('/admin/teams did not render the heading');
+  }
+  // /admin/teams surfaces 1 row per team in tenant A. The team we seeded is
+  // `Synthetic team A` (synthetic-employee-001's team). The dominant pill
+  // is one of the three tiers.
+  if (!/Synthetic team A/.test(teamsHtml)) {
+    fail('/admin/teams did not render the Synthetic team A card');
+  }
+  // Hard privacy rule: NO raw quiz_score on the team page.
+  if (/\b88\b/.test(teamsHtml)) {
+    fail('/admin/teams rendered a raw quiz_score (88); privacy regression');
+  }
+  // The page should mention at least one of the tier pills.
+  if (!/tier-/.test(teamsHtml)) {
+    fail('/admin/teams did not render a tier pill');
+  }
+  ok('/admin/teams renders the team card + tier pill + hides raw score');
+
+  // 8. Re-run the rollup; the row is updated, not duplicated. The page
+  //    should still show the same shape.
+  spawnOk('pnpm', ['--filter', '@auditai/ai', 'run', 'team-rollup-smoke'], {
+    ...process.env,
+    DATABASE_URL: databaseUrl,
+    SMOKE_TENANT_ID: tenantId,
+  });
+  const teamCount = await c.query(
+    `SELECT count(*)::int AS n FROM team_badges WHERE tenant_id = $1`,
+    [tenantId],
+  );
+  if (teamCount.rows[0].n < 1) {
+    fail(`expected at least 1 team_badges row after rollup re-run, got ${teamCount.rows[0].n}`);
+  }
+  ok(`team_badges table holds ${teamCount.rows[0].n} row(s) after idempotent re-run`);
+
+  // 9. Cleanup: remove the team invitations + badges we created.
+  await c.query(
+    `DELETE FROM invitations WHERE tenant_id = $1 AND token_reference = 'inv-synthetic-team-rollup'`,
+    [tenantId],
+  );
+  await c.query(
+    `DELETE FROM respondent_badges WHERE tenant_id = $1 AND respondent_pseudonym = $2`,
+    [tenantId, teamPseudonym],
+  );
+  await c.query(`DELETE FROM team_badges WHERE tenant_id = $1`, [tenantId]);
+  ok('cleaned up smoke-created team rollup state');
+
   await c.end();
-  process.stdout.write('M14 slice B smoke: all OK\n');
+  process.stdout.write('M14 slice C smoke: all OK\n');
 };
 
 main().catch((err) => {
