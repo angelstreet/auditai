@@ -93,3 +93,62 @@ Each of these arrives in its own small slice + PR so CI signals are tight.
 - **Use the existing `theme_count` counter on `analyses` for detection.** Rejected: that counter
   is per-row, not cross-engagement. Synergies need a derived view across rows; that is a worker,
   not a column.
+
+## Slice B (this PR update)
+
+The Slice-A schema gives us a destination; Slice B is the worker that fills it.
+
+### 1. The migration `0009_synergy_audit_constraints.sql`
+
+The audit_log table came online in M10 with a `CHECK` constraint on `action` and
+`target_kind`. The CHECKs only allowed `analysis.*` and `opportunity.*`. This migration
+drops and recreates each CHECK to also accept `synergy.detect` on `action` and `synergy`
+on `target_kind`. Forward-only; no data rewrite.
+
+### 2. The worker `detectCrossTeamSynergies(tenantId)`
+
+Located in `services/ai/src/synergyDetector.ts`, the worker:
+
+1. Loads every approved analysis for the tenant (`approved_at IS NOT NULL`) and pulls
+   the themes out of `payload_json`.
+2. Groups themes by `synergyKeyFor(axis, label)` — a deterministic SHA-1 hex of
+   `axis|lower(label)` — and folds the contributing analysis + engagement ids into the
+   group.
+3. Filters to groups that cross **at least two distinct engagements** with **at least two
+   distinct analyses** (the minimum definition of "cross-team").
+4. For each qualifying group, UPSERTs one `synergies` row on `(tenant_id, synergy_key)`
+   and writes one `audit_log` row with `action='synergy.detect'`, `target_kind='synergy'`,
+   and the worker actor in `actor_user_id` (a synthetic auditor by default).
+
+The worker is **purely additive** and **idempotent**:
+
+- The unique index on `(tenant_id, synergy_key)` collapses repeats.
+- On conflict, the JSONB arrays are recomputed as the union of previous + new ids, so a
+  re-run never inserts a duplicate and never shrinks the source set.
+- `detected` and `reused` counters in the return value make the smoke output machine-checkable.
+
+### 3. The synthetic test (the smoke)
+
+`apps/web/scripts/m13-smoke.mjs` is the only place the test creates a second engagement in
+tenant A. It exists precisely so the existing `admin-engagements.spec.ts` anchor (one row
+visible per tenant, 5/12 and 3/9) is preserved. The smoke inserts a fresh `'closed'`
+engagement + submission + 2 approved analyses on a shared literacy theme, runs the worker
+via `pnpm --filter @auditai/ai run synergy-smoke`, asserts the synergies row + audit_log
+row, re-runs for idempotency, asserts `reused >= 1`, then cleans up. After the smoke the
+seed is back to its single-engagement-per-tenant shape.
+
+### 4. New unit tests
+
+`services/ai/src/synergyDetector.test.ts` covers the pure parts of the worker (key
+derivation, JSONB merge, group aggregation, the single-engagement-group drop). Five new
+tests; the cross-engagement write path is covered by the integration smoke.
+
+## Consequences
+
+- The M13 detection loop is now end-to-end: analyses → worker → synergies row → audit_log
+  row. Re-running the worker is safe and converges.
+- The audit-log CHECK constraint is wider; the action / target_kind enums in
+  `@auditai/contracts` (already extended in slice A) match the constraint.
+- The smoke creates + tears down its second engagement atomically, so the M6 admin-tests
+  anchor (1 visible engagement per tenant) still passes in CI.
+- Slice C (the admin/board surface for synergies) lands next.

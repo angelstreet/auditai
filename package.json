@@ -26,7 +26,8 @@
     "local:smoke": "node apps/web/scripts/local-smoke.mjs",
     "m10:smoke": "node apps/web/scripts/m10-smoke.mjs",
     "m11:smoke": "node apps/web/scripts/m11-smoke.mjs",
-    "m12:smoke": "node apps/web/scripts/m12-smoke.mjs"
+    "m12:smoke": "node apps/web/scripts/m12-smoke.mjs",
+    "m13:smoke": "node apps/web/scripts/m13-smoke.mjs"
   },
   "devDependencies": {
     "@types/node": "20.14.10",
