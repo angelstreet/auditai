@@ -9,13 +9,14 @@ get validated opportunities, an adoption roadmap, governance artefacts and measu
 It is **not** an employee performance-ranking tool: it assesses work practices, readiness and improvement opportunities,
 with privacy thresholds, human review of every AI output, and strict tenant isolation.
 
-**Status:** Phase 1 + M9\u2013M12 merged (M1\u2013M12 in [docs/ROADMAP.md](docs/ROADMAP.md)). Monorepo, contracts + domain,
-Postgres + RLS, mobile survey, admin page, the local one-command runner, the rule-based AI pipeline, the
-auditor review surface, the opportunity register + publish gate and the sponsor onboarding + portfolio
-board are all in `main` with green CI. The product requirements are in [docs/PRD.md](docs/PRD.md); the
-phased delivery plan is in [docs/ROADMAP.md](docs/ROADMAP.md); the rationale for the local runner is in
-[ADR 0006](docs/adr/0006-local-dev-runner.md); the sponsor onboarding architecture is in
-[ADR 0010](docs/adr/0010-sponsor-onboarding.md).
+**Status:** Phase 1 + M9\u2013M12 + M13 slice A merged. Monorepo, contracts + domain, Postgres + RLS, mobile
+survey, admin page, the local one-command runner, the rule-based AI pipeline, the auditor review
+surface, the opportunity register + publish gate, the sponsor onboarding + portfolio board and the M13
+synergy schema + contract are all in `main` with green CI. The product requirements are in
+[docs/PRD.md](docs/PRD.md); the phased delivery plan is in [docs/ROADMAP.md](docs/ROADMAP.md); the
+rationale for the local runner is in [ADR 0006](docs/adr/0006-local-dev-runner.md); the sponsor
+onboarding architecture is in [ADR 0010](docs/adr/0010-sponsor-onboarding.md); the cross-team
+synergy data model is in [ADR 0011](docs/adr/0011-cross-team-synergy.md).
 
 **Live landing page:** [bai7w0jcu7s8e.space.minimax.io](https://bai7w0jcu7s8e.space.minimax.io) — a
 public static showcase of the brand. The dynamic survey + admin app is run locally via
