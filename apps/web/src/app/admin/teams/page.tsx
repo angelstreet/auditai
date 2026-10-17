@@ -8,7 +8,8 @@ import {
   type MascotTier,
   type TenantId,
 } from '@auditai/contracts';
-import { listTenantIds, tenantLabel } from '@/lib/adminData';
+import { tenantLabel } from '@/lib/adminData';
+import { sessionTenantIds } from '@/lib/authServer';
 import { listTeamBadges, listTeamsInTenant } from '@/lib/teamBadgeData';
 
 export const dynamic = 'force-dynamic';
@@ -26,7 +27,7 @@ interface PageProps {
  * the `respondent_badges` table directly.
  */
 export default async function TeamsPage({ searchParams }: PageProps) {
-  const tenants = await listTenantIds();
+  const tenants = await sessionTenantIds();
   const current = (tenants.find((t) => t === requested(searchParams.tenant)) ?? tenants[0]) as
     | TenantId
     | undefined;

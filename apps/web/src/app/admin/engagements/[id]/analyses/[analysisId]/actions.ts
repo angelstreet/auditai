@@ -3,22 +3,15 @@
 /**
  * Auditor approval server action (M10, FR-08, PRD §10).
  *
- * The form action is invoked by the detail page when the auditor clicks "Approve". The actor
- * identity is supplied by a header (`x-audit-actor-id`) so the smoke can drive the action
- * without a real session; the production app will replace this with the authenticated user
- * once SSO / MFA land (Gate C). The action is intentionally narrow: it accepts the analysis
+ * The actor is the signed-in session user, and the form's tenantId is honoured only if that user
+ * is a member of the tenant (ADR 0023). The action is intentionally narrow: it accepts the analysis
  * id and a free-text rationale, calls `approveAnalysis`, and returns the result.
  */
 
 import { revalidatePath } from 'next/cache';
-import { headers } from 'next/headers';
-import {
-  approvalResultSchema,
-  approveAnalysis,
-  findAuditorForTenant,
-  getAnalysis,
-} from '@/lib/auditorData';
-import type { AnalysisId, TenantId, UserId } from '@auditai/contracts';
+import { resolveActor } from '@/lib/authServer';
+import { approvalResultSchema, approveAnalysis, getAnalysis } from '@/lib/auditorData';
+import type { AnalysisId, TenantId } from '@auditai/contracts';
 
 export interface ApproveActionState {
   ok: boolean;
@@ -41,15 +34,9 @@ export async function approveAnalysisAction(
     return { ok: false, message: 'Invalid tenant or analysis id' };
   }
 
-  // The actor is the first auditor membership of the tenant. In production this will be
-  // the authenticated session user (Gate C, not in M10).
-  const headerActor = headers().get('x-audit-actor-id');
-  const actor =
-    (headerActor && isUuidV4(headerActor) ? (headerActor as UserId) : null) ??
-    (await findAuditorForTenant(tenantId as TenantId));
-  if (!actor) {
-    return { ok: false, message: 'No auditor membership found for this tenant' };
-  }
+  const who = await resolveActor(tenantId);
+  if (!who.ok) return { ok: false, message: who.message };
+  const actor = who.actor;
 
   try {
     const result = await approveAnalysis(tenantId as TenantId, analysisId as AnalysisId, actor, {

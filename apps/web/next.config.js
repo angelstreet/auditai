@@ -15,6 +15,7 @@ const nextConfig = {
     config.resolve.extensionAlias = {
       ...(config.resolve.extensionAlias ?? {}),
       '.js': ['.ts', '.tsx', '.js'],
+      '.jsx': ['.tsx', '.jsx'],
     };
     return config;
   },

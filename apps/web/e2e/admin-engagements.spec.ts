@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { signInAsAuditorA } from './helpers';
 
 /**
  * Admin engagements smoke test (M6).
@@ -10,6 +11,10 @@ import { expect, test } from '@playwright/test';
  */
 
 test.describe('admin engagements page', () => {
+  test.beforeEach(async ({ page }) => {
+    await signInAsAuditorA(page);
+  });
+
   test('lists the synthetic engagements for the default tenant', async ({ page }) => {
     await page.goto('/admin/engagements');
     const heading = page.getByRole('heading', { level: 1, name: /audit engagements/i });
@@ -24,20 +29,12 @@ test.describe('admin engagements page', () => {
     await expect(completionCell).toContainText(/42%/); // tenant A: 5/12 = 0.4167 \u2248 42%
   });
 
-  test('tenant switcher swaps the data without leaking the other tenant', async ({ page }) => {
+  test("tenant switcher lists only the signed-in user's tenants", async ({ page }) => {
     await page.goto('/admin/engagements');
     const organisationCell = page.locator('table tbody tr').first().locator('th');
     await expect(organisationCell).toContainText('Synthetic Co A');
-
-    // Click the second tenant link (tenant B) and confirm the data changes.
-    await page.getByRole('link', { name: 'Synthetic Co B' }).click();
-    const tenantBRow = page.locator('table tbody tr').first();
-    await expect(tenantBRow.locator('th')).toContainText('Synthetic Co B');
-    await expect(tenantBRow.locator('td').nth(7)).toContainText(/33%/); // tenant B: 3/9 = 0.3333 \u2248 33%
-
-    // Cross-tenant leak check: tenant A's engagement id is absent from the table.
-    const tenantAId = 'a5555555-4555-4555-8555-555555555555';
-    await expect(page.locator(`table >> text=${tenantAId}`)).toHaveCount(0);
+    // Auditor A is not a member of tenant B: no switcher link, no leaked data (ADR 0023).
+    await expect(page.getByRole('link', { name: 'Synthetic Co B' })).toHaveCount(0);
   });
 
   test('redirects to the default tenant when an unknown id is supplied', async ({ page }) => {

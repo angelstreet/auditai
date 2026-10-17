@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { Logo } from '@/components/Logo';
 import { Mascot } from '@auditai/ui';
-import { listEngagements, listTenantIds } from '@/lib/adminData';
+import { listEngagements } from '@/lib/adminData';
+import { sessionTenantIds } from '@/lib/authServer';
 import { listLatestSponsorBriefs } from '@/lib/sponsorBriefData';
 import { listOpportunitiesForEngagement, opportunityStatusCounts } from '@/lib/opportunityData';
 import { listSynergies } from '@/lib/synergyData';
@@ -53,7 +54,7 @@ const engagementToColumn = (
 };
 
 export default async function BoardPage() {
-  const tenantIds = await listTenantIds();
+  const tenantIds = await sessionTenantIds();
   // Pull every engagement + opportunity count + sponsor brief + synergy + team-badge rollup in parallel.
   const [engagementsPerTenant, synergiesPerTenant, teamBadgesPerTenant] = await Promise.all([
     Promise.all(

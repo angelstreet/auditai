@@ -16,8 +16,10 @@
 
 import { setTimeout as sleep } from 'node:timers/promises';
 import { default as pg } from 'pg';
+import { loginCookie } from './smoke-auth.mjs';
 
 const base = process.env['LOCAL_WEB_URL'] ?? 'http://127.0.0.1:3101';
+const cookiePromise = loginCookie(base);
 const databaseUrl = process.env['DATABASE_URL'];
 if (!databaseUrl) {
   process.stderr.write('DATABASE_URL is required\n');
@@ -25,7 +27,10 @@ if (!databaseUrl) {
 }
 
 const fetchJson = async (path, init) => {
-  const res = await fetch(`${base}${path}`, init);
+  const res = await fetch(`${base}${path}`, {
+    ...init,
+    headers: { ...init?.headers, cookie: await cookiePromise },
+  });
   if (!res.ok) {
     const text = await res.text();
     throw new Error(`${path} returned HTTP ${res.status}: ${text.slice(0, 200)}`);

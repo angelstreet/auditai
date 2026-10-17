@@ -2,7 +2,8 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { Logo } from '@/components/Logo';
 import { engagementLabelFor, listAnalysesForEngagement } from '@/lib/auditorData';
-import { listTenantIds, tenantLabel } from '@/lib/adminData';
+import { tenantLabel } from '@/lib/adminData';
+import { sessionTenantIds } from '@/lib/authServer';
 import type { EngagementId, TenantId } from '@auditai/contracts';
 
 export const dynamic = 'force-dynamic';
@@ -26,7 +27,7 @@ const SENSITIVITY_LABEL: Record<'public' | 'internal' | 'sensitive', string> = {
 };
 
 export default async function AnalysesListPage({ params, searchParams }: PageProps) {
-  const tenants = await listTenantIds();
+  const tenants = await sessionTenantIds();
   if (tenants.length === 0) {
     return (
       <section aria-labelledby="empty-title" className="container admin">

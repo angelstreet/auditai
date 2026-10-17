@@ -23,4 +23,9 @@ describe('db hardening', () => {
       withTenant("x'; DROP TABLE tenants; --" as TenantId, async () => 1),
     ).rejects.toThrow(/not a UUID/);
   });
+  it('lets the local runner opt into the dev default explicitly', () => {
+    expect(resolveAppPassword({ NODE_ENV: 'production', ALLOW_DEV_DB_PASSWORD: '1' })).toBe(
+      'auditai',
+    );
+  });
 });

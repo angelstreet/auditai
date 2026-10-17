@@ -2,7 +2,8 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { Logo } from '@/components/Logo';
 import { engagementLabelFor, getAnalysis, listAuditLogForTarget } from '@/lib/auditorData';
-import { listTenantIds, tenantLabel } from '@/lib/adminData';
+import { tenantLabel } from '@/lib/adminData';
+import { sessionTenantIds } from '@/lib/authServer';
 import { ApproveForm } from './ApproveForm';
 import type { AnalysisId, EngagementId, TenantId } from '@auditai/contracts';
 
@@ -105,7 +106,7 @@ const asPrompts = (payload: unknown): InterviewPromptView[] => {
 };
 
 export default async function AnalysisDetailPage({ params, searchParams }: PageProps) {
-  const tenants = await listTenantIds();
+  const tenants = await sessionTenantIds();
   if (tenants.length === 0) {
     return (
       <section aria-labelledby="empty-title" className="container admin">

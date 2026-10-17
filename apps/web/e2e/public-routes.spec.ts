@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { signInAsAuditorA } from './helpers';
 
 /**
  * Cross-route Playwright smoke (M15 slice D, PRD \u00a716).
@@ -16,6 +17,10 @@ import { expect, test } from '@playwright/test';
  */
 
 test.describe('public routes (every viewport, layout gate)', () => {
+  test.beforeEach(async ({ page }) => {
+    await signInAsAuditorA(page);
+  });
+
   for (const path of [
     '/welcome',
     '/board',
@@ -36,7 +41,8 @@ test.describe('public routes (every viewport, layout gate)', () => {
   test('/ 30x-redirects to /welcome on every viewport', async ({ page }) => {
     const response = await page.goto('/', { waitUntil: 'domcontentloaded' });
     // Final URL after the redirect.
-    expect(page.url().endsWith('/welcome')).toBe(true);
+    // Static prerender redirects client-side; wait for it rather than racing DOMContentLoaded.
+    await page.waitForURL(/\/welcome$/);
     expect(response?.status(), 'redirect chain lands at 200').toBeLessThan(400);
   });
 

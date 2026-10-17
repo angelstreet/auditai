@@ -3,23 +3,20 @@
 /**
  * M11 server actions for the opportunity register.
  *
- * Both actions narrow the actor identity by the same pattern as the M10 approve action:
- * honour an `x-audit-actor-id` header if present, otherwise fall back to the first auditor
- * membership of the tenant. Gate C (SSO + MFA) replaces this fallback with the real session.
+ * Both actions take the actor from the signed session and accept the form's tenantId only if
+ * the session user is a member of that tenant (ADR 0023).
  */
 
 import { revalidatePath } from 'next/cache';
-import { headers } from 'next/headers';
+import { resolveActor } from '@/lib/authServer';
 import {
   opportunityStatusSchema,
   type AnalysisId,
   type OpportunityId,
   type OpportunityStatus,
   type TenantId,
-  type UserId,
 } from '@auditai/contracts';
 import { createOpportunityFromAnalysis, transitionOpportunity } from '@/lib/opportunityData';
-import { findAuditorForTenant } from '@/lib/auditorData';
 
 const isUuidV4 = (v: string): boolean =>
   /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(v);
@@ -57,11 +54,9 @@ export async function createOpportunityAction(
     impactScore = n;
   }
 
-  const headerActor = headers().get('x-audit-actor-id');
-  const actor =
-    (headerActor && isUuidV4(headerActor) ? (headerActor as UserId) : null) ??
-    (await findAuditorForTenant(tenantId as TenantId));
-  if (!actor) return { ok: false, message: 'No auditor membership found for this tenant' };
+  const who = await resolveActor(tenantId);
+  if (!who.ok) return { ok: false, message: who.message };
+  const actor = who.actor;
 
   try {
     const result = await createOpportunityFromAnalysis(
@@ -117,11 +112,9 @@ export async function transitionOpportunityAction(
   if (!parsed.success) {
     return { ok: false, message: `Invalid target status: ${to}` };
   }
-  const headerActor = headers().get('x-audit-actor-id');
-  const actor =
-    (headerActor && isUuidV4(headerActor) ? (headerActor as UserId) : null) ??
-    (await findAuditorForTenant(tenantId as TenantId));
-  if (!actor) return { ok: false, message: 'No auditor membership found for this tenant' };
+  const who = await resolveActor(tenantId);
+  if (!who.ok) return { ok: false, message: who.message };
+  const actor = who.actor;
 
   try {
     const result = await transitionOpportunity(

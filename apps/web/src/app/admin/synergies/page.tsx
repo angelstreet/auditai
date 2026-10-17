@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Logo } from '@/components/Logo';
-import { listTenantIds, tenantLabel } from '@/lib/adminData';
+import { tenantLabel } from '@/lib/adminData';
+import { sessionTenantIds } from '@/lib/authServer';
 import { listSynergies } from '@/lib/synergyData';
 import { TransitionSynergyForm } from './TransitionSynergyForm';
 import type { TenantId } from '@auditai/contracts';
@@ -19,7 +20,7 @@ const SYNERGY_TONE: Record<string, string> = {
 };
 
 export default async function SynergiesPage({ searchParams }: PageProps) {
-  const tenants = await listTenantIds();
+  const tenants = await sessionTenantIds();
   const requested = searchParams.tenant;
   const current = (tenants.find((t) => t === requested) ?? tenants[0]) as TenantId | undefined;
   if (!current) {

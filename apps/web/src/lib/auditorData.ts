@@ -7,7 +7,7 @@ import type {
   UserId,
 } from '@auditai/contracts';
 import { approvalResultSchema, auditLogSchema } from '@auditai/contracts';
-import { withServiceAccount, withTenant } from './db';
+import { withTenant } from './db';
 
 export { approvalResultSchema, auditLogSchema };
 
@@ -270,20 +270,6 @@ export const listAuditLogForTarget = async (
       payload: row.payload_json ?? {},
       createdAt: row.created_at,
     }));
-  });
-};
-
-export const findAuditorForTenant = async (tenantId: TenantId): Promise<UserId | null> => {
-  return withServiceAccount(async (client) => {
-    const { rows } = await client.query<{ user_id: string }>(
-      `SELECT user_id FROM memberships
-        WHERE tenant_id = $1 AND role = 'auditor' AND ends_at IS NULL
-        ORDER BY starts_at ASC NULLS LAST
-        LIMIT 1`,
-      [tenantId],
-    );
-    const id = rows[0]?.user_id;
-    return id ? (id as UserId) : null;
   });
 };
 

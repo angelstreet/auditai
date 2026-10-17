@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Logo } from '@/components/Logo';
-import { listTenantIds, tenantLabel } from '@/lib/adminData';
+import { tenantLabel } from '@/lib/adminData';
+import { sessionTenantIds } from '@/lib/authServer';
 import { listDeletionEvents } from '@/lib/deletionData';
 import { listExportRequests } from '@/lib/exportData';
 import { DeleteForm, ExportForm } from './DataAdminClient';
@@ -25,7 +26,7 @@ interface PageProps {
  * trail without leaving the page.
  */
 export default async function DataPage({ searchParams }: PageProps) {
-  const tenants = await listTenantIds();
+  const tenants = await sessionTenantIds();
   const current = (tenants.find((t) => t === requested(searchParams.tenant)) ?? tenants[0]) as
     | TenantId
     | undefined;
@@ -90,28 +91,30 @@ export default async function DataPage({ searchParams }: PageProps) {
         {exports.length === 0 ? (
           <p className="muted">No exports yet for this tenant.</p>
         ) : (
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>When</th>
-                <th>Kind</th>
-                <th>Status</th>
-                <th>Rows</th>
-                <th>Error</th>
-              </tr>
-            </thead>
-            <tbody>
-              {exports.slice(0, 20).map((e) => (
-                <tr key={e.id}>
-                  <td>{e.createdAt}</td>
-                  <td>{e.kind}</td>
-                  <td>{e.status}</td>
-                  <td>{e.rowCount}</td>
-                  <td className="muted">{e.error ?? '\u2014'}</td>
+          <div style={{ overflowX: 'auto' }}>
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>When</th>
+                  <th>Kind</th>
+                  <th>Status</th>
+                  <th>Rows</th>
+                  <th>Error</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {exports.slice(0, 20).map((e) => (
+                  <tr key={e.id}>
+                    <td>{stamp(e.createdAt)}</td>
+                    <td>{e.kind}</td>
+                    <td>{e.status}</td>
+                    <td>{e.rowCount}</td>
+                    <td className="muted">{e.error ?? '\u2014'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </section>
 
@@ -120,26 +123,28 @@ export default async function DataPage({ searchParams }: PageProps) {
         {deletions.length === 0 ? (
           <p className="muted">No deletions yet for this tenant.</p>
         ) : (
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>When</th>
-                <th>Scope</th>
-                <th>Pseudonym</th>
-                <th>Target kind</th>
-              </tr>
-            </thead>
-            <tbody>
-              {deletions.slice(0, 20).map((d) => (
-                <tr key={d.id}>
-                  <td>{d.createdAt}</td>
-                  <td>{d.scope}</td>
-                  <td>{d.respondentPseudonym ?? '\u2014'}</td>
-                  <td>{d.targetKind}</td>
+          <div style={{ overflowX: 'auto' }}>
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>When</th>
+                  <th>Scope</th>
+                  <th>Pseudonym</th>
+                  <th>Target kind</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {deletions.slice(0, 20).map((d) => (
+                  <tr key={d.id}>
+                    <td>{stamp(d.createdAt)}</td>
+                    <td>{d.scope}</td>
+                    <td>{d.respondentPseudonym ?? '\u2014'}</td>
+                    <td>{d.targetKind}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </section>
 
@@ -150,7 +155,7 @@ export default async function DataPage({ searchParams }: PageProps) {
         .card h3 { margin: 0 0 8px; font-size: 15px; }
         .data-form { display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
           margin-top: 12px; }
-        .data-form label { display: flex; flex-direction: column; font-size: 12px;
+        .data-form label { display: flex; flex-direction: column; font-size: 12px; min-width: 0; max-width: 100%;
           color: var(--color-muted); gap: 4px; }
         .data-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
         .data-table th, .data-table td { padding: 6px 8px; border-bottom: 1px solid var(--color-border);
@@ -161,5 +166,9 @@ export default async function DataPage({ searchParams }: PageProps) {
     </main>
   );
 }
+
+/** pg returns Date objects; render a short UTC stamp (React cannot render a Date). */
+const stamp = (v: unknown): string =>
+  new Date(v as string).toISOString().slice(0, 16).replace('T', ' ');
 
 const requested = (raw: string | undefined): string | undefined => raw;

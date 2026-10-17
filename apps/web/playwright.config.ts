@@ -16,6 +16,10 @@ import { defineConfig, devices } from '@playwright/test';
  * Postgres), `global-setup.ts` short-circuits and we trust it.
  */
 
+// Parallel agents share this host: override the port with PW_PORT to avoid reusing another
+// checkout's server.
+const PORT = process.env['PW_PORT'] ?? '3200';
+
 export default defineConfig({
   testDir: './e2e',
   testIgnore: ['**/global-setup.ts', '**/global-teardown.ts'],
@@ -27,16 +31,20 @@ export default defineConfig({
   retries: process.env['CI'] ? 2 : 0,
   reporter: process.env['CI'] ? 'github' : 'list',
   use: {
-    baseURL: 'http://127.0.0.1:3200',
+    baseURL: `http://127.0.0.1:${PORT}`,
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
   },
   webServer: {
-    command: 'pnpm exec next start --port 3200',
-    url: 'http://127.0.0.1:3200',
+    command: `pnpm exec next start --port ${PORT}`,
+    url: `http://127.0.0.1:${PORT}`,
     reuseExistingServer: !process.env['CI'],
     timeout: 120_000,
     env: {
+      // Synthetic, test-only session settings (ADR 0023).
+      AUTH_SESSION_SECRET: 'playwright-synthetic-session-secret',
+      AUTH_COOKIE_SECURE: '0',
+      ALLOW_DEV_DB_PASSWORD: '1',
       // DATABASE_URL is inherited from the parent process. global-setup.ts sets it
       // before this webServer is spawned. SURVEY_SIGNING_SECRET inherits too so the
       // sign/verify pair agree end-to-end.
