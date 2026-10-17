@@ -4,6 +4,7 @@ import {
   synergyKeySchema,
   synergySchema,
   synergyStatusSchema,
+  synergyStatusTransitionSchema,
   synergyWriteSchema,
 } from './synergy.js';
 
@@ -97,5 +98,35 @@ describe('synergy schema (M13, FR-14)', () => {
     const id = synergyIdSchema.parse(SYNERGY_ID);
     expect(id).toBe(SYNERGY_ID);
     expect(synergyIdSchema.safeParse('not-a-uuid').success).toBe(false);
+  });
+
+  it('allows the canonical status transitions', () => {
+    expect(
+      synergyStatusTransitionSchema.safeParse({ from: 'detected', to: 'surfaced' }).success,
+    ).toBe(true);
+    expect(
+      synergyStatusTransitionSchema.safeParse({ from: 'detected', to: 'dismissed' }).success,
+    ).toBe(true);
+    expect(
+      synergyStatusTransitionSchema.safeParse({ from: 'surfaced', to: 'archived' }).success,
+    ).toBe(true);
+    expect(
+      synergyStatusTransitionSchema.safeParse({ from: 'dismissed', to: 'surfaced' }).success,
+    ).toBe(true);
+  });
+
+  it('rejects illegal transitions', () => {
+    // No self-loop.
+    expect(
+      synergyStatusTransitionSchema.safeParse({ from: 'detected', to: 'detected' }).success,
+    ).toBe(false);
+    // Cannot leap directly to archived from detected.
+    expect(
+      synergyStatusTransitionSchema.safeParse({ from: 'detected', to: 'archived' }).success,
+    ).toBe(false);
+    // Archived is terminal.
+    expect(
+      synergyStatusTransitionSchema.safeParse({ from: 'archived', to: 'surfaced' }).success,
+    ).toBe(false);
   });
 });
