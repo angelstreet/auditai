@@ -8,3 +8,4 @@ export * from './ids.js';
 export * from './permissions.js';
 export * from './scoring.js';
 export * from './template-versioning.js';
+export * from './literacyQuiz.js';
