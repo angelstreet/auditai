@@ -4,11 +4,11 @@ import { withTenant } from './db';
 /**
  * Deletion data layer (M15, FR-09, PRD §15, §25.4).
  *
- * The right-to-erasure flow runs `deletePseudonym` which:
- *   1. lists the `respondent_badges` rows for that pseudonym in the tenant;
- *   2. inserts one `deletion_events` row per badge removed;
- *   3. inserts one `audit_log` row per deletion;
- *   4. `DELETE`s the rows in the same transaction.
+ * The right-to-erasure flow runs `deletePseudonym`, which calls the SQL function
+ * `erase_respondent_pseudonym` (migration 0014, ADR 0020) in one tenant transaction. It removes
+ * the pseudonym's invitations, respondents, submissions, answers, analyses, badges and derived
+ * draft opportunities, trims synergies, writes one `deletion_events` row per kind and one
+ * `audit_log` row. The trails hold sha256(tenant:pseudonym), never the raw pseudonym.
  *
  * Audit log writes keep the append-only invariant intact; the
  * `deletion_events` table is the dedicated trail.
@@ -26,9 +26,14 @@ interface DeletionEventRow {
     | 'opportunity'
     | 'analysis'
     | 'audit_log'
-    | 'export_request';
+    | 'export_request'
+    | 'invitation'
+    | 'respondent'
+    | 'submission'
+    | 'answer';
   target_id: string | null;
   audit_log_id: string | null;
+  row_count: number;
   created_at: string;
 }
 
@@ -41,6 +46,7 @@ const fromRow = (r: DeletionEventRow): DeletionEvent => ({
   targetKind: r.target_kind,
   targetId: r.target_id,
   auditLogId: r.audit_log_id,
+  rowCount: r.row_count,
   createdAt: r.created_at,
 });
 
@@ -55,40 +61,26 @@ export const deletePseudonym = async (
   actorUserId: UserId,
 ): Promise<PseudonymDeletionResult> => {
   return withTenant(tenantId, async (client) => {
-    const badges = await client.query<{ id: string }>(
-      `SELECT id FROM respondent_badges
-        WHERE tenant_id = $1 AND respondent_pseudonym = $2`,
-      [tenantId, pseudonym],
+    // One SQL function owns the cascade (migration 0014, ADR 0020); the retention worker
+    // calls the same function.
+    const res = await client.query<{ r: Record<string, number | string> }>(
+      `SELECT erase_respondent_pseudonym($1, $2, $3, 'respondent_pseudonym') AS r`,
+      [tenantId, pseudonym, actorUserId],
     );
-    const events: DeletionEvent[] = [];
-    for (const b of badges.rows) {
-      const audit = await client.query<{ id: string }>(
-        `INSERT INTO audit_log (
-            tenant_id, actor_user_id, action, target_kind, target_id, payload_json
-          ) VALUES ($1, $2, 'badge.erase', 'respondent_badge', $3, $4::jsonb)
-          RETURNING id`,
-        [tenantId, actorUserId, b.id, JSON.stringify({ pseudonym, scope: 'respondent_pseudonym' })],
-      );
-      const ev = await client.query<DeletionEventRow>(
-        `INSERT INTO deletion_events (
-            tenant_id, requested_by, scope, respondent_pseudonym, target_kind, target_id, audit_log_id, created_at
-          ) VALUES ($1, $2, 'respondent_pseudonym', $3, 'respondent_badge', $4, $5, now())
-          RETURNING id, tenant_id, requested_by, scope, respondent_pseudonym, target_kind, target_id, audit_log_id, created_at`,
-        [tenantId, actorUserId, pseudonym, b.id, audit.rows[0]?.id ?? null],
-      );
-      const inserted = ev.rows[0];
-      if (inserted) events.push(fromRow(inserted));
-    }
-    const del = await client.query<{ n: number }>(
-      `WITH d AS (
-          DELETE FROM respondent_badges
-           WHERE tenant_id = $1 AND respondent_pseudonym = $2
-           RETURNING 1
-        )
-        SELECT count(*)::int AS n FROM d`,
-      [tenantId, pseudonym],
+    const counts = res.rows[0]?.r ?? {};
+    const hash = String(counts['pseudonym_hash'] ?? '');
+    const ev = await client.query<DeletionEventRow>(
+      `SELECT id, tenant_id, requested_by, scope, respondent_pseudonym,
+              target_kind, target_id, audit_log_id, row_count, created_at
+         FROM deletion_events
+        WHERE tenant_id = $1 AND respondent_pseudonym = $2 AND created_at = now()
+        ORDER BY target_kind`,
+      [tenantId, hash],
     );
-    return { events, removedRowCount: del.rows[0]?.n ?? 0 };
+    const removedRowCount = Object.entries(counts)
+      .filter(([k]) => k !== 'pseudonym_hash')
+      .reduce((n, [, v]) => n + Number(v), 0);
+    return { events: ev.rows.map(fromRow), removedRowCount };
   });
 };
 
@@ -98,7 +90,7 @@ export const listDeletionEvents = async (
   return withTenant(tenantId, async (client) => {
     const { rows } = await client.query<DeletionEventRow>(
       `SELECT id, tenant_id, requested_by, scope, respondent_pseudonym,
-              target_kind, target_id, audit_log_id, created_at
+              target_kind, target_id, audit_log_id, row_count, created_at
          FROM deletion_events
         WHERE tenant_id = $1
         ORDER BY created_at DESC`,

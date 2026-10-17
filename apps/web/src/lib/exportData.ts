@@ -169,15 +169,26 @@ const toRow = (r: Record<string, unknown>): unknown[] =>
   Object.values(r).map((v) => {
     if (v === null || v === undefined) return '';
     if (typeof v === 'string') return v;
-    if (typeof v === 'number' || typeof v === 'boolean') return String(v);
+    if (typeof v === 'number') return v;
+    if (typeof v === 'boolean') return String(v);
     if (v instanceof Date) return v.toISOString();
     return JSON.stringify(v);
   });
 
-const rowsToCsv = (columns: string[], values: unknown[][]): string => {
+/**
+ * Neutralise spreadsheet formula injection (OWASP CSV injection): text cells starting with
+ * = + - @ tab or CR get a leading single quote. Real numbers keep their sign (`-5` stays `-5`).
+ */
+export const neutraliseFormula = (cell: unknown): string => {
+  if (typeof cell === 'number' || typeof cell === 'bigint') return String(cell);
+  const s =
+    typeof cell === 'string' ? cell : cell === null || cell === undefined ? '' : String(cell);
+  return /^[=+\-@\t\r]/.test(s) ? `'${s}` : s;
+};
+
+export const rowsToCsv = (columns: string[], values: unknown[][]): string => {
   const escape = (cell: unknown): string => {
-    const s =
-      typeof cell === 'string' ? cell : cell === null || cell === undefined ? '' : String(cell);
+    const s = neutraliseFormula(cell);
     if (/[",\n\r]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
     return s;
   };

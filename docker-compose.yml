@@ -8,8 +8,10 @@
 #   * web     \u2014 the production Next.js server (built by Dockerfile).
 #
 # Run:
-#   DATABASE_URL=postgres://auditai:auditai@db:5432/auditai \
+#   POSTGRES_PASSWORD=<strong secret> DATABASE_APP_PASSWORD=<strong secret> \
 #   docker compose up --build
+#
+# Both passwords are required (no defaults): compose refuses to start without them.
 #
 # Tear down:
 #   docker compose down -v   (the -v wipes the embedded pgdata volume)
@@ -26,7 +28,7 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_USER: auditai
-      POSTGRES_PASSWORD: auditai
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
       POSTGRES_DB: auditai
     ports:
       - '54329:5432'
@@ -44,7 +46,7 @@ services:
     image: auditai-web:latest
     command: ['node', 'infra/db/scripts/migrate.mjs']
     environment:
-      DATABASE_URL: postgres://auditai:auditai@db:5432/auditai
+      DATABASE_URL: postgres://auditai:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@db:5432/auditai
     depends_on:
       db:
         condition: service_healthy
@@ -54,8 +56,9 @@ services:
     image: auditai-web:latest
     restart: unless-stopped
     environment:
-      DATABASE_URL: postgres://auditai:auditai@db:5432/auditai
+      DATABASE_URL: postgres://auditai:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@db:5432/auditai
       NODE_ENV: production
+      DATABASE_APP_PASSWORD: ${DATABASE_APP_PASSWORD:?set DATABASE_APP_PASSWORD}
       PORT: '3000'
     depends_on:
       db:
@@ -64,6 +67,21 @@ services:
         condition: service_completed_successfully
     ports:
       - '3000:3000'
+
+  # Retention worker (FR-09). One pass per container start; compose has no
+  # scheduler, so run it from the host with `docker compose run --rm retention`
+  # on a systemd timer or cron (see docs/ops/retention-schedule.md), or use the
+  # loop mode below.
+  retention:
+    image: auditai-web:latest
+    command: ['node', '--import', 'tsx', 'services/ai/scripts/retention-run.ts']
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgres://auditai:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@db:5432/auditai
+      RETENTION_INTERVAL_SECONDS: '86400'
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
 
 volumes:
   pgdata:

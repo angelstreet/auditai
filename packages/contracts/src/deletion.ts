@@ -25,6 +25,10 @@ export const deletionTargetKindSchema = z.enum([
   'analysis',
   'audit_log',
   'export_request',
+  'invitation',
+  'respondent',
+  'submission',
+  'answer',
 ]);
 export type DeletionTargetKind = z.infer<typeof deletionTargetKindSchema>;
 
@@ -33,10 +37,13 @@ export const deletionEventSchema = z.object({
   tenantId: tenantIdSchema,
   requestedBy: userIdSchema,
   scope: deletionScopeSchema,
+  /** Raw pseudonym on legacy rows; sha256(tenantId:pseudonym) hex on rows written by ADR 0020. */
   respondentPseudonym: z.string().min(8).max(64).nullable(),
   targetKind: deletionTargetKindSchema,
   targetId: z.string().uuid().nullable(),
   auditLogId: z.string().uuid().nullable(),
+  /** Rows of this kind removed by the erase (one event per kind). */
+  rowCount: z.number().int().nonnegative().default(1),
   createdAt: isoDateTimeSchema,
 });
 export type DeletionEvent = z.infer<typeof deletionEventSchema>;
