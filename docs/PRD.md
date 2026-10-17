@@ -6,6 +6,58 @@ Working product name: AI Audit Studio / AI Transformation Intelligence Platform
 
 Status: proposed product specification — for validation with pilot clients
 
+> **Reading paths**
+>
+> - One-sentence product summary \u2192 [PRD \u00a70. Executive decision](#executive-decision)
+> - Top-level docs map (PRD \u2194 ROADMAP \u2194 ADRs) \u2192 [docs/INDEX.md](INDEX.md)
+> - Public contract surface of `@auditai/contracts` \u2192 [packages/contracts/src/contracts-map.md](../packages/contracts/src/contracts-map.md)
+> - Shipping plan + gate state \u2192 [docs/ROADMAP.md](ROADMAP.md)
+
+## Table of contents
+
+### Part I — Product
+
+- [Executive decision](#executive-decision)
+- [1. Positioning and terminology](#1-positioning-and-terminology)
+- [2. Product goals and non-goals](#2-product-goals-and-non-goals)
+- [3. Personas and permissions](#3-personas-and-permissions)
+- [4. Core user journeys](#4-core-user-journeys)
+- [5. Mobile-first experience requirements](#5-mobile-first-experience-requirements)
+- [6. Adaptive AI maturity model](#6-adaptive-ai-maturity-model)
+- [7. Workflow discovery questionnaire](#7-workflow-discovery-questionnaire)
+- [8. The six AI-first learning principles](#8-the-six-ai-first-learning-principles)
+- [9. Functional requirements by priority (FR-01 \u2026 FR-17)](#9-functional-requirements-by-priority)
+- [10. AI workflow design](#10-ai-workflow-design)
+- [11. Opportunity data contract](#11-opportunity-data-contract)
+- [12. Suggested stack and build-vs-buy](#12-suggested-stack-and-build-vs-buy)
+- [13. Repository / code organization](#13-repository--code-organization)
+- [14. Data model (logical)](#14-data-model-logical)
+- [15. Security, privacy, and governance](#15-security-privacy-and-governance)
+- [16. UX acceptance criteria](#16-ux-acceptance-criteria)
+- [17. Non-functional requirements](#17-non-functional-requirements)
+- [18. Rollout phases, timelines and gates](#18-rollout-phases-timelines-and-gates)
+- [19. Success metrics and instrumentation](#19-success-metrics-and-instrumentation)
+- [20. Detailed first pilot](#20-detailed-first-pilot-the-pilot-client)
+- [21. Example user stories](#21-example-user-stories)
+- [22. Open decisions / product risks](#22-open-decisions--product-risks)
+- [23. Delivery acceptance / definition of done](#23-delivery-acceptance--definition-of-done)
+- [References and assumptions](#references-and-assumptions)
+
+### Part II — Security, governance, cost management, audit operations and evidence of value
+
+- [24. Open-source product and paid-services model](#24-open-source-product-and-paid-services-model)
+- [25. Security and privacy requirements](#25-security-and-privacy-requirements) _(incl. §25.4 launch gates)_
+- [26. Cost management / FinOps](#26-cost-management--finops)
+- [27. Audit service catalogue and illustrative pricing](#27-audit-service-catalogue-and-illustrative-pricing)
+- [28. Repeatable audit process and timeline](#28-repeatable-audit-process-and-timeline)
+- [29. Is the audit itself pertinent? Audit-quality rubric](#29-is-the-audit-itself-pertinent-audit-quality-rubric)
+- [30. Measuring gains after an audit](#30-measuring-gains-after-an-audit)
+- [31. Feedback and continuous improvement](#31-feedback-and-continuous-improvement)
+- [32. Client FAQ — public-facing draft](#32-client-faq--public-facing-draft)
+- [33. Additional engineering requirements and acceptance tests](#33-additional-engineering-requirements-and-acceptance-tests)
+- [34. Open questions before v1 release](#34-open-questions-before-v1-release)
+- [35. Primary governance references](#35-primary-governance-references)
+
 ## Executive decision
 
 Build a mobile-first, multi-tenant platform for evidence-based AI adoption and operational audits. Employees answer short, adaptive questionnaires; auditors review AI-supported findings and map workflows; client leaders receive validated opportunities, adoption plans and outcome measures. The product is NOT an employee performance ranking system.
