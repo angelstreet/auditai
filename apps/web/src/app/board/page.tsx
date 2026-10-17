@@ -1,8 +1,11 @@
 import Link from 'next/link';
 import { Logo } from '@/components/Logo';
+import { Mascot } from '@auditai/ui';
 import { listEngagements, listTenantIds } from '@/lib/adminData';
 import { listLatestSponsorBriefs } from '@/lib/sponsorBriefData';
 import { listOpportunitiesForEngagement, opportunityStatusCounts } from '@/lib/opportunityData';
+import { listSynergies } from '@/lib/synergyData';
+import { listTeamBadges } from '@/lib/teamBadgeData';
 import { OPPORTUNITY_STATUS_LABELS } from '@auditai/contracts';
 import type { AdminEngagementSummary } from '@/lib/adminData';
 import type { TenantId } from '@auditai/contracts';
@@ -51,13 +54,27 @@ const engagementToColumn = (
 
 export default async function BoardPage() {
   const tenantIds = await listTenantIds();
-  // Pull every engagement + every opportunity count + every latest brief in parallel.
-  const engagementsPerTenant = await Promise.all(
-    tenantIds.map(async (tid) => ({
-      tenantId: tid,
-      engagements: await listEngagements(tid as TenantId),
-    })),
-  );
+  // Pull every engagement + opportunity count + sponsor brief + synergy + team-badge rollup in parallel.
+  const [engagementsPerTenant, synergiesPerTenant, teamBadgesPerTenant] = await Promise.all([
+    Promise.all(
+      tenantIds.map(async (tid) => ({
+        tenantId: tid,
+        engagements: await listEngagements(tid as TenantId),
+      })),
+    ),
+    Promise.all(
+      tenantIds.map(async (tid) => ({
+        tenantId: tid,
+        synergies: await listSynergies(tid as TenantId),
+      })),
+    ),
+    Promise.all(
+      tenantIds.map(async (tid) => ({
+        tenantId: tid,
+        badges: await listTeamBadges(tid as TenantId),
+      })),
+    ),
+  ]);
   const oppsPerEngagement = await Promise.all(
     engagementsPerTenant.flatMap(({ tenantId, engagements }) =>
       engagements.map(async (e) => ({
@@ -114,10 +131,46 @@ export default async function BoardPage() {
     });
   }
 
+  // Cross-team synergies appear on the Auditor review column.
+  for (const s of synergiesPerTenant) {
+    for (const sy of s.synergies) {
+      tickets.push({
+        column: 'review',
+        title: `${sy.themeLabel.slice(0, 28)} (${sy.axis} recurring)`,
+        meta: `${sy.occurrenceCount} engagement(s) \u00b7 ${sy.status}`,
+        href: `/admin/synergies?tenant=${s.tenantId}`,
+        tone: 'amber',
+      });
+    }
+  }
+
+  // Team mascot rollups appear on Opportunities (analyst signal).
+  for (const t of teamBadgesPerTenant) {
+    for (const b of t.badges) {
+      tickets.push({
+        column: 'opps',
+        title: `${(b as { teamName?: string }).teamName ?? 'team'} ${b.dominantTier}`,
+        meta: `${b.memberCount} member(s) \u00b7 ${b.tortoiseCount}/${b.foxCount}/${b.owlCount}`,
+        href: `/admin/teams?tenant=${t.tenantId}`,
+        tone: 'teal',
+      });
+    }
+  }
+
   const grouped = COLUMNS.map((c) => ({
     col: c,
     items: tickets.filter((t) => t.column === c.key),
   }));
+
+  const toneFor = (
+    t: 'amber' | 'teal' | 'blue' | 'supporting' | 'green',
+    tier: 'tortoise' | 'fox' | 'owl' | null,
+  ): string => {
+    if (tier === 'tortoise') return 'supporting';
+    if (tier === 'fox') return 'teal';
+    if (tier === 'owl') return 'green';
+    return t;
+  };
 
   return (
     <main className="container">
@@ -149,15 +202,29 @@ export default async function BoardPage() {
             {items.length === 0 ? (
               <p className="muted empty">No cards in this column.</p>
             ) : (
-              items.map((t, i) => (
-                <Link key={`${col.key}-${i}`} href={t.href} className={`ticket tone-${t.tone}`}>
-                  <div className="t">{t.title}</div>
-                  <div className="meta">
-                    <span className="axis">{col.title}</span>
-                    <span className="resp">{t.meta}</span>
-                  </div>
-                </Link>
-              ))
+              items.map((t, i) => {
+                const tierMatch =
+                  col.key === 'opps' ? /( tortoise| fox| owl)$/.exec(t.title) : null;
+                const match = tierMatch?.[1] ? tierMatch[1].trim() : '';
+                const tier: 'tortoise' | 'fox' | 'owl' | null =
+                  match === 'tortoise' || match === 'fox' || match === 'owl'
+                    ? match
+                    : null;
+                return (
+                  <Link
+                    key={`${col.key}-${i}`}
+                    href={t.href}
+                    className={`ticket tone-${toneFor(t.tone, tier)}`}
+                  >
+                    {tier ? <Mascot tier={tier} size={32} /> : null}
+                    <div className="t">{t.title}</div>
+                    <div className="meta">
+                      <span className="axis">{col.title}</span>
+                      <span className="resp">{t.meta}</span>
+                    </div>
+                  </Link>
+                );
+              })
             )}
           </section>
         ))}
@@ -184,11 +251,12 @@ export default async function BoardPage() {
         .pulse.review { background: var(--color-brand-amber); }
         .pulse.opps { background: var(--color-brand-teal); }
         .pulse.delivery { background: #6cc06c; }
-        .ticket { display: block; background: var(--color-card);
+        .ticket { display: flex; gap: 10px; align-items: center; background: var(--color-card);
           border: 1px solid var(--color-border); border-radius: 8px; padding: 10px 12px;
           margin-bottom: 8px; text-decoration: none; color: inherit; }
+        .ticket svg { flex-shrink: 0; }
         .ticket .t { font-size: 13px; font-weight: 500; line-height: 1.3; margin-bottom: 4px; }
-        .ticket .meta { display: flex; justify-content: space-between;
+        .ticket .meta { display: flex; justify-content: space-between; flex: 1;
           font-size: 11px; color: var(--color-muted); }
         .ticket .axis { background: var(--color-brand-teal); color: var(--color-brand-off-white);
           padding: 1px 6px; border-radius: 999px; text-transform: uppercase; font-size: 10px; }
