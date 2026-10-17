@@ -29,8 +29,16 @@ describe('audit log schema (M10, FR-08, PRD §25.4)', () => {
       'synergy.surface',
       'synergy.dismiss',
       'synergy.archive',
+      'export.complete',
+      'badge.erase',
     ]);
-    expect(auditTargetKindSchema.options).toEqual(['analysis', 'opportunity', 'synergy']);
+    expect(auditTargetKindSchema.options).toEqual([
+      'analysis',
+      'opportunity',
+      'synergy',
+      'respondent_badge',
+      'export_request',
+    ]);
   });
 
   it('parses a complete audit log row', () => {
