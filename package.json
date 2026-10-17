@@ -24,6 +24,8 @@
     "local:reset": "node apps/web/scripts/local-stack.mjs reset",
     "local:status": "node apps/web/scripts/local-stack.mjs status",
     "local:smoke": "node apps/web/scripts/local-smoke.mjs",
+    "test:e2e": "pnpm local:smoke && pnpm m10:smoke && pnpm m11:smoke && pnpm m12:smoke && pnpm m13:smoke && pnpm m14:smoke && pnpm m15:smoke && pnpm m15b:smoke",
+    "coverage": "turbo run test -- --coverage --coverage.provider=v8 --coverage.reporter=json --coverage.reporter=text --coverage.include='packages/contracts/src/**/*.ts' --coverage.include='packages/domain/src/**/*.ts' --coverage.include='services/ai/src/**/*.ts' && node scripts/coverage-threshold.mjs",
     "m10:smoke": "node apps/web/scripts/m10-smoke.mjs",
     "m11:smoke": "node apps/web/scripts/m11-smoke.mjs",
     "m12:smoke": "node apps/web/scripts/m12-smoke.mjs",
