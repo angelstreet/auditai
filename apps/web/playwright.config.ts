@@ -54,6 +54,12 @@ export default defineConfig({
       },
     },
     {
+      name: 'tablet-768',
+      use: {
+        viewport: { width: 768, height: 1024 },
+      },
+    },
+    {
       name: 'desktop-admin',
       use: {
         viewport: { width: 1280, height: 800 },
