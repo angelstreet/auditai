@@ -207,9 +207,7 @@ export default async function BoardPage() {
                   col.key === 'opps' ? /( tortoise| fox| owl)$/.exec(t.title) : null;
                 const match = tierMatch?.[1] ? tierMatch[1].trim() : '';
                 const tier: 'tortoise' | 'fox' | 'owl' | null =
-                  match === 'tortoise' || match === 'fox' || match === 'owl'
-                    ? match
-                    : null;
+                  match === 'tortoise' || match === 'fox' || match === 'owl' ? match : null;
                 return (
                   <Link
                     key={`${col.key}-${i}`}
