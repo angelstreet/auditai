@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import LocaleSync from '@/components/LocaleSync';
 import PrivacyNotice from '@/components/PrivacyNotice';
 import WelcomeClient from '@/components/WelcomeClient';
 import { findTenantForInvitation } from '@/lib/db';
@@ -35,6 +36,7 @@ export default async function WelcomePage({ params }: { params: Params }) {
     if (submitted) {
       return (
         <section aria-labelledby="already-submitted-title">
+          <LocaleSync locale={locale} />
           <h1 id="already-submitted-title">{t('survey.alreadySubmitted')}</h1>
           <p>
             <Link href={`/s/${params.token}/done`}>{t('survey.viewThanks')}</Link>.
@@ -46,9 +48,10 @@ export default async function WelcomePage({ params }: { params: Params }) {
 
   return (
     <section aria-labelledby="welcome-title">
+      <LocaleSync locale={locale} />
       <h1 id="welcome-title">EvolAI</h1>
       <p className="muted">
-        {t('survey.questionsCount', { n: total })} \u00b7 {t('survey.estimated')}
+        {t('survey.questionsCount', { n: total })} · {t('survey.estimated')}
       </p>
       <PrivacyNotice locale={locale} />
       <WelcomeClient token={params.token} initialLocale={locale} totalQuestions={total} />

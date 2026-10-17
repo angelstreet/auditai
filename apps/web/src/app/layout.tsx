@@ -50,6 +50,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
+                flexWrap: 'wrap',
+                gap: 'var(--space-2)',
                 paddingTop: '12px',
                 paddingBottom: '12px',
               }}
@@ -63,7 +65,13 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               </Link>
               <nav
                 aria-label={t('common.navPrimaryAria')}
-                style={{ display: 'flex', gap: 'var(--space-3)', fontSize: '0.875rem' }}
+                style={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  alignItems: 'center',
+                  gap: 'var(--space-3)',
+                  fontSize: '0.875rem',
+                }}
               >
                 <Link href="/about">{t('common.nav.about')}</Link>
                 <Link href="/privacy">{t('common.nav.privacy')}</Link>

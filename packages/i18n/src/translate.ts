@@ -11,7 +11,7 @@ export type Translator = (key: MessageKey, vars?: MessageVars) => string;
 
 /**
  * Tiny ICU subset: `{name}` placeholders and `{n, plural, one {…} other {…}}` (with `#` for the
- * number). Enough for our copy; parity tests keep both catalogs in sync (ADR 0020).
+ * number). Enough for our copy; parity tests keep both catalogs in sync (ADR 0024).
  */
 export const formatMessage = (
   template: string,

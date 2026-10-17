@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { tenantLabel } from '@/lib/adminData';
 import { sessionTenantIds } from '@/lib/authServer';
+import { getT } from '@/lib/i18n';
 
 interface Props {
   currentTenantId: string;
@@ -11,14 +12,15 @@ interface Props {
  * from the tenants table so they always reflect the current data.
  */
 export default async function TenantSwitcher({ currentTenantId }: Props) {
+  const { t } = getT();
   const tenantIds = await sessionTenantIds();
   const labels = await Promise.all(
     tenantIds.map(async (id) => ({ id, label: await tenantLabel(id) })),
   );
   return (
-    <nav className="admin-tenant-switcher" aria-label="Select tenant">
+    <nav className="admin-tenant-switcher" aria-label={t('admin.common.tenantNavAria')}>
       <p>
-        <strong>Tenant:</strong>
+        <strong>{t('admin.common.tenantLabel')}</strong>
       </p>
       <ul>
         {labels.map(({ id, label }) => (

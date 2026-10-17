@@ -2,6 +2,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import type { TenantId, UserId } from '@auditai/contracts';
 import { SESSION_COOKIE, verifySession, type SessionPayload } from './session';
+import { getT } from './i18n';
 import { allowedTenantIds, isTenantAllowed, pickTenant } from './tenantAccess';
 
 /** The verified session for this request, or null. */
@@ -35,10 +36,11 @@ export type ActorResult =
  * selector and is rejected unless the session user is a member of that tenant.
  */
 export const resolveActor = async (formTenantId: string): Promise<ActorResult> => {
+  const { t } = getT();
   const session = await getSession();
-  if (!session) return { ok: false, message: 'Not signed in' };
+  if (!session) return { ok: false, message: t('auth.notSignedIn') };
   if (!isTenantAllowed(session, formTenantId)) {
-    return { ok: false, message: 'Not a member of this tenant' };
+    return { ok: false, message: t('auth.notMember') };
   }
   return { ok: true, actor: session.sub as UserId, tenantId: formTenantId as TenantId };
 };

@@ -2,7 +2,7 @@
 
 import { useFormState, useFormStatus } from 'react-dom';
 import type { OpportunityId, OpportunityStatus, TenantId } from '@auditai/contracts';
-import { OPPORTUNITY_STATUS_LABELS } from '@auditai/contracts';
+import { useI18n } from '@/components/I18nProvider';
 import { transitionOpportunityAction, type TransitionActionState } from '../actions';
 
 const INITIAL: TransitionActionState = { ok: false, message: '' };
@@ -22,6 +22,7 @@ interface Props {
  * `name="to"` `value` carries the destination status into the form payload.
  */
 function SubmitButton({ value, label }: { value: OpportunityStatus; label: string }) {
+  const { t } = useI18n();
   const { pending } = useFormStatus();
   return (
     <button
@@ -32,23 +33,22 @@ function SubmitButton({ value, label }: { value: OpportunityStatus; label: strin
       className="btn-primary"
       style={{ marginRight: 8 }}
     >
-      {pending ? 'Updating\u2026' : label}
+      {pending ? t('admin.oppDetail.updating') : label}
     </button>
   );
 }
 
 export function TransitionForm({ tenantId, opportunityId, current, options }: Props) {
+  const { t } = useI18n();
   const [state, formAction] = useFormState(transitionOpportunityAction, INITIAL);
   return (
     <form action={formAction}>
       <input type="hidden" name="tenantId" value={tenantId} />
       <input type="hidden" name="opportunityId" value={opportunityId} />
-      <p className="muted">
-        Current: <strong>{OPPORTUNITY_STATUS_LABELS[current]}</strong>. Move to:
-      </p>
+      <p className="muted">{t('admin.oppDetail.current', { status: t(`status.${current}`) })}</p>
       <p>
         {options.map((s) => (
-          <SubmitButton key={s} value={s} label={OPPORTUNITY_STATUS_LABELS[s]} />
+          <SubmitButton key={s} value={s} label={t(`status.${s}`)} />
         ))}
       </p>
       {state.message ? (

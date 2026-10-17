@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import LocaleSync from '@/components/LocaleSync';
 import ProgressBar from '@/components/ProgressBar';
 import QuestionClient from '@/components/QuestionClient';
 import { findTenantForInvitation } from '@/lib/db';
@@ -48,6 +49,7 @@ export default async function QuestionPage({ params }: { params: Params }) {
 
   return (
     <section aria-labelledby="question-prompt">
+      <LocaleSync locale={locale} />
       <ProgressBar current={index + 1} total={total} ariaLabel={t('survey.progress')} />
       <QuestionClient
         token={params.token}

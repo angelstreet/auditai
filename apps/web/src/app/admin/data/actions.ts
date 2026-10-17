@@ -5,6 +5,7 @@ import { exportKindSchema } from '@auditai/contracts';
 import { deletePseudonym, listDeletionEvents } from '@/lib/deletionData';
 import { listExportRequests, runExport } from '@/lib/exportData';
 import { resolveActor } from '@/lib/authServer';
+import { enumLabel, getT } from '@/lib/i18n';
 
 export interface DataActionState {
   ok: boolean;
@@ -21,27 +22,26 @@ export async function triggerExportAction(
   _prev: DataActionState,
   formData: FormData,
 ): Promise<DataActionState> {
+  const { t } = getT();
   const tenantId = String(formData.get('tenantId') ?? '');
   const kindRaw = String(formData.get('kind') ?? '');
-  if (!isUuidV4(tenantId)) return { ok: false, message: 'Invalid tenant id' };
+  if (!isUuidV4(tenantId)) return { ok: false, message: t('admin.data.errInvalidTenant') };
   const who = await resolveActor(tenantId);
   if (!who.ok) return { ok: false, message: who.message };
   if (!exportKindSchema.options.includes(kindRaw as never)) {
-    return { ok: false, message: 'Invalid export kind' };
+    return { ok: false, message: t('admin.data.errInvalidKind') };
   }
   try {
     const { csv } = await runExport(who.tenantId, kindRaw as never, who.actor);
     revalidatePath('/admin/data');
     return {
       ok: true,
-      message: `Exported ${kindRaw}`,
+      message: t('admin.data.exported', { kind: enumLabel(t, 'exportKind', kindRaw) }),
       csv: { filename: `auditai-${kindRaw}.csv`, body: csv },
     };
   } catch (err) {
-    return {
-      ok: false,
-      message: `Export failed: ${err instanceof Error ? err.message : String(err)}`,
-    };
+    console.error('export failed', err);
+    return { ok: false, message: t('admin.data.errExport') };
   }
 }
 
@@ -49,12 +49,13 @@ export async function triggerDeletePseudonymAction(
   _prev: DataActionState,
   formData: FormData,
 ): Promise<DataActionState> {
+  const { t } = getT();
   const tenantId = String(formData.get('tenantId') ?? '');
   const pseudonym = String(formData.get('respondentPseudonym') ?? '');
-  if (!isUuidV4(tenantId)) return { ok: false, message: 'Invalid tenant id' };
+  if (!isUuidV4(tenantId)) return { ok: false, message: t('admin.data.errInvalidTenant') };
   const who = await resolveActor(tenantId);
   if (!who.ok) return { ok: false, message: who.message };
-  if (!isPseudonym(pseudonym)) return { ok: false, message: 'Invalid pseudonym' };
+  if (!isPseudonym(pseudonym)) return { ok: false, message: t('admin.data.errInvalidPseudonym') };
   try {
     const result = await deletePseudonym(who.tenantId, pseudonym, who.actor);
     revalidatePath('/admin/data');
@@ -62,13 +63,14 @@ export async function triggerDeletePseudonymAction(
     revalidatePath('/admin/teams');
     return {
       ok: true,
-      message: `Removed ${result.removedRowCount} row(s); wrote ${result.events.length} deletion_events`,
+      message: t('admin.data.removed', {
+        rows: result.removedRowCount,
+        events: result.events.length,
+      }),
     };
   } catch (err) {
-    return {
-      ok: false,
-      message: `Deletion failed: ${err instanceof Error ? err.message : String(err)}`,
-    };
+    console.error('pseudonym deletion failed', err);
+    return { ok: false, message: t('admin.data.errDelete') };
   }
 }
 

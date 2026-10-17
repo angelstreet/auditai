@@ -7,7 +7,7 @@ import { listLatestSponsorBriefs } from '@/lib/sponsorBriefData';
 import { listOpportunitiesForEngagement, opportunityStatusCounts } from '@/lib/opportunityData';
 import { listSynergies } from '@/lib/synergyData';
 import { listTeamBadges } from '@/lib/teamBadgeData';
-import { OPPORTUNITY_STATUS_LABELS } from '@auditai/contracts';
+import { enumLabel, getT } from '@/lib/i18n';
 import type { AdminEngagementSummary } from '@/lib/adminData';
 import type { TenantId } from '@auditai/contracts';
 
@@ -15,16 +15,16 @@ export const dynamic = 'force-dynamic';
 
 interface BoardColumn {
   key: 'intake' | 'field' | 'review' | 'opps' | 'delivery';
-  title: string;
+  titleKey: 'colIntake' | 'colField' | 'colReview' | 'colOpps' | 'colDelivery';
   pulse: 'intake' | 'field' | 'review' | 'opps' | 'delivery';
 }
 
 const COLUMNS: ReadonlyArray<BoardColumn> = [
-  { key: 'intake', title: 'Intake', pulse: 'intake' },
-  { key: 'field', title: 'Field', pulse: 'field' },
-  { key: 'review', title: 'Auditor review', pulse: 'review' },
-  { key: 'opps', title: 'Opportunities', pulse: 'opps' },
-  { key: 'delivery', title: 'Delivery', pulse: 'delivery' },
+  { key: 'intake', titleKey: 'colIntake', pulse: 'intake' },
+  { key: 'field', titleKey: 'colField', pulse: 'field' },
+  { key: 'review', titleKey: 'colReview', pulse: 'review' },
+  { key: 'opps', titleKey: 'colOpps', pulse: 'opps' },
+  { key: 'delivery', titleKey: 'colDelivery', pulse: 'delivery' },
 ];
 
 interface Ticket {
@@ -33,6 +33,7 @@ interface Ticket {
   meta: string;
   href: string;
   tone: 'amber' | 'teal' | 'blue' | 'supporting' | 'green';
+  tier?: 'tortoise' | 'fox' | 'owl';
 }
 
 const engagementToColumn = (
@@ -53,7 +54,12 @@ const engagementToColumn = (
   }
 };
 
+export function generateMetadata() {
+  return { title: getT().t('meta.pages.board') };
+}
+
 export default async function BoardPage() {
+  const { t } = getT();
   const tenantIds = await sessionTenantIds();
   // Pull every engagement + opportunity count + sponsor brief + synergy + team-badge rollup in parallel.
   const [engagementsPerTenant, synergiesPerTenant, teamBadgesPerTenant] = await Promise.all([
@@ -96,7 +102,11 @@ export default async function BoardPage() {
       tickets.push({
         column: col,
         title: `${e.organisation.tradingName ?? e.organisation.legalName}`,
-        meta: `${e.invitationsSubmitted} / ${e.expectedHeadcount} submitted \u00b7 ${e.engagement.status}`,
+        meta: t('admin.board.submittedMeta', {
+          submitted: e.invitationsSubmitted,
+          expected: e.expectedHeadcount,
+          status: enumLabel(t, 'engagementStatus', e.engagement.status),
+        }),
         href: `/admin/engagements/${e.engagement.id}/analyses?tenant=${tenantId}`,
         tone: col === 'intake' ? 'supporting' : col === 'field' ? 'blue' : 'amber',
       });
@@ -106,8 +116,11 @@ export default async function BoardPage() {
     if (counts.approved + counts.in_progress > 0) {
       tickets.push({
         column: 'opps',
-        title: `${counts.approved + counts.in_progress} active opportunit${counts.approved + counts.in_progress === 1 ? 'y' : 'ies'}`,
-        meta: `${counts.approved} approved \u00b7 ${counts.in_progress} in progress`,
+        title: t('admin.board.activeOpps', { n: counts.approved + counts.in_progress }),
+        meta: t('admin.board.oppsMeta', {
+          approved: counts.approved,
+          inProgress: counts.in_progress,
+        }),
         href: `/admin/engagements/${engagementId}/opportunities?tenant=${tenantId}`,
         tone: 'teal',
       });
@@ -115,8 +128,8 @@ export default async function BoardPage() {
     if (counts.delivered > 0) {
       tickets.push({
         column: 'delivery',
-        title: `${counts.delivered} delivered`,
-        meta: 'closed loop',
+        title: t('admin.board.delivered', { n: counts.delivered }),
+        meta: t('admin.board.closedLoop'),
         href: `/admin/engagements/${engagementId}/opportunities?tenant=${tenantId}`,
         tone: 'green',
       });
@@ -125,8 +138,8 @@ export default async function BoardPage() {
   for (const b of briefs) {
     tickets.push({
       column: 'intake',
-      title: `${b.tenantName} sponsor brief`,
-      meta: b.topPriorityWorkflow.slice(0, 60) || 'no priority set',
+      title: t('admin.board.briefTitle', { tenant: b.tenantName }),
+      meta: b.topPriorityWorkflow.slice(0, 60) || t('admin.board.noPriority'),
       href: `/intake?tenant=${b.tenantId}`,
       tone: 'supporting',
     });
@@ -137,8 +150,14 @@ export default async function BoardPage() {
     for (const sy of s.synergies) {
       tickets.push({
         column: 'review',
-        title: `${sy.themeLabel.slice(0, 28)} (${sy.axis} recurring)`,
-        meta: `${sy.occurrenceCount} engagement(s) \u00b7 ${sy.status}`,
+        title: t('admin.board.synergyTitle', {
+          theme: sy.themeLabel.slice(0, 28),
+          axis: enumLabel(t, 'axis', sy.axis),
+        }),
+        meta: t('admin.board.synergyMeta', {
+          n: sy.occurrenceCount,
+          status: enumLabel(t, 'synergyStatus', sy.status),
+        }),
         href: `/admin/synergies?tenant=${s.tenantId}`,
         tone: 'amber',
       });
@@ -146,13 +165,19 @@ export default async function BoardPage() {
   }
 
   // Team mascot rollups appear on Opportunities (analyst signal).
-  for (const t of teamBadgesPerTenant) {
-    for (const b of t.badges) {
+  for (const tb of teamBadgesPerTenant) {
+    for (const b of tb.badges) {
       tickets.push({
         column: 'opps',
-        title: `${(b as { teamName?: string }).teamName ?? 'team'} ${b.dominantTier}`,
-        meta: `${b.memberCount} member(s) \u00b7 ${b.tortoiseCount}/${b.foxCount}/${b.owlCount}`,
-        href: `/admin/teams?tenant=${t.tenantId}`,
+        title: `${(b as { teamName?: string }).teamName ?? t('admin.board.teamFallback')} ${t(`quiz.tier.${b.dominantTier}`)}`,
+        tier: b.dominantTier,
+        meta: t('admin.board.teamMeta', {
+          n: b.memberCount,
+          t: b.tortoiseCount,
+          f: b.foxCount,
+          o: b.owlCount,
+        }),
+        href: `/admin/teams?tenant=${tb.tenantId}`,
         tone: 'teal',
       });
     }
@@ -160,66 +185,69 @@ export default async function BoardPage() {
 
   const grouped = COLUMNS.map((c) => ({
     col: c,
-    items: tickets.filter((t) => t.column === c.key),
+    items: tickets.filter((tk) => tk.column === c.key),
   }));
 
   const toneFor = (
-    t: 'amber' | 'teal' | 'blue' | 'supporting' | 'green',
+    tone: 'amber' | 'teal' | 'blue' | 'supporting' | 'green',
     tier: 'tortoise' | 'fox' | 'owl' | null,
   ): string => {
     if (tier === 'tortoise') return 'supporting';
     if (tier === 'fox') return 'teal';
     if (tier === 'owl') return 'green';
-    return t;
+    return tone;
   };
 
   return (
     <main className="container">
       <Logo />
-      <h1 style={{ marginTop: 'var(--space-4)' }}>Portfolio board</h1>
+      <h1 style={{ marginTop: 'var(--space-4)' }}>{t('admin.board.title')}</h1>
       <p className="muted">
-        {engagementsPerTenant.reduce((acc, x) => acc + x.engagements.length, 0)} engagement(s),{' '}
-        {briefs.length} sponsor brief(s). Each card is a single line; the per-axis tier bench bars
-        are the only quantitative signal on the team profile page.
+        {t('admin.board.summary', {
+          engagements: engagementsPerTenant.reduce((acc, x) => acc + x.engagements.length, 0),
+          briefs: briefs.length,
+        })}
       </p>
       <p>
         <Link className="btn-ghost" href="/welcome">
-          \u2190 Welcome
+          {t('admin.board.welcome')}
         </Link>{' '}
         <Link className="btn-ghost" href="/intake">
-          Open intake
+          {t('admin.board.openIntake')}
         </Link>
       </p>
       <div className="kanban">
         {grouped.map(({ col, items }) => (
-          <section className={`col col-${col.pulse}`} key={col.key} aria-label={col.title}>
+          <section
+            className={`col col-${col.pulse}`}
+            key={col.key}
+            aria-label={t(`admin.board.${col.titleKey}`)}
+          >
             <h4>
               <span>
                 <span className={`pulse ${col.pulse}`} />
-                {col.title}
+                {t(`admin.board.${col.titleKey}`)}
               </span>
               <span className="count">{items.length}</span>
             </h4>
             {items.length === 0 ? (
-              <p className="muted empty">No cards in this column.</p>
+              <p className="muted empty">{t('admin.board.empty')}</p>
             ) : (
-              items.map((t, i) => {
-                const tierMatch =
-                  col.key === 'opps' ? /( tortoise| fox| owl)$/.exec(t.title) : null;
-                const match = tierMatch?.[1] ? tierMatch[1].trim() : '';
-                const tier: 'tortoise' | 'fox' | 'owl' | null =
-                  match === 'tortoise' || match === 'fox' || match === 'owl' ? match : null;
+              items.map((ticket, i) => {
+                const tier = ticket.tier ?? null;
                 return (
                   <Link
                     key={`${col.key}-${i}`}
-                    href={t.href}
-                    className={`ticket tone-${toneFor(t.tone, tier)}`}
+                    href={ticket.href}
+                    className={`ticket tone-${toneFor(ticket.tone, tier)}`}
                   >
-                    {tier ? <Mascot tier={tier} size={32} /> : null}
-                    <div className="t">{t.title}</div>
+                    {tier ? (
+                      <Mascot tier={tier} size={32} label={t(`quiz.mascotAlt.${tier}`)} />
+                    ) : null}
+                    <div className="t">{ticket.title}</div>
                     <div className="meta">
-                      <span className="axis">{col.title}</span>
-                      <span className="resp">{t.meta}</span>
+                      <span className="axis">{t(`admin.board.${col.titleKey}`)}</span>
+                      <span className="resp">{ticket.meta}</span>
                     </div>
                   </Link>
                 );
@@ -228,12 +256,7 @@ export default async function BoardPage() {
           </section>
         ))}
       </div>
-      <p className="footnote">
-        <strong>What this shows.</strong> Intake cards are sponsor briefs (M12); field / review
-        cards are engagements (M6); opportunities cards count from the
-        <code>opportunities</code> table (M11); delivery cards count the
-        <code>{OPPORTUNITY_STATUS_LABELS.delivered}</code> rows. No raw numbers on this surface.
-      </p>
+      <p className="footnote">{t('admin.board.footnote', { delivered: t('status.delivered') })}</p>
       <style>{`
         .kanban { display: grid; grid-template-columns: repeat(5, minmax(220px, 1fr));
           gap: 14px; overflow-x: auto; padding-bottom: 8px; }

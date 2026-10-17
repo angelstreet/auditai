@@ -64,7 +64,7 @@ export default async function QuizResult({ searchParams }: PageProps) {
       <h1 style={{ marginTop: 'var(--space-4)' }}>{t('quiz.mascotTitle')}</h1>
       <p className="muted">{t('quiz.mascotIntro', { pseudonym, label })}</p>
       <section className={`reveal tier-${tier}`}>
-        <Mascot tier={tier} size={160} />
+        <Mascot tier={tier} size={160} label={t(`quiz.mascotAlt.${tier}`)} />
         <div>
           <h2 className="tier-name">{t(`quiz.tier.${tier}`)}</h2>
           <p className="tier-desc">{t(`quiz.tierDescriptor.${tier}`)}</p>
@@ -83,7 +83,7 @@ export default async function QuizResult({ searchParams }: PageProps) {
         <ul>
           {mascotTierOrder.map((tierKey) => (
             <li key={tierKey} className={tierKey === tier ? 'current' : ''}>
-              <Mascot tier={tierKey} size={48} />
+              <Mascot tier={tierKey} size={48} label={t(`quiz.mascotAlt.${tierKey}`)} />
               <span>
                 <strong>{t(`quiz.tier.${tierKey}`)}</strong>
                 <span className="muted"> &mdash; {t(`quiz.tierDescriptor.${tierKey}`)}</span>

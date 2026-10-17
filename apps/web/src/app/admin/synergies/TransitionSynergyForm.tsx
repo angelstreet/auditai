@@ -2,15 +2,18 @@
 
 import { useFormState, useFormStatus } from 'react-dom';
 import type { SynergyId, SynergyStatus, TenantId } from '@auditai/contracts';
+import { useI18n } from '@/components/I18nProvider';
+import { enumLabelOf } from '@/lib/enumLabel';
 import { transitionSynergyAction, type SynergyTransitionState } from './actions';
 
 const INITIAL: SynergyTransitionState = { ok: false, message: '' };
 
 function SubmitButton() {
+  const { t } = useI18n();
   const { pending } = useFormStatus();
   return (
     <button type="submit" disabled={pending} className="btn-primary">
-      {pending ? 'Saving…' : 'Apply transition'}
+      {pending ? t('admin.synergies.saving') : t('admin.synergies.apply')}
     </button>
   );
 }
@@ -29,23 +32,24 @@ const ALLOWED: Record<SynergyStatus, ReadonlyArray<SynergyStatus>> = {
 };
 
 export function TransitionSynergyForm({ tenantId, synergyId, currentStatus }: Props) {
+  const { t } = useI18n();
   const [state, formAction] = useFormState(transitionSynergyAction, INITIAL);
   const nextStates = ALLOWED[currentStatus];
   return (
     <form action={formAction} className="transition-form">
       <input type="hidden" name="tenantId" value={tenantId} />
       <input type="hidden" name="synergyId" value={synergyId} />
-      <label htmlFor={`next-${synergyId}`}>Transition</label>
+      <label htmlFor={`next-${synergyId}`}>{t('admin.synergies.transition')}</label>
       <select
         id={`next-${synergyId}`}
         name="nextStatus"
         defaultValue=""
         disabled={nextStates.length === 0}
       >
-        <option value="">— pick a state —</option>
+        <option value="">{t('admin.synergies.pickState')}</option>
         {nextStates.map((s) => (
           <option key={s} value={s}>
-            {s}
+            {enumLabelOf(t, 'synergyStatus', s)}
           </option>
         ))}
       </select>

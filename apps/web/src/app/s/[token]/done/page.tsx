@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import LocaleSync from '@/components/LocaleSync';
 import { findTenantForInvitation } from '@/lib/db';
 import { InvalidInviteToken, verifyInviteToken } from '@/lib/invitationToken';
 import { getOrCreateState, submitState } from '@/lib/surveyState';
@@ -34,6 +35,7 @@ export default async function DonePage({ params }: { params: Params }) {
 
   return (
     <section aria-labelledby="done-title">
+      <LocaleSync locale={locale} />
       <h1 id="done-title">{t('survey.thanksTitle')}</h1>
       <p>{t('survey.thanksBody')}</p>
       <h2>{t('survey.tipHeading')}</h2>

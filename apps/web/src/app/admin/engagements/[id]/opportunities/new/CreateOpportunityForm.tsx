@@ -3,15 +3,18 @@
 import { useFormState, useFormStatus } from 'react-dom';
 import Link from 'next/link';
 import type { AnalysisId, EngagementId, TenantId } from '@auditai/contracts';
+import { useI18n } from '@/components/I18nProvider';
+import { enumLabelOf } from '@/lib/enumLabel';
 import { createOpportunityAction, type CreateOpportunityActionState } from '../actions';
 
 const INITIAL: CreateOpportunityActionState = { ok: false, message: '' };
 
 function SubmitButton() {
+  const { t } = useI18n();
   const { pending } = useFormStatus();
   return (
     <button type="submit" disabled={pending} className="btn-primary">
-      {pending ? 'Creating\u2026' : 'Create opportunity'}
+      {pending ? t('admin.oppNew.creating') : t('admin.oppNew.create')}
     </button>
   );
 }
@@ -29,6 +32,7 @@ interface Props {
  * the `opportunity.create` audit log entry in the same transaction.
  */
 export function CreateOpportunityForm({ tenantId, analysisId, engagementId, defaultTitle }: Props) {
+  const { t } = useI18n();
   const [state, formAction] = useFormState(createOpportunityAction, INITIAL);
   return (
     <form action={formAction}>
@@ -36,7 +40,7 @@ export function CreateOpportunityForm({ tenantId, analysisId, engagementId, defa
       <input type="hidden" name="engagementId" value={engagementId} />
       <input type="hidden" name="analysisId" value={analysisId} />
       <p>
-        <label htmlFor="title">Title (3 \u2013 200 chars)</label>
+        <label htmlFor="title">{t('admin.oppNew.titleLabel')}</label>
         <br />
         <input
           id="title"
@@ -50,19 +54,19 @@ export function CreateOpportunityForm({ tenantId, analysisId, engagementId, defa
         />
       </p>
       <p>
-        <label htmlFor="axis">Axis (optional)</label>
+        <label htmlFor="axis">{t('admin.oppNew.axisLabel')}</label>
         <br />
         <select id="axis" name="axis" defaultValue="">
-          <option value="">\u2014</option>
-          <option value="literacy">Literacy</option>
-          <option value="practice">Practice</option>
-          <option value="readiness">Readiness</option>
-          <option value="opportunity">Opportunity</option>
-          <option value="context">Context</option>
+          <option value="">{t('common.dash')}</option>
+          <option value="literacy">{enumLabelOf(t, 'axis', 'literacy')}</option>
+          <option value="practice">{enumLabelOf(t, 'axis', 'practice')}</option>
+          <option value="readiness">{enumLabelOf(t, 'axis', 'readiness')}</option>
+          <option value="opportunity">{enumLabelOf(t, 'axis', 'opportunity')}</option>
+          <option value="context">{enumLabelOf(t, 'axis', 'context')}</option>
         </select>
       </p>
       <p>
-        <label htmlFor="impactScore">Impact score (0 \u2013 1, optional)</label>
+        <label htmlFor="impactScore">{t('admin.oppNew.impactLabel')}</label>
         <br />
         <input
           id="impactScore"
@@ -85,7 +89,7 @@ export function CreateOpportunityForm({ tenantId, analysisId, engagementId, defa
                 <Link
                   href={`/admin/engagements/${engagementId}/opportunities/${state.opportunityId}?tenant=${tenantId}`}
                 >
-                  Open
+                  {t('admin.opps.open')}
                 </Link>
               </>
             ) : null}

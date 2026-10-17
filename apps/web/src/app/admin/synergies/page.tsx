@@ -3,6 +3,8 @@ import { Logo } from '@/components/Logo';
 import { tenantLabel } from '@/lib/adminData';
 import { sessionTenantIds } from '@/lib/authServer';
 import { listSynergies } from '@/lib/synergyData';
+import { enumLabel, getT } from '@/lib/i18n';
+import { formatDate } from '@auditai/i18n';
 import { TransitionSynergyForm } from './TransitionSynergyForm';
 import type { TenantId } from '@auditai/contracts';
 
@@ -20,6 +22,7 @@ const SYNERGY_TONE: Record<string, string> = {
 };
 
 export default async function SynergiesPage({ searchParams }: PageProps) {
+  const { t, locale } = getT();
   const tenants = await sessionTenantIds();
   const requested = searchParams.tenant;
   const current = (tenants.find((t) => t === requested) ?? tenants[0]) as TenantId | undefined;
@@ -27,9 +30,7 @@ export default async function SynergiesPage({ searchParams }: PageProps) {
     return (
       <main className="container">
         <Logo />
-        <p>
-          No tenants configured. Run <code>pnpm local:reset</code> to seed.
-        </p>
+        <p>{t('common.noTenants', { command: 'pnpm local:reset' })}</p>
       </main>
     );
   }
@@ -37,53 +38,45 @@ export default async function SynergiesPage({ searchParams }: PageProps) {
   return (
     <main className="container">
       <Logo />
-      <h1 style={{ marginTop: 'var(--space-4)' }}>Detected synergies</h1>
-      <p className="muted">
-        Tenant <strong>{label}</strong>. The cross-team detector writes one row per recurrence of a
-        maturity theme across &ge; 2 engagements in this tenant. Each row is append-only once
-        detected; transitions (surface / dismiss / archive) are audited in
-        <code>audit_log</code>.
-      </p>
+      <h1 style={{ marginTop: 'var(--space-4)' }}>{t('admin.synergies.title')}</h1>
+      <p className="muted">{t('admin.synergies.intro', { label })}</p>
       <p>
         <Link className="btn-ghost" href="/board">
-          ← Portfolio board
+          {t('admin.common.backToBoard')}
         </Link>
       </p>
-      <p className="muted">
-        <strong>{synergies.length}</strong> synergy row(s). Run{' '}
-        <code>pnpm --filter @auditai/ai run synergy-smoke</code> after approving analyses to
-        populate or refresh this list.
-      </p>
+      <p className="muted">{t('admin.synergies.count', { n: synergies.length })}</p>
       {synergies.length === 0 ? (
         <section className="empty-state">
-          <p className="muted">
-            No synergies detected yet. Approve analyses across two or more engagements in this
-            tenant and re-run the detector.
-          </p>
+          <p className="muted">{t('admin.synergies.none')}</p>
         </section>
       ) : (
         <ul className="synergy-list">
           {synergies.map((s) => (
             <li key={s.id} className={`synergy-row ${SYNERGY_TONE[s.status] ?? ''}`}>
               <header>
-                <span className={`pill ${SYNERGY_TONE[s.status] ?? ''}`}>{s.status}</span>
+                <span className={`pill ${SYNERGY_TONE[s.status] ?? ''}`}>
+                  {enumLabel(t, 'synergyStatus', s.status)}
+                </span>
                 <strong>{s.themeLabel}</strong>
-                <span className="axis-tag">{s.axis}</span>
+                <span className="axis-tag">{enumLabel(t, 'axis', s.axis)}</span>
               </header>
               <p className="prompt">{s.proposedFollowupPrompt}</p>
               <dl>
-                <dt>Detected</dt>
-                <dd>{s.detectedAt}</dd>
-                <dt>Surfaced</dt>
-                <dd>{s.surfacedAt ?? '—'}</dd>
-                <dt>Dismissed</dt>
-                <dd>{s.dismissedAt ?? '—'}</dd>
-                <dt>Occurrences</dt>
+                <dt>{t('admin.synergies.detected')}</dt>
+                <dd>{formatDate(locale, s.detectedAt)}</dd>
+                <dt>{t('admin.synergies.surfaced')}</dt>
+                <dd>{s.surfacedAt ? formatDate(locale, s.surfacedAt) : t('common.dash')}</dd>
+                <dt>{t('admin.synergies.dismissed')}</dt>
+                <dd>{s.dismissedAt ? formatDate(locale, s.dismissedAt) : t('common.dash')}</dd>
+                <dt>{t('admin.synergies.occurrences')}</dt>
                 <dd>
-                  {s.occurrenceCount} engagement(s), {s.sourceAnalysisIds.length} analysis /
-                  analyses
+                  {t('admin.synergies.occurrencesValue', {
+                    engagements: s.occurrenceCount,
+                    analyses: s.sourceAnalysisIds.length,
+                  })}
                 </dd>
-                <dt>Source engagements</dt>
+                <dt>{t('admin.synergies.sources')}</dt>
                 <dd>
                   <code className="src-ids">
                     {s.sourceEngagementIds.map((e) => e.slice(0, 8)).join(', ')}

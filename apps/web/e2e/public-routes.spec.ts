@@ -16,26 +16,43 @@ import { signInAsAuditorA } from './helpers';
  * `m10..m15b:smoke` scripts; this spec is the **layout** gate.
  */
 
+const LOCALES = ['fr', 'en'] as const;
+const PUBLIC_PATHS = [
+  '/welcome',
+  '/about',
+  '/privacy',
+  '/intake',
+  '/board',
+  '/quiz',
+  '/admin/teams',
+  '/admin/synergies',
+  '/admin/data',
+];
+/** Catalog keys look like `namespace.sub.key`; seeing one in rendered text means a missing message. */
+const RAW_KEY =
+  /\b(common|meta|welcome|about|privacy|survey|quiz|intake|status|admin)\.[a-z][A-Za-z0-9]*(\.[A-Za-z0-9_]+)*\b/;
+
 test.describe('public routes (every viewport, layout gate)', () => {
   test.beforeEach(async ({ page }) => {
     await signInAsAuditorA(page);
   });
 
-  for (const path of [
-    '/welcome',
-    '/board',
-    '/quiz',
-    '/admin/teams',
-    '/admin/synergies',
-    '/admin/data',
-  ]) {
-    test(`${path} renders a heading`, async ({ page }) => {
-      const response = await page.goto(path);
-      expect(response?.status(), `${path} should return 200`).toBe(200);
-      // At least one heading in the viewport \u2014 catches a 4xx that slipped past status.
-      const heading = page.locator('h1, h2, h3').first();
-      await expect(heading).toBeVisible();
-    });
+  for (const locale of LOCALES) {
+    for (const path of PUBLIC_PATHS) {
+      test(`${path} renders a heading in ${locale}`, async ({ page, context, baseURL }) => {
+        await context.addCookies([
+          { name: 'auditai_locale', value: locale, url: baseURL as string },
+        ]);
+        const response = await page.goto(path);
+        expect(response?.status(), `${path} should return 200`).toBe(200);
+        // At least one heading in the viewport \u2014 catches a 4xx that slipped past status.
+        const heading = page.locator('h1, h2, h3').first();
+        await expect(heading).toBeVisible();
+        await expect(page.locator('html')).toHaveAttribute('lang', locale);
+        const text = await page.locator('body').innerText();
+        expect(text, `${path} (${locale}) must not render a raw message key`).not.toMatch(RAW_KEY);
+      });
+    }
   }
 
   test('/ 30x-redirects to /welcome on every viewport', async ({ page }) => {
@@ -49,11 +66,18 @@ test.describe('public routes (every viewport, layout gate)', () => {
   test('mobile-360 has no horizontal scroll on the public surfaces', async ({ page }) => {
     page.setViewportSize({ width: 360, height: 800 });
     for (const path of ['/welcome', '/board', '/quiz', '/admin/teams', '/admin/data']) {
-      await page.goto(path, { waitUntil: 'domcontentloaded' });
-      const overflow = await page.evaluate(() =>
-        Math.max(document.documentElement.scrollWidth, document.body.scrollWidth),
-      );
-      expect(overflow, `${path}: scrollWidth should be <= 360`).toBeLessThanOrEqual(360);
+      for (const locale of LOCALES) {
+        await page
+          .context()
+          .addCookies([{ name: 'auditai_locale', value: locale, url: 'http://127.0.0.1:3200' }]);
+        await page.goto(path, { waitUntil: 'domcontentloaded' });
+        const overflow = await page.evaluate(() =>
+          Math.max(document.documentElement.scrollWidth, document.body.scrollWidth),
+        );
+        expect(overflow, `${path} (${locale}): scrollWidth should be <= 360`).toBeLessThanOrEqual(
+          360,
+        );
+      }
     }
   });
 

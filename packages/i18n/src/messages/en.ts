@@ -1,7 +1,9 @@
+import { adminEn } from './admin.en.js';
+
 /**
  * English catalog: the source of truth for the key set. `fr.ts` must mirror it exactly
  * (enforced by the type `Messages` and by parity tests). Placeholders use `{name}`; plurals use
- * the ICU subset documented in ADR 0020.
+ * the ICU subset documented in ADR 0024.
  */
 export const en = {
   common: {
@@ -121,6 +123,11 @@ export const en = {
     aboutFramework: 'About the framework',
     threeTiers: 'The three tiers',
     tier: { tortoise: 'Tortoise', fox: 'Fox', owl: 'Owl' },
+    mascotAlt: {
+      tortoise: 'Tortoise mascot — cautious, learning the basics',
+      fox: 'Fox mascot — pragmatic, regular AI explorer',
+      owl: 'Owl mascot — engaged, confident AI practitioner',
+    },
     tierDescriptor: {
       tortoise: "You're at the start of the curve — a little exposure goes a long way.",
       fox: "You're a regular explorer — pragmatic, curious, learning as you go.",
@@ -213,5 +220,19 @@ export const en = {
     in_progress: 'In progress',
     delivered: 'Delivered',
     archived: 'Archived',
+  },
+  admin: adminEn,
+  auth: {
+    notSignedIn: 'Not signed in',
+    notMember: 'Not a member of this tenant',
+  },
+  login: {
+    title: 'Auditor sign-in',
+    email: 'Email',
+    password: 'Password',
+    submit: 'Sign in',
+    invalid: 'Email or password is incorrect.',
+    noAccess: 'This account has no auditor access to any tenant.',
+    failed: 'Sign-in failed.',
   },
 } as const;

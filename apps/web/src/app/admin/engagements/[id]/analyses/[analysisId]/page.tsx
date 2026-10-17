@@ -1,6 +1,9 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { Logo } from '@/components/Logo';
+import { enumLabel, getT } from '@/lib/i18n';
+import { formatDate } from '@auditai/i18n';
+
 import { engagementLabelFor, getAnalysis, listAuditLogForTarget } from '@/lib/auditorData';
 import { tenantLabel } from '@/lib/adminData';
 import { sessionTenantIds } from '@/lib/authServer';
@@ -13,13 +16,6 @@ interface PageProps {
   params: { id: string; analysisId: string };
   searchParams: { tenant?: string };
 }
-
-const formatDateTime = (iso: string | null): string => {
-  if (!iso) return '\u2014';
-  const d = new Date(iso);
-  if (Number.isNaN(d.valueOf())) return iso;
-  return d.toISOString().replace('T', ' ').slice(0, 16) + ' UTC';
-};
 
 interface ThemeView {
   id: string;
@@ -106,19 +102,22 @@ const asPrompts = (payload: unknown): InterviewPromptView[] => {
 };
 
 export default async function AnalysisDetailPage({ params, searchParams }: PageProps) {
+  const { t, locale } = getT();
+  const formatDateTime = (iso: string | null): string =>
+    iso ? formatDate(locale, iso, { dateStyle: 'medium', timeStyle: 'short' }) : t('common.dash');
   const tenants = await sessionTenantIds();
   if (tenants.length === 0) {
     return (
       <section aria-labelledby="empty-title" className="container admin">
         <Logo />
-        <h1 id="empty-title">Analysis \u2014 no tenants</h1>
+        <h1 id="empty-title">{t('admin.common.noTenantsTitle')}</h1>
       </section>
     );
   }
   const requested = searchParams.tenant;
-  const current = tenants.find((t) => t === requested) ?? tenants[0];
+  const current = tenants.find((x) => x === requested) ?? tenants[0];
   if (!current) redirect('/admin/engagements');
-  if (requested && tenants.find((t) => t === requested) === undefined) {
+  if (requested && tenants.find((x) => x === requested) === undefined) {
     redirect(`/admin/engagements/${params.id}/analyses/${params.analysisId}?tenant=${current}`);
   }
   const tenantId = current as TenantId;
@@ -136,14 +135,16 @@ export default async function AnalysisDetailPage({ params, searchParams }: PageP
     return (
       <section aria-labelledby="missing-title" className="container admin">
         <Logo />
-        <h1 id="missing-title">Analysis not found</h1>
+        <h1 id="missing-title">{t('admin.analysis.notFound')}</h1>
         <p>
-          <code>{params.analysisId}</code> is not in tenant <strong>{tenantName}</strong>. Go back
-          to the{' '}
+          {t('admin.analysis.notFoundBody', {
+            id: params.analysisId,
+            tenant: tenantName,
+            link: t('admin.analysis.listLink'),
+          })}{' '}
           <Link href={`/admin/engagements/${params.id}/analyses?tenant=${tenantId}`}>
-            analyses list
+            {t('admin.common.backToAnalyses')}
           </Link>
-          .
         </p>
       </section>
     );
@@ -157,49 +158,62 @@ export default async function AnalysisDetailPage({ params, searchParams }: PageP
     <section aria-labelledby="detail-title" className="container admin">
       <Logo />
       <h1 id="detail-title" style={{ marginTop: 'var(--space-4)' }}>
-        Analysis \u2014 {detail.respondentPseudonym}
+        {t('admin.analysis.title', { pseudonym: detail.respondentPseudonym })}
       </h1>
       <p className="muted">
-        Engagement <strong>{label?.organisation ?? params.id}</strong> \u00b7 tenant{' '}
-        <strong>{tenantName}</strong> \u00b7 sensitivity <strong>{detail.sensitivity}</strong>{' '}
-        \u00b7 model route <code>{detail.modelRoute}</code>
+        {t('admin.analysis.meta', {
+          org: label?.organisation ?? params.id,
+          tenant: tenantName,
+          sensitivity: enumLabel(t, 'sensitivity', detail.sensitivity),
+          route: detail.modelRoute,
+        })}
       </p>
       <p>
         <Link href={`/admin/engagements/${params.id}/analyses?tenant=${tenantId}`}>
-          \u2190 Back to analyses
+          {t('admin.common.backToAnalyses')}
         </Link>
       </p>
 
-      <h2 style={{ marginTop: 'var(--space-5)' }}>Themes ({themes.length})</h2>
+      <h2 style={{ marginTop: 'var(--space-5)' }}>
+        {t('admin.analysis.themes', { n: themes.length })}
+      </h2>
       {themes.length === 0 ? (
-        <p className="muted">No themes in this analysis.</p>
+        <p className="muted">{t('admin.analysis.noThemes')}</p>
       ) : (
         <ul>
-          {themes.map((t) => (
-            <li key={t.id}>
-              <strong>{t.label}</strong> \u00b7 axis <code>{t.axis}</code> \u00b7 {t.evidenceCount}{' '}
-              evidence claim(s). <span className="muted">{t.summary}</span>
+          {themes.map((th) => (
+            <li key={th.id}>
+              <strong>{th.label}</strong> ·{' '}
+              {t('admin.analysis.themeLine', {
+                axis: enumLabel(t, 'axis', th.axis),
+                n: th.evidenceCount,
+              })}{' '}
+              <span className="muted">{th.summary}</span>
             </li>
           ))}
         </ul>
       )}
 
-      <h2 style={{ marginTop: 'var(--space-5)' }}>Contradictions ({contradictions.length})</h2>
+      <h2 style={{ marginTop: 'var(--space-5)' }}>
+        {t('admin.analysis.contradictions', { n: contradictions.length })}
+      </h2>
       {contradictions.length === 0 ? (
-        <p className="muted">No contradictions surfaced.</p>
+        <p className="muted">{t('admin.analysis.noContradictions')}</p>
       ) : (
         <ul>
           {contradictions.map((c, i) => (
             <li key={`${c.themeA}-${c.themeB}-${i}`}>
-              <code>{c.themeA}</code> &harr; <code>{c.themeB}</code> \u2014 {c.explanation}
+              <code>{c.themeA}</code> &harr; <code>{c.themeB}</code> — {c.explanation}
             </li>
           ))}
         </ul>
       )}
 
-      <h2 style={{ marginTop: 'var(--space-5)' }}>Interview prompts ({prompts.length})</h2>
+      <h2 style={{ marginTop: 'var(--space-5)' }}>
+        {t('admin.analysis.prompts', { n: prompts.length })}
+      </h2>
       {prompts.length === 0 ? (
-        <p className="muted">No follow-up prompts proposed.</p>
+        <p className="muted">{t('admin.analysis.noPrompts')}</p>
       ) : (
         <ul>
           {prompts.map((p) => (
@@ -212,20 +226,19 @@ export default async function AnalysisDetailPage({ params, searchParams }: PageP
         </ul>
       )}
 
-      <h2 style={{ marginTop: 'var(--space-5)' }}>Evidence ({detail.evidence.length})</h2>
-      <p className="muted">
-        Every claim links back to a source row in the application (PRD \u00a710, FR-12). The auditor
-        verifies the claim + the source before approving.
-      </p>
+      <h2 style={{ marginTop: 'var(--space-5)' }}>
+        {t('admin.analysis.evidence', { n: detail.evidence.length })}
+      </h2>
+      <p className="muted">{t('admin.analysis.evidenceNote')}</p>
       {detail.evidence.length === 0 ? (
-        <p className="muted">No evidence claims.</p>
+        <p className="muted">{t('admin.analysis.noEvidence')}</p>
       ) : (
         <table>
           <thead>
             <tr>
-              <th scope="col">Claim</th>
-              <th scope="col">Source</th>
-              <th scope="col">Quote</th>
+              <th scope="col">{t('admin.analysis.colClaim')}</th>
+              <th scope="col">{t('admin.analysis.colSource')}</th>
+              <th scope="col">{t('admin.analysis.colQuote')}</th>
             </tr>
           </thead>
           <tbody>
@@ -244,31 +257,38 @@ export default async function AnalysisDetailPage({ params, searchParams }: PageP
         </table>
       )}
 
-      <h2 style={{ marginTop: 'var(--space-5)' }}>Approval</h2>
+      <h2 style={{ marginTop: 'var(--space-5)' }}>{t('admin.analysis.approval')}</h2>
       {detail.approvedAt ? (
         <p>
-          <strong>Approved</strong> at {formatDateTime(detail.approvedAt)} by{' '}
-          <code>{detail.approvedBy}</code>.{' '}
+          {t('admin.analysis.approvedAt', {
+            when: formatDateTime(detail.approvedAt),
+            who: String(detail.approvedBy),
+          })}{' '}
           <Link
             href={`/admin/engagements/${params.id}/opportunities/new?tenant=${tenantId}&analysis=${analysisId}`}
           >
-            Create opportunity from this analysis \u2192
+            {t('admin.analysis.createOpp')}
           </Link>
         </p>
       ) : (
         <ApproveForm tenantId={tenantId} analysisId={analysisId} />
       )}
 
-      <h2 style={{ marginTop: 'var(--space-5)' }}>Audit trail ({auditLog.length})</h2>
+      <h2 style={{ marginTop: 'var(--space-5)' }}>
+        {t('admin.analysis.auditTrail', { n: auditLog.length })}
+      </h2>
       {auditLog.length === 0 ? (
-        <p className="muted">No audit log entries yet.</p>
+        <p className="muted">{t('admin.analysis.noAudit')}</p>
       ) : (
         <ul>
           {auditLog.map((row) => (
             <li key={row.id}>
-              <code>{formatDateTime(row.createdAt)}</code> \u00b7 <code>{row.action}</code> by{' '}
-              <code>{row.actorUserId}</code> \u2014 payload{' '}
-              <code>{JSON.stringify(row.payload)}</code>
+              {t('admin.analysis.auditLine', {
+                when: formatDateTime(row.createdAt),
+                action: row.action,
+                actor: String(row.actorUserId),
+                payload: JSON.stringify(row.payload),
+              })}
             </li>
           ))}
         </ul>

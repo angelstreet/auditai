@@ -4,14 +4,11 @@ import TenantSwitcher from '@/components/admin/TenantSwitcher';
 import { Logo } from '@/components/Logo';
 import { listEngagements, tenantLabel } from '@/lib/adminData';
 import { sessionTenantIds } from '@/lib/authServer';
+import { getT } from '@/lib/i18n';
+import { formatNumber } from '@auditai/i18n';
 
 // Always render at request time so the DB connection is fresh.
 export const dynamic = 'force-dynamic';
-
-const PERCENT_FORMAT = new Intl.NumberFormat('en', {
-  style: 'percent',
-  maximumFractionDigits: 0,
-});
 
 interface SearchParams {
   tenant?: string;
@@ -22,12 +19,13 @@ export default async function AdminEngagementsPage({
 }: {
   searchParams: SearchParams;
 }) {
+  const { t, locale } = getT();
   const tenants = await sessionTenantIds();
   if (tenants.length === 0) {
     return (
       <section aria-labelledby="admin-empty-title" className="admin">
-        <h1 id="admin-empty-title">Admin \u2014 no tenants</h1>
-        <p>No tenants are configured yet. Run \`pnpm local:reset\` to seed synthetic data.</p>
+        <h1 id="admin-empty-title">{t('admin.common.noTenantsTitle')}</h1>
+        <p>{t('admin.common.noTenantsBody', { command: 'pnpm local:reset' })}</p>
       </section>
     );
   }
@@ -50,37 +48,38 @@ export default async function AdminEngagementsPage({
     <section aria-labelledby="admin-title" className="admin">
       <Logo />
       <h1 id="admin-title" style={{ marginTop: 'var(--space-4)' }}>
-        EvolAI \u2014 audit engagements
+        {t('admin.engagements.title')}
       </h1>
-      <p className="muted">Data from Postgres; the M4 schema drives the queries.</p>
+      <p className="muted">{t('admin.engagements.dataFrom')}</p>
       <TenantSwitcher currentTenantId={current} />
       <p>
-        Viewing <strong>{label}</strong>. Overall completion:{' '}
-        <strong>{PERCENT_FORMAT.format(totalRatio)}</strong>{' '}
+        {t('admin.engagements.viewing', {
+          label,
+          pct: formatNumber(locale, totalRatio, { style: 'percent', maximumFractionDigits: 0 }),
+        })}{' '}
         <span className="muted">
-          ({totalSubmitted} / {totalExpected} expected responses)
+          {t('admin.engagements.expected', { submitted: totalSubmitted, expected: totalExpected })}
         </span>
-        .
       </p>
       <table>
         <thead>
           <tr>
-            <th scope="col">Engagement</th>
-            <th scope="col">Status</th>
-            <th scope="col">Expected headcount</th>
-            <th scope="col">Invitations</th>
-            <th scope="col">Submitted</th>
-            <th scope="col">Opened</th>
-            <th scope="col">Pending</th>
-            <th scope="col">Revoked / expired</th>
-            <th scope="col">Completion</th>
-            <th scope="col">Closes</th>
+            <th scope="col">{t('admin.engagements.colEngagement')}</th>
+            <th scope="col">{t('admin.engagements.colStatus')}</th>
+            <th scope="col">{t('admin.engagements.colHeadcount')}</th>
+            <th scope="col">{t('admin.engagements.colInvitations')}</th>
+            <th scope="col">{t('admin.engagements.colSubmitted')}</th>
+            <th scope="col">{t('admin.engagements.colOpened')}</th>
+            <th scope="col">{t('admin.engagements.colPending')}</th>
+            <th scope="col">{t('admin.engagements.colRevoked')}</th>
+            <th scope="col">{t('admin.engagements.colCompletion')}</th>
+            <th scope="col">{t('admin.engagements.colCloses')}</th>
           </tr>
         </thead>
         <tbody>
           {summaries.length === 0 ? (
             <tr>
-              <td colSpan={10}>No engagements in this tenant.</td>
+              <td colSpan={10}>{t('admin.engagements.none')}</td>
             </tr>
           ) : (
             summaries.map((summary) => (

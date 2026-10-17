@@ -5,7 +5,7 @@ import type { SupportedLocale } from './index.js';
  * `@auditai/domain` (weights and scoring stay in the domain package; this is text only).
  *
  * `QUIZ_ITEM_STATUS.fr` is `draft-fr`: the French wording is an unreviewed draft awaiting owner
- * review (ADR 0020, PRD item metadata locale).
+ * review (ADR 0024, PRD item metadata locale).
  */
 export interface QuizItemCopy {
   readonly prompt: string;

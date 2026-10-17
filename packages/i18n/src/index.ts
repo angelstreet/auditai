@@ -1,7 +1,7 @@
 export const supportedLocales = ['fr', 'en'] as const;
 export type SupportedLocale = (typeof supportedLocales)[number];
 
-/** Default when neither cookie nor Accept-Language yields a supported locale (ADR 0020). */
+/** Default when neither cookie nor Accept-Language yields a supported locale (ADR 0024). */
 export const defaultLocale: SupportedLocale = 'fr';
 
 /** Cookie that stores the visitor's UI language choice. */

@@ -11,6 +11,7 @@
 import { revalidatePath } from 'next/cache';
 import { resolveActor } from '@/lib/authServer';
 import { approvalResultSchema, approveAnalysis, getAnalysis } from '@/lib/auditorData';
+import { getT } from '@/lib/i18n';
 import type { AnalysisId, TenantId } from '@auditai/contracts';
 
 export interface ApproveActionState {
@@ -26,12 +27,13 @@ export async function approveAnalysisAction(
   _prev: ApproveActionState,
   formData: FormData,
 ): Promise<ApproveActionState> {
+  const { t } = getT();
   const tenantId = String(formData.get('tenantId') ?? '');
   const analysisId = String(formData.get('analysisId') ?? '');
   const rationale = String(formData.get('rationale') ?? '').trim();
 
   if (!isUuidV4(tenantId) || !isUuidV4(analysisId)) {
-    return { ok: false, message: 'Invalid tenant or analysis id' };
+    return { ok: false, message: t('admin.analysis.errInvalidIds') };
   }
 
   const who = await resolveActor(tenantId);
@@ -43,18 +45,16 @@ export async function approveAnalysisAction(
       rationale: rationale || undefined,
     });
     if (!result) {
-      return { ok: false, message: 'Analysis not found in this tenant' };
+      return { ok: false, message: t('admin.analysis.errNotFound') };
     }
     const detail = await getAnalysis(tenantId as TenantId, analysisId as AnalysisId);
     revalidatePath(`/admin/engagements/[id]/analyses`, 'page');
     if (detail) {
       revalidatePath(`/admin/engagements/${detail.engagementId}/analyses/${analysisId}`, 'page');
     }
-    return { ok: true, message: 'Approved', result };
+    return { ok: true, message: t('admin.analysis.approved'), result };
   } catch (err) {
-    return {
-      ok: false,
-      message: `Approve failed: ${err instanceof Error ? err.message : String(err)}`,
-    };
+    console.error('analysis approval failed', err);
+    return { ok: false, message: t('admin.analysis.errApprove') };
   }
 }

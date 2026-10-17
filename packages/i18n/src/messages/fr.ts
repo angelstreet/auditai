@@ -1,7 +1,8 @@
 import type { Messages } from './index.js';
+import { adminFr } from './admin.fr.js';
 
 /**
- * Catalogue français (vouvoiement pour tout contenu destiné aux clients et aux employés, ADR 0020).
+ * Catalogue français (vouvoiement pour tout contenu destiné aux clients et aux employés, ADR 0024).
  */
 export const fr: Messages = {
   common: {
@@ -125,6 +126,11 @@ export const fr: Messages = {
     aboutFramework: 'À propos du cadre',
     threeTiers: 'Les trois niveaux',
     tier: { tortoise: 'Tortue', fox: 'Renard', owl: 'Chouette' },
+    mascotAlt: {
+      tortoise: 'Mascotte tortue — prudente, elle apprend les bases',
+      fox: 'Mascotte renard — pragmatique, explorateur régulier de l’IA',
+      owl: 'Mascotte chouette — engagée, praticienne confiante de l’IA',
+    },
     tierDescriptor: {
       tortoise: 'Vous êtes au début de la courbe — un peu d’exposition change beaucoup de choses.',
       fox: 'Vous êtes un explorateur régulier — pragmatique, curieux, vous apprenez en avançant.',
@@ -219,5 +225,19 @@ export const fr: Messages = {
     in_progress: 'En cours',
     delivered: 'Livrée',
     archived: 'Archivée',
+  },
+  admin: adminFr,
+  auth: {
+    notSignedIn: 'Vous n’êtes pas connecté',
+    notMember: 'Vous n’êtes pas membre de ce locataire',
+  },
+  login: {
+    title: 'Connexion auditeur',
+    email: 'Adresse e-mail',
+    password: 'Mot de passe',
+    submit: 'Se connecter',
+    invalid: 'L’adresse e-mail ou le mot de passe est incorrect.',
+    noAccess: 'Ce compte n’a accès en tant qu’auditeur à aucun locataire.',
+    failed: 'La connexion a échoué.',
   },
 };
