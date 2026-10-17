@@ -8,6 +8,7 @@ import {
   tenantIdSchema,
   userIdSchema,
 } from './ids.js';
+import { synergyIdSchema } from './synergy.js';
 // (All ids above are used by the discriminated variants below.)
 
 /**
@@ -26,10 +27,11 @@ export const auditActionSchema = z.enum([
   'opportunity.create',
   'opportunity.update',
   'opportunity.archive',
+  'synergy.detect',
 ]);
 export type AuditAction = z.infer<typeof auditActionSchema>;
 
-export const auditTargetKindSchema = z.enum(['analysis', 'opportunity']);
+export const auditTargetKindSchema = z.enum(['analysis', 'opportunity', 'synergy']);
 export type AuditTargetKind = z.infer<typeof auditTargetKindSchema>;
 
 /**
@@ -64,6 +66,15 @@ export const opportunityAuditLogSchema = auditLogSchema.extend({
   targetId: opportunityIdSchema,
 });
 export type OpportunityAuditLog = z.infer<typeof opportunityAuditLogSchema>;
+
+/**
+ * Convenience constructor: the discriminated shape for a synergy-targeted action.
+ */
+export const synergyAuditLogSchema = auditLogSchema.extend({
+  targetKind: z.literal('synergy'),
+  targetId: synergyIdSchema,
+});
+export type SynergyAuditLog = z.infer<typeof synergyAuditLogSchema>;
 
 /**
  * The shape of an audit-log write request (no id, no createdAt). The server fills those in.
