@@ -6,6 +6,7 @@ import { Logo } from '@/components/Logo';
 import { tenantLabel } from '@/lib/adminData';
 import { getSession } from '@/lib/authServer';
 import { getT } from '@/lib/i18n';
+import { clientIdentity, viewAsMenuFor } from '@/lib/viewAsIdentity';
 import { AccountMenu, LanguageMenu, NavMenu, ThemeToggle, type Identity } from './HeaderControls';
 
 const KNOWN_ROLES = new Set(['platform_owner', 'auditor', 'sponsor', 'viewer']);
@@ -15,6 +16,8 @@ const loadIdentity = async (): Promise<Identity | null> => {
   const session = await getSession();
   if (!session) return null;
   const { t } = getT();
+  const asClient = await clientIdentity(session, t);
+  if (asClient) return asClient;
   const first = session.tenants[0];
   const roleKey = first && KNOWN_ROLES.has(first.role) ? first.role : 'other';
   let organisation: string | null = null;
@@ -30,7 +33,8 @@ const loadIdentity = async (): Promise<Identity | null> => {
     email: session.email ?? null,
     role: t(`common.account.roles.${roleKey}` as 'common.account.roles.other'),
     organisation,
-    organisationCount: session.tenants.length,
+    organisationCount: new Set(session.tenants.map((m) => m.id)).size,
+    viewAs: await viewAsMenuFor(session, t),
   };
 };
 

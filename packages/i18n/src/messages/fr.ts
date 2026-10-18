@@ -1,5 +1,6 @@
 import type { Messages } from './index.js';
 import { adminFr } from './admin.fr.js';
+import { clientFr } from './client.fr.js';
 
 /**
  * Catalogue français (vouvoiement pour tout contenu destiné aux clients et aux employés, ADR 0024).
@@ -280,6 +281,7 @@ export const fr: Messages = {
     archived: 'Archivée',
   },
   admin: adminFr,
+  client: clientFr,
   auth: {
     notSignedIn: 'Vous n’êtes pas connecté',
     notMember: 'Vous n’êtes pas membre de ce locataire',

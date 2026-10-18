@@ -152,3 +152,25 @@ export const disableAuditor = async (client, { email }) =>
     for (const t of user.tenants) await audit(client, t, 'user.disable', user.id, {});
     return { id: user.id };
   });
+
+/**
+ * Replace a user's sign-in e-mail (TASK-P): e.g. a referent persona seeded with a placeholder
+ * `.invalid` address gets the real one. Only the hash is stored; the trail records neither address.
+ */
+export const setUserEmail = async (client, { email, newEmail }) => {
+  if (!EMAIL_RE.test(newEmail ?? '')) throw new Error('a valid --new-email is required');
+  return inServiceTx(client, async () => {
+    const user = await requireUser(client, email);
+    const clash = await client.query('SELECT 1 FROM users WHERE email_hash = $1 AND id <> $2', [
+      emailHash(newEmail),
+      user.id,
+    ]);
+    if (clash.rows[0]) throw new Error('a user with this e-mail already exists');
+    await client.query('UPDATE users SET email_hash = $2 WHERE id = $1', [
+      user.id,
+      emailHash(newEmail),
+    ]);
+    for (const t of user.tenants) await audit(client, t, 'user.set_email', user.id, {});
+    return { id: user.id };
+  });
+};

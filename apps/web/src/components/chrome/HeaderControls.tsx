@@ -18,6 +18,7 @@ import { LOCALE_COOKIE, supportedLocales, type SupportedLocale } from '@evolai/i
 import { AppIcon } from '@evolai/ui';
 import { THEME_COOKIE } from '@/lib/themeChoice';
 import { useI18n } from '../I18nProvider';
+import { viewAsMenuItems, type ViewAsMenu } from './ViewAsMenuSection';
 
 const YEAR = 31536000;
 
@@ -101,6 +102,10 @@ export interface Identity {
   readonly role: string;
   readonly organisation: string | null;
   readonly organisationCount: number;
+  /** Where "Workspace" leads: the admin area, or the team space for a client view. */
+  readonly workspaceHref?: string;
+  /** Owner only: the "View as" section (TASK-P). */
+  readonly viewAs?: ViewAsMenu | null;
 }
 
 const initialsOf = (name: string): string =>
@@ -199,6 +204,7 @@ export function AccountMenu({ identity }: { identity: Identity | null }) {
           </Typography>
         </Box>
         <Divider />
+        {identity.viewAs ? viewAsMenuItems(identity.viewAs, t) : null}
         {identity.organisationCount > 1 ? (
           <MenuItem component="a" href="/admin/engagements">
             <ListItemIcon>
@@ -207,7 +213,7 @@ export function AccountMenu({ identity }: { identity: Identity | null }) {
             <ListItemText>{t('common.account.switchOrganisation')}</ListItemText>
           </MenuItem>
         ) : null}
-        <MenuItem component="a" href="/admin/data">
+        <MenuItem component="a" href={identity.workspaceHref ?? '/admin/data'}>
           <ListItemIcon>
             <AppIcon name="settings" />
           </ListItemIcon>

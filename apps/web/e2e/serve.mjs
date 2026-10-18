@@ -94,6 +94,11 @@ const main = async () => {
     [process.execPath, join(repoRoot, 'infra', 'db', 'scripts', 'seed-synthetic-auth.mjs')],
     env,
   );
+  // Synthetic client C, its owner and referent for the view-as and team space specs (TASK-P).
+  await run(
+    [process.execPath, join(repoRoot, 'infra', 'db', 'scripts', 'seed-synthetic-client.mjs')],
+    env,
+  );
   writeFileSync(STATE_FILE, JSON.stringify({ databaseUrl }, null, 2));
 
   if (process.env['PW_SKIP_BUILD'] !== '1') await run(['pnpm', 'exec', 'next', 'build'], env);

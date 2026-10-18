@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { readSessionCookie, verifySession } from '@/lib/session';
 
 /**
- * Gate for the auditor surface (ADR 0023). Respondent routes (/s, /intake, /quiz, /welcome,
+ * Gate for the auditor and client surfaces (ADR 0023, ADR 0035). Respondent routes (/s, /intake, /quiz, /welcome,
  * /privacy, /about) are deliberately outside the matcher. Pages and actions re-check the
  * session themselves; this is the first line, not the only one.
  */
@@ -13,7 +13,13 @@ export async function middleware(req: NextRequest) {
   } catch {
     // Missing secret outside local dev: fail closed.
   }
-  if (session) return NextResponse.next();
+  if (session) {
+    // The path travels to server components for the view-as trail (ADR 0035). Set here, after
+    // any client-supplied value is overwritten, so it cannot be forged.
+    const headers = new Headers(req.headers);
+    headers.set('x-evolai-path', req.nextUrl.pathname);
+    return NextResponse.next({ request: { headers } });
+  }
   const next = req.nextUrl.pathname + req.nextUrl.search;
   // Build the redirect on the host the browser used (not req.nextUrl's bind host), so the
   // cookie scope stays the same and the Location is an absolute URL the middleware accepts.
@@ -23,4 +29,4 @@ export async function middleware(req: NextRequest) {
   return NextResponse.redirect(login);
 }
 
-export const config = { matcher: ['/admin/:path*', '/board'] };
+export const config = { matcher: ['/admin/:path*', '/board', '/client/:path*', '/client'] };

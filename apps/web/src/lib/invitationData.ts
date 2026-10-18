@@ -319,6 +319,7 @@ export const listOpen = async (
   tenantId: TenantId,
   engagementId: string,
   baseUrl: string,
+  teamIds: readonly string[] | null = null,
 ): Promise<OpenInvitation[]> =>
   withTenant(tenantId, async (client) => {
     const { rows } = await client.query<{
@@ -330,8 +331,9 @@ export const listOpen = async (
       `SELECT i.id, i.token_reference, t.name AS team_name, to_char(i.expires_at, 'YYYY-MM-DD') AS expires_on
          FROM invitations i JOIN teams t ON t.id = i.team_id
         WHERE i.tenant_id = $1 AND i.engagement_id = $2 AND i.status IN ${OPEN_STATUSES}
+          AND ($3::uuid[] IS NULL OR i.team_id = ANY($3::uuid[]))
         ORDER BY t.name, i.created_at, i.id`,
-      [tenantId, engagementId],
+      [tenantId, engagementId, teamIds],
     );
     return rows.map((r) => ({
       id: r.id,
@@ -358,6 +360,7 @@ const loadDue = async (
   engagementId: string,
   schedule: readonly number[],
   now: Date,
+  teamIds: readonly string[] | null = null,
 ): Promise<DueRow[]> => {
   const { rows } = await client.query<DueRow>(
     `SELECT i.id, i.token_reference, t.name AS team_name, i.status,
@@ -366,8 +369,9 @@ const loadDue = async (
        FROM invitations i JOIN teams t ON t.id = i.team_id
       WHERE i.tenant_id = $1 AND i.engagement_id = $2 AND i.status IN ${OPEN_STATUSES}
         AND i.expires_at > now() AND i.reminder_count < $3
+        AND ($4::uuid[] IS NULL OR i.team_id = ANY($4::uuid[]))
       ORDER BY i.created_at, i.id`,
-    [tenantId, engagementId, schedule.length],
+    [tenantId, engagementId, schedule.length, teamIds],
   );
   return rows.filter((r) =>
     isReminderDue(
@@ -389,11 +393,12 @@ export const reminderList = async (
   engagementId: string,
   baseUrl: string,
   now: Date = new Date(),
+  teamIds: readonly string[] | null = null,
 ): Promise<OpenInvitation[]> =>
   withTenant(tenantId, async (client) => {
     const settings = await readSettings(client, tenantId, engagementId);
     if (!settings) return [];
-    const due = await loadDue(client, tenantId, engagementId, settings.reminderDays, now);
+    const due = await loadDue(client, tenantId, engagementId, settings.reminderDays, now, teamIds);
     return due.map((r) => ({
       id: r.id,
       code: r.token_reference.slice(-6),
@@ -512,15 +517,17 @@ export const withAudit = async (
   actor: string,
   kind: 'all' | 'reminders',
   baseUrl: string,
+  teamIds: readonly string[] | null = null,
 ): Promise<OpenInvitation[]> => {
   const rows =
     kind === 'reminders'
-      ? await reminderList(tenantId as TenantId, engagementId, baseUrl)
-      : await listOpen(tenantId as TenantId, engagementId, baseUrl);
+      ? await reminderList(tenantId as TenantId, engagementId, baseUrl, new Date(), teamIds)
+      : await listOpen(tenantId as TenantId, engagementId, baseUrl, teamIds);
   await withTenant(tenantId as TenantId, (client) =>
     audit(client, tenantId, actor, 'invitation.export', 'engagement', engagementId, {
       kind,
       count: rows.length,
+      ...(teamIds ? { teams: teamIds.length } : {}),
     }),
   );
   return rows;

@@ -19,3 +19,5 @@ a@synthetic.invalid
 @synthetic.invalid
 @example.test
 postgres://u:p@
+# TASK-P brief: a placeholder pattern, not an address.
+email (`...@

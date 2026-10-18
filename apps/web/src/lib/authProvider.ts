@@ -51,17 +51,26 @@ export const passwordProvider: AuthProvider = {
 
 export const activeProvider: AuthProvider = passwordProvider;
 
-/** Current, admin-capable memberships of a user (tenant-level rows only). */
+/**
+ * Current memberships of a user: tenant-level rows, plus team-scoped client rows (team_referent)
+ * with their team, which the /client surface needs (TASK-P, ADR 0035).
+ */
 export const loadMemberships = async (userId: string): Promise<SessionTenant[]> =>
   withServiceAccount(async (client) => {
-    const { rows } = await client.query<{ tenant_id: string; role: string }>(
-      `SELECT tenant_id, role FROM memberships
+    const { rows } = await client.query<{
+      tenant_id: string;
+      role: string;
+      team_id: string | null;
+    }>(
+      `SELECT tenant_id, role, team_id FROM memberships
         WHERE user_id = $1
-          AND team_id IS NULL
+          AND (team_id IS NULL OR role = 'team_referent')
           AND (starts_at IS NULL OR starts_at <= now())
           AND (ends_at IS NULL OR ends_at > now())
-        ORDER BY tenant_id`,
+        ORDER BY tenant_id, role, team_id`,
       [userId],
     );
-    return rows.map((r) => ({ id: r.tenant_id, role: r.role }));
+    return rows.map((r) =>
+      r.team_id ? { id: r.tenant_id, role: r.role, teamId: r.team_id } : { id: r.tenant_id, role: r.role },
+    );
   });
