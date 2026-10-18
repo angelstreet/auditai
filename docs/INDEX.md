@@ -16,6 +16,7 @@ its ADRs; every gate names its blocking evidence.
 | ------------ | ----------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
 | Product      | [PRD.md](PRD.md)                                                                                                              | Full product requirements (35 sections). Public, anonymised.                                   |
 | Delivery     | [ROADMAP.md](ROADMAP.md)                                                                                                      | Phase / milestone / gate state. Mirrors PRD §18. Updated in the merge that ships a milestone.  |
+| Operations   | [RUNBOOK.md](RUNBOOK.md)                                                                                                      | Deploy, rollback, migrations, auditor accounts, secrets, health, cron, recovery drill.         |
 | Architecture | [adr/](adr/)                                                                                                                  | Numbered ADR records. Every significant technical decision lands here. Never amend an old ADR. |
 | Workflow     | [INDEX.md](INDEX.md) (this file), [README.md](../README.md), [AGENTS.md](../AGENTS.md), [CONTRIBUTING.md](../CONTRIBUTING.md) | Working agreements + the public top-level story.                                               |
 
@@ -109,6 +110,7 @@ write a new one that supersedes it.
 | 0029 | [Model-backed synthesis, provider abstraction](adr/0029-llm-synthesis-provider-abstraction.md)                    | TASK-H                           | Accepted |
 | 0030 | [Pseudonym erasure cascade](adr/0030-pseudonym-erasure-cascade.md)                                                | TASK-B (renumbered from 0020)    | Accepted |
 | 0031 | [Housekeeping: ADR number check, CODEOWNERS, smoke actors](adr/0031-housekeeping-adr-numbers-and-smoke-actors.md) | TASK-J                           | Accepted |
+| 0032 | [Production readiness](adr/0032-production-readiness.md)                                                          | TASK-K                           | Accepted |
 
 ## 4. The gates map (PRD §25.4)
 
@@ -216,6 +218,7 @@ docs/
 ├── INDEX.md          ← this file (map contract)
 ├── PRD.md            ← product requirements (35 sections)
 ├── ROADMAP.md       ← milestone / phase / gate state
+├── RUNBOOK.md       ← production operations
 └── adr/
    ├── 0001-license-and-stack.md
    ├── 0002-monorepo-tooling.md

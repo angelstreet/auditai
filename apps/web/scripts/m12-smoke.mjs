@@ -43,7 +43,7 @@ const fetchText = async (path) => {
 const main = async () => {
   // 1. /welcome renders the heading.
   const welcome = await fetchText('/welcome');
-  if (!/h1[^>]*>Discover how work/.test(welcome)) {
+  if (!/h1[^>]*>See how work/.test(welcome)) {
     fail('/welcome did not render the hero heading');
   }
   ok('/welcome renders the hero heading');

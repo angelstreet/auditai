@@ -6,7 +6,7 @@ interface PageProps {
   searchParams: { next?: string; error?: string };
 }
 
-const MESSAGE_KEYS = { invalid: 'login.invalid', 'no-access': 'login.noAccess' } as const;
+const MESSAGE_KEYS = { invalid: 'login.invalid', locked: 'login.locked' } as const;
 
 /** /login: auditor sign-in (ADR 0023), localised FR/EN (ADR 0024). */
 export default function LoginPage({ searchParams }: PageProps) {

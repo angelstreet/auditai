@@ -36,13 +36,15 @@ export const passwordProvider: AuthProvider = {
         id: string;
         display_name: string;
         password_hash: string | null;
-      }>(`SELECT id, display_name, password_hash FROM users WHERE email_hash = $1 LIMIT 1`, [
-        emailHash(email),
-      ]);
+        disabled_at: string | null;
+      }>(
+        `SELECT id, display_name, password_hash, disabled_at FROM users WHERE email_hash = $1 LIMIT 1`,
+        [emailHash(email)],
+      );
       return rows[0] ?? null;
     });
     const ok = await verifyPassword(password, row?.password_hash ?? DUMMY_HASH);
-    if (!row || !row.password_hash || !ok) return null;
+    if (!row || !row.password_hash || row.disabled_at || !ok) return null;
     return { id: row.id, name: row.display_name };
   },
 };

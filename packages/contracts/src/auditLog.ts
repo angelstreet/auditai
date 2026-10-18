@@ -34,6 +34,9 @@ export const auditActionSchema = z.enum([
   'export.complete',
   'badge.erase',
   'pseudonym.erase',
+  'user.create',
+  'user.set_password',
+  'user.disable',
 ]);
 export type AuditAction = z.infer<typeof auditActionSchema>;
 
@@ -44,6 +47,7 @@ export const auditTargetKindSchema = z.enum([
   'respondent_badge',
   'export_request',
   'invitation',
+  'user',
 ]);
 export type AuditTargetKind = z.infer<typeof auditTargetKindSchema>;
 

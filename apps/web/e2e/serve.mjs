@@ -89,6 +89,11 @@ const main = async () => {
   };
 
   await run([process.execPath, join(repoRoot, 'infra', 'db', 'scripts', 'migrate.mjs')], env);
+  // Migration 0017 clears the public synthetic passwords; tests put them back (never in production).
+  await run(
+    [process.execPath, join(repoRoot, 'infra', 'db', 'scripts', 'seed-synthetic-auth.mjs')],
+    env,
+  );
   writeFileSync(STATE_FILE, JSON.stringify({ databaseUrl }, null, 2));
 
   if (process.env['PW_SKIP_BUILD'] !== '1') await run(['pnpm', 'exec', 'next', 'build'], env);

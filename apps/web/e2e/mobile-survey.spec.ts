@@ -1,4 +1,13 @@
+import { createHmac } from 'node:crypto';
 import { expect, test } from '@playwright/test';
+
+// The public pages no longer link to a sample survey; the spec signs the seeded sample
+// invitation itself, with the same secret the test server uses.
+const SECRET = process.env['SURVEY_SIGNING_SECRET'] ?? 'dev-only-survey-signing-secret-change-me';
+const sampleSurveyPath = (): string => {
+  const reference = 'inv-synthetic-pilot-001';
+  return `/s/${reference}.${createHmac('sha256', SECRET).update(reference).digest('base64url')}`;
+};
 
 /**
  * Mobile-survey acceptance test (PRD \u00a716).
@@ -13,13 +22,8 @@ test.describe('employee mobile survey @ 360 px', () => {
   test('welcome page renders without horizontal scroll and without clipped labels', async ({
     page,
   }) => {
-    await page.goto('/about');
-    const link = page.getByRole('link', { name: /synthetic sample survey/i });
-    await expect(link).toBeVisible();
-    const href = await link.getAttribute('href');
-    expect(href).toMatch(/^\/s\//);
-
-    await page.goto(href ?? '/');
+    const href = sampleSurveyPath();
+    await page.goto(href);
     const heading = page.getByRole('heading', { level: 1 });
     await expect(heading).toBeVisible();
 
@@ -38,9 +42,7 @@ test.describe('employee mobile survey @ 360 px', () => {
   });
 
   test('can answer the first two questions without clipping at 360 px', async ({ page }) => {
-    await page.goto('/about');
-    const link = page.getByRole('link', { name: /synthetic sample survey/i });
-    const href = (await link.getAttribute('href')) ?? '/';
+    const href = sampleSurveyPath();
     await page.goto(href);
 
     // Start (or "continue where you left off" when an earlier project already answered).

@@ -42,8 +42,11 @@ contracts/domain/ai), style guard (design tokens, one font, no external font URL
 `ai:eval` on the mock provider, Playwright (chromium at 360/768/1280, French and English, axe accessibility
 scan, keyboard-only run). A manual/nightly workflow `e2e.yml` runs the milestone smokes. If turbo cannot find
 `pnpm`, put a `pnpm` shim on PATH (`exec corepack pnpm "$@"`).
-There is **no production deployment yet**. `docker-compose.yml` is for one host; hosting, backups and a recovery
-drill are open (see below). The contracts-map page deploy script only works inside its original environment (ADR 0022).
+Production: Vercel project `evolai` (evolai.io) on Neon Postgres in Frankfurt; a push to `main` deploys. Operations are in
+[RUNBOOK.md](RUNBOOK.md) (migrations, auditor accounts, secret rotation, health, cron, recovery drill). Local and CI
+runs seed the synthetic auditor passwords with `infra/db/scripts/seed-synthetic-auth.mjs`; deployed databases have none
+(ADR 0032). `docker-compose.yml` is for one host and has no sign-in until an auditor is created. The contracts-map page
+deploy script only works inside its original environment (ADR 0022).
 
 ## History of the follow-up work (all merged to main)
 
@@ -60,8 +63,9 @@ drill are open (see below). The contracts-map page deploy script only works insi
 | H      | 34           | Model-backed synthesis behind an allowlisted provider abstraction: redaction, injection suite, cost caps, citation checks, eval (ADR 0029)                                              |
 | I      | (6c7a69a)    | Accessibility gate (axe, keyboard), next-steps and contact block, French copy pass (ADR 0028)                                                                                           |
 | J      | 35           | ROADMAP truthful, unique ADR numbers, CODEOWNERS, real auditor ids in smokes (ADR 0031)                                                                                                 |
+| K      | (this PR)    | Production readiness: no public credentials, auditor CLI, login lockout and headers, plain public wording, region and TLS, health, retention cron, runbook (ADR 0032)                   |
 
-Task briefs are kept in `docs/tasks/` (TASK-A to TASK-J).
+Task briefs are kept in `docs/tasks/` (TASK-A to TASK-K).
 
 ## Gates (PRD section 25.4)
 
@@ -69,7 +73,9 @@ Task briefs are kept in `docs/tasks/` (TASK-A to TASK-J).
 - **B, AI synthesis:** redaction, injection tests, source traceability, cost ceiling implemented and proven on the
   mock. One real run on a cheap model with synthetic data: 100% of kept claims grounded, 0.0041 USD (ADR 0029).
   That proves grounding, not theme quality. A person must read real themes.
-- **C, enterprise hosting:** not done (SSO/OIDC and MFA, hosting and backups, recovery drill, pen test, SLA).
+- **C, enterprise hosting:** partly done. Done: hosting on Vercel and Neon, no public credentials in the database,
+  real auditor accounts by CLI, login lockout, security headers, health check, retention cron, runbook (TASK-K).
+  Open: the written recovery drill has not been run (RUNBOOK), SSO/OIDC and MFA, pen test, SLA.
 - **D, cross-company benchmarks:** not started.
 
 ## Decisions made by the owner
@@ -95,7 +101,12 @@ Full detail in ADR 0029 section "Owner steps". Short version:
 
 ## Open and deferred
 
-1. Production hosting, backups, recovery drill, SSO/MFA, pen test (Gate C).
+1. Gate C: run the recovery drill once and record the result, SSO/MFA, pen test, SLA. One-time owner commands after
+   TASK-K merges: apply migration 0017 to Neon, set `CRON_SECRET` and a real `SURVEY_SIGNING_SECRET` in Vercel,
+   create the first auditor (RUNBOOK). Until `SURVEY_SIGNING_SECRET` is set, invitation links fail closed.
+   `/intake` and `/quiz` are public and list the seeded test tenants (intake also shows the latest sponsor brief and
+   accepts writes without a session): gate or remove before real tenants exist. The seeded synthetic tenants and
+   users still exist in the live database.
 2. Invitations and reminders beyond the single-use link (FR-03), response tracking.
 3. Real-device test (low-end Android, iPhone, slow network) and a human screen-reader pass.
 4. Human review of real-model theme quality; admin screen for redaction terms.

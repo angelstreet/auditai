@@ -16,7 +16,7 @@ export default function PrivacyPage() {
       <p>{t('privacy.p2')}</p>
       <p>
         {before}
-        <Link href="/about">{t('privacy.aboutLink')}</Link>
+        <Link href="/welcome">{t('privacy.aboutLink')}</Link>
         {after}
       </p>
     </section>
