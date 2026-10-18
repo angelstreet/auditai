@@ -1,7 +1,7 @@
-import { Logo } from '@/components/Logo';
-import { listTenantIds, tenantLabel } from '@/lib/adminData';
+import { listTenantIds } from '@/lib/adminData';
 import { LITERACY_QUIZ } from '@auditai/domain';
 import { QuizForm } from './QuizForm';
+import { submitQuizAction } from './actions';
 import { getT } from '@/lib/i18n';
 import type { TenantId } from '@auditai/contracts';
 
@@ -32,25 +32,26 @@ export default async function QuizLanding({ searchParams }: PageProps) {
   const current = (tenants.find((t) => t === requested) ?? tenants[0]) as TenantId | undefined;
   if (!current) {
     return (
-      <main className="container">
-        <Logo />
-        <p>{t('common.noTenants', { command: 'pnpm local:reset' })}</p>
-      </main>
+      <section className="stack">
+        <h1>{t('quiz.title')}</h1>
+        <p>{t('quiz.noTenants')}</p>
+      </section>
     );
   }
   const pseudonym =
     searchParams.pseudonym ??
     `quiz-${Math.random().toString(36).slice(2, 10)}-${Math.random().toString(36).slice(2, 6)}`;
-  const label = await tenantLabel(current);
   return (
-    <main className="container">
-      <Logo />
-      <h1 style={{ marginTop: 'var(--space-4)' }}>{t('quiz.title')}</h1>
-      <p className="muted">{t('quiz.intro', { label })}</p>
+    <div className="stack">
       <p className="muted">
-        <strong>{t('quiz.pseudonym')}</strong> <code>{pseudonym}</code>
+        {t('quiz.intro')} {t('quiz.privacyShort')}
       </p>
-      <QuizForm tenantId={current} pseudonym={pseudonym} questions={LITERACY_QUIZ} />
-    </main>
+      <QuizForm
+        action={submitQuizAction}
+        tenantId={current}
+        pseudonym={pseudonym}
+        questions={LITERACY_QUIZ}
+      />
+    </div>
   );
 }

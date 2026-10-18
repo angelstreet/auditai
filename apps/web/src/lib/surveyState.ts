@@ -93,7 +93,7 @@ export const getOrCreateState = async (
     }
 
     // No submission yet \u2014 create one and link it to the invitation.
-    const insertResult = await client.query<{ id: string; started_at: string }>(
+    const insertResult = await client.query<{ id: string; started_at: string; locale: string }>(
       `INSERT INTO submissions (
          id, tenant_id, engagement_id, questionnaire_version_id, invitation_id,
          status, locale, started_at
@@ -105,7 +105,7 @@ export const getOrCreateState = async (
          FROM invitations i
          JOIN engagements e ON e.id = i.engagement_id
         WHERE i.id = $1
-       RETURNING id, started_at`,
+       RETURNING id, started_at, locale`,
       [invitationId],
     );
     const created = insertResult.rows[0];
@@ -125,7 +125,7 @@ export const getOrCreateState = async (
       invitationReference: invite.token_reference,
       invitationId: invite.id as InvitationId,
       tenantId: invite.tenant_id as TenantId,
-      locale: 'en',
+      locale: created.locale === 'fr' ? 'fr' : 'en',
       submissionId: created.id as SubmissionId,
       startedAt: created.started_at,
       submittedAt: null,
@@ -198,13 +198,13 @@ export const submitState = async (
     await client.query(
       `UPDATE submissions
          SET status = 'submitted', submitted_at = now(), updated_at = now()
-       WHERE id = $1`,
+       WHERE id = $1 AND status <> 'submitted'`,
       [submissionId],
     );
     await client.query(
       `UPDATE invitations
          SET status = 'submitted', updated_at = now()
-       WHERE id = $1`,
+       WHERE id = $1 AND status <> 'submitted'`,
       [invitationId],
     );
     return {

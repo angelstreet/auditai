@@ -33,7 +33,7 @@ test.describe('employee mobile survey @ 360 px', () => {
     // Privacy notice and language toggle render fully.
     const privacy = page.locator('section.privacy');
     await expect(privacy).toBeVisible();
-    const toggle = page.getByRole('group', { name: /Survey language|Langue du questionnaire/ });
+    const toggle = page.getByRole('group', { name: /Interface language|Langue de l’interface/ });
     await expect(toggle).toBeVisible();
   });
 
@@ -43,7 +43,10 @@ test.describe('employee mobile survey @ 360 px', () => {
     const href = (await link.getAttribute('href')) ?? '/';
     await page.goto(href);
 
-    await page.getByRole('button', { name: /start the survey|commencer/i }).click();
+    // Start (or "continue where you left off" when an earlier project already answered).
+    await page.locator('main a.btn-primary').click();
+    await expect(page).toHaveURL(/\/q\/\d+$/);
+    await page.goto(`${href}/q/0`);
 
     // Q1 \u2014 wait for the question heading and the option list to be rendered.
     await expect(page).toHaveURL(/\/q\/0$/);
@@ -52,9 +55,9 @@ test.describe('employee mobile survey @ 360 px', () => {
     await expect(option1).toBeVisible();
     const box1 = await option1.boundingBox();
     expect(box1).not.toBeNull();
-    expect(box1?.width ?? 0).toBeLessThanOrEqual(360);
+    expect(box1?.width ?? 0).toBeLessThanOrEqual(page.viewportSize()?.width ?? 360);
+    // One tap: choosing an option saves it and moves on.
     await page.locator('button.option-button').nth(1).click();
-    await page.getByRole('button', { name: /continue|continuer|suivant/i }).click();
 
     // Q2 \u2014 URL changes to /q/1 once the answer is saved. We then measure the option button.
     await expect(page).toHaveURL(/\/q\/1$/);
@@ -62,7 +65,7 @@ test.describe('employee mobile survey @ 360 px', () => {
     await expect(option2).toBeVisible();
     const box2 = await option2.boundingBox();
     expect(box2).not.toBeNull();
-    expect(box2?.width ?? 0).toBeLessThanOrEqual(360);
+    expect(box2?.width ?? 0).toBeLessThanOrEqual(page.viewportSize()?.width ?? 360);
 
     const { scrollWidth, clientWidth } = await page.evaluate(() => ({
       scrollWidth: document.documentElement.scrollWidth,

@@ -129,10 +129,11 @@ const main = async () => {
   if (/\b88\b/.test(visibleText)) {
     fail('/quiz/result rendered the raw quiz_score (88); privacy regression');
   }
-  if (!/Pseudonym/.test(resultHtml) || !resultHtml.includes(pseudonym)) {
-    fail('/quiz/result did not render the pseudonym');
+  // TASK-E: the respondent never sees internal identifiers (pseudonym, tenant).
+  if (/Pseudonym/i.test(visibleText) || visibleText.includes(pseudonym)) {
+    fail('/quiz/result rendered the pseudonym; respondent screens must not show it');
   }
-  ok('/quiz/result renders the owl mascot + pseudonym, hides raw score');
+  ok('/quiz/result renders the owl mascot, hides raw score and pseudonym');
 
   // 4. Re-take with low answers -> demote previous + new tortoise row.
   await c.query(

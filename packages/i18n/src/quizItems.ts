@@ -20,50 +20,49 @@ export const QUIZ_ITEM_STATUS: Record<SupportedLocale, 'reviewed' | 'draft-fr'> 
 export const quizItems: Record<SupportedLocale, Readonly<Record<string, QuizItemCopy>>> = {
   en: {
     ai_last_30d: {
-      prompt: 'In the last 30 days, how often have you spent time learning about AI tools?',
+      prompt: 'In the last 30 days, how often did you learn about AI tools?',
       options: {
         never: 'Never',
         monthly: 'About once a month',
         weekly: 'A few times a week',
-        daily: 'Daily',
+        daily: 'Every day',
       },
     },
     ai_media_consumption: {
-      prompt: 'How often do you follow AI news or commentary?',
+      prompt: 'How often do you read or hear AI news?',
       options: {
         never: 'Never',
-        occasional: 'When it crosses my feed',
-        weekly: 'Weekly newsletter / podcast',
-        daily: 'Daily',
+        occasional: 'When I come across it',
+        weekly: 'Every week (newsletter, podcast)',
+        daily: 'Every day',
       },
     },
     ai_chatbot_use: {
-      prompt: 'How do you use an AI chatbot at work today?',
+      prompt: 'Do you use an AI chatbot at work?',
       options: {
-        never: "I don't",
-        curious: 'Sometimes to try things',
-        weekly: 'Weekly in my workflow',
-        daily: 'Daily on real tasks',
+        never: 'No',
+        curious: 'Sometimes, to try',
+        weekly: 'Every week',
+        daily: 'Every day, for real work',
       },
     },
     ai_assisted_coding: {
-      prompt: 'How often do you use an AI pair-programmer or coding assistant?',
-      options: { never: 'Never', tried: 'Tried once or twice', weekly: 'Weekly', daily: 'Daily' },
+      prompt: 'Do you use AI to help you write code?',
+      options: { never: 'Never', tried: 'Once or twice', weekly: 'Every week', daily: 'Every day' },
     },
     ai_built_projects: {
-      prompt: 'In the last year, have you shipped a project that meaningfully used AI?',
+      prompt: 'In the past year, did you finish a project that relied on AI?',
       options: {
         never: 'No',
-        experiment: 'Experiment only',
-        one_project: 'Yes, one project',
-        multiple: 'Yes, multiple',
+        experiment: 'Only a test',
+        one_project: 'Yes, one',
+        multiple: 'Yes, several',
       },
     },
   },
   fr: {
     ai_last_30d: {
-      prompt:
-        'Au cours des 30 derniers jours, à quelle fréquence avez-vous consacré du temps à vous former aux outils d’IA ?',
+      prompt: 'Ces 30 derniers jours, à quelle fréquence avez-vous appris à utiliser l’IA\u00a0?',
       options: {
         never: 'Jamais',
         monthly: 'Environ une fois par mois',
@@ -72,40 +71,38 @@ export const quizItems: Record<SupportedLocale, Readonly<Record<string, QuizItem
       },
     },
     ai_media_consumption: {
-      prompt: 'À quelle fréquence suivez-vous l’actualité ou les analyses sur l’IA ?',
+      prompt: 'À quelle fréquence lisez-vous ou écoutez-vous des actualités sur l’IA\u00a0?',
       options: {
         never: 'Jamais',
-        occasional: 'Quand elle passe dans mon fil',
-        weekly: 'Lettre d’information / podcast hebdomadaire',
+        occasional: 'Quand je tombe dessus',
+        weekly: 'Chaque semaine (lettre, podcast)',
         daily: 'Tous les jours',
       },
     },
     ai_chatbot_use: {
-      prompt:
-        'Comment utilisez-vous aujourd’hui un agent conversationnel (chatbot) d’IA au travail ?',
+      prompt: 'Utilisez-vous un chatbot d’IA au travail\u00a0?',
       options: {
-        never: 'Je ne l’utilise pas',
+        never: 'Non',
         curious: 'Parfois, pour essayer',
-        weekly: 'Chaque semaine dans mon travail',
-        daily: 'Tous les jours sur de vraies tâches',
+        weekly: 'Chaque semaine',
+        daily: 'Tous les jours, pour de vraies tâches',
       },
     },
     ai_assisted_coding: {
-      prompt: 'À quelle fréquence utilisez-vous un assistant de programmation fondé sur l’IA ?',
+      prompt: 'Utilisez-vous l’IA pour vous aider à écrire du code\u00a0?',
       options: {
         never: 'Jamais',
-        tried: 'Essayé une ou deux fois',
+        tried: 'Une ou deux fois',
         weekly: 'Chaque semaine',
         daily: 'Tous les jours',
       },
     },
     ai_built_projects: {
-      prompt:
-        'Au cours de l’année écoulée, avez-vous livré un projet qui s’appuyait de façon significative sur l’IA ?',
+      prompt: 'Cette année, avez-vous mené à bien un projet qui s’appuie sur l’IA\u00a0?',
       options: {
         never: 'Non',
-        experiment: 'Simple expérimentation',
-        one_project: 'Oui, un projet',
+        experiment: 'Seulement un essai',
+        one_project: 'Oui, un',
         multiple: 'Oui, plusieurs',
       },
     },

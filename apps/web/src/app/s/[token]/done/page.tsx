@@ -1,10 +1,8 @@
-import Link from 'next/link';
-import { notFound } from 'next/navigation';
-import LocaleSync from '@/components/LocaleSync';
-import { findTenantForInvitation } from '@/lib/db';
-import { InvalidInviteToken, verifyInviteToken } from '@/lib/invitationToken';
-import { getOrCreateState, submitState } from '@/lib/surveyState';
-import { createTranslator } from '@auditai/i18n';
+import LinkProblem from '@/components/respondent/LinkProblem';
+import RespondentStatus from '@/components/respondent/RespondentStatus';
+import { loadRespondent, teamProgress } from '@/lib/respondent';
+import { getCurrentBadgeForPseudonym } from '@/lib/respondentBadgeData';
+import { submitState } from '@/lib/surveyState';
 
 // Always render at request time so the DB connection is fresh.
 export const dynamic = 'force-dynamic';
@@ -14,35 +12,26 @@ interface Params {
 }
 
 export default async function DonePage({ params }: { params: Params }) {
-  try {
-    verifyInviteToken(params.token);
-  } catch (err) {
-    if (err instanceof InvalidInviteToken) notFound();
-    throw err;
-  }
-
-  const reference = params.token.split('.')[0] as string;
-  const resolved = await findTenantForInvitation(reference);
-  if (!resolved) notFound();
-
-  const state = await getOrCreateState(resolved.tenantId, resolved.invitationId);
-  const locale = state.locale;
-  const t = createTranslator(locale);
+  const ctx = await loadRespondent(params.token);
+  if (ctx.kind === 'blocked') return <LinkProblem gate={ctx.gate} t={ctx.t} />;
+  const { invite, state, locale, t } = ctx;
 
   if (state.submissionId) {
-    await submitState(resolved.tenantId, resolved.invitationId, state.submissionId);
+    await submitState(invite.tenantId, invite.invitationId, state.submissionId);
   }
+  const [team, badge] = await Promise.all([
+    teamProgress(invite),
+    getCurrentBadgeForPseudonym(invite.tenantId, invite.pseudonym),
+  ]);
 
   return (
-    <section aria-labelledby="done-title">
-      <LocaleSync locale={locale} />
-      <h1 id="done-title">{t('survey.thanksTitle')}</h1>
-      <p>{t('survey.thanksBody')}</p>
-      <h2>{t('survey.tipHeading')}</h2>
-      <p>{t('survey.tip')}</p>
-      <p>
-        <Link href={`/s/${params.token}`}>{t('survey.review')}</Link>
-      </p>
-    </section>
+    <RespondentStatus
+      token={params.token}
+      title={t('survey.thanksTitle')}
+      team={team}
+      myTier={badge?.mascotTier ?? null}
+      locale={locale}
+      t={t}
+    />
   );
 }

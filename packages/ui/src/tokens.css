@@ -1,0 +1,75 @@
+/* EvolAI design tokens: the single source of colours, type, spacing, radius and shadow.
+ *
+ * Used by apps/web (imported in globals.css) and landing/ (a byte-identical copy at
+ * landing/brand/tokens.css). `node scripts/style-guard.mjs` fails CI when a hex colour or a
+ * font-size literal appears outside this file, or when the landing copy drifts. ADR 0025.
+ *
+ * Palette: landing/brand/brand-kit.png. Derived tones (ink, border-strong, danger) exist only
+ * where a brand colour fails WCAG 2.2 AA contrast for its job; each carries its ratio.
+ */
+
+:root {
+  /* Brand palette */
+  --color-navy: #172b3a; /* 14.5:1 on white */
+  --color-teal: #19a999; /* 2.9:1 on white: fills and large graphics only, never small text */
+  --color-blue: #4a7fe8; /* 3.8:1 on white: graphics only */
+  --color-amber: #ffb86a;
+  --color-off-white: #f7fafc;
+  --color-slate: #536575; /* "supporting": 6.0:1 on white */
+  --color-white: #ffffff;
+  --color-line: #e3e8ee; /* decorative dividers only (1.2:1) */
+
+  /* Derived tones (owner review: ADR 0025) */
+  --color-teal-ink: #0f7a6e; /* teal for text on white, 5.2:1 */
+  --color-border-strong: #8796a5; /* form-control edge, 3.0:1 (WCAG 1.4.11) */
+  --color-danger: #b42318; /* errors, 6.6:1 on white */
+
+  /* Semantic roles: components use these, not the palette names */
+  --color-bg: var(--color-white);
+  --color-surface: var(--color-off-white);
+  --color-fg: var(--color-navy);
+  --color-muted: var(--color-slate);
+  --color-border: var(--color-line);
+  --color-accent: var(--color-navy);
+  --color-accent-fg: var(--color-white);
+  --color-highlight: var(--color-teal);
+  --color-on-highlight: var(--color-navy); /* 5.0:1 on teal */
+
+  /* Type: one family, seven sizes (3xl is landing-only), three weights */
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --text-xs: 0.75rem; /* 12px: admin badges and counters only */
+  --text-sm: 0.875rem; /* 14px: secondary text */
+  --text-base: 1rem; /* 16px: body, buttons, inputs */
+  --text-lg: 1.25rem; /* 20px: h2 */
+  --text-xl: 1.5rem; /* 24px: h1 on phones, question prompts */
+  --text-2xl: 2rem; /* 32px: h1 from tablet up */
+  --text-3xl: clamp(2.25rem, 5vw, 3.5rem); /* 36-56px: landing hero only */
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-bold: 600;
+  --leading-tight: 1.25;
+  --leading-body: 1.5;
+
+  /* Spacing (4px grid) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+
+  /* Shape */
+  --radius-sm: 4px;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 999px;
+  --shadow: 0 1px 2px rgba(23, 43, 58, 0.06);
+  --shadow-lg: 0 18px 48px rgba(23, 43, 58, 0.08);
+
+  /* Layout */
+  --tap-min: 44px;
+  --width-narrow: 480px; /* respondent pages */
+  --width-wide: 1120px; /* admin, board, landing */
+}

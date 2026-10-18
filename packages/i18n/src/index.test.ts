@@ -99,8 +99,10 @@ describe('formatMessage / createTranslator', () => {
     expect(formatMessage(tpl, 'fr', { n: 2 })).toBe('2 questions');
   });
   it('translates and falls back to the key', () => {
-    expect(createTranslator('fr')('survey.continue')).toBe('Continuer');
-    expect(createTranslator('en')('survey.questionsCount', { n: 6 })).toBe('6 questions');
+    expect(createTranslator('fr')('survey.start')).toBe('Commencer');
+    expect(createTranslator('en')('survey.duration', { n: 6, m: 2 })).toBe(
+      '6 questions · about 2 min',
+    );
     expect(createTranslator('en')('nope.missing' as never)).toBe('nope.missing');
   });
 });
