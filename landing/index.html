@@ -111,9 +111,7 @@
         border-radius: 10px;
         font-weight: 600;
         font-size: var(--text-sm);
-        transition:
-          transform 0.15s ease,
-          box-shadow 0.15s ease;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
       }
       .cta:hover {
         text-decoration: none;
@@ -179,11 +177,7 @@
       .hero-art {
         position: relative;
         aspect-ratio: 4 / 3;
-        background: linear-gradient(
-          135deg,
-          var(--navy) 0%,
-          color-mix(in srgb, var(--color-navy) 85%, var(--color-white)) 100%
-        );
+        background: linear-gradient(135deg, var(--navy) 0%, color-mix(in srgb, var(--color-navy) 85%, var(--color-white)) 100%);
         border-radius: 24px;
         padding: 32px;
         display: flex;
@@ -196,8 +190,16 @@
         content: '';
         position: absolute;
         inset: 0;
-        background: radial-gradient(circle at 80% 20%, rgba(25, 169, 153, 0.25) 0%, transparent 50%),
-          radial-gradient(circle at 20% 80%, rgba(74, 127, 232, 0.2) 0%, transparent 50%);
+        background: radial-gradient(
+            circle at 80% 20%,
+            rgba(25, 169, 153, 0.25) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 20% 80%,
+            rgba(74, 127, 232, 0.2) 0%,
+            transparent 50%
+          );
         pointer-events: none;
       }
       .hero-art .icon-stack {
@@ -245,9 +247,7 @@
         border: 1px solid var(--line);
         border-radius: 16px;
         padding: 28px;
-        transition:
-          transform 0.2s ease,
-          box-shadow 0.2s ease;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
       }
       .pillar:hover {
         transform: translateY(-2px);
@@ -464,8 +464,8 @@
           <div>
             <span class="eyebrow">Phase 1 foundation · Apache-2.0</span>
             <h1 class="headline">
-              Evidence-based <span class="accent">AI adoption</span> for teams that take change
-              seriously.
+              Evidence-based <span class="accent">AI adoption</span> for teams that take
+              change seriously.
             </h1>
             <p class="lede">
               EvolAI is an open-source platform for AI adoption audits and change enablement.
@@ -509,15 +509,16 @@
         <div class="container">
           <h2>What it does</h2>
           <p class="section-lede">
-            Six core surfaces, each designed to be evidence-first, privacy-respecting and auditable.
+            Six core surfaces, each designed to be evidence-first, privacy-respecting and
+            auditable.
           </p>
           <div class="pillars-grid">
             <article class="pillar pillar--teal">
               <span class="num">01</span>
               <h3>Mobile assessment</h3>
               <p>
-                Loginless secure invite, one question per screen, adaptive branching, FR/EN, about 8
-                minutes.
+                Loginless secure invite, one question per screen, adaptive branching, FR/EN,
+                about 8 minutes.
               </p>
               <span class="accent"></span>
             </article>
@@ -534,8 +535,8 @@
               <span class="num">03</span>
               <h3>Workflow discovery</h3>
               <p>
-                Last 7 days of work, friction, tools, hand-offs and safety classification — surfaced
-                as evidence, not as judgement.
+                Last 7 days of work, friction, tools, hand-offs and safety classification —
+                surfaced as evidence, not as judgement.
               </p>
               <span class="accent"></span>
             </article>
@@ -543,8 +544,9 @@
               <span class="num">04</span>
               <h3>AI-assisted synthesis</h3>
               <p>
-                Sensitivity classification → schema-validated extraction → themes → contradictions →
-                interview prompts. Every claim is linked to its source; human approval is mandatory.
+                Sensitivity classification → schema-validated extraction → themes →
+                contradictions → interview prompts. Every claim is linked to its source; human
+                approval is mandatory.
               </p>
               <span class="accent"></span>
             </article>
@@ -552,8 +554,8 @@
               <span class="num">05</span>
               <h3>Opportunity register</h3>
               <p>
-                From employee evidence to validated, measured outcomes: detected → … → measured or
-                rejected. No AI-generated ROI.
+                From employee evidence to validated, measured outcomes: detected → … → measured
+                or rejected. No AI-generated ROI.
               </p>
               <span class="accent"></span>
             </article>
@@ -583,7 +585,9 @@
             <div class="value">
               <div class="label">02</div>
               <h4>Evidence before claims</h4>
-              <p>No AI-generated counts, timings or ROI. Self-reported until verified.</p>
+              <p>
+                No AI-generated counts, timings or ROI. Self-reported until verified.
+              </p>
             </div>
             <div class="value">
               <div class="label">03</div>
@@ -610,8 +614,8 @@
             <div>
               <h3 style="margin: 0; font-size: var(--text-xl)">Phase 1 — foundation</h3>
               <p style="margin: 6px 0 0; color: rgba(247, 250, 252, 0.7)">
-                Monorepo, contracts + domain, Postgres + RLS, mobile survey, admin page, one-command
-                local runner. Seven milestones, all green on CI.
+                Monorepo, contracts + domain, Postgres + RLS, mobile survey, admin page,
+                one-command local runner. Seven milestones, all green on CI.
               </p>
               <div class="badges">
                 <span class="badge badge--teal">contracts · 96%</span>
@@ -632,44 +636,36 @@
         <div class="container">
           <h2>Try it</h2>
           <p class="section-lede">
-            Run the full stack on your machine in under two minutes. One command, no Docker, no
-            external services.
+            Run the full stack on your machine in under two minutes. One command, no Docker,
+            no external services.
           </p>
           <div class="try-grid">
             <div class="try-card">
               <span class="step">STEP 1</span>
               <h3>Install &amp; build</h3>
-              <pre>
-pnpm install --frozen-lockfile
-pnpm --filter @evolai/web build</pre
-              >
+              <pre>pnpm install --frozen-lockfile
+pnpm --filter @auditai/web build</pre>
             </div>
             <div class="try-card">
               <span class="step">STEP 2</span>
               <h3>Boot the local runner</h3>
-              <pre>
-pnpm local:up
-# READY postgres=...; web=http://127.0.0.1:3101; admin=...</pre
-              >
+              <pre>pnpm local:up
+# READY postgres=...; web=http://127.0.0.1:3101; admin=...</pre>
             </div>
             <div class="try-card">
               <span class="step">STEP 3</span>
               <h3>Walk the sample survey</h3>
-              <pre>
-open http://127.0.0.1:3101/about
+              <pre>open http://127.0.0.1:3101/about
 # click "synthetic sample survey"
 # answer the six questions
-# view the admin page at /admin/engagements</pre
-              >
+# view the admin page at /admin/engagements</pre>
             </div>
             <div class="try-card">
               <span class="step">STEP 4</span>
               <h3>End-to-end smoke</h3>
-              <pre>
-export LOCAL_WEB_URL=http://127.0.0.1:3101
+              <pre>export LOCAL_WEB_URL=http://127.0.0.1:3101
 export DATABASE_URL=postgres://auditai:auditai@127.0.0.1:54340/evolai_local
-pnpm local:smoke   # 14 OK lines, exit 0</pre
-              >
+pnpm local:smoke   # 14 OK lines, exit 0</pre>
             </div>
           </div>
         </div>

@@ -1,256 +1,122 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>EvolAI / AI Audit Studio \u2014 Contracts Map</title>
-    <meta
-      name="description"
-      content="The public contract surface of `@evolai/contracts`: 14 entity modules, 120+ tests, branded UUIDs, privacy-by-construction. The single source of truth for every other package in the monorepo."
-    />
-    <meta name="theme-color" content="var(--color-navy)" />
-    <link rel="icon" type="image/svg+xml" href="../brand/favicon.svg" />
-    <link rel="stylesheet" href="../brand/tokens.css" />
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EvolAI / AI Audit Studio \u2014 Contracts Map</title>
+  <meta name="description" content="The public contract surface of `@auditai/contracts`: 14 entity modules, 120+ tests, branded UUIDs, privacy-by-construction. The single source of truth for every other package in the monorepo." />
+  <meta name="theme-color" content="var(--color-navy)" />
+  <link rel="icon" type="image/svg+xml" href="../brand/favicon.svg" />
+  <link rel="stylesheet" href="../brand/tokens.css" />
     <style>
-      :root {
-        --navy: var(--color-navy);
-        --teal: var(--color-teal);
-        --supporting: var(--color-blue);
-        --off-white: var(--color-off-white);
-        --card: var(--color-white);
-        --border: var(--color-line);
-        --muted: var(--color-slate);
-      }
-      * {
-        box-sizing: border-box;
-      }
-      body {
-        font-family: var(--font-sans);
-        margin: 0;
-        color: var(--navy);
-        background: var(--off-white);
-        line-height: 1.55;
-      }
-      header {
-        background: var(--navy);
-        color: var(--off-white);
-        padding: 32px 24px;
-      }
-      header h1 {
-        margin: 0;
-        font-size: var(--text-xl);
-      }
-      header p {
-        margin: 8px 0 0;
-        color: rgba(251, 247, 238, 0.85);
-        font-size: var(--text-sm);
-      }
-      main {
-        max-width: 960px;
-        margin: 32px auto;
-        padding: 0 24px;
-      }
-      section {
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        padding: 16px 20px;
-        margin: 14px 0;
-      }
-      h2 {
-        margin: 0 0 8px;
-        font-size: var(--text-lg);
-      }
-      h3 {
-        margin: 0 0 6px;
-        font-size: var(--text-sm);
-      }
-      code {
-        background: var(--color-off-white);
-        padding: 1px 6px;
-        border-radius: 4px;
-        font-size: var(--text-xs);
-      }
-      .row {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 12px;
-        margin: 12px 0;
-      }
-      .pill {
-        display: inline-block;
-        padding: 2px 8px;
-        border-radius: 999px;
-        font-size: var(--text-xs);
-        font-weight: 600;
-        text-transform: uppercase;
-      }
-      .pill.tortoise {
-        background: var(--supporting);
-        color: var(--off-white);
-      }
-      .pill.fox {
-        background: var(--teal);
-        color: var(--off-white);
-      }
-      .pill.owl {
-        background: var(--color-teal);
-        color: var(--color-navy);
-      }
-      a.btn {
-        display: inline-block;
-        padding: 10px 18px;
-        border-radius: 8px;
-        background: var(--navy);
-        color: var(--off-white);
-        text-decoration: none;
-        font-weight: 500;
-        margin-right: 8px;
-      }
-      a.ghost {
-        display: inline-block;
-        padding: 8px 14px;
-        border-radius: 6px;
-        background: transparent;
-        color: var(--navy);
-        border: 1px solid var(--border);
-        text-decoration: none;
-        margin-right: 6px;
-      }
-      footer {
-        margin: 40px 0 24px;
-        text-align: center;
-        color: var(--muted);
-        font-size: var(--text-xs);
-      }
-    </style>
-  </head>
-  <body>
-    <header>
-      <h1>Contracts map \u2014 `@evolai/contracts`</h1>
-      <p>The single source of truth for every other package in the monorepo.</p>
-    </header>
-    <main>
-      <p>
-        <a class="btn" href="../brand/index.html">Brand landing</a>
-        <a
-          class="ghost"
-          href="https://github.com/angelstreet/evolai/blob/main/packages/contracts/src/contracts-map.md"
-          >Repo source (markdown)</a
-        >
-      </p>
-      <section>
-        <h2>What is this?</h2>
-        <p>
-          <code>@evolai/contracts</code> is the public surface of the project: 14 entity modules,
-          120+ tests, branded UUIDs, discriminated audit-log variants, status-transition schemas,
-          privacy-by-construction respondent payloads. The <code>@evolai/domain</code>,
-          <code>@evolai/ai</code>, <code>@evolai/web</code>, and <code>@evolai/ui</code> packages
-          all import from this single source so validation logic never diverges.
-        </p>
-      </section>
+    :root {
+      --navy: var(--color-navy);
+      --teal: var(--color-teal);
+      --supporting: var(--color-blue);
+      --off-white: var(--color-off-white);
+      --card: var(--color-white);
+      --border: var(--color-line);
+      --muted: var(--color-slate);
+    }
+    * { box-sizing: border-box; }
+    body { font-family: var(--font-sans); margin: 0; color: var(--navy); background: var(--off-white); line-height: 1.55; }
+    header { background: var(--navy); color: var(--off-white); padding: 32px 24px; }
+    header h1 { margin: 0; font-size: var(--text-xl); }
+    header p { margin: 8px 0 0; color: rgba(251, 247, 238, 0.85); font-size: var(--text-sm); }
+    main { max-width: 960px; margin: 32px auto; padding: 0 24px; }
+    section { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; margin: 14px 0; }
+    h2 { margin: 0 0 8px; font-size: var(--text-lg); }
+    h3 { margin: 0 0 6px; font-size: var(--text-sm); }
+    code { background: var(--color-off-white); padding: 1px 6px; border-radius: 4px; font-size: var(--text-xs); }
+    .row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 12px 0; }
+    .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: var(--text-xs); font-weight: 600; text-transform: uppercase; }
+    .pill.tortoise { background: var(--supporting); color: var(--off-white); }
+    .pill.fox { background: var(--teal); color: var(--off-white); }
+    .pill.owl { background: var(--color-teal); color: var(--color-navy); }
+    a.btn { display: inline-block; padding: 10px 18px; border-radius: 8px; background: var(--navy); color: var(--off-white); text-decoration: none; font-weight: 500; margin-right: 8px; }
+    a.ghost { display: inline-block; padding: 8px 14px; border-radius: 6px; background: transparent; color: var(--navy); border: 1px solid var(--border); text-decoration: none; margin-right: 6px; }
+    footer { margin: 40px 0 24px; text-align: center; color: var(--muted); font-size: var(--text-xs); }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Contracts map \u2014 `@auditai/contracts`</h1>
+  <p>The single source of truth for every other package in the monorepo.</p>
+</header>
+<main>
+  <p>
+    <a class="btn" href="../brand/index.html">Brand landing</a>
+    <a class="ghost" href="https://github.com/angelstreet/evolai/blob/main/packages/contracts/src/contracts-map.md">Repo source (markdown)</a>
+  </p>
+  <section>
+    <h2>What is this?</h2>
+    <p>
+      <code>@auditai/contracts</code> is the public surface of the
+      project: 14 entity modules, 120+ tests, branded UUIDs, discriminated
+      audit-log variants, status-transition schemas, privacy-by-construction
+      respondent payloads. The
+      <code>@auditai/domain</code>, <code>@auditai/ai</code>, <code>@auditai/web</code>,
+      and <code>@auditai/ui</code> packages all import from this single source so
+      validation logic never diverges.
+    </p>
+  </section>
 
-      <section>
-        <h2>Entities (14)</h2>
-        <div class="row">
-          <div>
-            <strong>Identifiers</strong><br /><code>ids.ts</code> \u2014 14 branded UUIDs + Locale +
-            cursor.
-          </div>
-          <div>
-            <strong>Tenant + Org + Team</strong><br /><code>tenant.ts</code> +
-            <code>organisation.ts</code> + <code>team.ts</code>
-          </div>
-          <div>
-            <strong>Engagement + Template</strong><br /><code>engagement.ts</code> +
-            <code>template.ts</code>
-          </div>
-          <div>
-            <strong>Invitation + Submission</strong><br /><code>invitation.ts</code> +
-            <code>submission.ts</code>
-          </div>
-          <div>
-            <strong>Audit log</strong><br /><code>auditLog.ts</code> (M10, M11, M12, M13, M15)
-          </div>
-          <div>
-            <strong>Opportunity</strong><br /><code>opportunity.ts</code> + status graph (M11)
-          </div>
-          <div><strong>Sponsor brief</strong><br /><code>sponsorBrief.ts</code> (M12)</div>
-          <div><strong>Synergy</strong><br /><code>synergy.ts</code> + status graph (M13)</div>
-          <div>
-            <strong>Respondent badge</strong><br /><code>respondentBadge.ts</code> + mascot tiers
-            (M14)
-          </div>
-          <div>
-            <strong>Export + Deletion</strong><br /><code>export.ts</code> +
-            <code>deletion.ts</code> (M15 FR-09)
-          </div>
-          <div><strong>Roles</strong><br /><code>roles.ts</code> + capabilities</div>
-          <div>
-            <strong>RBAC + privacy</strong><br /><code>engagement.privacy</code>,
-            <code>auditorData</code>
-          </div>
-          <div>
-            <strong>Sensitivity</strong><br /><code>template.ts</code>
-            <code>sensitivitySchema</code>
-          </div>
-          <div><strong>Test count</strong><br />120 contracts tests; no flakes.</div>
-        </div>
-      </section>
+  <section>
+    <h2>Entities (14)</h2>
+    <div class="row">
+      <div><strong>Identifiers</strong><br/><code>ids.ts</code> \u2014 14 branded UUIDs + Locale + cursor.</div>
+      <div><strong>Tenant + Org + Team</strong><br/><code>tenant.ts</code> + <code>organisation.ts</code> + <code>team.ts</code></div>
+      <div><strong>Engagement + Template</strong><br/><code>engagement.ts</code> + <code>template.ts</code></div>
+      <div><strong>Invitation + Submission</strong><br/><code>invitation.ts</code> + <code>submission.ts</code></div>
+      <div><strong>Audit log</strong><br/><code>auditLog.ts</code> (M10, M11, M12, M13, M15)</div>
+      <div><strong>Opportunity</strong><br/><code>opportunity.ts</code> + status graph (M11)</div>
+      <div><strong>Sponsor brief</strong><br/><code>sponsorBrief.ts</code> (M12)</div>
+      <div><strong>Synergy</strong><br/><code>synergy.ts</code> + status graph (M13)</div>
+      <div><strong>Respondent badge</strong><br/><code>respondentBadge.ts</code> + mascot tiers (M14)</div>
+      <div><strong>Export + Deletion</strong><br/><code>export.ts</code> + <code>deletion.ts</code> (M15 FR-09)</div>
+      <div><strong>Roles</strong><br/><code>roles.ts</code> + capabilities</div>
+      <div><strong>RBAC + privacy</strong><br/><code>engagement.privacy</code>, <code>auditorData</code></div>
+      <div><strong>Sensitivity</strong><br/><code>template.ts</code> <code>sensitivitySchema</code></div>
+      <div><strong>Test count</strong><br/>120 contracts tests; no flakes.</div>
+    </div>
+  </section>
 
-      <section>
-        <h2>Cross-cutting guarantees</h2>
-        <ul>
-          <li>
-            <strong>Branded UUIDs</strong> \u2014 <code>TenantId</code> \u2260
-            <code>UserId</code> at the type level.
-          </li>
-          <li>
-            <strong>Discriminated audit logs</strong> \u2014
-            <code>targetKind='opportunity'</code> refines <code>targetId</code> to
-            <code>OpportunityId</code>.
-          </li>
-          <li>
-            <strong>Status transitions are schemas</strong> \u2014
-            <code>opportunityStatusTransitionSchema</code> +
-            <code>synergyStatusTransitionSchema</code> encode the graph; the data layer runs the
-            parse.
-          </li>
-          <li>
-            <strong>Privacy by construction</strong> \u2014 the respondent-facing surfaces never
-            carry <code>quiz_score</code>; the analyst reads the row directly.
-          </li>
-        </ul>
-      </section>
+  <section>
+    <h2>Cross-cutting guarantees</h2>
+    <ul>
+      <li><strong>Branded UUIDs</strong> \u2014 <code>TenantId</code> \u2260 <code>UserId</code> at the type level.</li>
+      <li><strong>Discriminated audit logs</strong> \u2014 <code>targetKind='opportunity'</code> refines <code>targetId</code> to <code>OpportunityId</code>.</li>
+      <li><strong>Status transitions are schemas</strong> \u2014 <code>opportunityStatusTransitionSchema</code> + <code>synergyStatusTransitionSchema</code> encode the graph; the data layer runs the parse.</li>
+      <li><strong>Privacy by construction</strong> \u2014 the respondent-facing surfaces never carry <code>quiz_score</code>; the analyst reads the row directly.</li>
+    </ul>
+  </section>
 
-      <section>
-        <h2>Tier mascots (M14)</h2>
-        <p>
-          Every respondent + team rollup surfaces a 3-tier mascot; raw scores never appear
-          externally.
-        </p>
-        <p>
-          <span class="pill tortoise">tortoise</span>
-          <span class="pill fox">fox</span>
-          <span class="pill owl">owl</span>
-        </p>
-        <p style="font-size: var(--text-sm); color: var(--muted)">
-          Cut points: \u2264 50 tortoise, 51\u201380 fox, \u2265 81 owl. Tie-break (team rollup):
-          fox > owl > tortoise.
-        </p>
-      </section>
+  <section>
+    <h2>Tier mascots (M14)</h2>
+    <p>Every respondent + team rollup surfaces a 3-tier mascot; raw scores never appear externally.</p>
+    <p>
+      <span class="pill tortoise">tortoise</span>
+      <span class="pill fox">fox</span>
+      <span class="pill owl">owl</span>
+    </p>
+    <p style="font-size: var(--text-sm); color: var(--muted);">
+      Cut points: \u2264 50 tortoise, 51\u201380 fox, \u2265 81 owl. Tie-break (team rollup): fox > owl > tortoise.
+    </p>
+  </section>
 
-      <section>
-        <h2>Links</h2>
-        <p>
-          <a class="ghost" href="https://github.com/angelstreet/evolai">GitHub repo</a>
-          <a class="ghost" href="https://bai7w0jcu7s8e.space.minimax.io">Brand landing</a>
-          <a class="ghost" href="https://6d1x9rnp43nba.space.minimax.io">M12 mockup</a>
-          <a class="ghost" href="https://w7jzvtg0dhdfg.space.minimax.io">M14 mockup</a>
-        </p>
-      </section>
+  <section>
+    <h2>Links</h2>
+    <p>
+      <a class="ghost" href="https://github.com/angelstreet/evolai">GitHub repo</a>
+      <a class="ghost" href="https://bai7w0jcu7s8e.space.minimax.io">Brand landing</a>
+      <a class="ghost" href="https://6d1x9rnp43nba.space.minimax.io">M12 mockup</a>
+      <a class="ghost" href="https://w7jzvtg0dhdfg.space.minimax.io">M14 mockup</a>
+    </p>
+  </section>
 
-      <footer>Apache-2.0 \u00b7 No telemetry \u00b7 Synthetic fixtures only.</footer>
-    </main>
-  </body>
+  <footer>
+    Apache-2.0 \u00b7 No telemetry \u00b7 Synthetic fixtures only.
+  </footer>
+</main>
+</body>
 </html>

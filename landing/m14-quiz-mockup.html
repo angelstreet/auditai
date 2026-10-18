@@ -1,1252 +1,587 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>EvolAI — Gamified literacy quiz &amp; mascot badges (M14 mockup)</title>
-    <meta
-      name="description"
-      content="Mockup of the M14 milestone: fast 5–6 question literacy quiz, mascot tier reveal (Tortoise / Fox / Owl), personal 1–100 level, team &amp; org board with 3-tier aggregates only."
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      :root {
-        --brand-navy: #172b3a;
-        --brand-teal: #19a999;
-        --brand-blue: #4a7fe8;
-        --brand-amber: #ffb86a;
-        --brand-off-white: #f7fafc;
-        --brand-supporting: #536575;
-        --bg: #f7fafc;
-        --surface: #ffffff;
-        --line: #e6e8ec;
-        --line-soft: #eef0f3;
-        --text: #172b3a;
-        --muted: #536575;
-        --primary: #19a999;
-        --primary-soft: rgba(25, 169, 153, 0.1);
-        --amber-soft: rgba(255, 184, 106, 0.18);
-        --blue-soft: rgba(74, 127, 232, 0.12);
-        --navy-soft: rgba(23, 43, 58, 0.06);
-        --shadow-card: 0 2px 8px rgba(23, 43, 58, 0.04), 0 1px 2px rgba(23, 43, 58, 0.03);
-        --shadow-lift: 0 12px 32px -8px rgba(23, 43, 58, 0.18), 0 4px 12px rgba(23, 43, 58, 0.06);
-        --radius: 14px;
-      }
-      * {
-        box-sizing: border-box;
-      }
-      html,
-      body {
-        margin: 0;
-        padding: 0;
-        background: var(--bg);
-        color: var(--text);
-        font-family: 'Outfit', system-ui, sans-serif;
-      }
-      body {
-        min-height: 100dvh;
-      }
-      a {
-        color: inherit;
-      }
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EvolAI — Gamified literacy quiz &amp; mascot badges (M14 mockup)</title>
+  <meta name="description" content="Mockup of the M14 milestone: fast 5–6 question literacy quiz, mascot tier reveal (Tortoise / Fox / Owl), personal 1–100 level, team &amp; org board with 3-tier aggregates only." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --brand-navy: #172B3A;
+      --brand-teal: #19A999;
+      --brand-blue: #4A7FE8;
+      --brand-amber: #FFB86A;
+      --brand-off-white: #F7FAFC;
+      --brand-supporting: #536575;
+      --bg: #F7FAFC;
+      --surface: #ffffff;
+      --line: #e6e8ec;
+      --line-soft: #eef0f3;
+      --text: #172B3A;
+      --muted: #536575;
+      --primary: #19A999;
+      --primary-soft: rgba(25, 169, 153, 0.10);
+      --amber-soft: rgba(255, 184, 106, 0.18);
+      --blue-soft: rgba(74, 127, 232, 0.12);
+      --navy-soft: rgba(23, 43, 58, 0.06);
+      --shadow-card: 0 2px 8px rgba(23, 43, 58, 0.04), 0 1px 2px rgba(23, 43, 58, 0.03);
+      --shadow-lift: 0 12px 32px -8px rgba(23, 43, 58, 0.18), 0 4px 12px rgba(23, 43, 58, 0.06);
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Outfit', system-ui, sans-serif; }
+    body { min-height: 100dvh; }
+    a { color: inherit; }
 
-      .topbar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 20px 32px;
-        max-width: 1200px;
-        margin: 0 auto;
-      }
-      .logo {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-weight: 600;
-        letter-spacing: -0.01em;
-        font-size: 20px;
-      }
-      .topbar nav {
-        display: flex;
-        gap: 6px;
-        align-items: center;
-      }
-      .topbar nav button {
-        background: transparent;
-        border: 0;
-        padding: 8px 12px;
-        border-radius: 8px;
-        color: var(--muted);
-        font: inherit;
-        cursor: pointer;
-      }
-      .topbar nav button:hover {
-        background: var(--navy-soft);
-        color: var(--text);
-      }
-      .topbar nav button.active {
-        background: var(--primary-soft);
-        color: var(--primary);
-        font-weight: 500;
-      }
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 32px; max-width: 1200px; margin: 0 auto;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: -0.01em; font-size: 20px; }
+    .topbar nav { display: flex; gap: 6px; align-items: center; }
+    .topbar nav button {
+      background: transparent; border: 0; padding: 8px 12px; border-radius: 8px;
+      color: var(--muted); font: inherit; cursor: pointer;
+    }
+    .topbar nav button:hover { background: var(--navy-soft); color: var(--text); }
+    .topbar nav button.active { background: var(--primary-soft); color: var(--primary); font-weight: 500; }
 
-      main {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 32px 80px;
-      }
-      .screen {
-        display: none;
-        animation: fadeUp 380ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
-      }
-      .screen.active {
-        display: block;
-      }
-      @keyframes fadeUp {
-        from {
-          opacity: 0;
-          transform: translateY(8px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-      @keyframes pop {
-        0% {
-          transform: scale(0.7);
-          opacity: 0;
-        }
-        70% {
-          transform: scale(1.08);
-          opacity: 1;
-        }
-        100% {
-          transform: scale(1);
-        }
-      }
-      @keyframes shimmer {
-        0% {
-          background-position: -200% 0;
-        }
-        100% {
-          background-position: 200% 0;
-        }
-      }
+    main { max-width: 1200px; margin: 0 auto; padding: 0 32px 80px; }
+    .screen { display: none; animation: fadeUp 380ms cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+    .screen.active { display: block; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pop { 0% { transform: scale(0.7); opacity: 0; } 70% { transform: scale(1.08); opacity: 1; } 100% { transform: scale(1); } }
+    @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
 
-      .eyebrow {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 6px 12px;
-        border-radius: 999px;
-        background: var(--primary-soft);
-        color: var(--primary);
-        font-size: 12px;
-        font-weight: 600;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
-      }
-      h1 {
-        font-family: 'DM Serif Display', serif;
-        font-weight: 400;
-        font-size: clamp(32px, 4vw, 44px);
-        line-height: 1.1;
-        letter-spacing: -0.015em;
-        margin: 20px 0 12px;
-        max-width: 22ch;
-      }
-      h1 em {
-        font-style: italic;
-        color: var(--primary);
-      }
-      .lede {
-        font-size: 17px;
-        line-height: 1.55;
-        color: var(--muted);
-        max-width: 60ch;
-        margin: 0 0 24px;
-      }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 12px; border-radius: 999px;
+      background: var(--primary-soft); color: var(--primary);
+      font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    h1 { font-family: 'DM Serif Display', serif; font-weight: 400; font-size: clamp(32px, 4vw, 44px); line-height: 1.1; letter-spacing: -0.015em; margin: 20px 0 12px; max-width: 22ch; }
+    h1 em { font-style: italic; color: var(--primary); }
+    .lede { font-size: 17px; line-height: 1.55; color: var(--muted); max-width: 60ch; margin: 0 0 24px; }
 
-      /* ---------- QUIZ ---------- */
-      .quiz-shell {
-        max-width: 720px;
-        margin: 0 auto;
-      }
-      .quiz-progress {
-        display: flex;
-        gap: 4px;
-        margin-bottom: 24px;
-        align-items: center;
-      }
-      .quiz-progress .seg {
-        height: 4px;
-        flex: 1;
-        background: var(--line-soft);
-        border-radius: 2px;
-        transition: background 250ms ease;
-      }
-      .quiz-progress .seg.done {
-        background: var(--primary);
-      }
-      .quiz-progress .seg.current {
-        background: var(--primary);
-        opacity: 0.55;
-      }
-      .quiz-meta {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 18px;
-      }
-      .quiz-meta .q {
-        font-size: 13px;
-        color: var(--muted);
-      }
-      .quiz-meta .q strong {
-        color: var(--text);
-      }
+    /* ---------- QUIZ ---------- */
+    .quiz-shell { max-width: 720px; margin: 0 auto; }
+    .quiz-progress {
+      display: flex; gap: 4px; margin-bottom: 24px; align-items: center;
+    }
+    .quiz-progress .seg { height: 4px; flex: 1; background: var(--line-soft); border-radius: 2px; transition: background 250ms ease; }
+    .quiz-progress .seg.done { background: var(--primary); }
+    .quiz-progress .seg.current { background: var(--primary); opacity: 0.55; }
+    .quiz-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+    .quiz-meta .q { font-size: 13px; color: var(--muted); }
+    .quiz-meta .q strong { color: var(--text); }
 
-      .quiz-card {
-        background: var(--surface);
-        border: 1px solid var(--line);
-        border-radius: var(--radius);
-        padding: 36px 32px;
-        box-shadow: var(--shadow-card);
-      }
-      .quiz-q {
-        font-family: 'DM Serif Display', serif;
-        font-size: 26px;
-        line-height: 1.25;
-        margin: 0 0 22px;
-        letter-spacing: -0.005em;
-      }
-      .quiz-options {
-        display: grid;
-        gap: 10px;
-      }
-      .quiz-opt {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        padding: 16px 18px;
-        border: 1px solid var(--line);
-        border-radius: 12px;
-        background: var(--surface);
-        cursor: pointer;
-        transition: all 150ms ease;
-        text-align: left;
-        font: inherit;
-        color: inherit;
-      }
-      .quiz-opt:hover {
-        border-color: var(--primary);
-        transform: translateY(-1px);
-        box-shadow: var(--shadow-card);
-      }
-      .quiz-opt .marker {
-        width: 32px;
-        height: 32px;
-        border-radius: 10px;
-        background: var(--line-soft);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 600;
-        font-size: 14px;
-        color: var(--muted);
-      }
-      .quiz-opt:hover .marker {
-        background: var(--primary-soft);
-        color: var(--primary);
-      }
-      .quiz-opt .lbl {
-        font-size: 15px;
-        line-height: 1.3;
-      }
-      .quiz-foot {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 24px;
-        align-items: center;
-      }
-      .quiz-foot .timer {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 12px;
-        color: var(--muted);
-      }
+    .quiz-card {
+      background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+      padding: 36px 32px; box-shadow: var(--shadow-card);
+    }
+    .quiz-q { font-family: 'DM Serif Display', serif; font-size: 26px; line-height: 1.25; margin: 0 0 22px; letter-spacing: -0.005em; }
+    .quiz-options { display: grid; gap: 10px; }
+    .quiz-opt {
+      display: flex; align-items: center; gap: 14px;
+      padding: 16px 18px; border: 1px solid var(--line); border-radius: 12px;
+      background: var(--surface); cursor: pointer; transition: all 150ms ease; text-align: left;
+      font: inherit; color: inherit;
+    }
+    .quiz-opt:hover { border-color: var(--primary); transform: translateY(-1px); box-shadow: var(--shadow-card); }
+    .quiz-opt .marker {
+      width: 32px; height: 32px; border-radius: 10px; background: var(--line-soft);
+      display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; color: var(--muted);
+    }
+    .quiz-opt:hover .marker { background: var(--primary-soft); color: var(--primary); }
+    .quiz-opt .lbl { font-size: 15px; line-height: 1.3; }
+    .quiz-foot { display: flex; justify-content: space-between; margin-top: 24px; align-items: center; }
+    .quiz-foot .timer { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted); }
 
-      .btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 12px 20px;
-        border-radius: 10px;
-        font: inherit;
-        font-weight: 500;
-        border: 0;
-        cursor: pointer;
-        text-decoration: none;
-        transition:
-          transform 150ms ease,
-          box-shadow 150ms ease,
-          background 150ms ease;
-      }
-      .btn-primary {
-        background: var(--brand-navy);
-        color: var(--brand-off-white);
-      }
-      .btn-primary:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 6px 16px -4px rgba(23, 43, 58, 0.35);
-      }
-      .btn-ghost {
-        background: transparent;
-        color: var(--text);
-        border: 1px solid var(--line);
-      }
-      .btn-ghost:hover {
-        background: var(--navy-soft);
-      }
-      .btn-primary[disabled] {
-        opacity: 0.4;
-        cursor: not-allowed;
-        transform: none;
-        box-shadow: none;
-      }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 20px; border-radius: 10px; font: inherit; font-weight: 500;
+      border: 0; cursor: pointer; text-decoration: none;
+      transition: transform 150ms ease, box-shadow 150ms ease, background 150ms ease;
+    }
+    .btn-primary { background: var(--brand-navy); color: var(--brand-off-white); }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 16px -4px rgba(23, 43, 58, 0.35); }
+    .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--line); }
+    .btn-ghost:hover { background: var(--navy-soft); }
+    .btn-primary[disabled] { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
 
-      /* ---------- BADGE REVEAL ---------- */
-      .reveal {
-        max-width: 640px;
-        margin: 0 auto;
-        text-align: center;
-        padding-top: 24px;
-      }
-      .reveal .confetti {
-        position: relative;
-        margin: 0 auto 12px;
-        width: 200px;
-        height: 200px;
-      }
-      .medallion {
-        width: 200px;
-        height: 200px;
-        border-radius: 50%;
-        margin: 0 auto;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: linear-gradient(140deg, var(--ring-a), var(--ring-b));
-        box-shadow: var(--shadow-lift);
-        position: relative;
-        animation: pop 600ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
-      }
-      .medallion::before {
-        content: '';
-        position: absolute;
-        inset: 6px;
-        border-radius: 50%;
-        background: var(--surface);
-        box-shadow: inset 0 2px 8px rgba(23, 43, 58, 0.06);
-      }
-      .medallion .mascot {
-        position: relative;
-        z-index: 1;
-        width: 110px;
-        height: 110px;
-      }
-      .medallion .lvl-pill {
-        position: absolute;
-        right: -10px;
-        top: 14px;
-        background: var(--brand-navy);
-        color: var(--brand-off-white);
-        padding: 6px 12px;
-        border-radius: 999px;
-        font-size: 13px;
-        font-weight: 600;
-        font-family: 'JetBrains Mono', monospace;
-        letter-spacing: 0.04em;
-        box-shadow: var(--shadow-card);
-      }
-      .reveal .tier {
-        display: inline-block;
-        margin-top: 28px;
-        padding: 8px 18px;
-        border-radius: 999px;
-        background: var(--tier-soft);
-        color: var(--tier-color);
-        font-size: 14px;
-        font-weight: 600;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
-      }
-      .reveal .title {
-        font-family: 'DM Serif Display', serif;
-        font-size: 32px;
-        margin: 14px 0 8px;
-        letter-spacing: -0.01em;
-      }
-      .reveal .subtitle {
-        color: var(--muted);
-        font-size: 15px;
-        max-width: 44ch;
-        margin: 0 auto 28px;
-      }
-      .xpbar {
-        max-width: 360px;
-        margin: 8px auto 24px;
-      }
-      .xpbar .lbl {
-        display: flex;
-        justify-content: space-between;
-        font-size: 12px;
-        color: var(--muted);
-        margin-bottom: 6px;
-      }
-      .xpbar .track {
-        height: 8px;
-        background: var(--line-soft);
-        border-radius: 4px;
-        overflow: hidden;
-      }
-      .xpbar .fill {
-        height: 100%;
-        background: linear-gradient(90deg, var(--primary), var(--brand-blue));
-        border-radius: 4px;
-        transition: width 800ms cubic-bezier(0.2, 0.7, 0.2, 1);
-      }
-      .reveal .axes {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        gap: 8px;
-        max-width: 520px;
-        margin: 24px auto 0;
-      }
-      .reveal .axis {
-        background: var(--surface);
-        border: 1px solid var(--line);
-        border-radius: 10px;
-        padding: 12px 8px;
-        text-align: center;
-      }
-      .reveal .axis .name {
-        font-size: 11px;
-        color: var(--muted);
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-      }
-      .reveal .axis .glyph {
-        width: 36px;
-        height: 36px;
-        margin: 6px auto;
-      }
-      .reveal .axis .v {
-        font-size: 12px;
-        font-weight: 500;
-      }
+    /* ---------- BADGE REVEAL ---------- */
+    .reveal {
+      max-width: 640px; margin: 0 auto; text-align: center; padding-top: 24px;
+    }
+    .reveal .confetti { position: relative; margin: 0 auto 12px; width: 200px; height: 200px; }
+    .medallion {
+      width: 200px; height: 200px; border-radius: 50%; margin: 0 auto;
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(140deg, var(--ring-a), var(--ring-b));
+      box-shadow: var(--shadow-lift);
+      position: relative;
+      animation: pop 600ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    }
+    .medallion::before {
+      content: ""; position: absolute; inset: 6px; border-radius: 50%;
+      background: var(--surface);
+      box-shadow: inset 0 2px 8px rgba(23, 43, 58, 0.06);
+    }
+    .medallion .mascot { position: relative; z-index: 1; width: 110px; height: 110px; }
+    .medallion .lvl-pill {
+      position: absolute; right: -10px; top: 14px;
+      background: var(--brand-navy); color: var(--brand-off-white);
+      padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600;
+      font-family: 'JetBrains Mono', monospace; letter-spacing: 0.04em;
+      box-shadow: var(--shadow-card);
+    }
+    .reveal .tier {
+      display: inline-block; margin-top: 28px; padding: 8px 18px; border-radius: 999px;
+      background: var(--tier-soft); color: var(--tier-color);
+      font-size: 14px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .reveal .title { font-family: 'DM Serif Display', serif; font-size: 32px; margin: 14px 0 8px; letter-spacing: -0.01em; }
+    .reveal .subtitle { color: var(--muted); font-size: 15px; max-width: 44ch; margin: 0 auto 28px; }
+    .xpbar { max-width: 360px; margin: 8px auto 24px; }
+    .xpbar .lbl { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+    .xpbar .track { height: 8px; background: var(--line-soft); border-radius: 4px; overflow: hidden; }
+    .xpbar .fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--brand-blue)); border-radius: 4px; transition: width 800ms cubic-bezier(0.2, 0.7, 0.2, 1); }
+    .reveal .axes { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; max-width: 520px; margin: 24px auto 0; }
+    .reveal .axis {
+      background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 8px; text-align: center;
+    }
+    .reveal .axis .name { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+    .reveal .axis .glyph { width: 36px; height: 36px; margin: 6px auto; }
+    .reveal .axis .v { font-size: 12px; font-weight: 500; }
 
-      .reveal .cta-row {
-        display: flex;
-        gap: 12px;
-        justify-content: center;
-        margin-top: 28px;
-      }
+    .reveal .cta-row { display: flex; gap: 12px; justify-content: center; margin-top: 28px; }
 
-      /* ---------- TEAM PROFILE ---------- */
-      .team-grid {
-        display: grid;
-        grid-template-columns: 320px 1fr;
-        gap: 24px;
-        align-items: start;
-      }
-      .team-hero {
-        background: var(--surface);
-        border: 1px solid var(--line);
-        border-radius: var(--radius);
-        padding: 28px 24px;
-        text-align: center;
-        box-shadow: var(--shadow-card);
-      }
-      .team-hero .label {
-        font-size: 12px;
-        color: var(--muted);
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-      }
-      .team-hero h2 {
-        font-family: 'DM Serif Display', serif;
-        font-weight: 400;
-        font-size: 24px;
-        margin: 6px 0 4px;
-      }
-      .team-hero .pseudonym {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 12px;
-        color: var(--muted);
-      }
-      .team-hero .mascot-large {
-        width: 160px;
-        height: 160px;
-        margin: 16px auto;
-      }
-      .team-hero .tier-badge {
-        display: inline-block;
-        padding: 8px 16px;
-        border-radius: 999px;
-        font-weight: 600;
-        font-size: 14px;
-        background: var(--tier-soft);
-        color: var(--tier-color);
-      }
-      .team-hero .meta {
-        margin-top: 18px;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-      }
-      .team-hero .meta .kv {
-        background: var(--bg);
-        border: 1px solid var(--line);
-        border-radius: 10px;
-        padding: 10px;
-      }
-      .team-hero .meta .kv .l {
-        font-size: 11px;
-        color: var(--muted);
-      }
-      .team-hero .meta .kv .v {
-        font-size: 14px;
-        font-weight: 500;
-      }
+    /* ---------- TEAM PROFILE ---------- */
+    .team-grid { display: grid; grid-template-columns: 320px 1fr; gap: 24px; align-items: start; }
+    .team-hero {
+      background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+      padding: 28px 24px; text-align: center; box-shadow: var(--shadow-card);
+    }
+    .team-hero .label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+    .team-hero h2 { font-family: 'DM Serif Display', serif; font-weight: 400; font-size: 24px; margin: 6px 0 4px; }
+    .team-hero .pseudonym { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted); }
+    .team-hero .mascot-large { width: 160px; height: 160px; margin: 16px auto; }
+    .team-hero .tier-badge { display: inline-block; padding: 8px 16px; border-radius: 999px; font-weight: 600; font-size: 14px; background: var(--tier-soft); color: var(--tier-color); }
+    .team-hero .meta { margin-top: 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .team-hero .meta .kv { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 10px; }
+    .team-hero .meta .kv .l { font-size: 11px; color: var(--muted); }
+    .team-hero .meta .kv .v { font-size: 14px; font-weight: 500; }
 
-      .team-side h3 {
-        font-size: 16px;
-        font-weight: 600;
-        margin: 0 0 12px;
-      }
-      .axis-row {
-        display: grid;
-        grid-template-columns: 100px 1fr auto;
-        align-items: center;
-        gap: 14px;
-        padding: 12px 0;
-        border-bottom: 1px dashed var(--line-soft);
-      }
-      .axis-row:last-child {
-        border-bottom: 0;
-      }
-      .axis-row .name {
-        font-size: 13px;
-        color: var(--muted);
-        text-transform: capitalize;
-      }
-      .axis-row .track {
-        height: 8px;
-        background: var(--line-soft);
-        border-radius: 4px;
-        overflow: hidden;
-      }
-      .axis-row .fill {
-        height: 100%;
-        border-radius: 4px;
-        background: var(--tier-color);
-      }
-      .axis-row .mascot {
-        width: 28px;
-        height: 28px;
-      }
+    .team-side h3 { font-size: 16px; font-weight: 600; margin: 0 0 12px; }
+    .axis-row { display: grid; grid-template-columns: 100px 1fr auto; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px dashed var(--line-soft); }
+    .axis-row:last-child { border-bottom: 0; }
+    .axis-row .name { font-size: 13px; color: var(--muted); text-transform: capitalize; }
+    .axis-row .track { height: 8px; background: var(--line-soft); border-radius: 4px; overflow: hidden; }
+    .axis-row .fill { height: 100%; border-radius: 4px; background: var(--tier-color); }
+    .axis-row .mascot { width: 28px; height: 28px; }
 
-      .privacy-note {
-        margin-top: 24px;
-        padding: 16px 18px;
-        border-radius: var(--radius);
-        background: var(--surface);
-        border: 1px dashed var(--line);
-        font-size: 13px;
-        color: var(--muted);
-        line-height: 1.55;
-      }
-      .privacy-note strong {
-        color: var(--text);
-      }
+    .privacy-note {
+      margin-top: 24px; padding: 16px 18px; border-radius: var(--radius);
+      background: var(--surface); border: 1px dashed var(--line);
+      font-size: 13px; color: var(--muted); line-height: 1.55;
+    }
+    .privacy-note strong { color: var(--text); }
 
-      /* ---------- ORG BOARD ---------- */
-      .board-toolbar {
-        display: flex;
-        gap: 10px;
-        align-items: center;
-        flex-wrap: wrap;
-        background: var(--surface);
-        border: 1px solid var(--line);
-        border-radius: var(--radius);
-        padding: 12px 16px;
-        margin: 16px 0 24px;
-      }
-      .board-toolbar .seg-group {
-        display: flex;
-        gap: 4px;
-      }
-      .board-toolbar .seg-btn {
-        padding: 6px 12px;
-        border-radius: 6px;
-        border: 0;
-        background: transparent;
-        color: var(--muted);
-        font: inherit;
-        font-size: 13px;
-        cursor: pointer;
-      }
-      .board-toolbar .seg-btn.on {
-        background: var(--primary-soft);
-        color: var(--primary);
-        font-weight: 500;
-      }
-      .board-toolbar .grow {
-        flex: 1;
-      }
-      .board-toolbar .meta {
-        font-size: 12px;
-        color: var(--muted);
-      }
+    /* ---------- ORG BOARD ---------- */
+    .board-toolbar {
+      display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+      background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+      padding: 12px 16px; margin: 16px 0 24px;
+    }
+    .board-toolbar .seg-group { display: flex; gap: 4px; }
+    .board-toolbar .seg-btn {
+      padding: 6px 12px; border-radius: 6px; border: 0; background: transparent; color: var(--muted);
+      font: inherit; font-size: 13px; cursor: pointer;
+    }
+    .board-toolbar .seg-btn.on { background: var(--primary-soft); color: var(--primary); font-weight: 500; }
+    .board-toolbar .grow { flex: 1; }
+    .board-toolbar .meta { font-size: 12px; color: var(--muted); }
 
-      .team-grid-board {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-        gap: 16px;
-      }
-      .team-card {
-        background: var(--surface);
-        border: 1px solid var(--line);
-        border-radius: var(--radius);
-        padding: 18px 18px 16px;
-        box-shadow: var(--shadow-card);
-        position: relative;
-        overflow: hidden;
-      }
-      .team-card .badge-row {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-      }
-      .team-card .medallion-sm {
-        width: 64px;
-        height: 64px;
-        border-radius: 50%;
-        flex: 0 0 64px;
-        background: linear-gradient(140deg, var(--ring-a), var(--ring-b));
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-      }
-      .team-card .medallion-sm::before {
-        content: '';
-        position: absolute;
-        inset: 3px;
-        border-radius: 50%;
-        background: var(--surface);
-      }
-      .team-card .medallion-sm .mascot {
-        width: 38px;
-        height: 38px;
-        position: relative;
-        z-index: 1;
-      }
-      .team-card .meta {
-        flex: 1;
-        min-width: 0;
-      }
-      .team-card .meta .name {
-        font-size: 14px;
-        font-weight: 600;
-        line-height: 1.2;
-      }
-      .team-card .meta .tier {
-        font-size: 12px;
-        color: var(--tier-color);
-        font-weight: 500;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        margin-top: 2px;
-      }
-      .team-card .stats {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 14px;
-        padding-top: 12px;
-        border-top: 1px dashed var(--line-soft);
-        font-size: 12px;
-        color: var(--muted);
-      }
-      .team-card .stats strong {
-        color: var(--text);
-        display: block;
-        font-size: 16px;
-      }
-      .team-card .pulse {
-        display: inline-block;
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        margin-right: 6px;
-      }
-      .team-card .pulse.intake {
-        background: var(--brand-supporting);
-      }
-      .team-card .pulse.field {
-        background: var(--brand-blue);
-      }
-      .team-card .pulse.review {
-        background: var(--brand-amber);
-      }
-      .team-card .pulse.delivery {
-        background: #6cc06c;
-      }
+    .team-grid-board {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px;
+    }
+    .team-card {
+      background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+      padding: 18px 18px 16px; box-shadow: var(--shadow-card); position: relative; overflow: hidden;
+    }
+    .team-card .badge-row { display: flex; align-items: center; gap: 14px; }
+    .team-card .medallion-sm {
+      width: 64px; height: 64px; border-radius: 50%; flex: 0 0 64px;
+      background: linear-gradient(140deg, var(--ring-a), var(--ring-b));
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .team-card .medallion-sm::before { content: ""; position: absolute; inset: 3px; border-radius: 50%; background: var(--surface); }
+    .team-card .medallion-sm .mascot { width: 38px; height: 38px; position: relative; z-index: 1; }
+    .team-card .meta { flex: 1; min-width: 0; }
+    .team-card .meta .name { font-size: 14px; font-weight: 600; line-height: 1.2; }
+    .team-card .meta .tier { font-size: 12px; color: var(--tier-color); font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; margin-top: 2px; }
+    .team-card .stats { display: flex; justify-content: space-between; margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--line-soft); font-size: 12px; color: var(--muted); }
+    .team-card .stats strong { color: var(--text); display: block; font-size: 16px; }
+    .team-card .pulse { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 6px; }
+    .team-card .pulse.intake { background: var(--brand-supporting); }
+    .team-card .pulse.field { background: var(--brand-blue); }
+    .team-card .pulse.review { background: var(--brand-amber); }
+    .team-card .pulse.delivery { background: #6cc06c; }
 
-      .footnote {
-        margin-top: 32px;
-        padding: 18px 20px;
-        border-radius: var(--radius);
-        background: var(--surface);
-        border: 1px dashed var(--line);
-        font-size: 13px;
-        color: var(--muted);
-        line-height: 1.55;
-      }
-      .footnote strong {
-        color: var(--text);
-      }
-      .footnote ul {
-        margin: 8px 0 0;
-        padding-left: 18px;
-      }
-      .footnote li {
-        margin-bottom: 4px;
-      }
+    .footnote {
+      margin-top: 32px; padding: 18px 20px; border-radius: var(--radius);
+      background: var(--surface); border: 1px dashed var(--line);
+      font-size: 13px; color: var(--muted); line-height: 1.55;
+    }
+    .footnote strong { color: var(--text); }
+    .footnote ul { margin: 8px 0 0; padding-left: 18px; }
+    .footnote li { margin-bottom: 4px; }
 
-      @media (max-width: 900px) {
-        .team-grid {
-          grid-template-columns: 1fr;
-        }
-        .reveal .axes {
-          grid-template-columns: repeat(3, 1fr);
-        }
-      }
-      @media (max-width: 540px) {
-        .topbar {
-          padding: 16px 20px;
-        }
-        main {
-          padding: 0 20px 60px;
-        }
-        .reveal .axes {
-          grid-template-columns: repeat(2, 1fr);
-        }
-        .quiz-card {
-          padding: 24px 20px;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="topbar">
-      <a href="#" class="logo" aria-label="EvolAI home">
-        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-          <path d="M16 4 C 12 12, 8 18, 4 26 C 10 26, 16 22, 16 16 Z" fill="#FFB86A" />
-          <path d="M16 4 C 20 12, 24 18, 28 26 C 22 26, 16 22, 16 16 Z" fill="#19A999" />
-          <path d="M16 4 C 16 12, 16 22, 16 30 C 12 26, 10 22, 8 18 Z" fill="#4A7FE8" />
-        </svg>
-        <span>EvolAI</span>
-      </a>
-      <nav>
-        <button class="active" data-go="quiz">Quiz</button>
-        <button data-go="reveal">Badge</button>
-        <button data-go="team">Team</button>
-        <button data-go="board">Board</button>
-      </nav>
-    </div>
+    @media (max-width: 900px) {
+      .team-grid { grid-template-columns: 1fr; }
+      .reveal .axes { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 540px) {
+      .topbar { padding: 16px 20px; }
+      main { padding: 0 20px 60px; }
+      .reveal .axes { grid-template-columns: repeat(2, 1fr); }
+      .quiz-card { padding: 24px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <a href="#" class="logo" aria-label="EvolAI home">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <path d="M16 4 C 12 12, 8 18, 4 26 C 10 26, 16 22, 16 16 Z" fill="#FFB86A" />
+        <path d="M16 4 C 20 12, 24 18, 28 26 C 22 26, 16 22, 16 16 Z" fill="#19A999" />
+        <path d="M16 4 C 16 12, 16 22, 16 30 C 12 26, 10 22, 8 18 Z" fill="#4A7FE8" />
+      </svg>
+      <span>EvolAI</span>
+    </a>
+    <nav>
+      <button class="active" data-go="quiz">Quiz</button>
+      <button data-go="reveal">Badge</button>
+      <button data-go="team">Team</button>
+      <button data-go="board">Board</button>
+    </nav>
+  </div>
 
-    <main>
-      <!-- ============== SCREEN 1 — QUIZ ============== -->
-      <section class="screen active" id="screen-quiz" aria-label="Literacy quiz">
-        <div class="quiz-shell">
-          <span class="eyebrow">M14 — literacy pulse</span>
-          <h1>Five quick questions, then your <em>badge</em>.</h1>
-          <p class="lede">
-            No scores, no 5/10. The platform turns your answers into a personal mascot + level. Your
-            pseudonym is the only thing stored — never your name, never your email.
-          </p>
+  <main>
+    <!-- ============== SCREEN 1 — QUIZ ============== -->
+    <section class="screen active" id="screen-quiz" aria-label="Literacy quiz">
+      <div class="quiz-shell">
+        <span class="eyebrow">M14 — literacy pulse</span>
+        <h1>Five quick questions, then your <em>badge</em>.</h1>
+        <p class="lede">No scores, no 5/10. The platform turns your answers into a personal mascot + level. Your pseudonym is the only thing stored — never your name, never your email.</p>
 
-          <div class="quiz-meta">
-            <span class="q"><strong>Question 2</strong> of 5 · ~45s total</span>
-            <span class="timer">00:18 elapsed</span>
-          </div>
-          <div class="quiz-progress" aria-hidden="true">
-            <div class="seg done"></div>
-            <div class="seg current"></div>
-            <div class="seg"></div>
-            <div class="seg"></div>
-            <div class="seg"></div>
-          </div>
-
-          <div class="quiz-card">
-            <h2 class="quiz-q">
-              In the last 30 days, did you spend any money on an AI tool or subscription?
-            </h2>
-            <div class="quiz-options" role="radiogroup" aria-label="Spend on AI in last 30 days">
-              <button class="quiz-opt" type="button">
-                <span class="marker">A</span>
-                <span class="lbl">No — I've only used free tiers</span>
-              </button>
-              <button class="quiz-opt" type="button">
-                <span class="marker">B</span>
-                <span class="lbl">Yes — a single subscription (one tool)</span>
-              </button>
-              <button class="quiz-opt" type="button">
-                <span class="marker">C</span>
-                <span class="lbl">Yes — multiple subscriptions across tools</span>
-              </button>
-              <button class="quiz-opt" type="button">
-                <span class="marker">D</span>
-                <span class="lbl">Yes — my employer pays, I don't track the cost</span>
-              </button>
-            </div>
-            <div class="quiz-foot">
-              <button class="btn btn-ghost">Skip</button>
-              <button class="btn btn-primary" disabled>
-                Next
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </button>
-            </div>
-          </div>
-
-          <p style="margin-top: 18px; font-size: 12px; color: var(--muted); text-align: center">
-            All 5 questions: engagement with AI learning · AI media · AI chatbot use · AI-assisted
-            coding · AI-built projects · AI spend.
-          </p>
+        <div class="quiz-meta">
+          <span class="q"><strong>Question 2</strong> of 5 · ~45s total</span>
+          <span class="timer">00:18 elapsed</span>
         </div>
-      </section>
+        <div class="quiz-progress" aria-hidden="true">
+          <div class="seg done"></div>
+          <div class="seg current"></div>
+          <div class="seg"></div>
+          <div class="seg"></div>
+          <div class="seg"></div>
+        </div>
 
-      <!-- ============== SCREEN 2 — REVEAL ============== -->
-      <section
-        class="screen"
-        id="screen-reveal"
-        aria-label="Badge reveal"
-        style="
-          --ring-a: #19a999;
-          --ring-b: #4a7fe8;
-          --tier-color: #19a999;
-          --tier-soft: rgba(25, 169, 153, 0.12);
-        "
-      >
-        <div class="reveal">
-          <span class="eyebrow">Your badge</span>
-          <h1 style="margin-top: 14px">You're a <em>Fox</em> — adaptive learner.</h1>
-          <p class="subtitle">
-            Curious, hands-on, but not yet a deep practitioner. Two more quarterly pulses and you'll
-            cross into Owl territory.
-          </p>
-
-          <div class="medallion" role="img" aria-label="Fox badge">
-            <svg class="mascot" viewBox="0 0 100 100" aria-hidden="true">
-              <!-- Fox silhouette (medium tier) -->
-              <defs>
-                <linearGradient id="foxBody" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="#FFB86A" />
-                  <stop offset="100%" stop-color="#E68F3A" />
-                </linearGradient>
-              </defs>
-              <ellipse cx="50" cy="68" rx="28" ry="20" fill="url(#foxBody)" />
-              <path d="M30 35 L18 18 L36 30 Z" fill="url(#foxBody)" />
-              <path d="M70 35 L82 18 L64 30 Z" fill="url(#foxBody)" />
-              <ellipse cx="50" cy="50" rx="26" ry="22" fill="url(#foxBody)" />
-              <ellipse cx="50" cy="58" rx="16" ry="12" fill="#F7FAFC" />
-              <circle cx="42" cy="48" r="3" fill="#172B3A" />
-              <circle cx="58" cy="48" r="3" fill="#172B3A" />
-              <ellipse cx="50" cy="56" rx="3" ry="2" fill="#172B3A" />
-              <path d="M82 70 L92 76 L86 80 L78 78 Z" fill="url(#foxBody)" />
-            </svg>
-            <span class="lvl-pill">LVL 42</span>
+        <div class="quiz-card">
+          <h2 class="quiz-q">In the last 30 days, did you spend any money on an AI tool or subscription?</h2>
+          <div class="quiz-options" role="radiogroup" aria-label="Spend on AI in last 30 days">
+            <button class="quiz-opt" type="button">
+              <span class="marker">A</span>
+              <span class="lbl">No — I've only used free tiers</span>
+            </button>
+            <button class="quiz-opt" type="button">
+              <span class="marker">B</span>
+              <span class="lbl">Yes — a single subscription (one tool)</span>
+            </button>
+            <button class="quiz-opt" type="button">
+              <span class="marker">C</span>
+              <span class="lbl">Yes — multiple subscriptions across tools</span>
+            </button>
+            <button class="quiz-opt" type="button">
+              <span class="marker">D</span>
+              <span class="lbl">Yes — my employer pays, I don't track the cost</span>
+            </button>
           </div>
-
-          <div class="tier" style="margin-top: 32px">Medium · Fox</div>
-          <div class="title">Adaptive learner</div>
-          <p class="subtitle" style="font-size: 13px; margin-top: 8px">
-            3-tier mascot: Tortoise (low) → Fox (medium) → Owl (high). Your level (1–100) is
-            personal — the rest of the org only ever sees the 3-tier mascot.
-          </p>
-
-          <div class="xpbar">
-            <div class="lbl"><span>XP to Owl</span><span>1 250 / 2 400</span></div>
-            <div class="track"><div class="fill" style="width: 52%"></div></div>
-          </div>
-
-          <div class="axes">
-            <div class="axis">
-              <div class="name">Literacy</div>
-              <svg class="glyph" viewBox="0 0 40 40">
-                <circle cx="20" cy="20" r="14" fill="#19A999" opacity="0.18" />
-                <path d="M14 22 L20 14 L26 22 L20 30 Z" fill="#19A999" />
-              </svg>
-              <div class="v">Medium</div>
-            </div>
-            <div class="axis">
-              <div class="name">Practice</div>
-              <svg class="glyph" viewBox="0 0 40 40">
-                <circle cx="20" cy="20" r="14" fill="#19A999" opacity="0.18" />
-                <path d="M14 22 L20 14 L26 22 L20 30 Z" fill="#19A999" />
-              </svg>
-              <div class="v">Medium</div>
-            </div>
-            <div class="axis">
-              <div class="name">Readiness</div>
-              <svg class="glyph" viewBox="0 0 40 40">
-                <circle cx="20" cy="20" r="14" fill="#FFB86A" opacity="0.25" />
-                <circle cx="20" cy="20" r="6" fill="#FFB86A" />
-              </svg>
-              <div class="v">Low</div>
-            </div>
-            <div class="axis">
-              <div class="name">Opportunity</div>
-              <svg class="glyph" viewBox="0 0 40 40">
-                <circle cx="20" cy="20" r="14" fill="#FFB86A" opacity="0.25" />
-                <circle cx="20" cy="20" r="6" fill="#FFB86A" />
-              </svg>
-              <div class="v">Low</div>
-            </div>
-            <div class="axis">
-              <div class="name">Context</div>
-              <svg class="glyph" viewBox="0 0 40 40">
-                <circle cx="20" cy="20" r="14" fill="#19A999" opacity="0.18" />
-                <path d="M14 22 L20 14 L26 22 L20 30 Z" fill="#19A999" />
-              </svg>
-              <div class="v">Medium</div>
-            </div>
-          </div>
-
-          <div class="cta-row">
-            <button class="btn btn-ghost" data-go="quiz">Replay quiz</button>
-            <button class="btn btn-primary" data-go="team">See your team</button>
+          <div class="quiz-foot">
+            <button class="btn btn-ghost">Skip</button>
+            <button class="btn btn-primary" disabled>Next
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
           </div>
         </div>
-      </section>
 
-      <!-- ============== SCREEN 3 — TEAM PROFILE ============== -->
-      <section
-        class="screen"
-        id="screen-team"
-        aria-label="Team profile"
-        style="
-          --ring-a: #ffb86a;
-          --ring-b: #e68f3a;
-          --tier-color: #c87a2a;
-          --tier-soft: rgba(255, 184, 106, 0.18);
-        "
-      >
-        <span class="eyebrow">Your team — Synthetic team A</span>
-        <h1>Mostly <em>Owl</em> with a Tortoise tail.</h1>
-        <p class="lede">
-          Aggregates the badges of 8 respondents (out of 12 invited). The team tier is the dominant
-          mascot — no raw average, no median score. Personal levels stay private to each respondent.
+        <p style="margin-top: 18px; font-size: 12px; color: var(--muted); text-align: center;">
+          All 5 questions: engagement with AI learning · AI media · AI chatbot use · AI-assisted coding · AI-built projects · AI spend.
         </p>
+      </div>
+    </section>
 
-        <div class="team-grid">
-          <div class="team-hero">
-            <div class="label">Team mascot</div>
-            <h2>Synthetic team A</h2>
-            <div class="pseudonym">team-a — 8 / 12 submitted</div>
-            <svg class="mascot-large" viewBox="0 0 100 100" aria-hidden="true">
-              <defs>
-                <linearGradient id="owlBody" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="#FFB86A" />
-                  <stop offset="100%" stop-color="#E68F3A" />
-                </linearGradient>
-              </defs>
-              <ellipse cx="50" cy="58" rx="30" ry="32" fill="url(#owlBody)" />
-              <ellipse cx="50" cy="68" rx="18" ry="22" fill="#F7FAFC" />
-              <circle cx="38" cy="40" r="9" fill="#172B3A" />
-              <circle cx="62" cy="40" r="9" fill="#172B3A" />
-              <circle cx="38" cy="40" r="3" fill="#F7FAFC" />
-              <circle cx="62" cy="40" r="3" fill="#F7FAFC" />
-              <path d="M50 48 L46 56 L54 56 Z" fill="#FFB86A" />
-              <path d="M30 24 L36 18 L42 26 Z" fill="url(#owlBody)" />
-              <path d="M70 24 L64 18 L58 26 Z" fill="url(#owlBody)" />
-            </svg>
-            <div class="tier-badge">High · Owl</div>
+    <!-- ============== SCREEN 2 — REVEAL ============== -->
+    <section class="screen" id="screen-reveal" aria-label="Badge reveal" style="--ring-a: #19A999; --ring-b: #4A7FE8; --tier-color: #19A999; --tier-soft: rgba(25, 169, 153, 0.12);">
+      <div class="reveal">
+        <span class="eyebrow">Your badge</span>
+        <h1 style="margin-top: 14px;">You're a <em>Fox</em> — adaptive learner.</h1>
+        <p class="subtitle">Curious, hands-on, but not yet a deep practitioner. Two more quarterly pulses and you'll cross into Owl territory.</p>
+
+        <div class="medallion" role="img" aria-label="Fox badge">
+          <svg class="mascot" viewBox="0 0 100 100" aria-hidden="true">
+            <!-- Fox silhouette (medium tier) -->
+            <defs>
+              <linearGradient id="foxBody" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#FFB86A"/>
+                <stop offset="100%" stop-color="#E68F3A"/>
+              </linearGradient>
+            </defs>
+            <ellipse cx="50" cy="68" rx="28" ry="20" fill="url(#foxBody)"/>
+            <path d="M30 35 L18 18 L36 30 Z" fill="url(#foxBody)"/>
+            <path d="M70 35 L82 18 L64 30 Z" fill="url(#foxBody)"/>
+            <ellipse cx="50" cy="50" rx="26" ry="22" fill="url(#foxBody)"/>
+            <ellipse cx="50" cy="58" rx="16" ry="12" fill="#F7FAFC"/>
+            <circle cx="42" cy="48" r="3" fill="#172B3A"/>
+            <circle cx="58" cy="48" r="3" fill="#172B3A"/>
+            <ellipse cx="50" cy="56" rx="3" ry="2" fill="#172B3A"/>
+            <path d="M82 70 L92 76 L86 80 L78 78 Z" fill="url(#foxBody)"/>
+          </svg>
+          <span class="lvl-pill">LVL 42</span>
+        </div>
+
+        <div class="tier" style="margin-top: 32px;">Medium · Fox</div>
+        <div class="title">Adaptive learner</div>
+        <p class="subtitle" style="font-size: 13px; margin-top: 8px;">3-tier mascot: Tortoise (low) → Fox (medium) → Owl (high). Your level (1–100) is personal — the rest of the org only ever sees the 3-tier mascot.</p>
+
+        <div class="xpbar">
+          <div class="lbl"><span>XP to Owl</span><span>1 250 / 2 400</span></div>
+          <div class="track"><div class="fill" style="width: 52%;"></div></div>
+        </div>
+
+        <div class="axes">
+          <div class="axis">
+            <div class="name">Literacy</div>
+            <svg class="glyph" viewBox="0 0 40 40"><circle cx="20" cy="20" r="14" fill="#19A999" opacity="0.18"/><path d="M14 22 L20 14 L26 22 L20 30 Z" fill="#19A999"/></svg>
+            <div class="v">Medium</div>
+          </div>
+          <div class="axis">
+            <div class="name">Practice</div>
+            <svg class="glyph" viewBox="0 0 40 40"><circle cx="20" cy="20" r="14" fill="#19A999" opacity="0.18"/><path d="M14 22 L20 14 L26 22 L20 30 Z" fill="#19A999"/></svg>
+            <div class="v">Medium</div>
+          </div>
+          <div class="axis">
+            <div class="name">Readiness</div>
+            <svg class="glyph" viewBox="0 0 40 40"><circle cx="20" cy="20" r="14" fill="#FFB86A" opacity="0.25"/><circle cx="20" cy="20" r="6" fill="#FFB86A"/></svg>
+            <div class="v">Low</div>
+          </div>
+          <div class="axis">
+            <div class="name">Opportunity</div>
+            <svg class="glyph" viewBox="0 0 40 40"><circle cx="20" cy="20" r="14" fill="#FFB86A" opacity="0.25"/><circle cx="20" cy="20" r="6" fill="#FFB86A"/></svg>
+            <div class="v">Low</div>
+          </div>
+          <div class="axis">
+            <div class="name">Context</div>
+            <svg class="glyph" viewBox="0 0 40 40"><circle cx="20" cy="20" r="14" fill="#19A999" opacity="0.18"/><path d="M14 22 L20 14 L26 22 L20 30 Z" fill="#19A999"/></svg>
+            <div class="v">Medium</div>
+          </div>
+        </div>
+
+        <div class="cta-row">
+          <button class="btn btn-ghost" data-go="quiz">Replay quiz</button>
+          <button class="btn btn-primary" data-go="team">See your team</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== SCREEN 3 — TEAM PROFILE ============== -->
+    <section class="screen" id="screen-team" aria-label="Team profile" style="--ring-a: #FFB86A; --ring-b: #E68F3A; --tier-color: #c87a2a; --tier-soft: rgba(255, 184, 106, 0.18);">
+      <span class="eyebrow">Your team — Synthetic team A</span>
+      <h1>Mostly <em>Owl</em> with a Tortoise tail.</h1>
+      <p class="lede">Aggregates the badges of 8 respondents (out of 12 invited). The team tier is the dominant mascot — no raw average, no median score. Personal levels stay private to each respondent.</p>
+
+      <div class="team-grid">
+        <div class="team-hero">
+          <div class="label">Team mascot</div>
+          <h2>Synthetic team A</h2>
+          <div class="pseudonym">team-a — 8 / 12 submitted</div>
+          <svg class="mascot-large" viewBox="0 0 100 100" aria-hidden="true">
+            <defs>
+              <linearGradient id="owlBody" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#FFB86A"/>
+                <stop offset="100%" stop-color="#E68F3A"/>
+              </linearGradient>
+            </defs>
+            <ellipse cx="50" cy="58" rx="30" ry="32" fill="url(#owlBody)"/>
+            <ellipse cx="50" cy="68" rx="18" ry="22" fill="#F7FAFC"/>
+            <circle cx="38" cy="40" r="9" fill="#172B3A"/>
+            <circle cx="62" cy="40" r="9" fill="#172B3A"/>
+            <circle cx="38" cy="40" r="3" fill="#F7FAFC"/>
+            <circle cx="62" cy="40" r="3" fill="#F7FAFC"/>
+            <path d="M50 48 L46 56 L54 56 Z" fill="#FFB86A"/>
+            <path d="M30 24 L36 18 L42 26 Z" fill="url(#owlBody)"/>
+            <path d="M70 24 L64 18 L58 26 Z" fill="url(#owlBody)"/>
+          </svg>
+          <div class="tier-badge">High · Owl</div>
+          <div class="meta">
+            <div class="kv"><div class="l">Respondents</div><div class="v">8 / 12</div></div>
+            <div class="kv"><div class="l">Median level</div><div class="v">hidden</div></div>
+            <div class="kv"><div class="l">Median time</div><div class="v">6m 12s</div></div>
+            <div class="kv"><div class="l">Badges earned</div><div class="v">7 / 8</div></div>
+          </div>
+        </div>
+
+        <div class="team-side">
+          <h3>Per-axis tier breakdown</h3>
+          <div class="axis-row">
+            <div class="name">literacy</div>
+            <div class="track"><div class="fill" style="width: 78%;"></div></div>
+            <svg class="mascot" viewBox="0 0 40 40"><ellipse cx="20" cy="22" rx="14" ry="14" fill="#FFB86A"/><circle cx="15" cy="18" r="3" fill="#172B3A"/><circle cx="25" cy="18" r="3" fill="#172B3A"/></svg>
+          </div>
+          <div class="axis-row">
+            <div class="name">practice</div>
+            <div class="track"><div class="fill" style="width: 64%;"></div></div>
+            <svg class="mascot" viewBox="0 0 40 40"><ellipse cx="20" cy="22" rx="14" ry="14" fill="#19A999"/><circle cx="15" cy="18" r="3" fill="#172B3A"/><circle cx="25" cy="18" r="3" fill="#172B3A"/></svg>
+          </div>
+          <div class="axis-row">
+            <div class="name">readiness</div>
+            <div class="track"><div class="fill" style="width: 52%;"></div></div>
+            <svg class="mascot" viewBox="0 0 40 40"><ellipse cx="20" cy="22" rx="14" ry="14" fill="#FFB86A"/><circle cx="15" cy="18" r="3" fill="#172B3A"/><circle cx="25" cy="18" r="3" fill="#172B3A"/></svg>
+          </div>
+          <div class="axis-row">
+            <div class="name">opportunity</div>
+            <div class="track"><div class="fill" style="width: 38%;"></div></div>
+            <svg class="mascot" viewBox="0 0 40 40"><circle cx="20" cy="22" r="12" fill="#536575" opacity="0.4"/><circle cx="15" cy="20" r="2" fill="#172B3A"/><circle cx="25" cy="20" r="2" fill="#172B3A"/></svg>
+          </div>
+          <div class="axis-row">
+            <div class="name">context</div>
+            <div class="track"><div class="fill" style="width: 71%;"></div></div>
+            <svg class="mascot" viewBox="0 0 40 40"><ellipse cx="20" cy="22" rx="14" ry="14" fill="#FFB86A"/><circle cx="15" cy="18" r="3" fill="#172B3A"/><circle cx="25" cy="18" r="3" fill="#172B3A"/></svg>
+          </div>
+
+          <div class="privacy-note">
+            <strong>Privacy contract.</strong> The bench bars are tier percentages, not raw scores. The team mascot is the dominant of three mascots (Tortoise / Fox / Owl). Personal levels are visible only to the respondent themselves on their own profile; team leads see the team mascot + per-axis tiers; the org board sees the same three mascots per team.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== SCREEN 4 — ORG BOARD ============== -->
+    <section class="screen" id="screen-board" aria-label="Org board">
+      <span class="eyebrow">Synthetic Co A — portfolio</span>
+      <h1>Each team, one <em>mascot</em>. That's the whole story.</h1>
+      <p class="lede">The org board never shows a number. Each team card is one of three mascots, the per-axis tier, the response rate, and the engagement status pill. Click a card to drill into the team profile.</p>
+
+      <div class="board-toolbar">
+        <div class="seg-group" role="tablist" aria-label="Tenant">
+          <button class="seg-btn on">Synthetic Co A</button>
+          <button class="seg-btn">Synthetic Co B</button>
+        </div>
+        <div class="grow"></div>
+        <span class="meta">4 teams · 21 respondents · 8 badges earned · 3 in review</span>
+      </div>
+
+      <div class="team-grid-board">
+        <div class="team-card" style="--ring-a: #FFB86A; --ring-b: #E68F3A; --tier-color: #c87a2a;">
+          <div class="badge-row">
+            <div class="medallion-sm"><svg class="mascot" viewBox="0 0 40 40"><ellipse cx="20" cy="22" rx="13" ry="13" fill="#FFB86A"/><circle cx="15" cy="18" r="2.5" fill="#172B3A"/><circle cx="25" cy="18" r="2.5" fill="#172B3A"/></svg></div>
             <div class="meta">
-              <div class="kv">
-                <div class="l">Respondents</div>
-                <div class="v">8 / 12</div>
-              </div>
-              <div class="kv">
-                <div class="l">Median level</div>
-                <div class="v">hidden</div>
-              </div>
-              <div class="kv">
-                <div class="l">Median time</div>
-                <div class="v">6m 12s</div>
-              </div>
-              <div class="kv">
-                <div class="l">Badges earned</div>
-                <div class="v">7 / 8</div>
-              </div>
+              <div class="name">Operations — team A</div>
+              <div class="tier">High · Owl</div>
             </div>
           </div>
-
-          <div class="team-side">
-            <h3>Per-axis tier breakdown</h3>
-            <div class="axis-row">
-              <div class="name">literacy</div>
-              <div class="track"><div class="fill" style="width: 78%"></div></div>
-              <svg class="mascot" viewBox="0 0 40 40">
-                <ellipse cx="20" cy="22" rx="14" ry="14" fill="#FFB86A" />
-                <circle cx="15" cy="18" r="3" fill="#172B3A" />
-                <circle cx="25" cy="18" r="3" fill="#172B3A" />
-              </svg>
-            </div>
-            <div class="axis-row">
-              <div class="name">practice</div>
-              <div class="track"><div class="fill" style="width: 64%"></div></div>
-              <svg class="mascot" viewBox="0 0 40 40">
-                <ellipse cx="20" cy="22" rx="14" ry="14" fill="#19A999" />
-                <circle cx="15" cy="18" r="3" fill="#172B3A" />
-                <circle cx="25" cy="18" r="3" fill="#172B3A" />
-              </svg>
-            </div>
-            <div class="axis-row">
-              <div class="name">readiness</div>
-              <div class="track"><div class="fill" style="width: 52%"></div></div>
-              <svg class="mascot" viewBox="0 0 40 40">
-                <ellipse cx="20" cy="22" rx="14" ry="14" fill="#FFB86A" />
-                <circle cx="15" cy="18" r="3" fill="#172B3A" />
-                <circle cx="25" cy="18" r="3" fill="#172B3A" />
-              </svg>
-            </div>
-            <div class="axis-row">
-              <div class="name">opportunity</div>
-              <div class="track"><div class="fill" style="width: 38%"></div></div>
-              <svg class="mascot" viewBox="0 0 40 40">
-                <circle cx="20" cy="22" r="12" fill="#536575" opacity="0.4" />
-                <circle cx="15" cy="20" r="2" fill="#172B3A" />
-                <circle cx="25" cy="20" r="2" fill="#172B3A" />
-              </svg>
-            </div>
-            <div class="axis-row">
-              <div class="name">context</div>
-              <div class="track"><div class="fill" style="width: 71%"></div></div>
-              <svg class="mascot" viewBox="0 0 40 40">
-                <ellipse cx="20" cy="22" rx="14" ry="14" fill="#FFB86A" />
-                <circle cx="15" cy="18" r="3" fill="#172B3A" />
-                <circle cx="25" cy="18" r="3" fill="#172B3A" />
-              </svg>
-            </div>
-
-            <div class="privacy-note">
-              <strong>Privacy contract.</strong> The bench bars are tier percentages, not raw
-              scores. The team mascot is the dominant of three mascots (Tortoise / Fox / Owl).
-              Personal levels are visible only to the respondent themselves on their own profile;
-              team leads see the team mascot + per-axis tiers; the org board sees the same three
-              mascots per team.
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ============== SCREEN 4 — ORG BOARD ============== -->
-      <section class="screen" id="screen-board" aria-label="Org board">
-        <span class="eyebrow">Synthetic Co A — portfolio</span>
-        <h1>Each team, one <em>mascot</em>. That's the whole story.</h1>
-        <p class="lede">
-          The org board never shows a number. Each team card is one of three mascots, the per-axis
-          tier, the response rate, and the engagement status pill. Click a card to drill into the
-          team profile.
-        </p>
-
-        <div class="board-toolbar">
-          <div class="seg-group" role="tablist" aria-label="Tenant">
-            <button class="seg-btn on">Synthetic Co A</button>
-            <button class="seg-btn">Synthetic Co B</button>
-          </div>
-          <div class="grow"></div>
-          <span class="meta">4 teams · 21 respondents · 8 badges earned · 3 in review</span>
-        </div>
-
-        <div class="team-grid-board">
-          <div
-            class="team-card"
-            style="--ring-a: #ffb86a; --ring-b: #e68f3a; --tier-color: #c87a2a"
-          >
-            <div class="badge-row">
-              <div class="medallion-sm">
-                <svg class="mascot" viewBox="0 0 40 40">
-                  <ellipse cx="20" cy="22" rx="13" ry="13" fill="#FFB86A" />
-                  <circle cx="15" cy="18" r="2.5" fill="#172B3A" />
-                  <circle cx="25" cy="18" r="2.5" fill="#172B3A" />
-                </svg>
-              </div>
-              <div class="meta">
-                <div class="name">Operations — team A</div>
-                <div class="tier">High · Owl</div>
-              </div>
-            </div>
-            <div class="stats">
-              <div><strong>5 / 12</strong>submitted</div>
-              <div>
-                <strong><span class="pulse field"></span>Field</strong>status
-              </div>
-              <div><strong>3 axes</strong>at Fox or better</div>
-            </div>
-          </div>
-
-          <div
-            class="team-card"
-            style="--ring-a: #19a999; --ring-b: #4a7fe8; --tier-color: #19a999"
-          >
-            <div class="badge-row">
-              <div class="medallion-sm">
-                <svg class="mascot" viewBox="0 0 40 40">
-                  <ellipse cx="20" cy="22" rx="13" ry="13" fill="#19A999" />
-                  <circle cx="15" cy="18" r="2.5" fill="#172B3A" />
-                  <circle cx="25" cy="18" r="2.5" fill="#172B3A" />
-                </svg>
-              </div>
-              <div class="meta">
-                <div class="name">Sales — team A</div>
-                <div class="tier">Medium · Fox</div>
-              </div>
-            </div>
-            <div class="stats">
-              <div><strong>3 / 8</strong>submitted</div>
-              <div>
-                <strong><span class="pulse field"></span>Field</strong>status
-              </div>
-              <div><strong>2 axes</strong>at Fox or better</div>
-            </div>
-          </div>
-
-          <div
-            class="team-card"
-            style="--ring-a: #536575; --ring-b: #1a1a1a; --tier-color: #536575"
-          >
-            <div class="badge-row">
-              <div class="medallion-sm">
-                <svg class="mascot" viewBox="0 0 40 40">
-                  <ellipse cx="20" cy="22" rx="14" ry="12" fill="#536575" opacity="0.65" />
-                  <circle cx="20" cy="22" r="8" fill="#F7FAFC" opacity="0.5" />
-                  <circle cx="15" cy="20" r="2" fill="#172B3A" />
-                  <circle cx="25" cy="20" r="2" fill="#172B3A" />
-                </svg>
-              </div>
-              <div class="meta">
-                <div class="name">Operations — team B</div>
-                <div class="tier">Low · Tortoise</div>
-              </div>
-            </div>
-            <div class="stats">
-              <div><strong>2 / 9</strong>submitted</div>
-              <div>
-                <strong><span class="pulse review"></span>Review</strong>status
-              </div>
-              <div><strong>0 axes</strong>at Fox or better</div>
-            </div>
-          </div>
-
-          <div
-            class="team-card"
-            style="--ring-a: #ffb86a; --ring-b: #e68f3a; --tier-color: #c87a2a"
-          >
-            <div class="badge-row">
-              <div class="medallion-sm">
-                <svg class="mascot" viewBox="0 0 40 40">
-                  <ellipse cx="20" cy="22" rx="13" ry="13" fill="#FFB86A" />
-                  <circle cx="15" cy="18" r="2.5" fill="#172B3A" />
-                  <circle cx="25" cy="18" r="2.5" fill="#172B3A" />
-                </svg>
-              </div>
-              <div class="meta">
-                <div class="name">Finance — team A</div>
-                <div class="tier">High · Owl</div>
-              </div>
-            </div>
-            <div class="stats">
-              <div><strong>0 / 4</strong>not started</div>
-              <div>
-                <strong><span class="pulse intake"></span>Intake</strong>status
-              </div>
-              <div><strong>0 axes</strong>yet measured</div>
-            </div>
+          <div class="stats">
+            <div><strong>5 / 12</strong>submitted</div>
+            <div><strong><span class="pulse field"></span>Field</strong>status</div>
+            <div><strong>3 axes</strong>at Fox or better</div>
           </div>
         </div>
 
-        <div class="footnote">
-          <strong>Design rules captured for M14.</strong>
-          <ul>
-            <li>
-              Every public-facing result is one of three mascots (Tortoise / Fox / Owl). The raw
-              1–100 level is visible only to the respondent on their own profile.
-            </li>
-            <li>
-              The 5-axis breakdown (literacy / practice / readiness / opportunity / context) uses
-              the same three mascots per axis.
-            </li>
-            <li>
-              Badges are stored in <code>respondent_badges</code> + <code>team_badges</code> (RLS,
-              audit log on every award), keyed by <code>respondent_pseudonym</code> — never a real
-              name or email.
-            </li>
-            <li>
-              The org board aggregates by dominant mascot per team; the per-axis tier percentages
-              are the only "percentage" on screen, and they are tier-based (how many respondents hit
-              Fox or better), not raw score averages.
-            </li>
-            <li>
-              The mascot SVGs are inline in the bundle (no external CDN) and inherit the brand
-              palette; the system never relies on emoji for badges.
-            </li>
-          </ul>
+        <div class="team-card" style="--ring-a: #19A999; --ring-b: #4A7FE8; --tier-color: #19A999;">
+          <div class="badge-row">
+            <div class="medallion-sm"><svg class="mascot" viewBox="0 0 40 40"><ellipse cx="20" cy="22" rx="13" ry="13" fill="#19A999"/><circle cx="15" cy="18" r="2.5" fill="#172B3A"/><circle cx="25" cy="18" r="2.5" fill="#172B3A"/></svg></div>
+            <div class="meta">
+              <div class="name">Sales — team A</div>
+              <div class="tier">Medium · Fox</div>
+            </div>
+          </div>
+          <div class="stats">
+            <div><strong>3 / 8</strong>submitted</div>
+            <div><strong><span class="pulse field"></span>Field</strong>status</div>
+            <div><strong>2 axes</strong>at Fox or better</div>
+          </div>
         </div>
-      </section>
-    </main>
 
-    <script>
-      const buttons = document.querySelectorAll('[data-go]');
-      const screens = document.querySelectorAll('.screen');
-      buttons.forEach((b) => {
-        b.addEventListener('click', (e) => {
-          e.preventDefault();
-          const target = b.getAttribute('data-go');
-          screens.forEach((s) => s.classList.toggle('active', s.id === `screen-${target}`));
-          document.querySelectorAll('.topbar nav button').forEach((nb) => {
-            nb.classList.toggle('active', nb.getAttribute('data-go') === target);
-          });
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+        <div class="team-card" style="--ring-a: #536575; --ring-b: #1a1a1a; --tier-color: #536575;">
+          <div class="badge-row">
+            <div class="medallion-sm"><svg class="mascot" viewBox="0 0 40 40"><ellipse cx="20" cy="22" rx="14" ry="12" fill="#536575" opacity="0.65"/><circle cx="20" cy="22" r="8" fill="#F7FAFC" opacity="0.5"/><circle cx="15" cy="20" r="2" fill="#172B3A"/><circle cx="25" cy="20" r="2" fill="#172B3A"/></svg></div>
+            <div class="meta">
+              <div class="name">Operations — team B</div>
+              <div class="tier">Low · Tortoise</div>
+            </div>
+          </div>
+          <div class="stats">
+            <div><strong>2 / 9</strong>submitted</div>
+            <div><strong><span class="pulse review"></span>Review</strong>status</div>
+            <div><strong>0 axes</strong>at Fox or better</div>
+          </div>
+        </div>
+
+        <div class="team-card" style="--ring-a: #FFB86A; --ring-b: #E68F3A; --tier-color: #c87a2a;">
+          <div class="badge-row">
+            <div class="medallion-sm"><svg class="mascot" viewBox="0 0 40 40"><ellipse cx="20" cy="22" rx="13" ry="13" fill="#FFB86A"/><circle cx="15" cy="18" r="2.5" fill="#172B3A"/><circle cx="25" cy="18" r="2.5" fill="#172B3A"/></svg></div>
+            <div class="meta">
+              <div class="name">Finance — team A</div>
+              <div class="tier">High · Owl</div>
+            </div>
+          </div>
+          <div class="stats">
+            <div><strong>0 / 4</strong>not started</div>
+            <div><strong><span class="pulse intake"></span>Intake</strong>status</div>
+            <div><strong>0 axes</strong>yet measured</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footnote">
+        <strong>Design rules captured for M14.</strong>
+        <ul>
+          <li>Every public-facing result is one of three mascots (Tortoise / Fox / Owl). The raw 1–100 level is visible only to the respondent on their own profile.</li>
+          <li>The 5-axis breakdown (literacy / practice / readiness / opportunity / context) uses the same three mascots per axis.</li>
+          <li>Badges are stored in <code>respondent_badges</code> + <code>team_badges</code> (RLS, audit log on every award), keyed by <code>respondent_pseudonym</code> — never a real name or email.</li>
+          <li>The org board aggregates by dominant mascot per team; the per-axis tier percentages are the only "percentage" on screen, and they are tier-based (how many respondents hit Fox or better), not raw score averages.</li>
+          <li>The mascot SVGs are inline in the bundle (no external CDN) and inherit the brand palette; the system never relies on emoji for badges.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const buttons = document.querySelectorAll('[data-go]');
+    const screens = document.querySelectorAll('.screen');
+    buttons.forEach((b) => {
+      b.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = b.getAttribute('data-go');
+        screens.forEach((s) => s.classList.toggle('active', s.id === `screen-${target}`));
+        document.querySelectorAll('.topbar nav button').forEach((nb) => {
+          nb.classList.toggle('active', nb.getAttribute('data-go') === target);
         });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       });
-      document.querySelectorAll('.quiz-opt').forEach((b) => {
-        b.addEventListener('click', () => {
-          document.querySelectorAll('.quiz-opt').forEach((x) => (x.style.borderColor = ''));
-          b.style.borderColor = 'var(--primary)';
-          b.style.background = 'var(--primary-soft)';
-          document.querySelector('.btn-primary[disabled]').removeAttribute('disabled');
-        });
+    });
+    document.querySelectorAll('.quiz-opt').forEach((b) => {
+      b.addEventListener('click', () => {
+        document.querySelectorAll('.quiz-opt').forEach((x) => x.style.borderColor = '');
+        b.style.borderColor = 'var(--primary)';
+        b.style.background = 'var(--primary-soft)';
+        document.querySelector('.btn-primary[disabled]').removeAttribute('disabled');
       });
-    </script>
-  </body>
+    });
+  </script>
+</body>
 </html>
