@@ -1,5 +1,5 @@
-import Link from 'next/link';
-import { Mascot } from '@evolai/ui';
+import Button from '@mui/material/Button';
+import { EmptyState, Mascot } from '@evolai/ui';
 import { mascotTierOrder, mascotTierSchema, type TenantId } from '@evolai/contracts';
 import { listTenantIds } from '@/lib/adminData';
 import { getCurrentBadgeForPseudonym } from '@/lib/respondentBadgeData';
@@ -39,10 +39,14 @@ export default async function QuizResult({ searchParams }: PageProps) {
     return (
       <section className="stack">
         <h1>{t('quiz.resultTitle')}</h1>
-        <p>{t('quiz.resultMissing')}</p>
-        <Link className="btn btn-primary" href="/quiz">
-          {t('quiz.take')}
-        </Link>
+        <EmptyState
+          title={t('quiz.resultMissing')}
+          action={
+            <Button variant="contained" href="/quiz">
+              {t('quiz.take')}
+            </Button>
+          }
+        />
       </section>
     );
   }
@@ -70,9 +74,13 @@ export default async function QuizResult({ searchParams }: PageProps) {
           ))}
         </ul>
       </details>
-      <Link className="btn btn-secondary" href={`/quiz?pseudonym=${encodeURIComponent(pseudonym)}`}>
+      <Button
+        variant="text"
+        href={`/quiz?pseudonym=${encodeURIComponent(pseudonym)}`}
+        sx={{ alignSelf: 'flex-start' }}
+      >
         {t('quiz.retake')}
-      </Link>
+      </Button>
     </section>
   );
 }

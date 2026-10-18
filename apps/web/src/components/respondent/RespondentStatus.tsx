@@ -53,11 +53,17 @@ export default function RespondentStatus({ token, title, team, myTier, locale, t
   const teamLine = t('survey.teamProgress', { done: team.answered, total: team.invited });
   return (
     <Stack sx={{ gap: 6 }}>
-      <Stack direction="row" sx={{ gap: 3, alignItems: 'center' }}>
+      {/* Wraps at 200% zoom (180 px) instead of scrolling sideways. */}
+      <Stack direction="row" sx={{ gap: 3, alignItems: 'center', flexWrap: 'wrap' }}>
         <Box sx={{ color: 'success.main', display: 'flex' }}>
           <AppIcon name="success" size={40} />
         </Box>
-        <Typography id="status-title" variant="pageTitle" component="h1" sx={{ m: 0 }}>
+        <Typography
+          id="status-title"
+          variant="pageTitle"
+          component="h1"
+          sx={{ m: 0, minWidth: 0, overflowWrap: 'anywhere' }}
+        >
           {title}
         </Typography>
       </Stack>
