@@ -38,9 +38,11 @@ const readSecret = (prompt) =>
   new Promise((resolve, reject) => {
     if (!process.stdin.isTTY) {
       const rl = createInterface({ input: process.stdin });
+      // Resolve with the line before closing: close() fires the 'close' handler synchronously, and
+      // a promise settles only once, so closing first made piped passwords always read as empty.
       rl.once('line', (line) => {
-        rl.close();
         resolve(line);
+        rl.close();
       });
       rl.once('close', () => resolve(''));
       return;
