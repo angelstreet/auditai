@@ -29,3 +29,4 @@ Thumbs.db
 # Repo-policy files (the leak-allowlist is shared, but local scans can be overridden)
 .env*
 .playwright-database-url
+apps/web/screens/
