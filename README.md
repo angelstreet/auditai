@@ -67,7 +67,8 @@ docs                PRD, architecture decisions, threat model, data dictionary
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
-AI coding agents: read [AGENTS.md](AGENTS.md) first.
+AI coding agents: read [AGENTS.md](AGENTS.md) first. UI work follows [docs/UI_RULES.md](docs/UI_RULES.md)
+(MUI themed from our tokens, light and dark, checked by `pnpm style-guard` and Playwright).
 
 ## Run it locally
 

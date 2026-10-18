@@ -11,6 +11,8 @@ Rules for AI coding agents working in this repository.
 ## Source of truth
 
 - Product requirements: [docs/PRD.md](docs/PRD.md). Architecture decisions: [docs/adr/](docs/adr/).
+- UI and UX: [docs/UI_RULES.md](docs/UI_RULES.md) for every page, dialog and popup (MUI, tokens, light and dark,
+  one primary action, status as icon plus word, no emoji). `pnpm style-guard` enforces the checkable part.
 - Record every significant technical choice as a new ADR (context, decision, alternatives, consequences).
 
 ## How to work
