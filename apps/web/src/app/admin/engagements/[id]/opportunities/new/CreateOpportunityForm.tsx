@@ -13,7 +13,7 @@ function SubmitButton() {
   const { t } = useI18n();
   const { pending } = useFormStatus();
   return (
-    <button type="submit" disabled={pending} className="btn-primary">
+    <button type="submit" disabled={pending} className="btn btn-primary">
       {pending ? t('admin.oppNew.creating') : t('admin.oppNew.create')}
     </button>
   );
@@ -50,7 +50,7 @@ export function CreateOpportunityForm({ tenantId, analysisId, engagementId, defa
           minLength={3}
           maxLength={200}
           defaultValue={defaultTitle}
-          style={{ width: '100%', maxWidth: '640px', padding: '8px 10px' }}
+          className="input-wide"
         />
       </p>
       <p>
@@ -75,13 +75,13 @@ export function CreateOpportunityForm({ tenantId, analysisId, engagementId, defa
           min={0}
           max={1}
           step={0.001}
-          style={{ width: '120px', padding: '8px 10px' }}
+          className="input-narrow"
         />
       </p>
       <p>
         <SubmitButton />
         {state.message ? (
-          <span style={{ marginLeft: '12px' }} aria-live="polite">
+          <span className="status-msg" aria-live="polite">
             {state.ok ? '\u2705' : '\u26a0\ufe0f'} {state.message}
             {state.opportunityId ? (
               <>

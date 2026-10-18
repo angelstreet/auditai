@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { Logo } from '@/components/Logo';
 import { Mascot } from '@auditai/ui';
 import { listEngagements } from '@/lib/adminData';
 import { sessionTenantIds } from '@/lib/authServer';
@@ -199,20 +198,19 @@ export default async function BoardPage() {
   };
 
   return (
-    <main className="container">
-      <Logo />
-      <h1 style={{ marginTop: 'var(--space-4)' }}>{t('admin.board.title')}</h1>
+    <div className="wide">
+      <h1>{t('admin.board.title')}</h1>
       <p className="muted">
         {t('admin.board.summary', {
           engagements: engagementsPerTenant.reduce((acc, x) => acc + x.engagements.length, 0),
           briefs: briefs.length,
         })}
       </p>
-      <p>
-        <Link className="btn-ghost" href="/welcome">
+      <p className="actions">
+        <Link className="btn btn-secondary btn-sm" href="/welcome">
           {t('admin.board.welcome')}
         </Link>{' '}
-        <Link className="btn-ghost" href="/intake">
+        <Link className="btn btn-secondary btn-sm" href="/intake">
           {t('admin.board.openIntake')}
         </Link>
       </p>
@@ -223,13 +221,13 @@ export default async function BoardPage() {
             key={col.key}
             aria-label={t(`admin.board.${col.titleKey}`)}
           >
-            <h4>
+            <h2>
               <span>
                 <span className={`pulse ${col.pulse}`} />
                 {t(`admin.board.${col.titleKey}`)}
               </span>
               <span className="count">{items.length}</span>
-            </h4>
+            </h2>
             {items.length === 0 ? (
               <p className="muted empty">{t('admin.board.empty')}</p>
             ) : (
@@ -244,10 +242,9 @@ export default async function BoardPage() {
                     {tier ? (
                       <Mascot tier={tier} size={32} label={t(`quiz.mascotAlt.${tier}`)} />
                     ) : null}
-                    <div className="t">{ticket.title}</div>
-                    <div className="meta">
-                      <span className="axis">{t(`admin.board.${col.titleKey}`)}</span>
-                      <span className="resp">{ticket.meta}</span>
+                    <div>
+                      <div className="t">{ticket.title}</div>
+                      <div className="meta">{ticket.meta}</div>
                     </div>
                   </Link>
                 );
@@ -257,39 +254,6 @@ export default async function BoardPage() {
         ))}
       </div>
       <p className="footnote">{t('admin.board.footnote', { delivered: t('status.delivered') })}</p>
-      <style>{`
-        .kanban { display: grid; grid-template-columns: repeat(5, minmax(220px, 1fr));
-          gap: 14px; overflow-x: auto; padding-bottom: 8px; }
-        .col { background: var(--color-bg); border: 1px solid var(--color-border);
-          border-radius: 8px; padding: 14px 12px; min-height: 360px; }
-        .col h4 { font-size: 13px; font-weight: 600; margin: 0 0 10px;
-          display: flex; align-items: center; justify-content: space-between; }
-        .col h4 .count { font-size: 11px; color: var(--color-muted);
-          background: var(--color-card); padding: 2px 8px; border-radius: 999px; }
-        .pulse { display: inline-block; width: 8px; height: 8px; border-radius: 50%;
-          margin-right: 6px; vertical-align: middle; }
-        .pulse.intake { background: var(--color-brand-supporting); }
-        .pulse.field { background: var(--color-brand-blue); }
-        .pulse.review { background: var(--color-brand-amber); }
-        .pulse.opps { background: var(--color-brand-teal); }
-        .pulse.delivery { background: #6cc06c; }
-        .ticket { display: flex; gap: 10px; align-items: center; background: var(--color-card);
-          border: 1px solid var(--color-border); border-radius: 8px; padding: 10px 12px;
-          margin-bottom: 8px; text-decoration: none; color: inherit; }
-        .ticket svg { flex-shrink: 0; }
-        .ticket .t { font-size: 13px; font-weight: 500; line-height: 1.3; margin-bottom: 4px; }
-        .ticket .meta { display: flex; justify-content: space-between; flex: 1;
-          font-size: 11px; color: var(--color-muted); }
-        .ticket .axis { background: var(--color-brand-teal); color: var(--color-brand-off-white);
-          padding: 1px 6px; border-radius: 999px; text-transform: uppercase; font-size: 10px; }
-        .empty { font-size: 12px; color: var(--color-muted); padding: 6px 0; }
-        .footnote { margin-top: 24px; padding: 14px 16px; background: var(--color-card);
-          border: 1px dashed var(--color-border); border-radius: 8px; font-size: 13px;
-          color: var(--color-muted); }
-        .btn-ghost { display: inline-block; padding: 8px 14px; border: 1px solid var(--color-border);
-          border-radius: 6px; text-decoration: none; color: inherit; margin-right: 6px; }
-        @media (max-width: 900px) { .kanban { grid-template-columns: 1fr 1fr; } }
-      `}</style>
-    </main>
+    </div>
   );
 }

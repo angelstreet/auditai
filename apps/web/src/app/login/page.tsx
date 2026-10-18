@@ -1,4 +1,3 @@
-import { Logo } from '@/components/Logo';
 import { getT } from '@/lib/i18n';
 
 export const dynamic = 'force-dynamic';
@@ -17,30 +16,27 @@ export default function LoginPage({ searchParams }: PageProps) {
     : null;
   const error = errorKey ? t(errorKey) : null;
   return (
-    <main className="container">
-      <Logo />
-      <h1 style={{ marginTop: 'var(--space-4)' }}>{t('login.title')}</h1>
+    <div className="stack">
+      <h1>{t('login.title')}</h1>
       {error ? (
-        <p role="alert" style={{ color: 'crimson' }}>
+        <p role="alert" className="alert">
           {error}
         </p>
       ) : null}
-      <form
-        method="post"
-        action="/api/auth/login"
-        style={{ display: 'grid', gap: 12, maxWidth: 360 }}
-      >
+      <form method="post" action="/api/auth/login" className="stack">
         <input type="hidden" name="next" value={searchParams.next ?? ''} />
-        <label>
+        <label className="field">
           {t('login.email')}
           <input name="email" type="email" autoComplete="username" required />
         </label>
-        <label>
+        <label className="field">
           {t('login.password')}
           <input name="password" type="password" autoComplete="current-password" required />
         </label>
-        <button type="submit">{t('login.submit')}</button>
+        <button type="submit" className="btn btn-primary">
+          {t('login.submit')}
+        </button>
       </form>
-    </main>
+    </div>
   );
 }

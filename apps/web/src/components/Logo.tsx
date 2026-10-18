@@ -7,12 +7,11 @@ import type { CSSProperties } from 'react';
  * plus the "EvolAI" wordmark with "AI" highlighted in the brand teal.
  *
  * Two sizes:
- *   - default  (36px icon + 20px wordmark) for the top navigation
- *   - "hero"   (64px icon + 36px wordmark) for the about / landing pages
+ *   - default  (36px icon + text-lg wordmark) for the top navigation
+ *   - "hero"   (64px icon + text-2xl wordmark) for the about / landing pages
  *
- * The icon is drawn from the brand kit palette: amber #FFB86A, blue #4A7FE8,
- * teal #19A999, deep navy #172B3A. The wordmark uses the same navy with the "AI"
- * portion rendered in teal for visual continuity.
+ * The icon is drawn from the brand kit palette (amber, blue, teal, deep navy tokens).
+ * The wordmark uses the same navy with the "AI" portion rendered in teal.
  */
 
 interface LogoProps {
@@ -32,14 +31,15 @@ const ICON_SIZES = {
 } as const;
 
 const WORDMARK_SIZES = {
-  default: 20,
-  hero: 36,
+  default: '--text-lg',
+  hero: '--text-2xl',
 } as const;
 
-const AMBER = '#FFB86A';
-const BLUE = '#4A7FE8';
-const TEAL = '#19A999';
-const NAVY = '#172B3A';
+// Colours come from the design tokens (packages/ui/src/tokens.css, ADR 0025).
+const AMBER = 'var(--color-amber)';
+const BLUE = 'var(--color-blue)';
+const TEAL = 'var(--color-teal)';
+const NAVY = 'var(--color-navy)';
 
 export function Logo({ size = 'default', iconOnly = false, className, style }: LogoProps) {
   const iconSize = ICON_SIZES[size];
@@ -53,10 +53,10 @@ export function Logo({ size = 'default', iconOnly = false, className, style }: L
         gap: iconSize * 0.33,
         color: NAVY,
         fontWeight: 700,
-        fontSize: wordmarkSize,
+        fontSize: `var(${wordmarkSize})`,
         lineHeight: 1,
         letterSpacing: '-0.01em',
-        fontFamily: 'system-ui, -apple-system, "Segoe UI", sans-serif',
+        fontFamily: 'var(--font-sans)',
         ...style,
       }}
     >
@@ -88,12 +88,3 @@ export function Logo({ size = 'default', iconOnly = false, className, style }: L
     </span>
   );
 }
-
-export const BRAND_COLORS = {
-  navy: NAVY,
-  teal: TEAL,
-  blue: BLUE,
-  amber: AMBER,
-  offWhite: '#F7FAFC',
-  supporting: '#536575',
-} as const;

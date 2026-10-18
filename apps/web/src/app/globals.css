@@ -4,17 +4,6 @@
  */
 @import '../../../../packages/ui/src/tokens.css';
 
-/* Legacy names still used by admin pages; removed once they move to the semantic roles. */
-:root {
-  --color-card: var(--color-surface);
-  --color-brand-navy: var(--color-navy);
-  --color-brand-teal: var(--color-teal);
-  --color-brand-blue: var(--color-blue);
-  --color-brand-amber: var(--color-amber);
-  --color-brand-off-white: var(--color-off-white);
-  --color-brand-supporting: var(--color-slate);
-}
-
 * {
   box-sizing: border-box;
 }
@@ -44,7 +33,7 @@ main,
 
 /* Admin, board and other dense pages opt into the wide column with a `.wide` root element. */
 main.container:has(> .wide),
-.container.admin {
+body:has(main > .wide) .topbar {
   max-width: var(--width-wide);
 }
 
@@ -414,6 +403,8 @@ details ul {
 
 /* Admin tables (wide pages). */
 .admin table {
+  display: block;
+  overflow-x: auto;
   width: 100%;
   border-collapse: collapse;
   margin-top: var(--space-4);
@@ -446,4 +437,504 @@ details ul {
 .admin .admin-tenant-switcher li a[aria-current='page'] {
   font-weight: var(--weight-bold);
   text-decoration: underline;
+}
+
+/* ------------------------------------------------------------------------------------------
+ * Dense surfaces: admin, board, intake, sponsor welcome. Same tokens, same buttons and fields
+ * as the respondent pages; only the column is wider and secondary text is smaller.
+ * ---------------------------------------------------------------------------------------- */
+
+.page-head {
+  margin-bottom: var(--space-4);
+}
+
+.page-head h1 {
+  margin-top: var(--space-2);
+}
+
+.section-title {
+  margin-top: var(--space-5);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-4) 0;
+}
+
+.btn-sm {
+  min-height: 36px;
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-sm);
+}
+
+.btn-danger {
+  background: var(--color-danger);
+  color: var(--color-white);
+}
+
+.status-msg {
+  margin-left: var(--space-3);
+}
+
+/* Form fields: one look for every input, select and textarea. */
+input[type='text'],
+input[type='email'],
+input[type='password'],
+input[type='number'],
+input:not([type]),
+select,
+textarea {
+  min-height: var(--tap-min);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius);
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font: inherit;
+  max-width: 100%;
+}
+
+textarea {
+  width: 100%;
+  max-width: 640px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  max-width: 480px;
+  margin-bottom: var(--space-3);
+}
+
+.field input,
+.field select {
+  width: 100%;
+}
+
+.field-hint {
+  color: var(--color-muted);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-regular);
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: flex-end;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  user-select: none;
+  background: var(--color-bg);
+}
+
+.chip input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.chip:has(input:checked) {
+  background: var(--color-highlight);
+  color: var(--color-on-highlight);
+  border-color: var(--color-highlight);
+}
+
+.chip:has(input:focus-visible) {
+  outline: 3px solid var(--color-blue);
+  outline-offset: 2px;
+}
+
+/* Pills: status and tier labels. Text colours meet AA on every fill. */
+.pill {
+  display: inline-block;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  background: var(--color-line);
+  color: var(--color-fg);
+}
+
+.pill-slate,
+.pill.tier-tortoise,
+.pill-detected {
+  background: var(--color-slate);
+  color: var(--color-white);
+}
+
+.pill-teal,
+.pill.tier-fox,
+.pill-surfaced {
+  background: var(--color-teal);
+  color: var(--color-navy);
+}
+
+.pill-navy,
+.pill.tier-owl {
+  background: var(--color-navy);
+  color: var(--color-white);
+}
+
+.pill-amber {
+  background: var(--color-amber);
+  color: var(--color-navy);
+}
+
+.pill-muted,
+.pill.muted-pill,
+.pill-dismissed,
+.pill-archived {
+  background: var(--color-line);
+  color: var(--color-slate);
+}
+
+.tag {
+  font-size: var(--text-xs);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  padding: 1px var(--space-2);
+  border-radius: var(--radius-pill);
+  color: var(--color-muted);
+}
+
+/* Lists of cards (teams, synergies) and definition grids inside them. */
+.card-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: var(--space-3);
+}
+
+.card-grid {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.card + .card {
+  margin-top: var(--space-3);
+}
+
+.card-list .card + .card {
+  margin-top: 0;
+}
+
+.card header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.card header h3 {
+  margin: 0;
+}
+
+.dl-grid {
+  display: grid;
+  grid-template-columns: minmax(96px, max-content) 1fr;
+  gap: var(--space-1) var(--space-3);
+  font-size: var(--text-sm);
+  margin: 0 0 var(--space-3) 0;
+}
+
+.dl-grid dt {
+  color: var(--color-muted);
+}
+
+.dl-grid dd {
+  margin: 0;
+  font-weight: var(--weight-medium);
+  overflow-wrap: anywhere;
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+.empty-state {
+  padding: var(--space-5);
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius);
+}
+
+.footnote {
+  margin-top: var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius);
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: var(--space-2);
+  font-size: var(--text-sm);
+}
+
+.data-table th,
+.data-table td {
+  padding: var(--space-2);
+  border-bottom: 1px solid var(--color-border);
+  text-align: left;
+}
+
+.csv-preview {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-3);
+  max-height: 320px;
+  overflow: auto;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  margin-top: var(--space-2);
+}
+
+/* Intake: form and sticky live summary side by side from tablet up. */
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-5);
+  align-items: start;
+}
+
+@media (min-width: 900px) {
+  .split {
+    grid-template-columns: minmax(0, 1fr) 320px;
+  }
+
+  .split .summary {
+    position: sticky;
+    top: var(--space-4);
+  }
+}
+
+input[type='range'] {
+  width: 100%;
+  max-width: 480px;
+  accent-color: var(--color-teal-ink);
+}
+
+/* Sponsor welcome hero. */
+.hero {
+  padding: var(--space-5) 0;
+  max-width: 720px;
+}
+
+.hero .lede {
+  margin-bottom: var(--space-5);
+}
+
+.eyebrow {
+  display: inline-block;
+  padding: var(--space-1) var(--space-3);
+  background: var(--color-highlight);
+  color: var(--color-on-highlight);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.steps {
+  padding-left: 0;
+  list-style: none;
+}
+
+.steps li strong {
+  display: block;
+  margin-bottom: var(--space-1);
+}
+
+.steps li p {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: var(--text-sm);
+}
+
+/* Portfolio board (kanban). */
+.kanban {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+  padding-bottom: var(--space-2);
+}
+
+@media (min-width: 600px) {
+  .kanban {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 1100px) {
+  .kanban {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+.col {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-3);
+}
+
+.col h2 {
+  font-size: var(--text-sm);
+  margin: 0 0 var(--space-3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.col .count {
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+  background: var(--color-surface);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-pill);
+}
+
+.pulse {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: var(--space-2);
+  vertical-align: middle;
+}
+
+.pulse.intake {
+  background: var(--color-slate);
+}
+
+.pulse.field {
+  background: var(--color-blue);
+}
+
+.pulse.review {
+  background: var(--color-amber);
+}
+
+.pulse.opps {
+  background: var(--color-teal);
+}
+
+.pulse.delivery {
+  background: var(--color-navy);
+}
+
+.ticket {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left-width: 4px;
+  border-radius: var(--radius);
+  padding: var(--space-2) var(--space-3);
+  margin-bottom: var(--space-2);
+  text-decoration: none;
+  color: inherit;
+  min-height: var(--tap-min);
+}
+
+.ticket.tone-supporting {
+  border-left-color: var(--color-slate);
+}
+
+.ticket.tone-blue {
+  border-left-color: var(--color-blue);
+}
+
+.ticket.tone-amber {
+  border-left-color: var(--color-amber);
+}
+
+.ticket.tone-teal {
+  border-left-color: var(--color-teal);
+}
+
+.ticket.tone-green {
+  border-left-color: var(--color-navy);
+}
+
+.ticket svg {
+  flex-shrink: 0;
+}
+
+.ticket .t {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-tight);
+  margin-bottom: var(--space-1);
+}
+
+.ticket .meta {
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+}
+
+.col .empty {
+  font-size: var(--text-sm);
+}
+
+/* Small shared helpers. */
+.tagline {
+  margin-top: var(--space-3);
+  color: var(--color-muted);
+  letter-spacing: 0.02em;
+}
+
+.prewrap {
+  white-space: pre-wrap;
+  font: inherit;
+}
+
+.input-wide {
+  width: 100%;
+  max-width: 640px;
+}
+
+.input-narrow {
+  width: 120px;
+}
+
+.card label:not(.chip):not(.field) {
+  display: block;
+  font-weight: var(--weight-medium);
+  margin-bottom: var(--space-1);
 }

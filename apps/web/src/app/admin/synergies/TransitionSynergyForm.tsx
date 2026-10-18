@@ -12,7 +12,7 @@ function SubmitButton() {
   const { t } = useI18n();
   const { pending } = useFormStatus();
   return (
-    <button type="submit" disabled={pending} className="btn-primary">
+    <button type="submit" disabled={pending} className="btn btn-primary">
       {pending ? t('admin.synergies.saving') : t('admin.synergies.apply')}
     </button>
   );
@@ -36,7 +36,7 @@ export function TransitionSynergyForm({ tenantId, synergyId, currentStatus }: Pr
   const [state, formAction] = useFormState(transitionSynergyAction, INITIAL);
   const nextStates = ALLOWED[currentStatus];
   return (
-    <form action={formAction} className="transition-form">
+    <form action={formAction} className="form-row">
       <input type="hidden" name="tenantId" value={tenantId} />
       <input type="hidden" name="synergyId" value={synergyId} />
       <label htmlFor={`next-${synergyId}`}>{t('admin.synergies.transition')}</label>
@@ -55,19 +55,10 @@ export function TransitionSynergyForm({ tenantId, synergyId, currentStatus }: Pr
       </select>
       <SubmitButton />
       {state.message ? (
-        <span style={{ marginLeft: 12 }} aria-live="polite">
+        <span className="status-msg" aria-live="polite">
           {state.ok ? '✅' : '⚠️'} {state.message}
         </span>
       ) : null}
-      <style>{`
-        .transition-form { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-        .transition-form label { font-size: 12px; color: var(--color-muted); }
-        .transition-form select { padding: 6px 8px; border: 1px solid var(--color-border);
-          border-radius: 6px; font: inherit; }
-        .btn-primary { padding: 6px 12px; background: var(--color-brand-navy);
-          color: var(--color-brand-off-white); border: 0; border-radius: 6px;
-          font: inherit; cursor: pointer; }
-      `}</style>
     </form>
   );
 }

@@ -5,36 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>EvolAI / AI Audit Studio \u2014 Contracts Map</title>
   <meta name="description" content="The public contract surface of `@auditai/contracts`: 14 entity modules, 120+ tests, branded UUIDs, privacy-by-construction. The single source of truth for every other package in the monorepo." />
-  <meta name="theme-color" content="#172B3A" />
+  <meta name="theme-color" content="var(--color-navy)" />
   <link rel="icon" type="image/svg+xml" href="../brand/favicon.svg" />
-  <style>
+  <link rel="stylesheet" href="../brand/tokens.css" />
+    <style>
     :root {
-      --navy: #172b3a;
-      --teal: #19a999;
-      --supporting: #4a7fe8;
-      --off-white: #fbf7ee;
-      --card: #ffffff;
-      --border: #d8d4c8;
-      --muted: #6a6a6a;
+      --navy: var(--color-navy);
+      --teal: var(--color-teal);
+      --supporting: var(--color-blue);
+      --off-white: var(--color-off-white);
+      --card: var(--color-white);
+      --border: var(--color-line);
+      --muted: var(--color-slate);
     }
     * { box-sizing: border-box; }
-    body { font-family: Inter, system-ui, sans-serif; margin: 0; color: var(--navy); background: var(--off-white); line-height: 1.55; }
+    body { font-family: var(--font-sans); margin: 0; color: var(--navy); background: var(--off-white); line-height: 1.55; }
     header { background: var(--navy); color: var(--off-white); padding: 32px 24px; }
-    header h1 { margin: 0; font-size: 28px; }
-    header p { margin: 8px 0 0; color: rgba(251, 247, 238, 0.85); font-size: 14px; }
+    header h1 { margin: 0; font-size: var(--text-xl); }
+    header p { margin: 8px 0 0; color: rgba(251, 247, 238, 0.85); font-size: var(--text-sm); }
     main { max-width: 960px; margin: 32px auto; padding: 0 24px; }
     section { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; margin: 14px 0; }
-    h2 { margin: 0 0 8px; font-size: 18px; }
-    h3 { margin: 0 0 6px; font-size: 15px; }
-    code { background: #f5f1e6; padding: 1px 6px; border-radius: 4px; font-size: 12px; }
+    h2 { margin: 0 0 8px; font-size: var(--text-lg); }
+    h3 { margin: 0 0 6px; font-size: var(--text-sm); }
+    code { background: var(--color-off-white); padding: 1px 6px; border-radius: 4px; font-size: var(--text-xs); }
     .row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 12px 0; }
-    .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: var(--text-xs); font-weight: 600; text-transform: uppercase; }
     .pill.tortoise { background: var(--supporting); color: var(--off-white); }
     .pill.fox { background: var(--teal); color: var(--off-white); }
-    .pill.owl { background: #6cc06c; color: #0b1c2c; }
+    .pill.owl { background: var(--color-teal); color: var(--color-navy); }
     a.btn { display: inline-block; padding: 10px 18px; border-radius: 8px; background: var(--navy); color: var(--off-white); text-decoration: none; font-weight: 500; margin-right: 8px; }
     a.ghost { display: inline-block; padding: 8px 14px; border-radius: 6px; background: transparent; color: var(--navy); border: 1px solid var(--border); text-decoration: none; margin-right: 6px; }
-    footer { margin: 40px 0 24px; text-align: center; color: var(--muted); font-size: 12px; }
+    footer { margin: 40px 0 24px; text-align: center; color: var(--muted); font-size: var(--text-xs); }
   </style>
 </head>
 <body>
@@ -98,7 +99,7 @@
       <span class="pill fox">fox</span>
       <span class="pill owl">owl</span>
     </p>
-    <p style="font-size: 13px; color: var(--muted);">
+    <p style="font-size: var(--text-sm); color: var(--muted);">
       Cut points: \u2264 50 tortoise, 51\u201380 fox, \u2265 81 owl. Tie-break (team rollup): fox > owl > tortoise.
     </p>
   </section>

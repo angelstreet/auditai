@@ -23,17 +23,8 @@ export default function AboutPage() {
   return (
     <section aria-labelledby="about-title">
       <Logo size="hero" />
-      <p
-        style={{
-          marginTop: 'var(--space-3)',
-          color: 'var(--color-brand-supporting)',
-          fontSize: '0.95rem',
-          letterSpacing: '0.02em',
-        }}
-      >
-        {t('common.tagline')}
-      </p>
-      <h1 id="about-title" style={{ marginTop: 'var(--space-5)' }}>
+      <p className="tagline">{t('common.tagline')}</p>
+      <h1 id="about-title" className="section-title">
         {t('about.title')}
       </h1>
       <p>{t('about.body')}</p>

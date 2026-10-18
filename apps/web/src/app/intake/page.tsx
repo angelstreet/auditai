@@ -1,4 +1,3 @@
-import { Logo } from '@/components/Logo';
 import { listTenantIds, tenantLabel } from '@/lib/adminData';
 import { getLatestSponsorBrief } from '@/lib/sponsorBriefData';
 import { IntakeForm } from './IntakeForm';
@@ -34,25 +33,23 @@ export default async function IntakePage({ searchParams }: PageProps) {
   const current = (tenants.find((t) => t === requested) ?? tenants[0]) as TenantId | undefined;
   if (!current) {
     return (
-      <main className="container">
-        <Logo />
+      <div className="wide">
         <p>{t('common.noTenants', { command: 'pnpm local:reset' })}</p>
-      </main>
+      </div>
     );
   }
   const [label, latest] = await Promise.all([tenantLabel(current), getLatestSponsorBrief(current)]);
   return (
-    <main className="container">
-      <Logo />
-      <h1 style={{ marginTop: 'var(--space-4)' }}>{t('intake.title')}</h1>
+    <div className="wide">
+      <h1>{t('intake.title')}</h1>
       <p className="muted">{t('intake.intro', { label })}</p>
-      <div className="grid">
+      <div className="split">
         <IntakeForm tenantId={current} />
-        <aside className="summary">
+        <aside className="card summary">
           <h3>{t('intake.summary')}</h3>
           <p className="muted">{t('intake.summaryIntro')}</p>
           {latest ? (
-            <dl>
+            <dl className="dl-grid">
               <dt>{t('intake.tenant')}</dt>
               <dd>{label}</dd>
               <dt>{t('intake.topPriority')}</dt>
@@ -91,7 +88,7 @@ export default async function IntakePage({ searchParams }: PageProps) {
           ) : (
             <p className="muted">{t('intake.none')}</p>
           )}
-          <p className="muted" style={{ marginTop: 16 }}>
+          <p className="muted">
             {t('intake.statusPills', {
               statuses: Object.keys(OPPORTUNITY_STATUS_LABELS)
                 .map((k) => t(`status.${k as keyof typeof OPPORTUNITY_STATUS_LABELS}`))
@@ -100,16 +97,6 @@ export default async function IntakePage({ searchParams }: PageProps) {
           </p>
         </aside>
       </div>
-      <style>{`
-        .grid { display: grid; grid-template-columns: 1fr 320px; gap: 24px; align-items: start; }
-        .summary { background: var(--color-card); border: 1px solid var(--color-border);
-          border-radius: 8px; padding: 18px 20px; position: sticky; top: 16px; }
-        .summary h3 { margin: 0 0 8px; font-size: 15px; }
-        .summary dl { display: grid; grid-template-columns: 110px 1fr; row-gap: 6px; column-gap: 12px; margin: 0; }
-        .summary dt { color: var(--color-muted); font-size: 12px; }
-        .summary dd { margin: 0; font-size: 13px; font-weight: 500; }
-        @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
-      `}</style>
-    </main>
+    </div>
   );
 }

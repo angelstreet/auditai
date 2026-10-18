@@ -40,7 +40,11 @@ if [[ -z "${M15_DEPLOY_TOKEN:-}" ]]; then
   exit 4
 fi
 
-cp "${SRC}" "${STAGE_DIR}/index.html"
+# The page links ../brand/tokens.css (shared design tokens, ADR 0025); the staged site is
+# self-contained, so ship the tokens next to it and point the link there.
+mkdir -p "${STAGE_DIR}/brand"
+cp "${REPO_ROOT}/landing/brand/tokens.css" "${STAGE_DIR}/brand/tokens.css"
+sed 's#href="../brand/tokens.css"#href="./brand/tokens.css"#' "${SRC}" > "${STAGE_DIR}/index.html"
 
 # The token travels in the environment of the child process only.
 M15_DEPLOY_TOKEN="${M15_DEPLOY_TOKEN}" mavis-website_deploy \

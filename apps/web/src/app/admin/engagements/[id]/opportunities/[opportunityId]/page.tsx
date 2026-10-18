@@ -1,6 +1,5 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { Logo } from '@/components/Logo';
 import { enumLabel, getT } from '@/lib/i18n';
 import { aroundLink } from '@/lib/richText';
 import { formatDate, formatNumber } from '@auditai/i18n';
@@ -35,8 +34,7 @@ export default async function OpportunityDetailPage({ params, searchParams }: Pa
   const tenants = await sessionTenantIds();
   if (tenants.length === 0) {
     return (
-      <section aria-labelledby="empty-title" className="container admin">
-        <Logo />
+      <section aria-labelledby="empty-title" className="wide admin">
         <h1 id="empty-title">{t('admin.common.noTenantsTitle')}</h1>
       </section>
     );
@@ -64,8 +62,7 @@ export default async function OpportunityDetailPage({ params, searchParams }: Pa
       t('admin.oppDetail.notFoundBody', { ...vars, id: params.opportunityId, tenant: tenantName }),
     );
     return (
-      <section aria-labelledby="missing-title" className="container admin">
-        <Logo />
+      <section aria-labelledby="missing-title" className="wide admin">
         <h1 id="missing-title">{t('admin.oppDetail.notFound')}</h1>
         <p>
           {notFoundBefore}
@@ -81,11 +78,8 @@ export default async function OpportunityDetailPage({ params, searchParams }: Pa
   const next = nextOpportunityStatuses(opp.status);
 
   return (
-    <section aria-labelledby="opp-detail-title" className="container admin">
-      <Logo />
-      <h1 id="opp-detail-title" style={{ marginTop: 'var(--space-4)' }}>
-        {opp.title}
-      </h1>
+    <section aria-labelledby="opp-detail-title" className="wide admin">
+      <h1 id="opp-detail-title">{opp.title}</h1>
       <p className="muted">
         {t('admin.oppDetail.meta', {
           org: label?.organisation ?? params.id,
@@ -109,23 +103,14 @@ export default async function OpportunityDetailPage({ params, searchParams }: Pa
         </Link>
       </p>
 
-      <h2 style={{ marginTop: 'var(--space-5)' }}>{t('admin.oppDetail.description')}</h2>
+      <h2 className="section-title">{t('admin.oppDetail.description')}</h2>
       {opp.description ? (
-        <pre
-          style={{
-            whiteSpace: 'pre-wrap',
-            background: 'var(--color-card)',
-            padding: 'var(--space-3)',
-            borderRadius: 'var(--space-2)',
-          }}
-        >
-          {opp.description}
-        </pre>
+        <pre className="card prewrap">{opp.description}</pre>
       ) : (
         <p className="muted">{t('admin.oppDetail.noDescription')}</p>
       )}
 
-      <h2 style={{ marginTop: 'var(--space-5)' }}>{t('admin.oppDetail.metadata')}</h2>
+      <h2 className="section-title">{t('admin.oppDetail.metadata')}</h2>
       <ul>
         <li>
           {t('admin.oppDetail.axis', {
@@ -143,7 +128,7 @@ export default async function OpportunityDetailPage({ params, searchParams }: Pa
         <li>{t('admin.oppDetail.archivedAt', { when: formatDateTime(opp.archivedAt) })}</li>
       </ul>
 
-      <h2 style={{ marginTop: 'var(--space-5)' }}>{t('admin.oppDetail.transition')}</h2>
+      <h2 className="section-title">{t('admin.oppDetail.transition')}</h2>
       {next.length === 0 ? (
         <p className="muted">
           {t('admin.oppDetail.noTransition', { status: t(`status.${opp.status}`) })}
@@ -157,9 +142,7 @@ export default async function OpportunityDetailPage({ params, searchParams }: Pa
         />
       )}
 
-      <h2 style={{ marginTop: 'var(--space-5)' }}>
-        {t('admin.analysis.auditTrail', { n: auditLog.length })}
-      </h2>
+      <h2 className="section-title">{t('admin.analysis.auditTrail', { n: auditLog.length })}</h2>
       {auditLog.length === 0 ? (
         <p className="muted">{t('admin.analysis.noAudit')}</p>
       ) : (

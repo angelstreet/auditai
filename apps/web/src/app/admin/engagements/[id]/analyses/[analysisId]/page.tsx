@@ -1,6 +1,5 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { Logo } from '@/components/Logo';
 import { enumLabel, getT } from '@/lib/i18n';
 import { formatDate } from '@auditai/i18n';
 
@@ -108,8 +107,7 @@ export default async function AnalysisDetailPage({ params, searchParams }: PageP
   const tenants = await sessionTenantIds();
   if (tenants.length === 0) {
     return (
-      <section aria-labelledby="empty-title" className="container admin">
-        <Logo />
+      <section aria-labelledby="empty-title" className="wide admin">
         <h1 id="empty-title">{t('admin.common.noTenantsTitle')}</h1>
       </section>
     );
@@ -133,8 +131,7 @@ export default async function AnalysisDetailPage({ params, searchParams }: PageP
 
   if (!detail) {
     return (
-      <section aria-labelledby="missing-title" className="container admin">
-        <Logo />
+      <section aria-labelledby="missing-title" className="wide admin">
         <h1 id="missing-title">{t('admin.analysis.notFound')}</h1>
         <p>
           {t('admin.analysis.notFoundBody', {
@@ -155,9 +152,8 @@ export default async function AnalysisDetailPage({ params, searchParams }: PageP
   const prompts = asPrompts(detail.payload);
 
   return (
-    <section aria-labelledby="detail-title" className="container admin">
-      <Logo />
-      <h1 id="detail-title" style={{ marginTop: 'var(--space-4)' }}>
+    <section aria-labelledby="detail-title" className="wide admin">
+      <h1 id="detail-title">
         {t('admin.analysis.title', { pseudonym: detail.respondentPseudonym })}
       </h1>
       <p className="muted">
@@ -174,9 +170,7 @@ export default async function AnalysisDetailPage({ params, searchParams }: PageP
         </Link>
       </p>
 
-      <h2 style={{ marginTop: 'var(--space-5)' }}>
-        {t('admin.analysis.themes', { n: themes.length })}
-      </h2>
+      <h2 className="section-title">{t('admin.analysis.themes', { n: themes.length })}</h2>
       {themes.length === 0 ? (
         <p className="muted">{t('admin.analysis.noThemes')}</p>
       ) : (
@@ -194,7 +188,7 @@ export default async function AnalysisDetailPage({ params, searchParams }: PageP
         </ul>
       )}
 
-      <h2 style={{ marginTop: 'var(--space-5)' }}>
+      <h2 className="section-title">
         {t('admin.analysis.contradictions', { n: contradictions.length })}
       </h2>
       {contradictions.length === 0 ? (
@@ -209,9 +203,7 @@ export default async function AnalysisDetailPage({ params, searchParams }: PageP
         </ul>
       )}
 
-      <h2 style={{ marginTop: 'var(--space-5)' }}>
-        {t('admin.analysis.prompts', { n: prompts.length })}
-      </h2>
+      <h2 className="section-title">{t('admin.analysis.prompts', { n: prompts.length })}</h2>
       {prompts.length === 0 ? (
         <p className="muted">{t('admin.analysis.noPrompts')}</p>
       ) : (
@@ -226,7 +218,7 @@ export default async function AnalysisDetailPage({ params, searchParams }: PageP
         </ul>
       )}
 
-      <h2 style={{ marginTop: 'var(--space-5)' }}>
+      <h2 className="section-title">
         {t('admin.analysis.evidence', { n: detail.evidence.length })}
       </h2>
       <p className="muted">{t('admin.analysis.evidenceNote')}</p>
@@ -257,7 +249,7 @@ export default async function AnalysisDetailPage({ params, searchParams }: PageP
         </table>
       )}
 
-      <h2 style={{ marginTop: 'var(--space-5)' }}>{t('admin.analysis.approval')}</h2>
+      <h2 className="section-title">{t('admin.analysis.approval')}</h2>
       {detail.approvedAt ? (
         <p>
           {t('admin.analysis.approvedAt', {
@@ -274,9 +266,7 @@ export default async function AnalysisDetailPage({ params, searchParams }: PageP
         <ApproveForm tenantId={tenantId} analysisId={analysisId} />
       )}
 
-      <h2 style={{ marginTop: 'var(--space-5)' }}>
-        {t('admin.analysis.auditTrail', { n: auditLog.length })}
-      </h2>
+      <h2 className="section-title">{t('admin.analysis.auditTrail', { n: auditLog.length })}</h2>
       {auditLog.length === 0 ? (
         <p className="muted">{t('admin.analysis.noAudit')}</p>
       ) : (

@@ -57,6 +57,9 @@ jobs:
       - name: Lint
         run: pnpm lint
 
+      - name: Style guard (design tokens, ADR 0025)
+        run: pnpm style-guard
+
       - name: Typecheck
         run: pnpm typecheck
 

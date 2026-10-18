@@ -30,8 +30,7 @@ function SubmitButton({ value, label }: { value: OpportunityStatus; label: strin
       name="to"
       value={value}
       disabled={pending}
-      className="btn-primary"
-      style={{ marginRight: 8 }}
+      className="btn btn-primary btn-sm"
     >
       {pending ? t('admin.oppDetail.updating') : label}
     </button>

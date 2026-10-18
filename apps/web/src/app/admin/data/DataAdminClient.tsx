@@ -17,11 +17,15 @@ const KINDS = [
   'audit_log',
 ] as const;
 
-function Submit({ label }: { label: string }) {
+function Submit({ label, danger = false }: { label: string; danger?: boolean }) {
   const { t } = useI18n();
   const { pending } = useFormStatus();
   return (
-    <button type="submit" disabled={pending} className="btn-primary">
+    <button
+      type="submit"
+      disabled={pending}
+      className={danger ? 'btn btn-danger' : 'btn btn-primary'}
+    >
       {pending ? t('admin.data.working') : label}
     </button>
   );
@@ -35,9 +39,9 @@ export function ExportForm({ tenantId }: Props) {
   const { t } = useI18n();
   const [state, formAction] = useFormState(triggerExportAction, INITIAL);
   return (
-    <form action={formAction} className="data-form">
+    <form action={formAction} className="form-row">
       <input type="hidden" name="tenantId" value={tenantId} />
-      <label>
+      <label className="field">
         {t('admin.data.exportKind')}
         <select name="kind" defaultValue="opportunities" required>
           {KINDS.map((k) => (
@@ -49,7 +53,7 @@ export function ExportForm({ tenantId }: Props) {
       </label>
       <Submit label={t('admin.data.runExport')} />
       {state.message ? (
-        <span style={{ marginLeft: 12 }} aria-live="polite">
+        <span className="status-msg" aria-live="polite">
           {state.ok ? '\u2705' : '\u26a0\ufe0f'} {state.message}
         </span>
       ) : null}
@@ -59,16 +63,6 @@ export function ExportForm({ tenantId }: Props) {
           {state.csv.body.length > 1200 ? '\n\u2026' : ''}
         </pre>
       ) : null}
-      <style>{`
-        .btn-primary { padding: 6px 12px; background: var(--color-brand-navy);
-          color: var(--color-brand-off-white); border: 0; border-radius: 6px;
-          font: inherit; cursor: pointer; }
-        select { padding: 6px 8px; border: 1px solid var(--color-border); border-radius: 6px;
-          font: inherit; }
-        .csv-preview { background: var(--color-bg); border: 1px solid var(--color-border);
-          border-radius: 6px; padding: 10px; max-width: 720px; max-height: 320px;
-          overflow: auto; font-family: var(--font-mono, monospace); font-size: 11px; margin-top: 8px; }
-      `}</style>
     </form>
   );
 }
@@ -77,9 +71,9 @@ export function DeleteForm({ tenantId }: Props) {
   const { t } = useI18n();
   const [state, formAction] = useFormState(triggerDeletePseudonymAction, INITIAL);
   return (
-    <form action={formAction} className="data-form">
+    <form action={formAction} className="form-row">
       <input type="hidden" name="tenantId" value={tenantId} />
-      <label>
+      <label className="field">
         {t('admin.data.pseudonym')}
         <input
           name="respondentPseudonym"
@@ -89,18 +83,12 @@ export function DeleteForm({ tenantId }: Props) {
           placeholder={t('admin.data.pseudonymPlaceholder')}
         />
       </label>
-      <Submit label={t('admin.data.erase')} />
+      <Submit label={t('admin.data.erase')} danger />
       {state.message ? (
-        <span style={{ marginLeft: 12 }} aria-live="polite">
+        <span className="status-msg" aria-live="polite">
           {state.ok ? '\u2705' : '\u26a0\ufe0f'} {state.message}
         </span>
       ) : null}
-      <style>{`
-        .btn-primary { padding: 6px 12px; background: #b03a2e; color: var(--color-brand-off-white);
-          border: 0; border-radius: 6px; font: inherit; cursor: pointer; }
-        input[type=text] { padding: 6px 8px; border: 1px solid var(--color-border); border-radius: 6px;
-          font: inherit; min-width: 0; width: 100%; max-width: 320px; }
-      `}</style>
     </form>
   );
 }
