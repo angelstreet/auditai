@@ -50,20 +50,21 @@ deploy script only works inside its original environment (ADR 0022).
 
 ## History of the follow-up work (all merged to main)
 
-| Task   | PR           | Result                                                                                                                                                                                  |
-| ------ | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| M1-M15 | 1-23         | Original build by a MiniMax session: schema + RLS, survey, auditor review, opportunities, quiz and badges, synergies, retention/export/deletion, Docker, coverage gate (ADRs 0001-0019) |
-| A      | 26 (+27, 28) | Auditor login and session, tenant taken from the session, real actor in the audit trail (ADR 0023); CI and smoke repairs                                                                |
-| B      | 25           | Real pseudonym erasure across tables, scheduled retention, CSV formula-injection fix, parameterised tenant setting, production password guard (ADR 0030)                                |
-| C      | 29           | French and English across the app (ADR 0024)                                                                                                                                            |
-| D      | 24           | Coverage gate, manual e2e workflow, docs hygiene                                                                                                                                        |
-| E      | 30, 31       | Respondent UX: 7 taps instead of 13, one language, team status on return; design tokens and style guard; `docs/UX_AUDIT.md` (ADR 0025)                                                  |
-| F      | 32           | Rename to EvolAI; internal DB identifiers `auditai_app` / `auditai` kept on purpose (ADR 0026)                                                                                          |
-| G      | 33           | One self-hosted font (Inter), deterministic Playwright, e2e in CI, neutral summary wording (ADR 0027)                                                                                   |
-| H      | 34           | Model-backed synthesis behind an allowlisted provider abstraction: redaction, injection suite, cost caps, citation checks, eval (ADR 0029)                                              |
-| I      | (6c7a69a)    | Accessibility gate (axe, keyboard), next-steps and contact block, French copy pass (ADR 0028)                                                                                           |
-| J      | 35           | ROADMAP truthful, unique ADR numbers, CODEOWNERS, real auditor ids in smokes (ADR 0031)                                                                                                 |
-| K      | (this PR)    | Production readiness: no public credentials, auditor CLI, login lockout and headers, plain public wording, region and TLS, health, retention cron, runbook (ADR 0032)                   |
+| Task   | PR            | Result                                                                                                                                                                                  |
+| ------ | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| M1-M15 | 1-23          | Original build by a MiniMax session: schema + RLS, survey, auditor review, opportunities, quiz and badges, synergies, retention/export/deletion, Docker, coverage gate (ADRs 0001-0019) |
+| A      | 26 (+27, 28)  | Auditor login and session, tenant taken from the session, real actor in the audit trail (ADR 0023); CI and smoke repairs                                                                |
+| B      | 25            | Real pseudonym erasure across tables, scheduled retention, CSV formula-injection fix, parameterised tenant setting, production password guard (ADR 0030)                                |
+| C      | 29            | French and English across the app (ADR 0024)                                                                                                                                            |
+| D      | 24            | Coverage gate, manual e2e workflow, docs hygiene                                                                                                                                        |
+| E      | 30, 31        | Respondent UX: 7 taps instead of 13, one language, team status on return; design tokens and style guard; `docs/UX_AUDIT.md` (ADR 0025)                                                  |
+| F      | 32            | Rename to EvolAI; internal DB identifiers `auditai_app` / `auditai` kept on purpose (ADR 0026)                                                                                          |
+| G      | 33            | One self-hosted font (Inter), deterministic Playwright, e2e in CI, neutral summary wording (ADR 0027)                                                                                   |
+| H      | 34            | Model-backed synthesis behind an allowlisted provider abstraction: redaction, injection suite, cost caps, citation checks, eval (ADR 0029)                                              |
+| I      | (6c7a69a)     | Accessibility gate (axe, keyboard), next-steps and contact block, French copy pass (ADR 0028)                                                                                           |
+| J      | 35            | ROADMAP truthful, unique ADR numbers, CODEOWNERS, real auditor ids in smokes (ADR 0031)                                                                                                 |
+| K      | (this PR)     | Production readiness: no public credentials, auditor CLI, login lockout and headers, plain public wording, region and TLS, health, retention cron, runbook (ADR 0032)                   |
+| P      | (see git log) | "View as" for the platform owner (signed in the session cookie, read only, every request audited) and the team referent space `/client`; `pnpm seed:client` (ADR 0035)                  |
 
 | L | 38, 39, 41-45 | UI glow-up on MUI: theme with a lifted dark palette, header with identity menu, footer, welcome, login, respondent flow, admin tabs and danger flow, intake; style-guard rules 7-11; header and copy-length Playwright checks (ADR 0034, `docs/UI_RULES.md`, `docs/UI_GLOWUP_PLAN.md`) |
 
@@ -102,6 +103,11 @@ Full detail in ADR 0029 section "Owner steps". Short version:
    Redaction terms per tenant go in the table `ai_redaction_terms` (no admin screen yet).
 
 ## Open and deferred
+
+- TASK-P (ADR 0035): apply migration **0019** to Neon (forward only, audit verbs only), then run `pnpm seed:client`
+  once for the first client with the names given in the brief (RUNBOOK "First client"), then sign out and in.
+  The referent has a `.invalid` placeholder and no password until the owner supplies a real address.
+  Note: `/intake` and `/quiz` still accept writes without a session (see item 1); they now refuse during a view-as.
 
 0. Invitations admin screen (TASK-N) lives in new files under `apps/web/src/app/admin/invitations/`. It is reachable by URL; TASK-L should add a header/nav link and fold it into the restyled admin shell (no existing admin file was touched). Migration 0018 only; no new migration in this step.
 

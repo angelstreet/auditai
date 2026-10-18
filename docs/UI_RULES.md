@@ -128,3 +128,11 @@ contrast in code.
   document.
 - A global skill `web-ui-ux-rules` carries these rules for every project; this file overrides it where it is
   more specific.
+
+## 14. "View as" banner (impersonation is always visible)
+
+While the owner views the app as someone else (ADR 0035): a sticky one-line banner directly under the header, on
+every page, with the eye icon, the sentence "You are viewing <organisation> as <name> (<role>). Read only." and one
+outlined "Back to my view" button. Page surface with a warning-colour bottom border (state, not decoration). The
+avatar shows the persona's initials, the organisation is stated above the page title, and actions that would write
+show the read-only message instead. Never hide the banner on phones; it wraps rather than truncates.
