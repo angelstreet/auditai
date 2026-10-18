@@ -101,3 +101,83 @@ test.describe('identity after sign-in (§11)', () => {
     await expect(page.getByTestId('sign-in-button')).toBeVisible();
   });
 });
+
+// One header row, whatever the language, theme or session (UI_RULES §5, §6, §11): every control
+// shares the row's vertical centre and the bar never grows past one 64 px row plus its hairline.
+const headerRow = async (page: Page) =>
+  page.getByRole('banner').evaluate((header) => {
+    const bar = header.getBoundingClientRect();
+    const controls = [...header.querySelectorAll('a, button')]
+      .map((el) => el.getBoundingClientRect())
+      .filter((r) => r.width > 0 && r.height > 0)
+      .map((r) => Math.round(r.top + r.height / 2));
+    return { height: Math.round(bar.height), centres: [...new Set(controls)] };
+  });
+
+test.describe('header bounding box across locales and themes', () => {
+  for (const signedIn of [false, true]) {
+    test(`one row, ${signedIn ? 'signed in' : 'signed out'}`, async ({ page, baseURL }) => {
+      if (signedIn) await signInAsAuditorA(page);
+      let reference: number | null = null;
+      for (const locale of ['fr', 'en'] as const) {
+        for (const theme of ['light', 'dark'] as const) {
+          await page.context().addCookies([
+            { name: 'evolai_locale', value: locale, url: baseURL as string },
+            { name: 'evolai_theme', value: theme, url: baseURL as string },
+          ]);
+          await page.goto(signedIn ? '/admin/engagements' : '/welcome');
+          const row = await headerRow(page);
+          const label = `${locale} ${theme}`;
+          expect(row.height, label).toBeLessThanOrEqual(65);
+          const spread = Math.max(...row.centres) - Math.min(...row.centres);
+          expect(spread, `${label}: controls on one line`).toBeLessThanOrEqual(2);
+          reference ??= row.height;
+          expect(row.height, `${label}: same height as fr light`).toBe(reference);
+        }
+      }
+    });
+  }
+});
+
+const linesOf = (el: Element): number => {
+  const h = el.getBoundingClientRect().height;
+  return Math.round(h / parseFloat(getComputedStyle(el).lineHeight));
+};
+
+test.describe('hierarchy and copy length (§13)', () => {
+  for (const locale of ['fr', 'en'] as const) {
+    test(`welcome headline and step cards, ${locale}`, async ({ page, baseURL }) => {
+      await page
+        .context()
+        .addCookies([{ name: 'evolai_locale', value: locale, url: baseURL as string }]);
+      await page.goto('/welcome');
+      const width = page.viewportSize()?.width ?? 0;
+      if (width >= 1024) {
+        expect(await page.locator('h1').evaluate(linesOf), 'headline lines').toBeLessThanOrEqual(2);
+      }
+      const bodies = page.locator('ol li p');
+      const n = await bodies.count();
+      expect(n).toBe(4);
+      for (let i = 0; i < n; i += 1) {
+        expect(await bodies.nth(i).evaluate(linesOf), `card ${i + 1} body`).toBe(1);
+      }
+      // No shouting eyebrow pill in capitals above the headline.
+      const caps = await page
+        .locator('main *')
+        .evaluateAll(
+          (els) => els.filter((e) => getComputedStyle(e).textTransform === 'uppercase').length,
+        );
+      expect(caps).toBe(0);
+    });
+  }
+
+  test('the intake save button sits at least 24px under the last card', async ({ page }) => {
+    await signInAsAuditorA(page);
+    await page.goto('/intake');
+    const button = await page.locator('form button[type=submit]').boundingBox();
+    const cards = page.locator('form > .MuiPaper-root');
+    const last = await cards.nth((await cards.count()) - 1).boundingBox();
+    expect(button && last).toBeTruthy();
+    expect((button?.y ?? 0) - ((last?.y ?? 0) + (last?.height ?? 0))).toBeGreaterThanOrEqual(24);
+  });
+});
