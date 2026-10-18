@@ -62,5 +62,10 @@ was nested inside the narrow layout `main`.
   one place; the guard rejects one-offs.
 - The mascot artwork keeps its own shading colours (exempt). Its sizes still vary by context
   (40/64/120px), which is deliberate.
-- Owner decisions pending: the three derived tones above, and whether teal text on landing pages
-  should move to `--color-teal-ink` everywhere (done for links on `landing/index.html` only).
+- Owner decisions (2026-10-18):
+  - **Approved**: the three derived tones `teal-ink #0f7a6e`, `border-strong #8796a5` and `danger #b42318`.
+    They stay outside the brand kit and are kept for their AA contrast ratios.
+  - **Privacy line kept as is**: "Your company sees team totals, not your answers." (no
+    "unless you are told otherwise" addition).
+  - Still open: whether teal text on landing pages should move to `--color-teal-ink` everywhere (done
+    for links on `landing/index.html` only).

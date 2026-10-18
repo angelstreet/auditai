@@ -86,11 +86,10 @@ Source: `packages/ui/src/tokens.css` (landing copy: `landing/brand/tokens.css`).
 
 ## Owner decisions needed
 
-1. **Privacy line wording.** "Your company sees team totals, not your answers." This is true by
-   default. The privacy notice also says a referent can be **granted** access to individual answers.
-   Keep the short line as is, or add "unless you are told otherwise"?
-2. **Derived colours**: `teal-ink #0f7a6e`, `border-strong #8796a5` and `danger #b42318` are not in
-   the brand kit. Approve them, or supply brand-approved equivalents that keep the AA ratios.
+1. **Privacy line wording.** Decided 2026-10-18: keep "Your company sees team totals, not your
+   answers." as is, without "unless you are told otherwise".
+2. **Derived colours**: `teal-ink #0f7a6e`, `border-strong #8796a5` and `danger #b42318`. Approved
+   2026-10-18; they stay as tokens (see ADR 0025).
 3. **Mascot names and descriptors** (Tortue/Renard/Chouette, now shorter and plainer) and the French
    tagline remain drafts for owner review (see ADR 0024).
 4. **Survey and quiz wording** (FR and EN) was rewritten for plain language; please review the French
