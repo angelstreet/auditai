@@ -53,7 +53,7 @@ const main = async () => {
   // 1. Run the AI worker so the analyses table is populated for tenant A.
   //    We shell out to the AI package's smoke; it is idempotent and prints the result.
   const { spawnSync } = await import('node:child_process');
-  const workerRun = spawnSync('pnpm', ['--filter', '@auditai/ai', 'run', 'smoke'], {
+  const workerRun = spawnSync('pnpm', ['--filter', '@evolai/ai', 'run', 'smoke'], {
     env: { ...process.env, DATABASE_URL: databaseUrl },
     encoding: 'utf8',
   });

@@ -1,5 +1,5 @@
 import pg from 'pg';
-import type { MascotTier, TenantId } from '@auditai/contracts';
+import type { MascotTier, TenantId } from '@evolai/contracts';
 
 /**
  * Team badge rollup worker (M14 slice C, FR-08, PRD §6, §9, §15).

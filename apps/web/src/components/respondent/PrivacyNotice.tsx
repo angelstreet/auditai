@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import type { Translator } from '@auditai/i18n';
+import type { Translator } from '@evolai/i18n';
 
 /** One reassuring line; the detail is one tap away (PRD §5, §15). */
 export default function PrivacyNotice({ t }: { t: Translator }) {

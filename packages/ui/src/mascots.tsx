@@ -1,4 +1,4 @@
-import type { MascotTier } from '@auditai/contracts';
+import type { MascotTier } from '@evolai/contracts';
 
 /**
  * Inline SVG mascots (M14, PRD \u00a76, \u00a79, \u00a715).

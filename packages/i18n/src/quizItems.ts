@@ -2,7 +2,7 @@ import type { SupportedLocale } from './index.js';
 
 /**
  * Localised literacy-quiz copy, keyed by the stable question code and option value from
- * `@auditai/domain` (weights and scoring stay in the domain package; this is text only).
+ * `@evolai/domain` (weights and scoring stay in the domain package; this is text only).
  *
  * `QUIZ_ITEM_STATUS.fr` is `draft-fr`: the French wording is an unreviewed draft awaiting owner
  * review (ADR 0024, PRD item metadata locale).

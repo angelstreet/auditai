@@ -1,7 +1,7 @@
 'use client';
 
 import { useFormState, useFormStatus } from 'react-dom';
-import type { SynergyId, SynergyStatus, TenantId } from '@auditai/contracts';
+import type { SynergyId, SynergyStatus, TenantId } from '@evolai/contracts';
 import { useI18n } from '@/components/I18nProvider';
 import { enumLabelOf } from '@/lib/enumLabel';
 import { transitionSynergyAction, type SynergyTransitionState } from './actions';

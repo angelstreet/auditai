@@ -3,9 +3,9 @@ import { tenantLabel } from '@/lib/adminData';
 import { sessionTenantIds } from '@/lib/authServer';
 import { listSynergies } from '@/lib/synergyData';
 import { enumLabel, getT } from '@/lib/i18n';
-import { formatDate } from '@auditai/i18n';
+import { formatDate } from '@evolai/i18n';
 import { TransitionSynergyForm } from './TransitionSynergyForm';
-import type { TenantId } from '@auditai/contracts';
+import type { TenantId } from '@evolai/contracts';
 
 export const dynamic = 'force-dynamic';
 

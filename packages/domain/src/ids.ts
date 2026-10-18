@@ -23,7 +23,7 @@ import {
   type InvitationId,
   type SubmissionId,
   type AnswerId,
-} from '@auditai/contracts';
+} from '@evolai/contracts';
 
 /**
  * Domain-side helpers for working with branded IDs.
@@ -129,8 +129,8 @@ export const parseAnswerId: (v: string) => AnswerId = parseBranded(
 );
 
 /**
- * Re-exports so callers can import branded types from `@auditai/domain` without reaching into
- * `@auditai/contracts` for type-level details.
+ * Re-exports so callers can import branded types from `@evolai/domain` without reaching into
+ * `@evolai/contracts` for type-level details.
  */
 export type {
   TenantId,

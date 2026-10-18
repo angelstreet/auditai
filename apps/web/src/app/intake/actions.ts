@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { sponsorBriefWriteSchema, type TenantId } from '@auditai/contracts';
+import { sponsorBriefWriteSchema, type TenantId } from '@evolai/contracts';
 import { createSponsorBrief } from '@/lib/sponsorBriefData';
 import { getT } from '@/lib/i18n';
 

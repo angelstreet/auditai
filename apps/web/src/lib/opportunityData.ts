@@ -7,8 +7,8 @@ import type {
   OpportunityStatus,
   TenantId,
   UserId,
-} from '@auditai/contracts';
-import { opportunityStatusTransitionSchema } from '@auditai/contracts';
+} from '@evolai/contracts';
+import { opportunityStatusTransitionSchema } from '@evolai/contracts';
 import { withTenant } from './db';
 
 /**

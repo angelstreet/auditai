@@ -1,7 +1,7 @@
 'use client';
 
 import { useFormState, useFormStatus } from 'react-dom';
-import type { OpportunityId, OpportunityStatus, TenantId } from '@auditai/contracts';
+import type { OpportunityId, OpportunityStatus, TenantId } from '@evolai/contracts';
 import { useI18n } from '@/components/I18nProvider';
 import { transitionOpportunityAction, type TransitionActionState } from '../actions';
 

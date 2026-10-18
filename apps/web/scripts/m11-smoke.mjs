@@ -62,7 +62,7 @@ const spawnOk = (cmd, args, env) => {
 
 const main = async () => {
   // 1. AI worker populates the analyses table.
-  spawnOk('pnpm', ['--filter', '@auditai/ai', 'run', 'smoke'], {
+  spawnOk('pnpm', ['--filter', '@evolai/ai', 'run', 'smoke'], {
     ...process.env,
     DATABASE_URL: databaseUrl,
   });

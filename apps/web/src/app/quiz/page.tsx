@@ -1,9 +1,9 @@
 import { listTenantIds } from '@/lib/adminData';
-import { LITERACY_QUIZ } from '@auditai/domain';
+import { LITERACY_QUIZ } from '@evolai/domain';
 import { QuizForm } from './QuizForm';
 import { submitQuizAction } from './actions';
 import { getT } from '@/lib/i18n';
-import type { TenantId } from '@auditai/contracts';
+import type { TenantId } from '@evolai/contracts';
 
 export const dynamic = 'force-dynamic';
 

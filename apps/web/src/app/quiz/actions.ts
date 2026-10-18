@@ -8,8 +8,8 @@ import {
   type RespondentBadgeWrite,
   mascotTierForScore,
   type TenantId,
-} from '@auditai/contracts';
-import { computeQuizScore, isCompleteQuizSubmission, LITERACY_QUIZ } from '@auditai/domain';
+} from '@evolai/contracts';
+import { computeQuizScore, isCompleteQuizSubmission, LITERACY_QUIZ } from '@evolai/domain';
 import { writeRespondentBadge } from '@/lib/respondentBadgeData';
 import { getT } from '@/lib/i18n';
 import { verifyInviteToken } from '@/lib/invitationToken';

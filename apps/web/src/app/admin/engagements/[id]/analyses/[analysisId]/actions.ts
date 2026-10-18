@@ -12,7 +12,7 @@ import { revalidatePath } from 'next/cache';
 import { resolveActor } from '@/lib/authServer';
 import { approvalResultSchema, approveAnalysis, getAnalysis } from '@/lib/auditorData';
 import { getT } from '@/lib/i18n';
-import type { AnalysisId, TenantId } from '@auditai/contracts';
+import type { AnalysisId, TenantId } from '@evolai/contracts';
 
 export interface ApproveActionState {
   ok: boolean;

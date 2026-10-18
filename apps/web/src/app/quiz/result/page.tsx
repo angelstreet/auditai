@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { Mascot } from '@auditai/ui';
-import { mascotTierOrder, mascotTierSchema, type TenantId } from '@auditai/contracts';
+import { Mascot } from '@evolai/ui';
+import { mascotTierOrder, mascotTierSchema, type TenantId } from '@evolai/contracts';
 import { listTenantIds } from '@/lib/adminData';
 import { getCurrentBadgeForPseudonym } from '@/lib/respondentBadgeData';
 import { getT } from '@/lib/i18n';

@@ -1,13 +1,13 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import type { TenantId, UserId } from '@auditai/contracts';
-import { SESSION_COOKIE, verifySession, type SessionPayload } from './session';
+import type { TenantId, UserId } from '@evolai/contracts';
+import { readSessionCookie, verifySession, type SessionPayload } from './session';
 import { getT } from './i18n';
 import { allowedTenantIds, isTenantAllowed, pickTenant } from './tenantAccess';
 
 /** The verified session for this request, or null. */
 export const getSession = async (): Promise<SessionPayload | null> =>
-  verifySession(cookies().get(SESSION_COOKIE)?.value);
+  verifySession(readSessionCookie((n) => cookies().get(n)));
 
 /** Pages and actions under /admin: redirect to /login when there is no valid session. */
 export const requireSession = async (): Promise<SessionPayload> => {

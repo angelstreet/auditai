@@ -1,7 +1,7 @@
-# Contracts map (`@auditai/contracts`)
+# Contracts map (`@evolai/contracts`)
 
-> Top-level index for the public surface of `@auditai/contracts`.
-> Every other package (`@auditai/domain`, `@auditai/ai`, `@auditai/web`)
+> Top-level index for the public surface of `@evolai/contracts`.
+> Every other package (`@evolai/domain`, `@evolai/ai`, `@evolai/web`)
 > imports from here so the same validation logic lives in one place.
 
 ## How the public surface is composed
@@ -231,7 +231,7 @@ contracts/src/
 | `quizAnswerSchema`           | Zod object  | One `{questionCode, value}` pair (no free-text).                                                              |
 | `QuizAnswer`                 | TS type     | Inferred.                                                                                                     |
 | `mascotTierForScore(s)`      | helper      | Maps a `QuizScore` to a `MascotTier`. ≤50 tortoise, 51–80 fox, ≥81 owl.                                       |
-| `tierDescriptorFromType(t)`  | helper      | One-line EN description per tier (mirrors `@auditai/domain.tierDescriptor`).                                  |
+| `tierDescriptorFromType(t)`  | helper      | One-line EN description per tier (mirrors `@evolai/domain.tierDescriptor`).                                   |
 | `respondentBadgeSchema`      | Zod object  | Wire shape (tenant, pseudonym, engagement_id, quiz_score, mascot_tier, source_answers, is_current).           |
 | `RespondentBadge`            | TS type     | Inferred.                                                                                                     |
 | `respondentBadgeWriteSchema` | Zod object  | Write shape (no id / timestamps).                                                                             |

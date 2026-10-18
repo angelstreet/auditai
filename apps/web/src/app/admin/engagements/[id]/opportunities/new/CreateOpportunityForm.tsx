@@ -2,7 +2,7 @@
 
 import { useFormState, useFormStatus } from 'react-dom';
 import Link from 'next/link';
-import type { AnalysisId, EngagementId, TenantId } from '@auditai/contracts';
+import type { AnalysisId, EngagementId, TenantId } from '@evolai/contracts';
 import { useI18n } from '@/components/I18nProvider';
 import { enumLabelOf } from '@/lib/enumLabel';
 import { createOpportunityAction, type CreateOpportunityActionState } from '../actions';

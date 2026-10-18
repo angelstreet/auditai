@@ -245,7 +245,7 @@ const main = async () => {
   ok('seeded one current owl-tier badge mapped to the synthetic tenant team');
 
   // 6. Spawn the team-rollup smoke (CLI).
-  const trOut = spawnOk('pnpm', ['--filter', '@auditai/ai', 'run', 'team-rollup-smoke'], {
+  const trOut = spawnOk('pnpm', ['--filter', '@evolai/ai', 'run', 'team-rollup-smoke'], {
     ...process.env,
     DATABASE_URL: databaseUrl,
     SMOKE_TENANT_ID: tenantId,
@@ -285,7 +285,7 @@ const main = async () => {
 
   // 8. Re-run the rollup; the row is updated, not duplicated. The page
   //    should still show the same shape.
-  spawnOk('pnpm', ['--filter', '@auditai/ai', 'run', 'team-rollup-smoke'], {
+  spawnOk('pnpm', ['--filter', '@evolai/ai', 'run', 'team-rollup-smoke'], {
     ...process.env,
     DATABASE_URL: databaseUrl,
     SMOKE_TENANT_ID: tenantId,

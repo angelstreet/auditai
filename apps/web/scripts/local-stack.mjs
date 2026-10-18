@@ -2,7 +2,7 @@
 /**
  * Local dev stack runner (M7).
  *
- * Brings up the full auditai stack on a single machine so a contributor can `pnpm local:up`
+ * Brings up the full EvolAI stack on a single machine so a contributor can `pnpm local:up`
  * once and then exercise the employee survey, the admin page, the Postgres schema and the
  * isolation tests without any external infrastructure.
  *
@@ -15,9 +15,9 @@
  * the printed `READY postgres=...; web=...; admin=...` line to know when everything is up.
  *
  * Subcommands:
- *   local-stack up       \u2014 boot Postgres + Next.js, keep running, log to /tmp/auditai-local-*.log
+ *   local-stack up       \u2014 boot Postgres + Next.js, keep running, log to /tmp/evolai-local-*.log
  *   local-stack down     \u2014 stop everything (Postgres + Next.js) cleanly
- *   local-stack reset    \u2014 drop + recreate the auditai database, re-run migrations + seed
+ *   local-stack reset    \u2014 drop + recreate the evolai database, re-run migrations + seed
  *   local-stack status   \u2014 print current state, exit 0 if both are healthy, exit 1 otherwise
  *
  * Subcommands are also exposed via pnpm scripts in the root package.json: `pnpm local:up`,
@@ -41,13 +41,13 @@ const COMMAND = process.argv[2] ?? 'up';
 // both run from there, so this constant is the cwd for child processes.
 const APPS_WEB_DIR = join(__dirname, '..');
 const PROJECT_ROOT = join(APPS_WEB_DIR, '..', '..');
-const DATA_DIR = mkdtempSync(join(tmpdir(), 'auditai-pg-local-'));
+const DATA_DIR = mkdtempSync(join(tmpdir(), 'evolai-pg-local-'));
 const LOG_DIR = '/tmp';
-const PG_LOG = join(LOG_DIR, 'auditai-local-postgres.log');
-const WEB_LOG = join(LOG_DIR, 'auditai-local-web.log');
+const PG_LOG = join(LOG_DIR, 'evolai-local-postgres.log');
+const WEB_LOG = join(LOG_DIR, 'evolai-local-web.log');
 const PG_USER = 'auditai';
 const PG_PASSWORD = 'auditai';
-const PG_DATABASE = 'auditai_local';
+const PG_DATABASE = 'evolai_local';
 
 const env = (extra = {}) => ({
   ...process.env,
@@ -93,7 +93,7 @@ const ADMIN_PORT = await findFreePort(3102);
 
 // Persist the chosen ports so `local:status` (a separate invocation) can probe the right
 // address without depending on the auto-discovered port being the default.
-const STATE_PATH = '/tmp/auditai-local-stack.ports.json';
+const STATE_PATH = '/tmp/evolai-local-stack.ports.json';
 const writeState = () => {
   try {
     writeFileSync(
@@ -206,14 +206,14 @@ const startPostgres = async () => {
 const startWeb = async () => {
   log(`starting Next.js on port ${WEB_PORT} (admin on ${ADMIN_PORT})`);
   // Skip the rebuild if the .next/ artifact is already present. The runner is intentionally
-  // not the canonical build path; contributors run `pnpm --filter @auditai/web build` (or any
+  // not the canonical build path; contributors run `pnpm --filter @evolai/web build` (or any
   // other pnpm pipeline) and the runner just serves the existing artifact. This keeps the
   // runner cheap and avoids the rare kernel-level EAGAIN on `next build`'s jest-worker spawn.
   const nextDir = join(APPS_WEB_DIR, '.next');
   const hasBuild = existsSync(nextDir);
   if (!hasBuild) {
-    log('no .next/ artifact found; running `pnpm --filter @auditai/web build` first');
-    const build = spawn('pnpm', ['--filter', '@auditai/web', 'build'], {
+    log('no .next/ artifact found; running `pnpm --filter @evolai/web build` first');
+    const build = spawn('pnpm', ['--filter', '@evolai/web', 'build'], {
       cwd: PROJECT_ROOT,
       env: env(),
       stdio: 'inherit',

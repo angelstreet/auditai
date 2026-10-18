@@ -1,5 +1,5 @@
-import type { Synergy, SynergyId, SynergyStatus, TenantId, UserId } from '@auditai/contracts';
-import { synergyStatusTransitionSchema } from '@auditai/contracts';
+import type { Synergy, SynergyId, SynergyStatus, TenantId, UserId } from '@evolai/contracts';
+import { synergyStatusTransitionSchema } from '@evolai/contracts';
 import { withTenant } from './db';
 
 /**

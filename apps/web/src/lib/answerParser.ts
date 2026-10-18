@@ -1,10 +1,10 @@
-import type { AnswerValue } from '@auditai/contracts';
+import type { AnswerValue } from '@evolai/contracts';
 import type { SurveyQuestion } from './syntheticTemplate';
 
 /**
  * Map the synthetic form payload (an option `value` string) into the typed `AnswerValue` the
  * M4 \`answers.value_json\` column stores. M5 keeps the synthetic format as-is; Phase 2 will
- * validate against the full Zod schema in \`@auditai/contracts\`.
+ * validate against the full Zod schema in \`@evolai/contracts\`.
  */
 export const parseAnswerValue = (kind: SurveyQuestion['kind'], choice: string): AnswerValue => {
   if (kind === 'scenario_choice') {

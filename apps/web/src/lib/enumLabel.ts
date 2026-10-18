@@ -1,4 +1,4 @@
-import type { MessageKey, Translator } from '@auditai/i18n';
+import type { MessageKey, Translator } from '@evolai/i18n';
 
 /** Client-safe twin of `enumLabel` in `lib/i18n.ts` (that module imports next/headers). */
 export const enumLabelOf = (t: Translator, group: string, value: string): string => {

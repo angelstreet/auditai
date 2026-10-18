@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
-import type { InvitationId, MascotTier, TenantId } from '@auditai/contracts';
-import type { SupportedLocale, Translator } from '@auditai/i18n';
+import type { InvitationId, MascotTier, TenantId } from '@evolai/contracts';
+import type { SupportedLocale, Translator } from '@evolai/i18n';
 import { withServiceAccount, withTenant } from './db';
 import { getT } from './i18n';
 import { InvalidInviteToken, verifyInviteToken } from './invitationToken';

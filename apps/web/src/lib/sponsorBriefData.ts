@@ -1,4 +1,4 @@
-import type { SponsorBrief, TenantId } from '@auditai/contracts';
+import type { SponsorBrief, TenantId } from '@evolai/contracts';
 import { withTenant, withServiceAccount } from './db';
 
 /**

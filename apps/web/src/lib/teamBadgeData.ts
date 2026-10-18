@@ -1,4 +1,4 @@
-import type { MascotTier, TeamBadge, TenantId } from '@auditai/contracts';
+import type { MascotTier, TeamBadge, TenantId } from '@evolai/contracts';
 import { withServiceAccount, withTenant } from './db';
 
 /**

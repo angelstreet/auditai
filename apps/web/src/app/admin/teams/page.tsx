@@ -1,10 +1,10 @@
 import Link from 'next/link';
-import { Mascot } from '@auditai/ui';
-import { mascotTierOrder, type MascotTier, type TenantId } from '@auditai/contracts';
+import { Mascot } from '@evolai/ui';
+import { mascotTierOrder, type MascotTier, type TenantId } from '@evolai/contracts';
 import { tenantLabel } from '@/lib/adminData';
 import { sessionTenantIds } from '@/lib/authServer';
 import { getT } from '@/lib/i18n';
-import { formatDate } from '@auditai/i18n';
+import { formatDate } from '@evolai/i18n';
 import { listTeamBadges, listTeamsInTenant } from '@/lib/teamBadgeData';
 
 export const dynamic = 'force-dynamic';

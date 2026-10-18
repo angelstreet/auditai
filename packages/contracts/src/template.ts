@@ -37,7 +37,7 @@ export type Template = z.infer<typeof templateSchema>;
 
 /**
  * Question kinds \u2014 we model only the formats the mobile UI uses at MVP. Adding a new format
- * requires a calibration item type, a scoring rule and a UI component in @auditai/ui.
+ * requires a calibration item type, a scoring rule and a UI component in @evolai/ui.
  */
 export const questionKindSchema = z.enum([
   'single_choice',

@@ -1,4 +1,4 @@
-import type { DeletionEvent, DeletionScope, TenantId, UserId } from '@auditai/contracts';
+import type { DeletionEvent, DeletionScope, TenantId, UserId } from '@evolai/contracts';
 import { withTenant } from './db';
 
 /**

@@ -12,7 +12,7 @@
  * Every claim links back to a `sourceKind` + `sourceId` + `quote`, so the
  * auditor can verify it before approval (PRD \u00a710, FR-12).
  */
-import type { Sensitivity } from '@auditai/contracts';
+import type { Sensitivity } from '@evolai/contracts';
 
 export interface AnswerRow {
   readonly id: string;

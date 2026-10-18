@@ -22,6 +22,9 @@
 
 version: '3.9'
 
+# Internal identifiers `auditai` (db/user) are kept on purpose: Postgres only reads POSTGRES_* on
+# first init, so renaming would orphan existing volumes (ADR 0026). Image names are `evolai-web`.
+
 services:
   db:
     image: postgres:17
@@ -43,7 +46,7 @@ services:
   migrate:
     build:
       context: .
-    image: auditai-web:latest
+    image: evolai-web:latest
     command: ['node', 'infra/db/scripts/migrate.mjs']
     environment:
       DATABASE_URL: postgres://auditai:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@db:5432/auditai
@@ -53,7 +56,7 @@ services:
     restart: 'no'
 
   web:
-    image: auditai-web:latest
+    image: evolai-web:latest
     restart: unless-stopped
     environment:
       DATABASE_URL: postgres://auditai:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@db:5432/auditai
@@ -73,7 +76,7 @@ services:
   # on a systemd timer or cron (see docs/ops/retention-schedule.md), or use the
   # loop mode below.
   retention:
-    image: auditai-web:latest
+    image: evolai-web:latest
     command: ['node', '--import', 'tsx', 'services/ai/scripts/retention-run.ts']
     restart: unless-stopped
     environment:

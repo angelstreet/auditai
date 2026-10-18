@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import type { AdminEngagementSummary } from '@/lib/adminData';
 import { enumLabel, getT } from '@/lib/i18n';
-import { formatDate, formatNumber } from '@auditai/i18n';
-import type { TenantId } from '@auditai/contracts';
+import { formatDate, formatNumber } from '@evolai/i18n';
+import type { TenantId } from '@evolai/contracts';
 
 interface Props {
   summary: AdminEngagementSummary;

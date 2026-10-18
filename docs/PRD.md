@@ -10,7 +10,7 @@ Status: proposed product specification — for validation with pilot clients
 >
 > - One-sentence product summary → [PRD §0. Executive decision](#executive-decision)
 > - Top-level docs map (PRD ↔ ROADMAP ↔ ADRs) → [docs/INDEX.md](INDEX.md)
-> - Public contract surface of `@auditai/contracts` → [packages/contracts/src/contracts-map.md](../packages/contracts/src/contracts-map.md)
+> - Public contract surface of `@evolai/contracts` → [packages/contracts/src/contracts-map.md](../packages/contracts/src/contracts-map.md)
 > - Shipping plan + gate state → [docs/ROADMAP.md](ROADMAP.md)
 
 ## Table of contents

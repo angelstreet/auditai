@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { messages } from '@auditai/i18n';
+import { messages } from '@evolai/i18n';
 
 const walk = (dir: string): string[] =>
   readdirSync(dir).flatMap((name) => {

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { comparableItems, freezeQuestionnaireVersion } from './template-versioning.js';
 import { DomainError, parseQuestionItemId, parseTemplateId } from './ids.js';
-import type { QuestionItem, Template, TenantId } from '@auditai/contracts';
+import type { QuestionItem, Template, TenantId } from '@evolai/contracts';
 
 const TENANT = '550e8400-e29b-41d4-a716-446655440000' as TenantId;
 const TPL_ID = parseTemplateId('550e8400-e29b-41d4-a716-446655440001');

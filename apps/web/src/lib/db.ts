@@ -1,5 +1,5 @@
 import pg from 'pg';
-import { type TenantId, type InvitationId, type SubmissionId } from '@auditai/contracts';
+import { type TenantId, type InvitationId, type SubmissionId } from '@evolai/contracts';
 
 /**
  * Postgres client used by the web app (M7).
@@ -50,7 +50,8 @@ const buildPoolConfig = (): pg.PoolConfig => {
       'DATABASE_URL is not set. The web app needs a Postgres instance; run `pnpm local:up` or set the env var in your deployment.',
     );
   }
-  // The migration runner creates `auditai_app` (NOSUPERUSER, NOBYPASSRLS) so every query is
+  // Internal identifier kept across the EvolAI rename (ADR 0026): renaming a live role would break
+  // running deployments. The migration runner creates `auditai_app` (NOSUPERUSER, NOBYPASSRLS) so every query is
   // subject to RLS. Override here for tests that need to run as the bootstrap user.
   const user = process.env['DATABASE_APP_USER'] ?? 'auditai_app';
   return {
@@ -59,7 +60,7 @@ const buildPoolConfig = (): pg.PoolConfig => {
     password: resolveAppPassword(),
     max: 10,
     idleTimeoutMillis: 10_000,
-    application_name: 'auditai-web',
+    application_name: 'evolai-web',
   };
 };
 

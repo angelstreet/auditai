@@ -5,7 +5,9 @@ export type SupportedLocale = (typeof supportedLocales)[number];
 export const defaultLocale: SupportedLocale = 'fr';
 
 /** Cookie that stores the visitor's UI language choice. */
-export const LOCALE_COOKIE = 'auditai_locale';
+export const LOCALE_COOKIE = 'evolai_locale';
+/** Pre-rename cookie name (ADR 0026); read as a fallback only. */
+export const LEGACY_LOCALE_COOKIE = 'auditai_locale';
 
 export const isSupportedLocale = (value: string): value is SupportedLocale =>
   (supportedLocales as readonly string[]).includes(value);

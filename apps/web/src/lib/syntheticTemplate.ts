@@ -1,5 +1,5 @@
-import type { AnswerValue, Locale } from '@auditai/contracts';
-import type { SupportedLocale } from '@auditai/i18n';
+import type { AnswerValue, Locale } from '@evolai/contracts';
+import type { SupportedLocale } from '@evolai/i18n';
 
 /**
  * Synthetic survey template used by the mobile web flow (M5).

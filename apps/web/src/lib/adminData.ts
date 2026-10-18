@@ -1,4 +1,4 @@
-import type { Engagement, Organisation, TenantId } from '@auditai/contracts';
+import type { Engagement, Organisation, TenantId } from '@evolai/contracts';
 import { withServiceAccount } from './db';
 
 /**

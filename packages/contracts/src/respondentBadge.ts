@@ -38,7 +38,7 @@ export const mascotTierForScore = (score: QuizScore): MascotTier => {
   return 'owl';
 };
 
-/** One-line EN description per tier. Mirrors `@auditai/domain`'s `tierDescriptor`
+/** One-line EN description per tier. Mirrors `@evolai/domain`'s `tierDescriptor`
  * so web consumers that import only contracts stay consistent. */
 export const tierDescriptorFromType = (tier: MascotTier): string => {
   switch (tier) {

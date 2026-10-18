@@ -19,7 +19,7 @@ export default async function setup(): Promise<() => Promise<void>> {
     return async () => undefined;
   }
 
-  const dataDir = mkdtempSync(join(tmpdir(), 'auditai-pg-'));
+  const dataDir = mkdtempSync(join(tmpdir(), 'evolai-pg-'));
   const pg = new EmbeddedPostgres({
     databaseDir: dataDir,
     user: 'auditai',
@@ -30,9 +30,9 @@ export default async function setup(): Promise<() => Promise<void>> {
 
   await pg.initialise();
   await pg.start();
-  await pg.createDatabase('auditai_test');
+  await pg.createDatabase('evolai_test');
 
-  process.env['DATABASE_URL'] = `postgres://auditai:auditai@127.0.0.1:54329/auditai_test`;
+  process.env['DATABASE_URL'] = `postgres://auditai:auditai@127.0.0.1:54329/evolai_test`;
 
   // eslint-disable-next-line no-console
   console.warn(`[tests/db] embedded postgres ready at ${process.env['DATABASE_URL']}`);

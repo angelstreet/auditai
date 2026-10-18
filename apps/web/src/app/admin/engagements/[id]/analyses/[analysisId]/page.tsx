@@ -1,13 +1,13 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { enumLabel, getT } from '@/lib/i18n';
-import { formatDate } from '@auditai/i18n';
+import { formatDate } from '@evolai/i18n';
 
 import { engagementLabelFor, getAnalysis, listAuditLogForTarget } from '@/lib/auditorData';
 import { tenantLabel } from '@/lib/adminData';
 import { sessionTenantIds } from '@/lib/authServer';
 import { ApproveForm } from './ApproveForm';
-import type { AnalysisId, EngagementId, TenantId } from '@auditai/contracts';
+import type { AnalysisId, EngagementId, TenantId } from '@evolai/contracts';
 
 export const dynamic = 'force-dynamic';
 

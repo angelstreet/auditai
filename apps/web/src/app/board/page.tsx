@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Mascot } from '@auditai/ui';
+import { Mascot } from '@evolai/ui';
 import { listEngagements } from '@/lib/adminData';
 import { sessionTenantIds } from '@/lib/authServer';
 import { listLatestSponsorBriefs } from '@/lib/sponsorBriefData';
@@ -8,7 +8,7 @@ import { listSynergies } from '@/lib/synergyData';
 import { listTeamBadges } from '@/lib/teamBadgeData';
 import { enumLabel, getT } from '@/lib/i18n';
 import type { AdminEngagementSummary } from '@/lib/adminData';
-import type { TenantId } from '@auditai/contracts';
+import type { TenantId } from '@evolai/contracts';
 
 export const dynamic = 'force-dynamic';
 

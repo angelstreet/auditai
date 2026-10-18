@@ -5,12 +5,12 @@ import type {
   RespondentBadge,
   RespondentBadgeWrite,
   TenantId,
-} from '@auditai/contracts';
+} from '@evolai/contracts';
 import {
   mascotTierForScore,
   quizScoreSchema,
   type MascotTier as MascotTierType,
-} from '@auditai/contracts';
+} from '@evolai/contracts';
 import { withTenant } from './db';
 
 /**

@@ -1,4 +1,4 @@
-import { type Answer, type QuestionItem, type AnswerValue } from '@auditai/contracts';
+import { type Answer, type QuestionItem, type AnswerValue } from '@evolai/contracts';
 
 /**
  * Deterministic literacy scoring (PRD \u00a76).

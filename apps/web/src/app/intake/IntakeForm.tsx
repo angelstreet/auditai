@@ -1,7 +1,7 @@
 'use client';
 
 import { useFormState, useFormStatus } from 'react-dom';
-import type { TenantId } from '@auditai/contracts';
+import type { TenantId } from '@evolai/contracts';
 import { useI18n } from '@/components/I18nProvider';
 import { saveSponsorBriefAction, type IntakeActionState } from './actions';
 

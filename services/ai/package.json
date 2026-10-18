@@ -1,5 +1,5 @@
 {
-  "name": "@auditai/ai",
+  "name": "@evolai/ai",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -15,11 +15,11 @@
     "retention-run": "node --import tsx scripts/retention-run.ts"
   },
   "dependencies": {
-    "@auditai/contracts": "workspace:*",
+    "@evolai/contracts": "workspace:*",
     "pg": "8.13.1"
   },
   "devDependencies": {
-    "@auditai/contracts": "workspace:*",
+    "@evolai/contracts": "workspace:*",
     "@types/node": "20.14.10",
     "@types/pg": "8.11.10",
     "@typescript-eslint/eslint-plugin": "8.13.0",

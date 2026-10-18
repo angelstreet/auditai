@@ -9,24 +9,24 @@ environment file that is not in the repository.
 
 ## systemd timer
 
-`/etc/systemd/system/auditai-retention.service`
+`/etc/systemd/system/evolai-retention.service`
 
 ```ini
 [Unit]
-Description=auditai retention worker (FR-09)
+Description=evolai retention worker (FR-09)
 
 [Service]
 Type=oneshot
-WorkingDirectory=/opt/auditai
-EnvironmentFile=/etc/auditai/retention.env   # DATABASE_URL=...
+WorkingDirectory=/opt/evolai
+EnvironmentFile=/etc/evolai/retention.env   # DATABASE_URL=...
 ExecStart=/usr/bin/env pnpm retention:run
 ```
 
-`/etc/systemd/system/auditai-retention.timer`
+`/etc/systemd/system/evolai-retention.timer`
 
 ```ini
 [Unit]
-Description=Daily auditai retention run
+Description=Daily evolai retention run
 
 [Timer]
 OnCalendar=daily
@@ -36,12 +36,12 @@ Persistent=true
 WantedBy=timers.target
 ```
 
-Enable with `systemctl enable --now auditai-retention.timer`.
+Enable with `systemctl enable --now evolai-retention.timer`.
 
 ## cron
 
 ```cron
-15 3 * * * cd /opt/auditai && set -a && . /etc/auditai/retention.env && pnpm retention:run
+15 3 * * * cd /opt/evolai && set -a && . /etc/evolai/retention.env && pnpm retention:run
 ```
 
 ## docker compose

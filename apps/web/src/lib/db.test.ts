@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { resolveAppPassword, withTenant } from './db';
-import type { TenantId } from '@auditai/contracts';
+import type { TenantId } from '@evolai/contracts';
 
 describe('db hardening', () => {
   it('production fails closed without a real app password', () => {

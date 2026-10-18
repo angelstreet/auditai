@@ -24,7 +24,7 @@ jobs:
         env:
           POSTGRES_USER: auditai
           POSTGRES_PASSWORD: auditai
-          POSTGRES_DB: auditai_test
+          POSTGRES_DB: evolai_test
         ports:
           - 54329:5432
         options: >-
@@ -33,7 +33,7 @@ jobs:
           --health-timeout 5s
           --health-retries 10
     env:
-      DATABASE_URL: postgres://auditai:auditai@127.0.0.1:54329/auditai_test
+      DATABASE_URL: postgres://auditai:auditai@127.0.0.1:54329/evolai_test
     steps:
       - uses: actions/checkout@v4
 

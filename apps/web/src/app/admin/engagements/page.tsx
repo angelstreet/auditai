@@ -4,7 +4,7 @@ import TenantSwitcher from '@/components/admin/TenantSwitcher';
 import { listEngagements, tenantLabel } from '@/lib/adminData';
 import { sessionTenantIds } from '@/lib/authServer';
 import { getT } from '@/lib/i18n';
-import { formatNumber } from '@auditai/i18n';
+import { formatNumber } from '@evolai/i18n';
 
 // Always render at request time so the DB connection is fresh.
 export const dynamic = 'force-dynamic';

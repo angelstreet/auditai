@@ -14,7 +14,7 @@ export default async function globalTeardown(): Promise<void> {
       // We started an embedded Postgres on a free port. Kill any process bound to it.
       const { execSync } = await import('node:child_process');
       try {
-        execSync(`pkill -f "auditai-pw-pg-${state.dataDir.split('/').pop()}" || true`, {
+        execSync(`pkill -f "evolai-pw-pg-${state.dataDir.split('/').pop()}" || true`, {
           stdio: 'ignore',
         });
       } catch {
