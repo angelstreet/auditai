@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { memo, useRef, useState } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -36,6 +36,12 @@ function Result({ state }: { state: DataActionState }) {
   );
 }
 
+// Memoised so typing or opening the dialog never re-renders it: React rewrites a hidden input's
+// value on every render, which would also undo the forged-tenant check in e2e/auth.spec.ts.
+const TenantField = memo(function TenantField({ tenantId }: { tenantId: TenantId }) {
+  return <input type="hidden" name="tenantId" value={tenantId} />;
+});
+
 function ExportSubmit() {
   const { t } = useI18n();
   const { pending } = useFormStatus();
@@ -62,7 +68,7 @@ export function ExportForm({ tenantId }: Props) {
   const [state, formAction] = useFormState(triggerExportAction, INITIAL);
   return (
     <Stack component="form" action={formAction} sx={{ gap: 3 }}>
-      <input type="hidden" name="tenantId" defaultValue={tenantId} />
+      <TenantField tenantId={tenantId} />
       <Stack direction={{ xs: 'column', sm: 'row' }} sx={{ gap: 3, alignItems: { sm: 'center' } }}>
         <TextField
           select
@@ -104,7 +110,7 @@ export function DeleteForm({ tenantId }: Props) {
   const valid = PSEUDONYM_PATTERN.test(pseudonym);
   return (
     <Stack component="form" ref={formRef} action={formAction} sx={{ gap: 3 }}>
-      <input type="hidden" name="tenantId" defaultValue={tenantId} />
+      <TenantField tenantId={tenantId} />
       <Stack direction={{ xs: 'column', sm: 'row' }} sx={{ gap: 3, alignItems: { sm: 'center' } }}>
         <TextField
           name="respondentPseudonym"
