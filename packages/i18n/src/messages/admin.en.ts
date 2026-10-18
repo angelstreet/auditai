@@ -57,6 +57,7 @@ export const adminEn = {
     tabsAria: 'Admin sections',
     tabPortfolio: 'Portfolio',
     tabEngagements: 'Engagements',
+    tabInvitations: 'Invitations',
     tabTeams: 'Teams',
     tabSynergies: 'Synergies',
     tabData: 'Data',
