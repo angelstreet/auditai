@@ -112,7 +112,7 @@ const main = async () => {
   ok('seeded 3 badges (1 expired + 2 fresh)');
 
   // Spawn the retention worker.
-  const out = spawnOk('pnpm', ['--filter', '@auditai/ai', 'run', 'retention-smoke'], {
+  const out = spawnOk('pnpm', ['--filter', '@evolai/ai', 'run', 'retention-smoke'], {
     ...process.env,
     DATABASE_URL: databaseUrl,
   });

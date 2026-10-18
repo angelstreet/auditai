@@ -2,9 +2,9 @@
 
 import { useRef, useState } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
-import type { TenantId } from '@auditai/contracts';
-import type { QuizQuestion } from '@auditai/domain';
-import { quizItems } from '@auditai/i18n';
+import type { TenantId } from '@evolai/contracts';
+import type { QuizQuestion } from '@evolai/domain';
+import { quizItems } from '@evolai/i18n';
 import ProgressBar from '@/components/ProgressBar';
 import { useI18n } from '@/components/I18nProvider';
 import type { QuizActionState } from './actions';

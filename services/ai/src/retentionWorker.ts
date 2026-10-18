@@ -1,5 +1,5 @@
 import pg from 'pg';
-import type { TenantId } from '@auditai/contracts';
+import type { TenantId } from '@evolai/contracts';
 
 /**
  * Retention worker (M15, FR-09, PRD §15, §25.4; ADR 0020).

@@ -25,7 +25,7 @@ const flatten = (node: unknown, prefix = ''): Record<string, string> => {
 const placeholders = (s: string): string[] =>
   [...s.matchAll(/\{\s*(\w+)\s*[,}]/g)].map((m) => m[1] as string).sort();
 
-describe('@auditai/i18n locale list', () => {
+describe('@evolai/i18n locale list', () => {
   it('supports fr and en', () => {
     expect([...supportedLocales].sort()).toEqual(['en', 'fr']);
   });

@@ -56,7 +56,7 @@ test.describe('auditor auth (ADR 0023)', () => {
   test('a forged session cookie is rejected', async ({ page, context }) => {
     await context.addCookies([
       {
-        name: 'aai_session',
+        name: 'evolai_session',
         value: 'eyJzdWIiOiJ4In0.AAAA',
         url: `http://127.0.0.1:${process.env['PW_PORT'] ?? '3200'}`,
       },

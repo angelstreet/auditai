@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useMemo, type ReactNode } from 'react';
-import { createTranslator, type SupportedLocale, type Translator } from '@auditai/i18n';
+import { createTranslator, type SupportedLocale, type Translator } from '@evolai/i18n';
 
 interface Value {
   locale: SupportedLocale;

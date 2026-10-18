@@ -41,16 +41,16 @@ importers:
 
   apps/web:
     dependencies:
-      '@auditai/contracts':
+      '@evolai/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
-      '@auditai/domain':
+      '@evolai/domain':
         specifier: workspace:*
         version: link:../../packages/domain
-      '@auditai/i18n':
+      '@evolai/i18n':
         specifier: workspace:*
         version: link:../../packages/i18n
-      '@auditai/ui':
+      '@evolai/ui':
         specifier: workspace:^
         version: link:../../packages/ui
       next:
@@ -99,10 +99,10 @@ importers:
 
   packages/analytics:
     dependencies:
-      '@auditai/contracts':
+      '@evolai/contracts':
         specifier: workspace:*
         version: link:../contracts
-      '@auditai/domain':
+      '@evolai/domain':
         specifier: workspace:*
         version: link:../domain
     devDependencies:
@@ -122,7 +122,7 @@ importers:
 
   packages/domain:
     dependencies:
-      '@auditai/contracts':
+      '@evolai/contracts':
         specifier: workspace:*
         version: link:../contracts
     devDependencies:
@@ -138,7 +138,7 @@ importers:
 
   packages/ui:
     dependencies:
-      '@auditai/contracts':
+      '@evolai/contracts':
         specifier: workspace:*
         version: link:../contracts
     devDependencies:
@@ -160,7 +160,7 @@ importers:
 
   services/ai:
     dependencies:
-      '@auditai/contracts':
+      '@evolai/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
       pg:
@@ -194,10 +194,10 @@ importers:
 
   tests/db:
     dependencies:
-      '@auditai/contracts':
+      '@evolai/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
-      '@auditai/domain':
+      '@evolai/domain':
         specifier: workspace:*
         version: link:../../packages/domain
       pg:

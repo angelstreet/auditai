@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { enumLabel, getT } from '@/lib/i18n';
 import { aroundLink } from '@/lib/richText';
-import { formatDate, formatNumber } from '@auditai/i18n';
+import { formatDate, formatNumber } from '@evolai/i18n';
 
 import { engagementLabelFor, listAuditLogForTarget } from '@/lib/auditorData';
 import { getOpportunity } from '@/lib/opportunityData';
@@ -14,7 +14,7 @@ import {
   type EngagementId,
   type OpportunityId,
   type TenantId,
-} from '@auditai/contracts';
+} from '@evolai/contracts';
 
 export const dynamic = 'force-dynamic';
 

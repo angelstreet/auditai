@@ -71,7 +71,7 @@ test.describe('respondent path is short, plain and in one language', () => {
 
   for (const locale of ['fr', 'en'] as const) {
     test(`full path in ${locale}`, async ({ page, context, baseURL }) => {
-      await context.addCookies([{ name: 'auditai_locale', value: locale, url: baseURL as string }]);
+      await context.addCookies([{ name: 'evolai_locale', value: locale, url: baseURL as string }]);
       const token = tokenFor(INVITES[locale]);
       const otherLang = locale === 'fr' ? /\b(the|your|answer)\b/i : /\b(vous|votre|réponse)\b/i;
 

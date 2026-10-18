@@ -7,7 +7,7 @@ import { engagementLabelFor, getAnalysis } from '@/lib/auditorData';
 import { tenantLabel } from '@/lib/adminData';
 import { sessionTenantIds } from '@/lib/authServer';
 import { CreateOpportunityForm } from './CreateOpportunityForm';
-import { type AnalysisId, type EngagementId, type TenantId } from '@auditai/contracts';
+import { type AnalysisId, type EngagementId, type TenantId } from '@evolai/contracts';
 
 export const dynamic = 'force-dynamic';
 

@@ -2,16 +2,16 @@
 const nextConfig = {
   reactStrictMode: true,
   transpilePackages: [
-    // M10: server actions import Zod schemas from @auditai/contracts, whose source uses
+    // M10: server actions import Zod schemas from @evolai/contracts, whose source uses
     // NodeNext-style `.js` import specifiers. Webpack does not rewrite those to `.ts`, so
     // we transpile the package from source. (M3 + M5 + M6 + M7 + M8 did not exercise this
     // path because the server action layer only landed in M10.)
-    '@auditai/contracts',
-    '@auditai/domain',
-    // TASK-C: web imports catalogs from @auditai/i18n and mascots from @auditai/ui; both are
+    '@evolai/contracts',
+    '@evolai/domain',
+    // TASK-C: web imports catalogs from @evolai/i18n and mascots from @evolai/ui; both are
     // consumed from source with NodeNext-style specifiers.
-    '@auditai/i18n',
-    '@auditai/ui',
+    '@evolai/i18n',
+    '@evolai/ui',
   ],
   webpack(config) {
     // The contracts / domain packages use NodeNext import specifiers (`./team.js`). Webpack

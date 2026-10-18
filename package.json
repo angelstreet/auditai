@@ -1,5 +1,5 @@
 {
-  "name": "auditai",
+  "name": "evolai",
   "version": "0.0.0",
   "private": true,
   "description": "Open-source platform for evidence-based AI adoption audits and AI change enablement. Working name.",
@@ -33,7 +33,7 @@
     "m13:smoke": "node apps/web/scripts/m13-smoke.mjs",
     "m14:smoke": "node apps/web/scripts/m14-smoke.mjs",
     "m15:smoke": "node apps/web/scripts/m15-smoke.mjs",
-    "retention:run": "pnpm --filter @auditai/ai run retention-run",
+    "retention:run": "pnpm --filter @evolai/ai run retention-run",
     "m15b:smoke": "node apps/web/scripts/m15b-smoke.mjs"
   },
   "devDependencies": {

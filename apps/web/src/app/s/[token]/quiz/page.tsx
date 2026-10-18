@@ -1,4 +1,4 @@
-import { LITERACY_QUIZ } from '@auditai/domain';
+import { LITERACY_QUIZ } from '@evolai/domain';
 import LinkProblem from '@/components/respondent/LinkProblem';
 import { loadRespondent } from '@/lib/respondent';
 import { QuizForm } from '@/app/quiz/QuizForm';

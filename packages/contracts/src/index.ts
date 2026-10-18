@@ -1,5 +1,5 @@
 /**
- * Public surface of `@auditai/contracts`. Every entity is exported as both its Zod schema and
+ * Public surface of `@evolai/contracts`. Every entity is exported as both its Zod schema and
  * the inferred TypeScript type. Other packages import from here so they share the same validation
  * logic as the API layer.
  */

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { listTenantIds, tenantLabel } from '@/lib/adminData';
 import { getT } from '@/lib/i18n';
-import type { TenantId } from '@auditai/contracts';
+import type { TenantId } from '@evolai/contracts';
 
 export const dynamic = 'force-dynamic';
 

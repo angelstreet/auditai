@@ -1,7 +1,7 @@
 # Dockerfile for the EvolAI / AI Audit Studio web tier.
 #
 # Two stages:
-#   * builder  \u2014 pnpm install + `pnpm --filter @auditai/web build`
+#   * builder  \u2014 pnpm install + `pnpm --filter @evolai/web build`
 #   * runtime  \u2014 the production Next.js server on port 3000.
 #
 # Postgres is intentionally NOT bundled here. Use docker-compose.yml
@@ -16,12 +16,12 @@
 #     trivial (replicas behind a load balancer).
 #
 # Build:
-#   docker build -t auditai-web:latest .
+#   docker build -t evolai-web:latest .
 #
 # Run:
 #   docker run --rm -p 3000:3000 \
 #     -e DATABASE_URL=postgres://auditai:auditai@db:5432/auditai \
-#     auditai-web:latest
+#     evolai-web:latest
 
 # ---- builder ---------------------------------------------------------
 FROM node:20-bookworm-slim AS builder
@@ -37,7 +37,7 @@ COPY infra infra
 COPY scripts scripts
 COPY tsconfig.base.json eslint.config.mjs ./
 RUN pnpm install --frozen-lockfile
-RUN pnpm --filter @auditai/web build
+RUN pnpm --filter @evolai/web build
 
 # ---- runtime ---------------------------------------------------------
 FROM node:20-bookworm-slim AS runtime
@@ -57,8 +57,8 @@ COPY --from=builder /repo/scripts scripts
 COPY --from=builder /repo/infra infra
 COPY --from=builder /repo/tsconfig.base.json /repo/eslint.config.mjs ./
 RUN pnpm install --frozen-lockfile --prod \
-    && pnpm --filter @auditai/web install --frozen-lockfile
+    && pnpm --filter @evolai/web install --frozen-lockfile
 EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --retries=5 \
     CMD curl -fsS http://localhost:3000/about || exit 1
-CMD ["pnpm", "--filter", "@auditai/web", "start"]
+CMD ["pnpm", "--filter", "@evolai/web", "start"]

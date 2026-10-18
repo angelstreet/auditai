@@ -15,7 +15,7 @@ import {
   type OpportunityId,
   type OpportunityStatus,
   type TenantId,
-} from '@auditai/contracts';
+} from '@evolai/contracts';
 import { createOpportunityFromAnalysis, transitionOpportunity } from '@/lib/opportunityData';
 import { getT } from '@/lib/i18n';
 

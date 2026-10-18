@@ -1,4 +1,4 @@
-import { type Capability, type Role, roleSchema } from '@auditai/contracts';
+import { type Capability, type Role, roleSchema } from '@evolai/contracts';
 import { DomainError } from './ids.js';
 
 /**

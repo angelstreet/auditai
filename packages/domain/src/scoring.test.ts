@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { scoreSubmission } from './scoring.js';
-import type { Answer, QuestionItem, QuestionItemId, TenantId } from '@auditai/contracts';
+import type { Answer, QuestionItem, QuestionItemId, TenantId } from '@evolai/contracts';
 import { parseAnswerId, parseQuestionItemId, parseSubmissionId } from './ids.js';
 
 const TENANT = '550e8400-e29b-41d4-a716-446655440000' as TenantId;

@@ -1,4 +1,4 @@
-import type { Translator } from '@auditai/i18n';
+import type { Translator } from '@evolai/i18n';
 
 /** Expired or withdrawn invitation: say so plainly and give the one next action (PRD §16). */
 export default function LinkProblem({ gate, t }: { gate: 'expired' | 'withdrawn'; t: Translator }) {

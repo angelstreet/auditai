@@ -2,13 +2,13 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { enumLabel, getT } from '@/lib/i18n';
 import { aroundLink } from '@/lib/richText';
-import { formatDate, formatNumber } from '@auditai/i18n';
+import { formatDate, formatNumber } from '@evolai/i18n';
 
 import { engagementLabelFor } from '@/lib/auditorData';
 import { tenantLabel } from '@/lib/adminData';
 import { sessionTenantIds } from '@/lib/authServer';
 import { listOpportunitiesForEngagement, opportunityStatusCounts } from '@/lib/opportunityData';
-import { type EngagementId, type TenantId } from '@auditai/contracts';
+import { type EngagementId, type TenantId } from '@evolai/contracts';
 
 export const dynamic = 'force-dynamic';
 

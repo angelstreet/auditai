@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { synergyStatusSchema, type SynergyId, type SynergyStatus } from '@auditai/contracts';
+import { synergyStatusSchema, type SynergyId, type SynergyStatus } from '@evolai/contracts';
 import { transitionSynergy } from '@/lib/synergyData';
 import { resolveActor } from '@/lib/authServer';
 import { enumLabel, getT } from '@/lib/i18n';

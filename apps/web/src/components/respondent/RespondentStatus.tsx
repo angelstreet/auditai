@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import { Mascot } from '@auditai/ui';
-import { formatDate, type SupportedLocale, type Translator } from '@auditai/i18n';
-import type { MascotTier } from '@auditai/contracts';
+import { Mascot } from '@evolai/ui';
+import { formatDate, type SupportedLocale, type Translator } from '@evolai/i18n';
+import type { MascotTier } from '@evolai/contracts';
 import ProgressBar from '@/components/ProgressBar';
 import type { TeamProgress } from '@/lib/respondent';
 

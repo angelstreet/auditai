@@ -1,4 +1,4 @@
-import type { Answer, AnswerValue, InvitationId, SubmissionId, TenantId } from '@auditai/contracts';
+import type { Answer, AnswerValue, InvitationId, SubmissionId, TenantId } from '@evolai/contracts';
 import { withTenant } from './db';
 
 /**
@@ -8,7 +8,7 @@ import { withTenant } from './db';
  * policies from migration 0002 apply. Resume works because the same invitation reference
  * resolves to the same submission row.
  *
- * The functions return strongly-typed shapes from `@auditai/contracts`; values from the JSON
+ * The functions return strongly-typed shapes from `@evolai/contracts`; values from the JSON
  * columns are re-validated by the call site (in Phase 2 we will tighten this with Zod).
  */
 

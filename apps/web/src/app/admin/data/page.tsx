@@ -4,9 +4,9 @@ import { sessionTenantIds } from '@/lib/authServer';
 import { listDeletionEvents } from '@/lib/deletionData';
 import { listExportRequests } from '@/lib/exportData';
 import { enumLabel, getT } from '@/lib/i18n';
-import { formatDate } from '@auditai/i18n';
+import { formatDate } from '@evolai/i18n';
 import { DeleteForm, ExportForm } from './DataAdminClient';
-import type { TenantId } from '@auditai/contracts';
+import type { TenantId } from '@evolai/contracts';
 
 export const dynamic = 'force-dynamic';
 

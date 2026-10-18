@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { Mascot } from './mascots.jsx';
-import type { MascotTier } from '@auditai/contracts';
+import type { MascotTier } from '@evolai/contracts';
 
 /**
  * The mascots must be inline SVG so they work without external image

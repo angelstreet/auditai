@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { SESSION_COOKIE, verifySession } from '@/lib/session';
+import { readSessionCookie, verifySession } from '@/lib/session';
 
 /**
  * Gate for the auditor surface (ADR 0023). Respondent routes (/s, /intake, /quiz, /welcome,
@@ -9,7 +9,7 @@ import { SESSION_COOKIE, verifySession } from '@/lib/session';
 export async function middleware(req: NextRequest) {
   let session = null;
   try {
-    session = await verifySession(req.cookies.get(SESSION_COOKIE)?.value);
+    session = await verifySession(readSessionCookie((n) => req.cookies.get(n)));
   } catch {
     // Missing secret outside local dev: fail closed.
   }

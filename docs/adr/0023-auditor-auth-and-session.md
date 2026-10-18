@@ -61,3 +61,5 @@ must not be precluded.
   `PW_PORT` so parallel checkouts on one host do not reuse each other's server.
 - Redirects from the login routes use a relative `Location`; the middleware builds an absolute URL from
   the request `Host` (an unparseable `Location` there made the middleware throw and fail open in testing).
+
+> Note (ADR 0026): the cookie is now `evolai_session`; `aai_session` is still read as a fallback.

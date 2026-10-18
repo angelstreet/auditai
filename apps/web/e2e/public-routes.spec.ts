@@ -41,7 +41,7 @@ test.describe('public routes (every viewport, layout gate)', () => {
     for (const path of PUBLIC_PATHS) {
       test(`${path} renders a heading in ${locale}`, async ({ page, context, baseURL }) => {
         await context.addCookies([
-          { name: 'auditai_locale', value: locale, url: baseURL as string },
+          { name: 'evolai_locale', value: locale, url: baseURL as string },
         ]);
         const response = await page.goto(path);
         expect(response?.status(), `${path} should return 200`).toBe(200);
@@ -79,7 +79,7 @@ test.describe('public routes (every viewport, layout gate)', () => {
       for (const locale of LOCALES) {
         await page
           .context()
-          .addCookies([{ name: 'auditai_locale', value: locale, url: 'http://127.0.0.1:3200' }]);
+          .addCookies([{ name: 'evolai_locale', value: locale, url: 'http://127.0.0.1:3200' }]);
         await page.goto(path, { waitUntil: 'domcontentloaded' });
         const overflow = await page.evaluate(() =>
           Math.max(document.documentElement.scrollWidth, document.body.scrollWidth),

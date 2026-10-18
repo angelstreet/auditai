@@ -1,6 +1,6 @@
 # EvolAI
 
-> Working name. Discover how work really happens. Build AI confidence. Turn friction into measurable improvements.
+> Discover how work really happens. Build AI confidence. Turn friction into measurable improvements.
 
 An **open-source platform for evidence-based AI adoption audits and AI change enablement**. Employees answer short,
 adaptive, mobile questionnaires; auditors review AI-assisted, source-linked findings and map workflows; company leaders
@@ -71,17 +71,17 @@ Prerequisites: Node 20+, pnpm 9+.
 pnpm install --frozen-lockfile
 
 # 2. Build the web app (first time only, or after editing apps/web).
-pnpm --filter @auditai/web build
+pnpm --filter @evolai/web build
 
 # 3. Bring the stack up. Auto-discovers free ports and prints them when READY.
 pnpm local:up
-#   READY postgres=postgres://auditai:auditai@127.0.0.1:54340/auditai_local;
+#   READY postgres=postgres://auditai:auditai@127.0.0.1:54340/evolai_local;
 #          web=http://127.0.0.1:3101;
 #          admin=http://127.0.0.1:3101/admin/engagements
 
 # 4. In another terminal, exercise the stack end-to-end.
 export LOCAL_WEB_URL=http://127.0.0.1:3101           # or whatever `local:up` printed
-export DATABASE_URL=postgres://auditai:auditai@127.0.0.1:54340/auditai_local
+export DATABASE_URL=postgres://auditai:auditai@127.0.0.1:54340/evolai_local
 pnpm local:smoke   # walks /about → /s/[token] → 6 answers → /done → /admin/engagements
 
 # 5. Tear down.
@@ -90,16 +90,16 @@ pnpm local:down
 
 Useful subcommands:
 
-| Command             | What it does                                                                                                   |
-| ------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `pnpm local:up`     | Boot embedded Postgres + apply migrations + build (if needed) + start `next start`                             |
-| `pnpm local:status` | Probe web and Postgres; exit 0 only when both respond (reads ports from `/tmp/auditai-local-stack.ports.json`) |
-| `pnpm local:smoke`  | End-to-end walk: about → welcome → 6 answers → done → admin; needs `LOCAL_WEB_URL` + `DATABASE_URL`            |
-| `pnpm local:reset`  | Drop the database, recreate, re-apply migrations + seed                                                        |
-| `pnpm local:down`   | Stop the `next start` process and the embedded Postgres data dir                                               |
+| Command             | What it does                                                                                                  |
+| ------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `pnpm local:up`     | Boot embedded Postgres + apply migrations + build (if needed) + start `next start`                            |
+| `pnpm local:status` | Probe web and Postgres; exit 0 only when both respond (reads ports from `/tmp/evolai-local-stack.ports.json`) |
+| `pnpm local:smoke`  | End-to-end walk: about → welcome → 6 answers → done → admin; needs `LOCAL_WEB_URL` + `DATABASE_URL`           |
+| `pnpm local:reset`  | Drop the database, recreate, re-apply migrations + seed                                                       |
+| `pnpm local:down`   | Stop the `next start` process and the embedded Postgres data dir                                              |
 
 If port `3101` is already taken, the runner discovers a free port and writes it to
-`/tmp/auditai-local-stack.ports.json`; `pnpm local:status` reads that file so it always probes the
+`/tmp/evolai-local-stack.ports.json`; `pnpm local:status` reads that file so it always probes the
 right address.
 
 The CI workflow does not depend on the local runner: it uses a `postgres:17` service container on

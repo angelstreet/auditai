@@ -103,6 +103,7 @@ write a new one that supersedes it.
 | 0023 | [Auditor auth + session](adr/0023-auditor-auth-and-session.md)                    | TASK-A                           | Accepted |
 | 0024 | [French + English (i18n)](adr/0024-i18n-fr-en.md)                                 | TASK-C                           | Accepted |
 | 0025 | [Design tokens + style guard](adr/0025-design-tokens.md)                          | TASK-E ([UX audit](UX_AUDIT.md)) | Accepted |
+| 0026 | [Rename to EvolAI](adr/0026-rename-to-evolai.md)                                  | TASK-F                           | Accepted |
 
 ## 4. The gates map (PRD §25.4)
 
@@ -119,27 +120,27 @@ map below ties each gate to the evidence already in `main`.
 ## 5. The "how to test it" quick links
 
 ```bash
-cd ~/auditai
+cd ~/evolai
 pnpm install --frozen-lockfile
-pnpm --filter @auditai/web build
+pnpm --filter @evolai/web build
 pnpm local:up                    # embedded Postgres + migrations + production build
 ```
 
 After `READY postgres=... web=... admin=...` prints, exercise:
 
-| Command                                           | What it covers                                              | Skill anchor                                    |
-| ------------------------------------------------- | ----------------------------------------------------------- | ----------------------------------------------- |
-| `pnpm local:smoke`                                | full mobile-survey walk (`/about → /s/[token] → /done`)     | [M5](adr/0004-mobile-web-survey-stack.md), M7   |
-| `pnpm m10:smoke`                                  | auditor review + approve                                    | [M10](adr/0008-auditor-review.md)               |
-| `pnpm m11:smoke`                                  | opportunity register + status workflow                      | [M11](adr/0009-opportunity-register.md)         |
-| `pnpm m12:smoke`                                  | sponsor intake + portfolio board + 2nd engagement teardown  | [M12](adr/0010-sponsor-onboarding.md)           |
-| `pnpm m13:smoke`                                  | cross-team synergy worker + admin surface + transition flow | [M11/M13 ADRs](adr/0011-cross-team-synergy.md)  |
-| `pnpm m14:smoke`                                  | quiz form + result reveal + team rollup + profile           | [M14 ADRs](adr/0013-quiz-badges-and-mascots.md) |
-| `pnpm --filter @auditai/ai run smoke`             | rule-based AI pipeline end-to-end                           | [M9](adr/0007-ai-pipeline.md)                   |
-| `pnpm --filter @auditai/ai run synergy-smoke`     | cross-engagement synergy worker                             | [M13](adr/0011-cross-team-synergy.md)           |
-| `pnpm --filter @auditai/ai run team-rollup-smoke` | team-mascot rollup worker                                   | [M14](adr/0015-team-badge-rollup.md)            |
-| `pnpm local:status`                               | probes web + Postgres                                       | [M7](adr/0006-local-dev-runner.md)              |
-| `pnpm local:down`                                 | tears everything down                                       | [M7](adr/0006-local-dev-runner.md)              |
+| Command                                          | What it covers                                              | Skill anchor                                    |
+| ------------------------------------------------ | ----------------------------------------------------------- | ----------------------------------------------- |
+| `pnpm local:smoke`                               | full mobile-survey walk (`/about → /s/[token] → /done`)     | [M5](adr/0004-mobile-web-survey-stack.md), M7   |
+| `pnpm m10:smoke`                                 | auditor review + approve                                    | [M10](adr/0008-auditor-review.md)               |
+| `pnpm m11:smoke`                                 | opportunity register + status workflow                      | [M11](adr/0009-opportunity-register.md)         |
+| `pnpm m12:smoke`                                 | sponsor intake + portfolio board + 2nd engagement teardown  | [M12](adr/0010-sponsor-onboarding.md)           |
+| `pnpm m13:smoke`                                 | cross-team synergy worker + admin surface + transition flow | [M11/M13 ADRs](adr/0011-cross-team-synergy.md)  |
+| `pnpm m14:smoke`                                 | quiz form + result reveal + team rollup + profile           | [M14 ADRs](adr/0013-quiz-badges-and-mascots.md) |
+| `pnpm --filter @evolai/ai run smoke`             | rule-based AI pipeline end-to-end                           | [M9](adr/0007-ai-pipeline.md)                   |
+| `pnpm --filter @evolai/ai run synergy-smoke`     | cross-engagement synergy worker                             | [M13](adr/0011-cross-team-synergy.md)           |
+| `pnpm --filter @evolai/ai run team-rollup-smoke` | team-mascot rollup worker                                   | [M14](adr/0015-team-badge-rollup.md)            |
+| `pnpm local:status`                              | probes web + Postgres                                       | [M7](adr/0006-local-dev-runner.md)              |
+| `pnpm local:down`                                | tears everything down                                       | [M7](adr/0006-local-dev-runner.md)              |
 
 Manual URLs (ports come from the `READY` line):
 
@@ -229,5 +230,5 @@ docs/
    └── 0015-team-badge-rollup.md
 ```
 
-The contract map of every Zod schema and TS type in `@auditai/contracts`
+The contract map of every Zod schema and TS type in `@evolai/contracts`
 lives at [`packages/contracts/src/contracts-map.md`](../packages/contracts/src/contracts-map.md).

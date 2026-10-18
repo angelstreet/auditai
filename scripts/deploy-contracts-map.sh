@@ -22,7 +22,7 @@ set -euo pipefail
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 SRC="${REPO_ROOT}/landing/m15-contracts/index.html"
-STAGE_DIR="$(mktemp -d "${TMPDIR:-/tmp}/auditai-contracts-map.XXXXXX")"
+STAGE_DIR="$(mktemp -d "${TMPDIR:-/tmp}/evolai-contracts-map.XXXXXX")"
 trap 'rm -rf "${STAGE_DIR}"' EXIT
 
 if [[ ! -f "${SRC}" ]]; then
@@ -49,6 +49,6 @@ sed 's#href="../brand/tokens.css"#href="./brand/tokens.css"#' "${SRC}" > "${STAG
 # The token travels in the environment of the child process only.
 M15_DEPLOY_TOKEN="${M15_DEPLOY_TOKEN}" mavis-website_deploy \
   --source "${STAGE_DIR}" \
-  --project "auditai-contracts-map"
+  --project "evolai-contracts-map"
 
 echo "Deployed: landing/m15-contracts/index.html"

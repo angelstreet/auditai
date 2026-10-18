@@ -1,5 +1,5 @@
 {
-  "name": "@auditai/web",
+  "name": "@evolai/web",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -12,10 +12,10 @@
     "clean": "rm -rf .next dist *.tsbuildinfo"
   },
   "dependencies": {
-    "@auditai/contracts": "workspace:*",
-    "@auditai/domain": "workspace:*",
-    "@auditai/i18n": "workspace:*",
-    "@auditai/ui": "workspace:^",
+    "@evolai/contracts": "workspace:*",
+    "@evolai/domain": "workspace:*",
+    "@evolai/i18n": "workspace:*",
+    "@evolai/ui": "workspace:^",
     "next": "14.2.18",
     "pg": "8.13.1",
     "react": "18.3.1",

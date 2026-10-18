@@ -5,8 +5,8 @@ import type {
   EngagementId,
   TenantId,
   UserId,
-} from '@auditai/contracts';
-import { approvalResultSchema, auditLogSchema } from '@auditai/contracts';
+} from '@evolai/contracts';
+import { approvalResultSchema, auditLogSchema } from '@evolai/contracts';
 import { withTenant } from './db';
 
 export { approvalResultSchema, auditLogSchema };

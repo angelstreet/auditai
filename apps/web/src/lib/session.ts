@@ -7,7 +7,14 @@
  * fails closed (throws) when it is missing outside local development.
  */
 
-export const SESSION_COOKIE = 'aai_session';
+export const SESSION_COOKIE = 'evolai_session';
+/** Pre-rename cookie name (ADR 0026). Read as a fallback so open sessions survive the rename. */
+export const LEGACY_SESSION_COOKIE = 'aai_session';
+
+/** Session cookie value from any cookie getter: the new name first, then the legacy name. */
+export const readSessionCookie = (
+  get: (name: string) => { value: string } | undefined,
+): string | undefined => (get(SESSION_COOKIE) ?? get(LEGACY_SESSION_COOKIE))?.value;
 export const SESSION_TTL_SECONDS = 8 * 60 * 60;
 
 export interface SessionTenant {

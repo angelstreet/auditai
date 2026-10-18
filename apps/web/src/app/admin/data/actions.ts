@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { exportKindSchema } from '@auditai/contracts';
+import { exportKindSchema } from '@evolai/contracts';
 import { deletePseudonym, listDeletionEvents } from '@/lib/deletionData';
 import { listExportRequests, runExport } from '@/lib/exportData';
 import { resolveActor } from '@/lib/authServer';
@@ -37,7 +37,7 @@ export async function triggerExportAction(
     return {
       ok: true,
       message: t('admin.data.exported', { kind: enumLabel(t, 'exportKind', kindRaw) }),
-      csv: { filename: `auditai-${kindRaw}.csv`, body: csv },
+      csv: { filename: `evolai-${kindRaw}.csv`, body: csv },
     };
   } catch (err) {
     console.error('export failed', err);

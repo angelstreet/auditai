@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import pg from 'pg';
-import type { TenantId } from '@auditai/contracts';
+import type { TenantId } from '@evolai/contracts';
 import type { AnalysisPayload } from './pipeline.js';
 
 /**

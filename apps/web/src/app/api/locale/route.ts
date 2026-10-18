@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { verifyInviteToken } from '@/lib/invitationToken';
 import { findTenantForInvitation } from '@/lib/db';
 import { getOrCreateState, setLocale } from '@/lib/surveyState';
-import { isSupportedLocale, supportedLocales } from '@auditai/i18n';
+import { isSupportedLocale, supportedLocales } from '@evolai/i18n';
 
 interface Body {
   token: string;

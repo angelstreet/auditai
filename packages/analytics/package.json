@@ -1,5 +1,5 @@
 {
-  "name": "@auditai/analytics",
+  "name": "@evolai/analytics",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -16,8 +16,8 @@
     "clean": "rm -rf dist .turbo coverage *.tsbuildinfo"
   },
   "dependencies": {
-    "@auditai/contracts": "workspace:*",
-    "@auditai/domain": "workspace:*"
+    "@evolai/contracts": "workspace:*",
+    "@evolai/domain": "workspace:*"
   },
   "devDependencies": {
     "vitest": "2.1.5"

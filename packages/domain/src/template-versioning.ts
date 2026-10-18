@@ -3,7 +3,7 @@ import {
   type QuestionItem,
   type Template,
   questionnaireVersionIdSchema,
-} from '@auditai/contracts';
+} from '@evolai/contracts';
 import { DomainError } from './ids.js';
 
 /**

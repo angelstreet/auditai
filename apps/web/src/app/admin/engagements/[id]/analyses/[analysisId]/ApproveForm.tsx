@@ -1,7 +1,7 @@
 'use client';
 
 import { useFormState, useFormStatus } from 'react-dom';
-import type { AnalysisId, TenantId } from '@auditai/contracts';
+import type { AnalysisId, TenantId } from '@evolai/contracts';
 import { useI18n } from '@/components/I18nProvider';
 import { approveAnalysisAction, type ApproveActionState } from './actions';
 

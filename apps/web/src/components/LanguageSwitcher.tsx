@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { LOCALE_COOKIE, supportedLocales, type SupportedLocale } from '@auditai/i18n';
+import { LOCALE_COOKIE, supportedLocales, type SupportedLocale } from '@evolai/i18n';
 import { useI18n } from './I18nProvider';
 
 /** Header language switcher: stores the choice in a cookie and re-renders the server tree. */

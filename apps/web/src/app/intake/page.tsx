@@ -1,11 +1,11 @@
 import { listTenantIds, tenantLabel } from '@/lib/adminData';
 import { getLatestSponsorBrief } from '@/lib/sponsorBriefData';
 import { IntakeForm } from './IntakeForm';
-import { OPPORTUNITY_STATUS_LABELS } from '@auditai/contracts';
-import { formatCurrency, formatNumber } from '@auditai/i18n';
+import { OPPORTUNITY_STATUS_LABELS } from '@evolai/contracts';
+import { formatCurrency, formatNumber } from '@evolai/i18n';
 import { getT } from '@/lib/i18n';
-import type { MessageKey } from '@auditai/i18n';
-import type { TenantId } from '@auditai/contracts';
+import type { MessageKey } from '@evolai/i18n';
+import type { TenantId } from '@evolai/contracts';
 
 export const dynamic = 'force-dynamic';
 

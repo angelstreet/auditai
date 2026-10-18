@@ -18,7 +18,7 @@ export type Role = z.infer<typeof roleSchema>;
 
 /**
  * Capabilities attach to a role. They are referenced from RLS policies, server-side guards and
- * UI gating. Adding a capability requires updating the matrix in @auditai/domain and the
+ * UI gating. Adding a capability requires updating the matrix in @evolai/domain and the
  * permissions table in the database.
  */
 export const capabilitySchema = z.enum([

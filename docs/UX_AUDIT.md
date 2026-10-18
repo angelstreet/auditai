@@ -66,7 +66,7 @@ Source: `packages/ui/src/tokens.css` (landing copy: `landing/brand/tokens.css`).
   link); `mobile-survey.spec.ts` updated for one-tap answers; `m14-smoke` now asserts the pseudonym is
   **not** shown; `style-guard` and token contrast test in CI.
 - **Smoke chain repaired**: since TASK-C made French the default, the milestone smokes (which
-  assert English copy) failed; the shared smoke login now pins `auditai_locale=en`. The manual
+  assert English copy) failed; the shared smoke login now pins `evolai_locale=en`. The manual
   E2E workflow also passes `DATABASE_URL` to the smokes (it stopped at "DATABASE_URL is required").
 
 ## Deliberately left

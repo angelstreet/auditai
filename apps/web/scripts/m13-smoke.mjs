@@ -12,7 +12,7 @@
  *      themes (axis='literacy', label='Source-checking practice') so the worker has a
  *      cross-engagement group to detect.
  *   4. Approves both analyses (`UPDATE analyses SET approved_at = now()`).
- *   5. Spawns the AI worker smoke (`pnpm --filter @auditai/ai run synergy-smoke`) and
+ *   5. Spawns the AI worker smoke (`pnpm --filter @evolai/ai run synergy-smoke`) and
  *      parses its output.
  *   6. Asserts a `synergies` row exists with both engagement ids in `source_engagement_ids`.
  *   7. Asserts a matching `audit_log` row exists with action='synergy.detect'.
@@ -199,7 +199,7 @@ const main = async () => {
   ok('upserted two approved analyses sharing one literacy theme');
 
   // Run the worker via the AI package's synergy smoke CLI.
-  const out1 = spawnOk('pnpm', ['--filter', '@auditai/ai', 'run', 'synergy-smoke'], {
+  const out1 = spawnOk('pnpm', ['--filter', '@evolai/ai', 'run', 'synergy-smoke'], {
     ...process.env,
     DATABASE_URL: databaseUrl,
     SMOKE_TENANT_ID: tenantId,
@@ -252,7 +252,7 @@ const main = async () => {
   ok(`audit_log wrote ${aRes.rows.length} synergy.detect row(s)`);
 
   // Idempotency: re-running the worker should reuse the same row.
-  const out2 = spawnOk('pnpm', ['--filter', '@auditai/ai', 'run', 'synergy-smoke'], {
+  const out2 = spawnOk('pnpm', ['--filter', '@evolai/ai', 'run', 'synergy-smoke'], {
     ...process.env,
     DATABASE_URL: databaseUrl,
     SMOKE_TENANT_ID: tenantId,

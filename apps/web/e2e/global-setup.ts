@@ -14,7 +14,7 @@ import EmbeddedPostgres from 'embedded-postgres';
  * after the test run via `globalTeardown.ts`.
  *
  * The user/role/database name match the M4 migration's `0004_app_role.sql`:
- *   user:     auditai / password: auditai / db: auditai_test
+ *   user:     auditai / password: auditai / db: evolai_test
  *
  * If `DATABASE_URL` is already set in the environment, we trust the caller (CI
  * service container or a developer-supplied local Postgres) and skip the boot.
@@ -23,7 +23,7 @@ import EmbeddedPostgres from 'embedded-postgres';
 
 const PG_USER = 'auditai';
 const PG_PASSWORD = 'auditai';
-const PG_DATABASE = 'auditai_test';
+const PG_DATABASE = 'evolai_test';
 const PREFERRED_PORT = 54330;
 const STATE_FILE = join(process.cwd(), '.playwright-database-url');
 
@@ -79,7 +79,7 @@ export default async function globalSetup(): Promise<void> {
     return;
   }
 
-  const dataDir = mkdtempSync(join(tmpdir(), 'auditai-pw-pg-'));
+  const dataDir = mkdtempSync(join(tmpdir(), 'evolai-pw-pg-'));
   const port = await findFreePort(PREFERRED_PORT);
   process.stderr.write(`[playwright] booting embedded postgres on 127.0.0.1:${port}\n`);
 
