@@ -22,10 +22,11 @@
 
 import { default as pg } from 'pg';
 import { spawnSync } from 'node:child_process';
-import { loginCookie } from './smoke-auth.mjs';
+import { signIn } from './smoke-auth.mjs';
 
 const base = process.env['LOCAL_WEB_URL'] ?? 'http://127.0.0.1:3101';
-const cookiePromise = loginCookie(base);
+const sessionPromise = signIn(base);
+const cookiePromise = sessionPromise.then((session) => session.cookie);
 const databaseUrl = process.env['DATABASE_URL'];
 if (!databaseUrl) {
   process.stderr.write('DATABASE_URL is required\n');
@@ -33,7 +34,6 @@ if (!databaseUrl) {
 }
 const tenantId = process.env['SMOKE_TENANT_ID'] ?? '11111111-1111-4111-8111-111111111111';
 const engagementId = process.env['SMOKE_ENGAGEMENT_ID'] ?? 'a5555555-4555-4555-8555-555555555555';
-const auditorId = process.env['SMOKE_AUDITOR_ID'] ?? '99999999-9999-4999-8999-999999999999';
 
 const ok = (msg) => process.stdout.write(`\u2713 ${msg}\n`);
 const fail = (msg) => {
@@ -61,6 +61,8 @@ const spawnOk = (cmd, args, env) => {
 };
 
 const main = async () => {
+  // The actor is the user behind the session the smoke signed in with (ADR 0023).
+  const { userId: auditorId } = await sessionPromise;
   // 1. AI worker populates the analyses table.
   spawnOk('pnpm', ['--filter', '@evolai/ai', 'run', 'smoke'], {
     ...process.env,

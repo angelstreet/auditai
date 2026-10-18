@@ -2,7 +2,7 @@
 
 The worker (`services/ai/src/retentionWorker.ts`) erases every pseudonym whose respondent badges are
 all past `retention_at`, using the same SQL function as the admin right-to-erasure action
-(ADR 0020). It is idempotent, so run it as often as you like; **daily** is enough.
+(ADR 0030). It is idempotent, so run it as often as you like; **daily** is enough.
 
 Entry point: `pnpm retention:run` (one pass, reads `DATABASE_URL`). Keep the URL in an
 environment file that is not in the repository.

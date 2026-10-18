@@ -9,7 +9,7 @@
 
 Accessibility was checked by eye. The done and return views gave one sentence about the next step and
 no way to reach a human. Respondents cannot erase their own answers: erasure is an auditor action
-by pseudonym (ADR 0020), so the screen must not imply self-service.
+by pseudonym (ADR 0030), so the screen must not imply self-service.
 
 ## Decision
 

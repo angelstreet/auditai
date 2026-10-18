@@ -3,7 +3,7 @@ import pg from 'pg';
 import { applyMigrations, connect } from './db.js';
 
 /**
- * Right-to-erasure (FR-09, ADR 0020). Runs in its own database so it cannot race the
+ * Right-to-erasure (FR-09, ADR 0030). Runs in its own database so it cannot race the
  * isolation suite, which drops the public schema.
  */
 const TENANT_A = '11111111-1111-4111-8111-111111111111';
