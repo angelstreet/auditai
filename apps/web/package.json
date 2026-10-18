@@ -12,10 +12,15 @@
     "clean": "rm -rf .next dist *.tsbuildinfo"
   },
   "dependencies": {
+    "@emotion/cache": "11.14.0",
+    "@emotion/react": "11.14.0",
+    "@emotion/styled": "11.14.1",
     "@evolai/contracts": "workspace:*",
     "@evolai/domain": "workspace:*",
     "@evolai/i18n": "workspace:*",
     "@evolai/ui": "workspace:^",
+    "@mui/material": "7.3.11",
+    "@mui/material-nextjs": "7.3.10",
     "next": "14.2.18",
     "pg": "8.13.1",
     "qrcode": "1.5.4",

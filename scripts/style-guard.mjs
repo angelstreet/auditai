@@ -29,6 +29,11 @@ const EXEMPT = new Map([
   [TOKENS, 'the token source'],
   [LANDING_TOKENS, 'copy of the token source, checked separately'],
   ['packages/ui/src/mascots.tsx', 'illustration artwork with its own shading palette'],
+  [
+    'packages/ui/src/palette.ts',
+    'the MUI colour source, checked against tokens.css by tokens.test.ts',
+  ],
+  ['packages/ui/src/theme.ts', 'the MUI theme: the role type scale mirrors the --text-* tokens'],
 ]);
 
 export const RULES = [

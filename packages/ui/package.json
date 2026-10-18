@@ -17,7 +17,11 @@
     "clean": "rm -rf dist .turbo coverage *.tsbuildinfo"
   },
   "dependencies": {
-    "@evolai/contracts": "workspace:*"
+    "@emotion/react": "11.14.0",
+    "@emotion/styled": "11.14.1",
+    "@evolai/contracts": "workspace:*",
+    "@mui/icons-material": "7.3.11",
+    "@mui/material": "7.3.11"
   },
   "devDependencies": {
     "@types/react": "18.3.12",

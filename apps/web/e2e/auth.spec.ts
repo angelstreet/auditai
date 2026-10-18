@@ -40,7 +40,9 @@ test.describe('auditor auth (ADR 0023)', () => {
   test('anonymous visitors are redirected from /admin/data to /login', async ({ page }) => {
     await page.goto('/admin/data');
     await expect(page).toHaveURL(/\/login\?next=%2Fadmin%2Fdata/);
-    await expect(page.getByRole('heading', { name: /sign-in/i })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { level: 1, name: /sign in|connexion|connecter/i }),
+    ).toBeVisible();
   });
 
   test('wrong password does not sign in', async ({ page }) => {
@@ -48,7 +50,7 @@ test.describe('auditor auth (ADR 0023)', () => {
     await page.fill('input[name=email]', USER_A.email);
     await page.fill('input[name=password]', 'not-the-password');
     await page.click('button[type=submit]');
-    await expect(page.locator('p[role=alert]')).toContainText('incorrect');
+    await expect(page.getByRole('alert')).toContainText('incorrect');
     await page.goto('/admin/data');
     await expect(page).toHaveURL(/\/login/);
   });

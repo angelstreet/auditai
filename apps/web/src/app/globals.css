@@ -68,11 +68,11 @@ p {
 }
 
 a {
-  color: var(--color-accent);
+  color: var(--color-accent-ink);
 }
 
 :focus-visible {
-  outline: 3px solid var(--color-blue);
+  outline: 3px solid var(--color-focus);
   outline-offset: 2px;
 }
 
@@ -274,7 +274,7 @@ a {
 }
 
 .option-button:has(input:focus-visible) {
-  outline: 3px solid var(--color-blue);
+  outline: 3px solid var(--color-focus);
   outline-offset: 2px;
 }
 
@@ -359,63 +359,43 @@ details ul {
   top: var(--space-2);
 }
 
-/* Header */
-.site-header {
-  border-bottom: 1px solid var(--color-border);
-  background: var(--color-bg);
-}
-
-.topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: var(--space-2);
+/* Header and footer (docs/UI_RULES.md §5, §7): one row, same surface as the page, hairline. */
+.topbar,
+.footer-row {
   padding-top: var(--space-2);
   padding-bottom: var(--space-2);
 }
 
-.topbar nav {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-1) var(--space-3);
-  font-size: var(--text-sm);
-}
-
-.topbar nav a,
-.topbar .home-link {
+.home-link {
   display: inline-flex;
   align-items: center;
   min-height: var(--tap-min);
-}
-
-.home-link {
   text-decoration: none;
   color: inherit;
 }
 
-.locale-toggle {
+/* Text nav links: colour and a growing accent underline on hover, never weight or width (§6, §7). */
+.nav-link {
   display: inline-flex;
+  align-items: center;
   gap: var(--space-1);
-}
-
-.locale-toggle button {
-  background: transparent;
-  border: 1px solid var(--color-border-strong);
-  border-radius: var(--radius-sm);
-  padding: var(--space-1) var(--space-2);
-  font: inherit;
-  color: var(--color-fg);
-  cursor: pointer;
   min-height: var(--tap-min);
-  min-width: var(--tap-min);
+  color: var(--color-fg);
+  font-size: var(--text-sm);
+  text-decoration: none;
+  background: linear-gradient(var(--color-accent-ink), var(--color-accent-ink)) no-repeat left
+    calc(100% - 10px) / 0 2px;
+  transition: background-size 0.15s ease;
 }
 
-.locale-toggle button[aria-pressed='true'] {
-  border-color: var(--color-accent);
-  background: var(--color-accent);
-  color: var(--color-accent-fg);
+.nav-link:hover,
+.nav-link[aria-current='page'] {
+  color: var(--color-accent-ink);
+  background-size: 100% 2px;
+}
+
+body:has(main > .wide) .footer-row {
+  max-width: var(--width-wide);
 }
 
 /* Admin tables (wide pages). */
@@ -495,14 +475,17 @@ details ul {
   margin-left: var(--space-3);
 }
 
-/* Form fields: one look for every input, select and textarea. */
-input[type='text'],
-input[type='email'],
-input[type='password'],
-input[type='number'],
-input:not([type]),
-select,
-textarea {
+/* Form fields: one look for every input, select and textarea not yet on MUI (MUI fields style
+   their own inner input; this rule would draw a second border inside them). */
+:where(
+    input[type='text'],
+    input[type='email'],
+    input[type='password'],
+    input[type='number'],
+    input:not([type]),
+    select,
+    textarea
+  ):not(.MuiInputBase-input) {
   min-height: var(--tap-min);
   padding: var(--space-2) var(--space-3);
   border: 1px solid var(--color-border-strong);
@@ -579,7 +562,7 @@ textarea {
 }
 
 .chip:has(input:focus-visible) {
-  outline: 3px solid var(--color-blue);
+  outline: 3px solid var(--color-focus);
   outline-offset: 2px;
 }
 

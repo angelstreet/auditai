@@ -26,6 +26,8 @@ export interface SessionPayload {
   /** users.id of the authenticated auditor. */
   readonly sub: string;
   readonly name: string;
+  /** Sign-in email, shown in the header account menu (docs/UI_RULES.md §11). Absent on older cookies. */
+  readonly email?: string;
   readonly tenants: readonly SessionTenant[];
   /** Seconds since epoch. */
   readonly iat: number;
@@ -111,12 +113,13 @@ export const verifySession = async (
 };
 
 export const newSessionPayload = (
-  user: { id: string; name: string },
+  user: { id: string; name: string; email?: string },
   tenants: readonly SessionTenant[],
   nowSeconds: number = Math.floor(Date.now() / 1000),
 ): SessionPayload => ({
   sub: user.id,
   name: user.name,
+  ...(user.email ? { email: user.email.trim().toLowerCase() } : {}),
   tenants,
   iat: nowSeconds,
   exp: nowSeconds + SESSION_TTL_SECONDS,

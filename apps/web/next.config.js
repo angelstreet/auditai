@@ -27,6 +27,10 @@ const SECURITY_HEADERS = [
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // Local runs on a shared, memory-tight host may skip the in-build lint and typecheck, which CI
+  // runs as their own steps anyway (`pnpm lint`, `pnpm typecheck`). Deploys never set this.
+  eslint: { ignoreDuringBuilds: process.env['NEXT_SKIP_BUILD_CHECKS'] === '1' },
+  typescript: { ignoreBuildErrors: process.env['NEXT_SKIP_BUILD_CHECKS'] === '1' },
   poweredByHeader: false,
   async headers() {
     const noindex = [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }];

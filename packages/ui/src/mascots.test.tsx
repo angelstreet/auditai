@@ -33,4 +33,11 @@ describe('M14 mascot SVGs (PRD \u00a76)', () => {
     const html = renderToStaticMarkup(<Mascot tier="fox" />);
     expect(html).toContain('Fox mascot');
   });
+
+  it('is decorative (hidden, no img role) when the label is empty', () => {
+    const html = renderToStaticMarkup(<Mascot tier="owl" label="" />);
+    expect(html).toContain('aria-hidden="true"');
+    expect(html).not.toContain('role="img"');
+    expect(html).not.toContain('<title>');
+  });
 });
