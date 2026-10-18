@@ -13,19 +13,19 @@ never commit credentials, hostnames, client names or real survey data.
 
 ## Map of the repo
 
-| Path                    | What is there                                                                                       |
-| ----------------------- | --------------------------------------------------------------------------------------------------- |
-| `apps/web`              | Next.js app: respondent flow (`/s/...`, quiz, done/return), welcome, auditor admin, login, `/board` |
-| `apps/mobile`           | Placeholder (Phase 3, optional)                                                                     |
-| `packages/contracts`    | Zod schemas and types shared everywhere (tenant, opportunity, export, deletion ...)                 |
-| `packages/domain`       | Scoring and domain rules (deterministic)                                                            |
-| `packages/i18n`         | Typed FR/EN catalogs, quiz items, locale helpers; glossary in `docs/glossary-fr-en.md`              |
-| `packages/ui`           | Design tokens (`tokens.css`), self-hosted Inter font, shared classes                                |
-| `services/ai`           | Analysis pipeline, provider abstraction (`src/llm`), redaction, cost caps, eval, retention worker   |
-| `infra/db`              | Forward-only SQL migrations (Postgres + row-level security per tenant)                              |
-| `tests/db`, `tests/e2e` | Isolation, erasure and end-to-end tests                                                             |
-| `landing`               | Static landing and mockup pages (use the same tokens and font)                                      |
-| `scripts`               | `leak-scan`, `style-guard`, `adr-numbers`, coverage threshold                                       |
+| Path                    | What is there                                                                                                                                                       |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/web`              | Next.js app: respondent flow (`/s/...`, quiz, done/return), welcome, auditor admin, login, `/board`                                                                 |
+| `apps/mobile`           | Placeholder (Phase 3, optional)                                                                                                                                     |
+| `packages/contracts`    | Zod schemas and types shared everywhere (tenant, opportunity, export, deletion ...)                                                                                 |
+| `packages/domain`       | Scoring and domain rules (deterministic)                                                                                                                            |
+| `packages/i18n`         | Typed FR/EN catalogs, quiz items, locale helpers; glossary in `docs/glossary-fr-en.md`                                                                              |
+| `packages/ui`           | Design tokens, MUI theme (light and dark), icon registry, shared components (`PageTitle`, `StatTiles`, `StatusText`, `EmptyState`, `ConfirmDialog` ...), Inter font |
+| `services/ai`           | Analysis pipeline, provider abstraction (`src/llm`), redaction, cost caps, eval, retention worker                                                                   |
+| `infra/db`              | Forward-only SQL migrations (Postgres + row-level security per tenant)                                                                                              |
+| `tests/db`, `tests/e2e` | Isolation, erasure and end-to-end tests                                                                                                                             |
+| `landing`               | Static landing and mockup pages (use the same tokens and font)                                                                                                      |
+| `scripts`               | `leak-scan`, `style-guard`, `adr-numbers`, coverage threshold                                                                                                       |
 
 ## Run, test, deploy
 
@@ -64,6 +64,8 @@ deploy script only works inside its original environment (ADR 0022).
 | I      | (6c7a69a)    | Accessibility gate (axe, keyboard), next-steps and contact block, French copy pass (ADR 0028)                                                                                           |
 | J      | 35           | ROADMAP truthful, unique ADR numbers, CODEOWNERS, real auditor ids in smokes (ADR 0031)                                                                                                 |
 | K      | (this PR)    | Production readiness: no public credentials, auditor CLI, login lockout and headers, plain public wording, region and TLS, health, retention cron, runbook (ADR 0032)                   |
+
+| L | 38, 39, 41-45 | UI glow-up on MUI: theme with a lifted dark palette, header with identity menu, footer, welcome, login, respondent flow, admin tabs and danger flow, intake; style-guard rules 7-11; header and copy-length Playwright checks (ADR 0034, `docs/UI_RULES.md`, `docs/UI_GLOWUP_PLAN.md`) |
 
 Task briefs are kept in `docs/tasks/` (TASK-A to TASK-K).
 

@@ -1,6 +1,6 @@
 import Button from '@mui/material/Button';
-import { EmptyState, Mascot, PageTitle } from '@evolai/ui';
-import { mascotTierOrder, type MascotTier, type TenantId } from '@evolai/contracts';
+import { EmptyState, Mascot, PageTitle, StatusText } from '@evolai/ui';
+import type { MascotTier, TenantId } from '@evolai/contracts';
 import { sessionTenantIds } from '@/lib/authServer';
 import { getT } from '@/lib/i18n';
 import { formatDate } from '@evolai/i18n';
@@ -60,7 +60,7 @@ export default async function TeamsPage({ searchParams }: PageProps) {
                   {tier ? (
                     <span className={`pill tier-${tier}`}>{t(`quiz.tier.${tier}`)}</span>
                   ) : (
-                    <span className="pill pill-muted">{t('admin.teams.noBadgesPill')}</span>
+                    <StatusText status="pending">{t('admin.teams.noBadgesPill')}</StatusText>
                   )}
                 </header>
                 {b ? (
@@ -93,10 +93,6 @@ export default async function TeamsPage({ searchParams }: PageProps) {
         </ul>
       )}
       <p className="footnote">{t('admin.teams.footnote')}</p>
-      <p className="muted">
-        {t('admin.teams.allTiers')}{' '}
-        {mascotTierOrder.map((tier) => t(`quiz.tier.${tier}`)).join(', ')}.
-      </p>
     </div>
   );
 }

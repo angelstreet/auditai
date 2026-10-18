@@ -71,6 +71,29 @@ Source: `packages/ui/src/tokens.css` (landing copy: `landing/brand/tokens.css`).
 
 ## Changelog
 
+### TASK-L (UI glow-up on MUI, ADR 0034)
+
+The rules are [UI_RULES.md](UI_RULES.md); the plan and the screenshot sweep are in
+[UI_GLOWUP_PLAN.md](UI_GLOWUP_PLAN.md).
+
+- **Chrome**: one 64 px header row (logo, About, Privacy, globe menu, theme icon, account control);
+  after sign-in an initials avatar with name, email, role and organisation, and sign out. Footer with
+  the trust line. Playwright checks the header box in fr/en, light/dark, signed out and in.
+- **Dark mode** is a lifted slate with the teal primary in both schemes (UI_RULES §12).
+- **Welcome**: a 2-line headline, no capitals eyebrow, one primary action and one link, the mascot
+  visual, four one-line step cards, a trust line. Playwright checks headline and card line counts.
+- **Respondent flow**: start card with time and a privacy line, large option buttons with a check,
+  status view with team progress, 404 and broken-link empty states, a visible focus ring on every
+  control.
+- **Admin**: section tabs (Portfolio, Engagements, Invitations, Teams, Synergies, Data), page titles
+  with a one-line plain subtitle, key numbers as tiles, status as icon plus word. Data: export is the
+  one primary action; erase opens a confirm dialog. Copy cuts: no milestone, requirement, tenant or
+  RFC wording on screen.
+- **Intake**: MUI fields, toggle chips, selects and sliders; the save button sits 24 px under the
+  last card.
+- **Style guard**: icons only through the registry, no emoji, one contained button per file, button
+  colours, no uppercase text.
+
 ### TASK-I (accessibility, trust, French pass)
 
 - **Done and return view**: "What happens next" is now three short steps (answers saved; when the team

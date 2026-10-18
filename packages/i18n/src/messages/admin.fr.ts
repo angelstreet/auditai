@@ -116,13 +116,12 @@ export const adminFr: AdminMessages = {
       'Chaque équipe est montrée par sa mascotte la plus fréquente. Les scores bruts restent cachés.',
     takeQuiz: 'Faire le bilan de culture IA',
     none: 'Aucune équipe pour cette organisation.',
-    noBadgesPill: 'aucun badge pour l’instant',
+    noBadgesPill: 'Aucun badge pour l’instant',
     members: 'Membres',
     computed: 'Calculé le',
     noBadges: 'La mascotte apparaît dès qu’un membre de l’équipe fait le bilan.',
     footnote:
       'Une équipe affiche sa mascotte la plus fréquente. En cas d’égalité : renard, puis chouette, puis tortue.',
-    allTiers: 'Les trois niveaux de mascotte :',
   },
   synergies: {
     title: 'Synergies détectées',

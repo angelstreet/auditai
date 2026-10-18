@@ -57,7 +57,7 @@ experiences: (1) his own auditing view, (2) the client's view. First client: **S
    in a migration, refuses without an explicit `--tenant-name`/flags): create tenant "Stratera", one engagement
    "Pilote Stratera" (fr), a team, a membership for the owner as auditor on that tenant, and the referent persona
    user "Zakaria Ayadi" with the referent role. The referent gets NO password and a non-deliverable placeholder
-   email (`...@stratera.invalid`) until the owner supplies a real address; the account is not loginable. Data is
+   email on the reserved `.invalid` domain until the owner supplies a real address; the account is not loginable. Data is
    synthetic only (no real survey answers). Document in docs/RUNBOOK.md how to later give Zakaria a real login
    (set real email and password via the auditor CLI pattern) and how to remove the placeholder.
 5. **Tests and docs**: unit and DB tests for the session/viewAs logic and RLS, Playwright for the owner switching

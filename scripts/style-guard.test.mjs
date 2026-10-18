@@ -23,6 +23,12 @@ test('external font URLs fail', () => {
   assert.equal(hits('<link rel="preconnect" href="https://fonts.gstatic.com" />').length, 1);
 });
 
+test('no ALL CAPS through styles', () => {
+  assert.equal(hits('a { text-transform: uppercase; }').length, 1);
+  assert.equal(hits("s = { textTransform: 'uppercase' }").length, 1);
+  assert.deepEqual(hits("s = { textTransform: 'none' }"), []);
+});
+
 test('existing rules still apply', () => {
   assert.equal(hits('a { font-size: 13px; }').length, 1);
   assert.equal(hits('a { color: #fff; }').length, 1);

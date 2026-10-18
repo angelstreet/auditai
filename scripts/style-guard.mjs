@@ -16,6 +16,7 @@
  *   9. At most one `variant="contained"` button per file: one primary action per view (UI_RULES §3).
  *  10. Button colours: a filled button is the primary colour; `color="error"` only on an outlined or
  *      text button; no `secondary`, `success`, `warning` or `info` buttons (UI_RULES §3).
+ *  11. No ALL CAPS through styles: no `text-transform: uppercase` (UI_RULES §2).
  *
  * Exceptions are whole files, listed below with the reason. Exit 1 on any finding.
  */
@@ -50,6 +51,12 @@ export const RULES = [
   {
     name: 'font-family outside the tokens',
     re: /font(?:-family|Family)\s*:\s*(?!\s*['"]?(?:var\(--font-(?:sans|mono)\)|inherit)['"]?\s*[;,}\n'"])[^;}\n]+/g,
+  },
+  // The static landing mockups keep their own look; the rule covers the app and packages/ui.
+  {
+    name: 'uppercase text',
+    re: /text-?transform\s*:\s*['"]?uppercase/gi,
+    skip: /^landing\//,
   },
   {
     name: 'external font URL',
@@ -119,6 +126,7 @@ export const scanText = (rel, text) => {
   text.split('\n').forEach((line, i) => {
     for (const rule of RULES) {
       if (rule.only && !rule.only.test(rel)) continue;
+      if (rule.skip && rule.skip.test(rel)) continue;
       for (const m of line.matchAll(rule.re)) {
         if (rule.name === 'hex colour' && isFalsePositive(line, m.index)) continue;
         out.push(`${rel}:${i + 1}: ${rule.name} "${m[0]}"`);
