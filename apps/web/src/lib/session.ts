@@ -20,6 +20,30 @@ export const SESSION_TTL_SECONDS = 8 * 60 * 60;
 export interface SessionTenant {
   readonly id: string;
   readonly role: string;
+  /** Set only for team-scoped client roles (team_referent): the team the membership covers. */
+  readonly teamId?: string;
+}
+
+/** Client roles the platform owner may view the app as (TASK-P, ADR 0035). */
+export const VIEW_AS_ROLES: ReadonlySet<string> = new Set(['team_referent']);
+/** The only role allowed to carry a `viewAs`. */
+export const VIEW_AS_OWNER_ROLE = 'platform_owner';
+
+/**
+ * "View as" state (ADR 0035). It lives inside the signed payload, so the browser cannot edit it,
+ * and it is re-validated on every verify: a cookie whose `viewAs` tenant is not one the same
+ * session owns as platform owner is rejected as a whole.
+ */
+export interface ViewAs {
+  readonly role: string;
+  readonly tenantId: string;
+  readonly teamId: string;
+  /** users.id of the persona being viewed (never the real actor). */
+  readonly personaId: string;
+  /** Display labels captured when the view started (persona, organisation, team). */
+  readonly label: string;
+  readonly tenantLabel: string;
+  readonly teamLabel: string;
 }
 
 export interface SessionPayload {
@@ -29,6 +53,8 @@ export interface SessionPayload {
   /** Sign-in email, shown in the header account menu (docs/UI_RULES.md §11). Absent on older cookies. */
   readonly email?: string;
   readonly tenants: readonly SessionTenant[];
+  /** Present only while the platform owner views the app as a client persona. */
+  readonly viewAs?: ViewAs;
   /** Seconds since epoch. */
   readonly iat: number;
   readonly exp: number;
@@ -81,6 +107,32 @@ export const signSession = async (
   return `${body}.${toB64Url(sig)}`;
 };
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const isLabel = (v: unknown): v is string => typeof v === 'string' && v.length <= 200;
+
+/** True when `viewAs` is well formed and the session holds platform owner on its tenant. */
+export const isValidViewAs = (
+  viewAs: unknown,
+  tenants: readonly SessionTenant[],
+): viewAs is ViewAs => {
+  if (!viewAs || typeof viewAs !== 'object') return false;
+  const v = viewAs as Record<string, unknown>;
+  return (
+    typeof v['role'] === 'string' &&
+    VIEW_AS_ROLES.has(v['role']) &&
+    typeof v['tenantId'] === 'string' &&
+    UUID_RE.test(v['tenantId']) &&
+    typeof v['teamId'] === 'string' &&
+    UUID_RE.test(v['teamId']) &&
+    typeof v['personaId'] === 'string' &&
+    UUID_RE.test(v['personaId']) &&
+    isLabel(v['label']) &&
+    isLabel(v['tenantLabel']) &&
+    isLabel(v['teamLabel']) &&
+    tenants.some((t) => t.role === VIEW_AS_OWNER_ROLE && t.id === v['tenantId'])
+  );
+};
+
 /** Returns the payload, or null for any malformed, tampered or expired cookie. */
 export const verifySession = async (
   value: string | undefined | null,
@@ -106,6 +158,9 @@ export const verifySession = async (
     ) {
       return null;
     }
+    // Defence in depth: even a correctly signed cookie cannot carry a view-as its own
+    // memberships do not allow (ADR 0035).
+    if (parsed.viewAs !== undefined && !isValidViewAs(parsed.viewAs, parsed.tenants)) return null;
     return parsed as SessionPayload;
   } catch {
     return null;
@@ -124,6 +179,21 @@ export const newSessionPayload = (
   iat: nowSeconds,
   exp: nowSeconds + SESSION_TTL_SECONDS,
 });
+
+/**
+ * Same session with `viewAs` set or cleared. `iat` and `exp` are kept, so a view-as never outlives
+ * the sign-in it was started from.
+ */
+export const withViewAs = (session: SessionPayload, viewAs: ViewAs | null): SessionPayload => {
+  const { viewAs: _previous, ...rest } = session;
+  return viewAs ? { ...rest, viewAs } : rest;
+};
+
+/** Cookie options for a re-signed session: the remaining lifetime, not a fresh one. */
+export const remainingMaxAge = (
+  session: SessionPayload,
+  nowSeconds: number = Math.floor(Date.now() / 1000),
+): number => Math.max(0, session.exp - nowSeconds);
 
 export const sessionCookieOptions = (): {
   httpOnly: true;

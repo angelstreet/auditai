@@ -39,6 +39,10 @@ import TuneOutlined from '@mui/icons-material/TuneOutlined';
 import VisibilityOffOutlined from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityOutlined from '@mui/icons-material/VisibilityOutlined';
 import WarningAmberOutlined from '@mui/icons-material/WarningAmberOutlined';
+import HomeOutlined from '@mui/icons-material/HomeOutlined';
+import InsightsOutlined from '@mui/icons-material/InsightsOutlined';
+import QrCode2Outlined from '@mui/icons-material/QrCode2Outlined';
+import SendOutlined from '@mui/icons-material/SendOutlined';
 
 /**
  * Icon registry (docs/UI_RULES.md §9): one Outlined icon per meaning. Pages use
@@ -86,6 +90,10 @@ export const icons = {
   scene: TuneOutlined,
   ai: AutoAwesomeOutlined,
   code: CodeOutlined,
+  home: HomeOutlined,
+  invite: SendOutlined,
+  qrCode: QrCode2Outlined,
+  results: InsightsOutlined,
 } as const;
 
 export type IconName = keyof typeof icons;

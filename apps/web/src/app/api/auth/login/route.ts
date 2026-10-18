@@ -6,7 +6,7 @@ import {
   sessionCookieOptions,
   signSession,
 } from '@/lib/session';
-import { ADMIN_ROLES } from '@/lib/tenantAccess';
+import { ADMIN_ROLES, CLIENT_ROLES } from '@/lib/tenantAccess';
 import { clientAddress, isLockedOut, recentFailures, recordAttempt } from '@/lib/loginThrottle';
 
 export const dynamic = 'force-dynamic';
@@ -19,6 +19,10 @@ const redirectTo = (path: string) =>
 /** Same-origin relative paths under /admin or /board only; anything else goes to /admin/data. */
 const safeNext = (raw: string | null): string =>
   raw && /^\/(admin|board)(\/[A-Za-z0-9_\-./?=&%]*)?$/.test(raw) ? raw : '/admin/data';
+
+/** A team referent lands on the client surface; staff keep their `next` (TASK-P). */
+const landing = (staff: boolean, raw: string | null): string =>
+  staff ? safeNext(raw) : raw && /^\/client(\/[A-Za-z0-9_\-./?=&%]*)?$/.test(raw) ? raw : '/client';
 
 const back = (error: string) => redirectTo(`/login?error=${error}`);
 
@@ -37,7 +41,9 @@ export async function POST(req: NextRequest) {
   }
   const memberships = await loadMemberships(user.id);
   // Same message as a wrong password: do not reveal that the credentials were right.
-  if (!memberships.some((m) => ADMIN_ROLES.has(m.role))) {
+  const staff = memberships.some((m) => ADMIN_ROLES.has(m.role));
+  const referent = memberships.some((m) => CLIENT_ROLES.has(m.role) && m.teamId);
+  if (!staff && !referent) {
     await recordAttempt(credentials.email, address, false);
     return back('invalid');
   }
@@ -45,7 +51,7 @@ export async function POST(req: NextRequest) {
   const token = await signSession(
     newSessionPayload({ ...user, email: credentials.email }, memberships),
   );
-  const res = redirectTo(safeNext(String(form.get('next') ?? '')));
+  const res = redirectTo(landing(staff, String(form.get('next') ?? '')));
   res.cookies.set(SESSION_COOKIE, token, sessionCookieOptions());
   return res;
 }

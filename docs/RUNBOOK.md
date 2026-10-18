@@ -54,6 +54,46 @@ on the live database: `auditor:create` with the live tenant ids, then sign in at
 
 If a user is locked out (5 failures in 15 minutes), wait 15 minutes. Nothing else to do.
 
+## First client and its referent (TASK-P, ADR 0035)
+
+`pnpm seed:client` creates a client tenant, one engagement (named after `--engagement-name`), one team, the
+referent persona and the owner's memberships on it (`auditor` and `platform_owner`, which unlocks "View as"). It is
+idempotent (a second run creates nothing), safe on the live database and refuses to run without explicit names.
+Names come from the command line only, never from the repository. Apply migration 0019 first.
+
+```bash
+set -a; . "$ENV_FILE"; set +a
+pnpm seed:client --tenant-name "<Client>" --engagement-name "Pilote <Client>" --team-name "<Team>" \
+  --referent-name "<First Last>" --owner-email <owner sign-in address> --locale fr \
+  [--expect-host <direct Neon host>]
+```
+
+The output lists the ids and the referent's placeholder address, `firstname-lastname@<client-slug>.invalid`. The
+referent has **no password**: the account cannot sign in, it exists for "View as" only. Sign out and in again so
+the session picks up the new `platform_owner` membership, then open the account menu: "View as".
+
+### Give a referent a real login
+
+When the owner has the referent's real address (and their agreement):
+
+```bash
+pnpm auditor:set-email --email <placeholder>.invalid --new-email <real address>   # placeholder removed
+pnpm auditor:set-password --email <real address>                                  # hidden prompt
+```
+
+`set-email` replaces the stored hash, so the placeholder no longer exists afterwards; both steps write an
+`audit_log` row without any address. The referent signs in at `/login` and lands on `/client`. To revoke:
+`pnpm auditor:disable --email <real address>`. To remove a persona entirely, end its membership
+(`UPDATE memberships SET ends_at = now() WHERE user_id = ...`) as the service account.
+
+### View as (owner)
+
+Account menu, "View as": "Me: auditor" or a client persona. While viewing as, a banner says so on every page,
+everything is read only (actions refused with a message), admin pages send you to the team space, and each page
+view writes a `view_as.request` row with your own user id. "Back to my view" (banner or menu) ends it; signing out
+or the 8-hour session expiry ends it too. Trail: `SELECT created_at, action, payload_json FROM audit_log WHERE
+action LIKE 'view_as.%' ORDER BY created_at DESC LIMIT 50;` (as the service account).
+
 ## Rotate secrets
 
 1. **App secrets** (`AUTH_SESSION_SECRET`, `SURVEY_SIGNING_SECRET`, `CRON_SECRET`): generate a value with

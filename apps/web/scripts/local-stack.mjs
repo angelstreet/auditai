@@ -155,6 +155,7 @@ const runMigrations = async () => {
   // Migration 0017 clears the synthetic auditors' passwords (they are public); local only.
   log('seeding synthetic auditor passwords (local only)');
   await runNodeScript('seed-synthetic-auth.mjs', 'seed-synthetic-auth');
+  await runNodeScript('seed-synthetic-client.mjs', 'seed-synthetic-client');
 };
 
 const startPostgres = async () => {

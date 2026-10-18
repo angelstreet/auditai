@@ -37,6 +37,20 @@ export const auditActionSchema = z.enum([
   'user.create',
   'user.set_password',
   'user.disable',
+  'invitation.create_batch',
+  'invitation.export',
+  'invitation.revoke',
+  'invitation.extend',
+  'invitation.regenerate',
+  'invitation.remind',
+  'invitation.purge_addresses',
+  'invitation.settings',
+  'view_as.start',
+  'view_as.stop',
+  'view_as.request',
+  'view_as.refused',
+  'client.seed',
+  'user.set_email',
 ]);
 export type AuditAction = z.infer<typeof auditActionSchema>;
 
@@ -48,6 +62,7 @@ export const auditTargetKindSchema = z.enum([
   'export_request',
   'invitation',
   'user',
+  'engagement',
 ]);
 export type AuditTargetKind = z.infer<typeof auditTargetKindSchema>;
 

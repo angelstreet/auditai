@@ -5,6 +5,7 @@
  *   pnpm auditor:create       --email a@b.c --name "Full Name" --tenant <uuid> [--tenant <uuid>]
  *   pnpm auditor:set-password --email a@b.c
  *   pnpm auditor:disable      --email a@b.c
+ *   pnpm auditor:set-email    --email <placeholder address> --new-email <real address>
  *
  * The password is read from a hidden prompt (TTY) or from stdin (one line), never from argv, and
  * is never logged. Connection string: DATABASE_URL_UNPOOLED, else DATABASE_URL. Optional
@@ -17,6 +18,7 @@ import {
   disableAuditor,
   resolveTargetUrl,
   setAuditorPassword,
+  setUserEmail,
 } from './auditor-lib.mjs';
 
 const parseArgs = (argv) => {
@@ -72,12 +74,12 @@ const readSecret = (prompt) =>
 const main = async () => {
   const [command, ...rest] = process.argv.slice(2);
   const args = parseArgs(rest);
-  if (!['create', 'set-password', 'disable'].includes(command ?? '')) {
-    throw new Error('usage: auditor.mjs create|set-password|disable --email ...');
+  if (!['create', 'set-password', 'disable', 'set-email'].includes(command ?? '')) {
+    throw new Error('usage: auditor.mjs create|set-password|disable|set-email --email ...');
   }
   const url = resolveTargetUrl(process.env, args['expect-host']);
   let password;
-  if (command !== 'disable') {
+  if (command === 'create' || command === 'set-password') {
     password = await readSecret('New password (min 12 characters): ');
     if (process.stdin.isTTY) {
       const again = await readSecret('Repeat password: ');
@@ -98,6 +100,9 @@ const main = async () => {
     } else if (command === 'set-password') {
       const r = await setAuditorPassword(client, { email: args.email, password });
       process.stdout.write(`password updated for ${r.id}\n`);
+    } else if (command === 'set-email') {
+      const r = await setUserEmail(client, { email: args.email, newEmail: args['new-email'] });
+      process.stdout.write(`e-mail updated for ${r.id}\n`);
     } else {
       const r = await disableAuditor(client, { email: args.email });
       process.stdout.write(`disabled ${r.id}\n`);

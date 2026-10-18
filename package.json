@@ -36,6 +36,8 @@
     "auditor:create": "node infra/db/scripts/auditor.mjs create",
     "auditor:set-password": "node infra/db/scripts/auditor.mjs set-password",
     "auditor:disable": "node infra/db/scripts/auditor.mjs disable",
+    "auditor:set-email": "node infra/db/scripts/auditor.mjs set-email",
+    "seed:client": "node infra/db/scripts/client-seed.mjs",
     "retention:run": "pnpm --filter @evolai/ai run retention-run",
     "ai:eval": "pnpm --filter @evolai/ai run eval",
     "m15b:smoke": "node apps/web/scripts/m15b-smoke.mjs",

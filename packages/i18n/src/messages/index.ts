@@ -6,5 +6,6 @@ import { fr } from './fr.js';
 type Shape<T> = { [K in keyof T]: T[K] extends string ? string : Shape<T[K]> };
 export type Messages = Shape<typeof en>;
 export type AdminMessages = Messages['admin'];
+export type ClientMessages = Messages['client'];
 
 export const messages: Record<SupportedLocale, Messages> = { en, fr };

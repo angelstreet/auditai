@@ -4,6 +4,7 @@ import './globals.css';
 import AppProviders from '@/components/chrome/AppProviders';
 import SiteFooter from '@/components/chrome/SiteFooter';
 import SiteHeader from '@/components/chrome/SiteHeader';
+import ViewAsBanner from '@/components/chrome/ViewAsBanner';
 import { I18nProvider } from '@/components/I18nProvider';
 import RouteFocus from '@/components/RouteFocus';
 import { getT } from '@/lib/i18n';
@@ -52,6 +53,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             </a>
             <RouteFocus />
             <SiteHeader />
+            <ViewAsBanner />
             <main id="main" tabIndex={-1} className="container">
               {children}
             </main>

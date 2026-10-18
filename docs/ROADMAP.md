@@ -53,6 +53,7 @@ Work that came out of the Phase 1 and Phase 2 review. Each task has a brief in `
 | I    | Accessibility gate (axe, keyboard), next steps and contact block, French copy pass (ADR 0028)               | direct commit 6c7a69a | done        |
 | J    | Housekeeping: this roadmap and README, ADR number check, CODEOWNERS, smoke actors, name audit (ADR 0031)    | #35                   | done        |
 | K    | Production readiness: credentials, auditor CLI, login hardening, wording, region, health, cron (ADR 0032)   | this PR               | in progress |
+| P    | "View as" for the owner (signed, read only, audited) and the team referent space `/client` (ADR 0035)       | see git log           | done        |
 
 CI fixes that landed alongside: #27 (database URL passed through turbo to the tests) and #28 (smokes and
 mobile-survey e2e made green).
@@ -71,6 +72,10 @@ mobile-survey e2e made green).
   email delivery behind a provider interface, per-team tracking with a minimum group of 5, reminders by cron or a
   resend list, revoke, extend and regenerate, with an admin Invitations page (progress tiles, per-team bars, export, reminders). Still open: a nav link from the restyled admin shell (TASK-L), a live run of the Brevo adapter (needs the owner's key),
   and the owner telling each client about the address window before email mode is switched on.
+- **Client referent space (TASK-P, ADR 0035):** done: the owner can view the app as a client referent (read only,
+  audited), real referents can sign in to `/client` (progress, invitations for their team, approved results), and
+  `pnpm seed:client` seeds the first client. Still open: a client sponsor view (aggregated reports), giving the
+  first referent a real login (owner supplies the address), and SSO for client users.
 - **Real devices and assistive technology:** a run on real phones at 360 px and a human screen-reader pass.
   The axe and keyboard gates cover automation only.
 - **Phase 2 and Phase 3 items:** the remaining audit-operations items; Phase 3 (FR-15 to FR-17) is drafted

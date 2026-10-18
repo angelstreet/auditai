@@ -14,6 +14,7 @@ import { writeRespondentBadge } from '@/lib/respondentBadgeData';
 import { getT } from '@/lib/i18n';
 import { verifyInviteToken } from '@/lib/invitationToken';
 import { findInvitation, gateFor } from '@/lib/respondent';
+import { viewAsRefusal } from '@/lib/viewAsGuard';
 
 export interface QuizActionState {
   ok: boolean;
@@ -37,6 +38,8 @@ const saveQuiz = async (
   formData: FormData,
 ): Promise<SaveResult> => {
   const { t } = getT();
+  const readOnly = await viewAsRefusal('/quiz');
+  if (readOnly) return { ok: false, message: readOnly };
   if (!isUuidV4(tenantId)) return { ok: false, message: t('quiz.errInvalidTenant') };
   if (!isPseudonym(pseudonym)) return { ok: false, message: t('quiz.errInvalidPseudonym') };
   const answers: Record<string, string> = {};

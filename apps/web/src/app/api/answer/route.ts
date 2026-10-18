@@ -5,6 +5,7 @@ import { findInvitation, gateFor } from '@/lib/respondent';
 import { getOrCreateState, isSubmitted, recordAnswer } from '@/lib/surveyState';
 import { SYNTHETIC_QUESTIONS } from '@/lib/syntheticTemplate';
 import { parseAnswerValue } from '@/lib/answerParser';
+import { viewAsRefusal } from '@/lib/viewAsGuard';
 
 interface Body {
   token: string;
@@ -23,6 +24,10 @@ interface Body {
  *    seed time \u2014 see `infra/db/migrations/0003_seed_synthetic.sql`).
  */
 export async function POST(req: NextRequest) {
+  // The owner viewing as a client must not answer a survey for real (ADR 0035).
+  if (await viewAsRefusal('/api/answer')) {
+    return NextResponse.json({ ok: false, error: 'read_only' }, { status: 403 });
+  }
   let body: Body;
   try {
     body = (await req.json()) as Body;

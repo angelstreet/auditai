@@ -1,4 +1,5 @@
 import { adminEn } from './admin.en.js';
+import { clientEn } from './client.en.js';
 
 /**
  * English catalog: the source of truth for the key set. `fr.ts` must mirror it exactly
@@ -268,6 +269,7 @@ export const en = {
     archived: 'Archived',
   },
   admin: adminEn,
+  client: clientEn,
   auth: {
     notSignedIn: 'Not signed in',
     notMember: 'Not a member of this tenant',
