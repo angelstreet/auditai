@@ -28,5 +28,6 @@ export const loginCookie = async (base, user = SYNTHETIC_USERS.a) => {
   const setCookie = res.headers.get('set-cookie') ?? '';
   const m = /aai_session=[^;]+/.exec(setCookie);
   if (res.status !== 303 || !m) throw new Error(`smoke login failed: HTTP ${res.status}`);
-  return m[0];
+  // The smokes assert English copy; the app defaults to French without a choice (ADR 0024).
+  return `${m[0]}; auditai_locale=en`;
 };
