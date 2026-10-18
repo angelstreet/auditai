@@ -2,8 +2,8 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { readSessionCookie, verifySession } from '@/lib/session';
 
 /**
- * Gate for the auditor and client surfaces (ADR 0023, ADR 0035). Respondent routes (/s, /intake, /quiz, /welcome,
- * /privacy, /about) are deliberately outside the matcher. Pages and actions re-check the
+ * Gate for the auditor and client surfaces (ADR 0023, ADR 0035). /intake joins them (ADR 0036). Respondent routes
+ * (/s, /quiz, /welcome, /privacy, /about) are deliberately outside the matcher. Pages and actions re-check the
  * session themselves; this is the first line, not the only one.
  */
 export async function middleware(req: NextRequest) {
@@ -29,4 +29,6 @@ export async function middleware(req: NextRequest) {
   return NextResponse.redirect(login);
 }
 
-export const config = { matcher: ['/admin/:path*', '/board', '/client/:path*', '/client'] };
+export const config = {
+  matcher: ['/admin/:path*', '/board', '/intake', '/client/:path*', '/client'],
+};

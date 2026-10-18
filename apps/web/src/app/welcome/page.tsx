@@ -3,9 +3,7 @@ import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import type { TenantId } from '@evolai/contracts';
 import { AppIcon, IconTile, Mascot, type IconName } from '@evolai/ui';
-import { listTenantIds } from '@/lib/adminData';
 import { getT } from '@/lib/i18n';
 
 export const dynamic = 'force-dynamic';
@@ -26,10 +24,8 @@ const STEPS: ReadonlyArray<{ icon: IconName; n: 1 | 2 | 3 | 4 }> = [
  * two-line headline, one-line subtitle, one primary action and one secondary link, a visual;
  * then four one-line benefit tiles and a trust line. Footer comes from the layout.
  */
-export default async function WelcomePage() {
+export default function WelcomePage() {
   const { t } = getT();
-  const tenants = await listTenantIds();
-  const current = (tenants[0] ?? '11111111-1111-4111-8111-111111111111') as TenantId;
   return (
     <div className="wide">
       <Box
@@ -68,7 +64,7 @@ export default async function WelcomePage() {
             <Button
               variant="contained"
               size="large"
-              href={`/intake?tenant=${current}`}
+              href="/intake"
               endIcon={<AppIcon name="forward" />}
             >
               {t('welcome.ctaIntake')}

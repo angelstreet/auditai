@@ -2,12 +2,11 @@
 
 import { revalidatePath } from 'next/cache';
 import { sponsorBriefWriteSchema, type TenantId } from '@evolai/contracts';
+import { getSession, resolveActor } from '@/lib/authServer';
+import { pickTenant } from '@/lib/tenantAccess';
 import { createSponsorBrief } from '@/lib/sponsorBriefData';
 import { getT } from '@/lib/i18n';
 import { viewAsRefusal } from '@/lib/viewAsGuard';
-
-const isUuidV4 = (v: string): boolean =>
-  /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(v);
 
 export interface IntakeActionState {
   ok: boolean;
@@ -31,10 +30,13 @@ export async function saveSponsorBriefAction(
   const { t } = getT();
   const readOnly = await viewAsRefusal('/intake');
   if (readOnly) return { ok: false, message: readOnly };
-  const tenantId = String(formData.get('tenantId') ?? '');
-  if (!isUuidV4(tenantId)) {
-    return { ok: false, message: t('intake.errInvalidTenant') };
-  }
+  // The tenant is the session's own (ADR 0036); a tenantId in the form is ignored.
+  const session = await getSession();
+  if (!session) return { ok: false, message: t('auth.notSignedIn') };
+  const tenantId = pickTenant(session, undefined);
+  if (!tenantId) return { ok: false, message: t('auth.notMember') };
+  const actor = await resolveActor(tenantId);
+  if (!actor.ok) return { ok: false, message: actor.message };
   const budgetRaw = String(formData.get('annualBudgetEur') ?? '').trim();
   const annualBudgetEur = budgetRaw === '' ? null : Number(budgetRaw);
   if (annualBudgetEur !== null && (!Number.isFinite(annualBudgetEur) || annualBudgetEur < 0)) {

@@ -29,19 +29,13 @@ const findOption = (code: string, value: string): { weight: number } | undefined
   LITERACY_QUIZ.find((q) => q.code === code)?.options.find((o) => o.value === value);
 
 type SaveResult = { ok: false; message: string } | { ok: true; tier: MascotTier };
+type ScoreResult =
+  | { ok: false; message: string }
+  | { ok: true; quizScore: ReturnType<typeof computeQuizScore>; sourceAnswers: QuizAnswer[] };
 
-/** Validate the five answers, write the badge row, return the mascot tier (never the raw score). */
-const saveQuiz = async (
-  tenantId: string,
-  pseudonym: string,
-  engagementId: string | null,
-  formData: FormData,
-): Promise<SaveResult> => {
+/** Validate the five answers and score them. Pure: no tenant, no database. */
+const scoreQuiz = (formData: FormData): ScoreResult => {
   const { t } = getT();
-  const readOnly = await viewAsRefusal('/quiz');
-  if (readOnly) return { ok: false, message: readOnly };
-  if (!isUuidV4(tenantId)) return { ok: false, message: t('quiz.errInvalidTenant') };
-  if (!isPseudonym(pseudonym)) return { ok: false, message: t('quiz.errInvalidPseudonym') };
   const answers: Record<string, string> = {};
   for (const q of LITERACY_QUIZ) {
     const v = formData.get(q.code);
@@ -60,7 +54,24 @@ const saveQuiz = async (
     questionCode: q.code,
     value: answers[q.code] ?? '',
   }));
-  const quizScore = computeQuizScore(answers);
+  return { ok: true, quizScore: computeQuizScore(answers), sourceAnswers };
+};
+
+/** Validate the five answers, write the badge row, return the mascot tier (never the raw score). */
+const saveQuiz = async (
+  tenantId: string,
+  pseudonym: string,
+  engagementId: string | null,
+  formData: FormData,
+): Promise<SaveResult> => {
+  const { t } = getT();
+  const readOnly = await viewAsRefusal('/quiz');
+  if (readOnly) return { ok: false, message: readOnly };
+  if (!isUuidV4(tenantId)) return { ok: false, message: t('quiz.errInvalidTenant') };
+  if (!isPseudonym(pseudonym)) return { ok: false, message: t('quiz.errInvalidPseudonym') };
+  const scored = scoreQuiz(formData);
+  if (!scored.ok) return scored;
+  const { quizScore, sourceAnswers } = scored;
   const payload: RespondentBadgeWrite = {
     tenantId: tenantId as TenantId,
     respondentPseudonym: pseudonym,
@@ -78,18 +89,19 @@ const saveQuiz = async (
   return { ok: true, tier: mascotTierForScore(quizScore) };
 };
 
-/** Public demo quiz (`/quiz`): tenant + pseudonym come from the form. */
+/**
+ * Public demo quiz (`/quiz`, ADR 0036): anonymous, so it has no tenant and stores nothing. It scores
+ * the answers and shows the tier; only the invitation-bound quiz writes a badge.
+ */
 export async function submitQuizAction(
   _prev: QuizActionState,
   formData: FormData,
 ): Promise<QuizActionState> {
-  const pseudonym = String(formData.get('respondentPseudonym') ?? '');
-  const result = await saveQuiz(String(formData.get('tenantId') ?? ''), pseudonym, null, formData);
-  if (!result.ok) return result;
-  revalidatePath('/quiz');
-  revalidatePath('/quiz/result');
-  // Redirect after successful submission; the result page reads the badge back.
-  redirect(`/quiz/result?pseudonym=${encodeURIComponent(pseudonym)}&tier=${result.tier}`);
+  const readOnly = await viewAsRefusal('/quiz');
+  if (readOnly) return { ok: false, message: readOnly };
+  const scored = scoreQuiz(formData);
+  if (!scored.ok) return scored;
+  redirect(`/quiz/result?tier=${mascotTierForScore(scored.quizScore)}`);
 }
 
 /**
