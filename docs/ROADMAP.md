@@ -69,7 +69,7 @@ mobile-survey e2e made green).
 - **Gate D — cross-company benchmarks:** not started (Phase 3).
 - **Invitations and reminders (FR-03):** done in TASK-N (ADR 0033): bulk links with CSV and QR sheet, optional
   email delivery behind a provider interface, per-team tracking with a minimum group of 5, reminders by cron or a
-  resend list, revoke, extend and regenerate. Still open: a live run of the Brevo adapter (needs the owner's key),
+  resend list, revoke, extend and regenerate, with an admin Invitations page (progress tiles, per-team bars, export, reminders). Still open: a nav link from the restyled admin shell (TASK-L), a live run of the Brevo adapter (needs the owner's key),
   and the owner telling each client about the address window before email mode is switched on.
 - **Real devices and assistive technology:** a run on real phones at 360 px and a human screen-reader pass.
   The axe and keyboard gates cover automation only.

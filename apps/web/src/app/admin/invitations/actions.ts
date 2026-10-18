@@ -16,6 +16,7 @@ import { sendInvitationEmails } from '@/lib/invitationDelivery';
 import { MissingEmailKey } from '@/lib/invitationCrypto';
 import { EmailNotConfigured, resolveEmailProvider } from '@/lib/emailProvider';
 import { isUuid, parseCreateForm } from '@/lib/invitationForm';
+import type { InviteActionState } from './state';
 import { parseReminderDays, resolveBaseUrl } from '@/lib/invitationTracking';
 
 /**
@@ -23,15 +24,6 @@ import { parseReminderDays, resolveBaseUrl } from '@/lib/invitationTracking';
  * (`resolveActor`); the form's tenant id is only a selector. Results are codes, mapped to words by
  * the page, so no address or link ever travels back in an error message.
  */
-export interface InviteActionState {
-  readonly ok: boolean;
-  readonly code: string;
-  readonly count?: number;
-  readonly emailSent?: number;
-  readonly emailFailed?: number;
-}
-
-export const idleState: InviteActionState = { ok: false, code: 'idle' };
 
 const baseUrl = (): string => {
   const h = headers();
@@ -145,7 +137,7 @@ type PerInvitation = 'revoke' | 'extend' | 'regenerate';
 export async function invitationOperationAction(
   _prev: InviteActionState,
   fd: FormData,
-): Promise<InviteActionState & { link?: string }> {
+): Promise<InviteActionState> {
   const g = await guard(fd);
   const invitationId = String(fd.get('invitationId') ?? '');
   const op = String(fd.get('op') ?? '') as PerInvitation;
