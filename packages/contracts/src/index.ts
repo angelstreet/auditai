@@ -20,3 +20,4 @@ export * from './synergy.js';
 export * from './respondentBadge.js';
 export * from './export.js';
 export * from './deletion.js';
+export * from './redactionTerm.js';

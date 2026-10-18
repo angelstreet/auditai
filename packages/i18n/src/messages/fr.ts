@@ -53,6 +53,7 @@ export const fr: Messages = {
     notFoundBody:
       'Vérifiez que le lien est complet. Ou demandez-en un nouveau à votre contact d’équipe.',
     notFoundHome: 'Aller à l’accueil',
+    action: 'Action',
   },
   meta: {
     title: 'EvolAI — Comprendre. S’adapter. Évoluer.',

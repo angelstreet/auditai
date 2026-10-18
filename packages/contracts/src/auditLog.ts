@@ -51,6 +51,8 @@ export const auditActionSchema = z.enum([
   'view_as.refused',
   'client.seed',
   'user.set_email',
+  'redaction_term.add',
+  'redaction_term.remove',
 ]);
 export type AuditAction = z.infer<typeof auditActionSchema>;
 
@@ -63,6 +65,7 @@ export const auditTargetKindSchema = z.enum([
   'invitation',
   'user',
   'engagement',
+  'redaction_term',
 ]);
 export type AuditTargetKind = z.infer<typeof auditTargetKindSchema>;
 

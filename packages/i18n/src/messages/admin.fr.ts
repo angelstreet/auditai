@@ -64,6 +64,7 @@ export const adminFr: AdminMessages = {
     tabTeams: 'Équipes',
     tabSynergies: 'Synergies',
     tabData: 'Données',
+    tabRedaction: 'Rédaction',
   },
   engagements: {
     title: 'Missions d’audit',
@@ -141,6 +142,34 @@ export const adminFr: AdminMessages = {
     errInvalidStatus: 'Statut invalide',
     nowStatus: 'La synergie est maintenant : {status}',
     errTransition: 'La transition a échoué. Veuillez réessayer.',
+  },
+  redaction: {
+    title: 'Termes de rédaction',
+    intro:
+      'Noms que le rédacteur remplace par des espaces réservés avant tout appel de modèle (PRD §10, porte B).',
+    none: 'Aucun terme pour l’instant. Ajoutez-en un pour démarrer la rédaction.',
+    addTitle: 'Ajouter un terme',
+    termLabel: 'Terme',
+    termPlaceholder: 'ex. Projet Étoile du Nord',
+    termHelp:
+      'De 2 à 80 caractères. Mis en minuscules avant l’écriture ; les variantes de casse se replient sur la même ligne.',
+    add: 'Ajouter le terme',
+    adding: 'Ajout…',
+    added: 'Terme {term} ajouté',
+    remove: 'Retirer',
+    removing: 'Retrait…',
+    removed: 'Terme {term} retiré',
+    errAdd: 'Échec de l’ajout. Réessayez.',
+    errRemove: 'Échec du retrait. Réessayez.',
+    colTerm: 'Terme',
+    colAdded: 'Ajouté',
+    colAction: 'Action',
+    actionAdd: 'Ajouté',
+    actionRemove: 'Retiré',
+    auditTitle: 'Modifications récentes ({n})',
+    noAudit: 'Aucune modification pour l’instant.',
+    footnote:
+      'Chaque ajout et retrait est consigné dans le journal d’audit ; la trace conserve le terme et l’auteur.',
   },
   data: {
     title: 'Exports et effacement',
