@@ -18,7 +18,7 @@ import { LOCALE_COOKIE, supportedLocales, type SupportedLocale } from '@evolai/i
 import { AppIcon } from '@evolai/ui';
 import { THEME_COOKIE } from '@/lib/themeChoice';
 import { useI18n } from '../I18nProvider';
-import { viewAsMenuItems, type ViewAsMenu } from './ViewAsMenuSection';
+import { ViewAsForm, viewAsMenuItems, type ViewAsMenu } from './ViewAsMenuSection';
 
 const YEAR = 31536000;
 
@@ -219,15 +219,22 @@ export function AccountMenu({ identity }: { identity: Identity | null }) {
           </ListItemIcon>
           <ListItemText>{t('common.account.workspace')}</ListItemText>
         </MenuItem>
-        <Box component="form" method="post" action="/api/auth/logout" sx={{ m: 0 }}>
-          <MenuItem component="button" type="submit" sx={{ width: '100%' }} data-testid="sign-out">
-            <ListItemIcon>
-              <AppIcon name="signOut" />
-            </ListItemIcon>
-            <ListItemText>{t('common.account.signOut')}</ListItemText>
-          </MenuItem>
-        </Box>
+        {/* The forms live outside the menu (below); a form inside role="menu" breaks its ARIA structure. */}
+        <MenuItem
+          component="button"
+          type="submit"
+          form="account-sign-out-form"
+          sx={{ width: '100%' }}
+          data-testid="sign-out"
+        >
+          <ListItemIcon>
+            <AppIcon name="signOut" />
+          </ListItemIcon>
+          <ListItemText>{t('common.account.signOut')}</ListItemText>
+        </MenuItem>
       </Menu>
+      <form id="account-sign-out-form" method="post" action="/api/auth/logout" hidden />
+      {identity.viewAs ? <ViewAsForm /> : null}
     </>
   );
 }

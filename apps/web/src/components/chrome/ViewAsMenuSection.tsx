@@ -1,13 +1,12 @@
 'use client';
 
-import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import ListSubheader from '@mui/material/ListSubheader';
 import MenuItem from '@mui/material/MenuItem';
 import { AppIcon } from '@evolai/ui';
-import { useI18n } from '../I18nProvider';
+import type { useI18n } from '../I18nProvider';
 
 export interface ViewAsOption {
   /** memberships.id posted back; the server re-reads and re-checks everything else. */
@@ -22,10 +21,18 @@ export interface ViewAsMenu {
   readonly currentId: string | null;
 }
 
+const FORM_ID = 'view-as-form';
+
+/** The form the "View as" entries submit (outside the menu, so the menu keeps its ARIA roles). */
+export function ViewAsForm() {
+  return <form id={FORM_ID} method="post" action="/api/view-as" hidden />;
+}
+
 /**
  * "View as" section of the account menu (TASK-P, ADR 0035), owner only: "Me: auditor" plus one
- * entry per client persona. Each entry is a tiny form posting to /api/view-as, so it works without
- * JavaScript and the server decides. Returned as an array: MUI Menu does not accept fragments.
+ * entry per client persona. Each entry is a submit button of {@link ViewAsForm} carrying its value,
+ * so it works without JavaScript and the server decides. Returned as an array: MUI Menu does not
+ * accept fragments.
  */
 export function viewAsMenuItems(menu: ViewAsMenu, t: ReturnType<typeof useI18n>['t']) {
   const entry = (
@@ -35,30 +42,32 @@ export function viewAsMenuItems(menu: ViewAsMenu, t: ReturnType<typeof useI18n>[
     current: boolean,
     icon: 'account' | 'visibility',
   ) => (
-    <Box key={value} component="form" method="post" action="/api/view-as" sx={{ m: 0 }}>
-      <input type="hidden" name="persona" value={value} />
-      <MenuItem
-        component="button"
-        type="submit"
-        selected={current}
-        aria-current={current ? 'true' : undefined}
-        title={aria}
-        data-testid={value === 'self' ? 'view-as-self' : 'view-as-persona'}
-        sx={{ width: '100%' }}
-      >
-        <ListItemIcon>
-          <AppIcon name={current ? 'success' : icon} />
-        </ListItemIcon>
-        <ListItemText
-          primary={label}
-          secondary={current ? t('client.viewAs.current') : undefined}
-          primaryTypographyProps={{ sx: { whiteSpace: 'normal' } }}
-        />
-      </MenuItem>
-    </Box>
+    <MenuItem
+      key={value}
+      component="button"
+      type="submit"
+      form={FORM_ID}
+      name="persona"
+      value={value}
+      selected={current}
+      aria-current={current ? 'true' : undefined}
+      title={current ? `${aria} (${t('client.viewAs.current')})` : aria}
+      data-testid={value === 'self' ? 'view-as-self' : 'view-as-persona'}
+      sx={{ width: '100%' }}
+    >
+      <ListItemIcon>
+        <AppIcon name={current ? 'success' : icon} />
+      </ListItemIcon>
+      <ListItemText primaryTypographyProps={{ sx: { whiteSpace: 'normal' } }}>{label}</ListItemText>
+    </MenuItem>
   );
   return [
-    <ListSubheader key="view-as-title" sx={{ bgcolor: 'transparent', lineHeight: 2.5 }}>
+    <ListSubheader
+      key="view-as-title"
+      component="div"
+      role="presentation"
+      sx={{ bgcolor: 'transparent', lineHeight: 2.5, color: 'text.secondary' }}
+    >
       {t('client.viewAs.section')}
     </ListSubheader>,
     entry(

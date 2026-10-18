@@ -5,7 +5,6 @@ import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
-import Tooltip from '@mui/material/Tooltip';
 import { AppIcon } from '@evolai/ui';
 import { useI18n } from '@/components/I18nProvider';
 import { clientIdle } from '@/lib/clientActionState';
@@ -19,7 +18,7 @@ function Submit({ readOnly }: { readOnly: boolean }) {
       type="submit"
       variant="contained"
       disabled={pending}
-      aria-disabled={readOnly || undefined}
+      aria-describedby={readOnly ? 'client-count-helper-text' : undefined}
       startIcon={<AppIcon name="add" size={16} />}
       data-testid="client-create-links"
       sx={{ minHeight: 44 }}
@@ -27,13 +26,9 @@ function Submit({ readOnly }: { readOnly: boolean }) {
       {t('client.invitations.submit')}
     </Button>
   );
-  // A disabled-looking primary always says why (UI_RULES §3). It still posts, and the server
-  // refuses: the read-only rule is enforced there, not here.
-  return readOnly ? (
-    <Tooltip title={t('client.invitations.readOnlyHint')}>{button}</Tooltip>
-  ) : (
-    button
-  );
+  // In read only the button still posts and the server refuses: the rule is enforced there.
+  // Why it will be refused is the count field's helper text, linked here (UI_RULES §3).
+  return button;
 }
 
 /** "Create links" for the referent's team: one number, one primary action. */
@@ -81,6 +76,7 @@ export default function CreateLinksForm({
           name="count"
           type="number"
           label={t('client.invitations.count')}
+          id="client-count"
           helperText={
             readOnly ? t('client.invitations.readOnlyHint') : t('client.invitations.countHint')
           }
