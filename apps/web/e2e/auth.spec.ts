@@ -101,6 +101,8 @@ test.describe('auditor auth (ADR 0023)', () => {
 
     await page.fill('input[name=respondentPseudonym]', 'synthetic-employee-001');
     await page.getByRole('button', { name: 'Erase respondent' }).click();
+    // Erase only runs from the confirm dialog (UI_RULES §3).
+    await page.getByRole('dialog').getByRole('button', { name: 'Erase respondent' }).click();
     await expect(page.getByText('Not a member of this tenant').nth(1)).toBeVisible();
 
     expect([await exportsB(), await erasuresB()]).toEqual(before);

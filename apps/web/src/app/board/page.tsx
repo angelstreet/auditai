@@ -1,5 +1,8 @@
+import { Suspense } from 'react';
 import Link from 'next/link';
-import { Mascot } from '@evolai/ui';
+import Button from '@mui/material/Button';
+import { Mascot, PageTitle } from '@evolai/ui';
+import AdminTabs from '@/components/admin/AdminTabs';
 import { listEngagements } from '@/lib/adminData';
 import { sessionTenantIds } from '@/lib/authServer';
 import { listLatestSponsorBriefs } from '@/lib/sponsorBriefData';
@@ -199,21 +202,26 @@ export default async function BoardPage() {
 
   return (
     <div className="wide">
-      <h1>{t('admin.board.title')}</h1>
-      <p className="muted">
-        {t('admin.board.summary', {
+      <Suspense fallback={null}>
+        <AdminTabs />
+      </Suspense>
+      <PageTitle
+        title={t('admin.board.title')}
+        subtitle={t('admin.board.summary', {
           engagements: engagementsPerTenant.reduce((acc, x) => acc + x.engagements.length, 0),
           briefs: briefs.length,
         })}
-      </p>
-      <p className="actions">
-        <Link className="btn btn-secondary btn-sm" href="/welcome">
-          {t('admin.board.welcome')}
-        </Link>{' '}
-        <Link className="btn btn-secondary btn-sm" href="/intake">
-          {t('admin.board.openIntake')}
-        </Link>
-      </p>
+        actions={
+          <>
+            <Button variant="text" href="/welcome">
+              {t('admin.board.welcome')}
+            </Button>
+            <Button variant="outlined" href="/intake">
+              {t('admin.board.openIntake')}
+            </Button>
+          </>
+        }
+      />
       <div className="kanban">
         {grouped.map(({ col, items }) => (
           <section

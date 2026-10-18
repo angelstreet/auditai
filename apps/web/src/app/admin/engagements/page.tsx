@@ -1,10 +1,11 @@
 import { redirect } from 'next/navigation';
 import EngagementRow from '@/components/admin/EngagementRow';
 import TenantSwitcher from '@/components/admin/TenantSwitcher';
-import { listEngagements, tenantLabel } from '@/lib/adminData';
+import { listEngagements } from '@/lib/adminData';
 import { sessionTenantIds } from '@/lib/authServer';
 import { getT } from '@/lib/i18n';
 import { formatNumber } from '@evolai/i18n';
+import { PageTitle, StatTiles } from '@evolai/ui';
 
 // Always render at request time so the DB connection is fresh.
 export const dynamic = 'force-dynamic';
@@ -37,7 +38,7 @@ export default async function AdminEngagementsPage({
     redirect(`/admin/engagements?tenant=${current}`);
   }
 
-  const [summaries, label] = await Promise.all([listEngagements(current), tenantLabel(current)]);
+  const summaries = await listEngagements(current);
 
   const totalExpected = summaries.reduce((acc, s) => acc + s.expectedHeadcount, 0);
   const totalSubmitted = summaries.reduce((acc, s) => acc + s.invitationsSubmitted, 0);
@@ -45,18 +46,28 @@ export default async function AdminEngagementsPage({
 
   return (
     <section aria-labelledby="admin-title" className="wide admin">
-      <h1 id="admin-title">{t('admin.engagements.title')}</h1>
-      <p className="muted">{t('admin.engagements.dataFrom')}</p>
+      <PageTitle
+        id="admin-title"
+        title={t('admin.engagements.title')}
+        subtitle={t('admin.engagements.dataFrom')}
+      />
       <TenantSwitcher currentTenantId={current} />
-      <p>
-        {t('admin.engagements.viewing', {
-          label,
-          pct: formatNumber(locale, totalRatio, { style: 'percent', maximumFractionDigits: 0 }),
-        })}{' '}
-        <span className="muted">
-          {t('admin.engagements.expected', { submitted: totalSubmitted, expected: totalExpected })}
-        </span>
-      </p>
+      <StatTiles
+        items={[
+          {
+            label: t('admin.engagements.statCompletion'),
+            value: formatNumber(locale, totalRatio, { style: 'percent', maximumFractionDigits: 0 }),
+          },
+          {
+            label: t('admin.engagements.statResponses'),
+            value: t('admin.engagements.statResponsesValue', {
+              submitted: totalSubmitted,
+              expected: totalExpected,
+            }),
+          },
+          { label: t('admin.engagements.statEngagements'), value: summaries.length },
+        ]}
+      />
       <table>
         <thead>
           <tr>

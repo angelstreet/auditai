@@ -1,5 +1,4 @@
-import Link from 'next/link';
-import { tenantLabel } from '@/lib/adminData';
+import { EmptyState, PageTitle } from '@evolai/ui';
 import { sessionTenantIds } from '@/lib/authServer';
 import { listSynergies } from '@/lib/synergyData';
 import { enumLabel, getT } from '@/lib/i18n';
@@ -32,21 +31,12 @@ export default async function SynergiesPage({ searchParams }: PageProps) {
       </div>
     );
   }
-  const [label, synergies] = await Promise.all([tenantLabel(current), listSynergies(current)]);
+  const synergies = await listSynergies(current);
   return (
     <div className="wide">
-      <h1>{t('admin.synergies.title')}</h1>
-      <p className="muted">{t('admin.synergies.intro', { label })}</p>
-      <p className="actions">
-        <Link className="btn btn-secondary btn-sm" href="/board">
-          {t('admin.common.backToBoard')}
-        </Link>
-      </p>
-      <p className="muted">{t('admin.synergies.count', { n: synergies.length })}</p>
+      <PageTitle title={t('admin.synergies.title')} subtitle={t('admin.synergies.intro')} />
       {synergies.length === 0 ? (
-        <section className="empty-state">
-          <p className="muted">{t('admin.synergies.none')}</p>
-        </section>
+        <EmptyState title={t('admin.synergies.none')} />
       ) : (
         <ul className="card-list">
           {synergies.map((s) => (
