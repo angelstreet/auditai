@@ -44,9 +44,24 @@ export interface AnalysisListRow {
   readonly submittedAt: string | null;
 }
 
+/** Provenance of a model-drafted analysis (TASK-H, migration 0016). Null for rule-based rows. */
+export interface AnalysisModelInfo {
+  readonly provider: string;
+  readonly model: string;
+  readonly modelVersion: string | null;
+  readonly region: string | null;
+  readonly promptVersion: string | null;
+  readonly inputTokens: number;
+  readonly outputTokens: number;
+  readonly cost: string;
+  readonly currency: string | null;
+  readonly unsupportedCount: number;
+}
+
 export interface AnalysisDetail extends AnalysisListRow {
   readonly tenantId: TenantId;
   readonly payload: unknown;
+  readonly model: AnalysisModelInfo | null;
   readonly evidence: ReadonlyArray<{
     readonly claim: string;
     readonly sourceKind: 'answer' | 'question_item';
@@ -139,6 +154,16 @@ export const getAnalysis = async (
       invitation_status: string;
       submitted_at: string | null;
       payload_json: unknown;
+      model_provider: string | null;
+      model_name: string | null;
+      model_version: string | null;
+      model_region: string | null;
+      prompt_version: string | null;
+      input_tokens: number;
+      output_tokens: number;
+      cost_amount: string;
+      cost_currency: string | null;
+      unsupported_count: number;
       evidence_json: ReadonlyArray<{
         claim: string;
         sourceKind: 'answer' | 'question_item';
@@ -149,6 +174,9 @@ export const getAnalysis = async (
       `SELECT a.id, a.submission_id, a.engagement_id, a.tenant_id, a.sensitivity,
               a.theme_count, a.prompt_count, a.model_route, a.approved_at, a.approved_by,
               a.created_at, a.updated_at, a.payload_json, a.evidence_json,
+              a.model_provider, a.model_name, a.model_version, a.model_region, a.prompt_version,
+              a.input_tokens, a.output_tokens, a.cost_amount::text AS cost_amount, a.cost_currency,
+              jsonb_array_length(a.unsupported_json) AS unsupported_count,
               i.respondent_pseudonym AS pseudonym, i.status AS invitation_status,
               s.submitted_at
          FROM analyses a
@@ -176,6 +204,21 @@ export const getAnalysis = async (
       invitationStatus: row.invitation_status,
       submittedAt: row.submitted_at,
       payload: row.payload_json,
+      model:
+        row.model_provider && row.model_name
+          ? {
+              provider: row.model_provider,
+              model: row.model_name,
+              modelVersion: row.model_version,
+              region: row.model_region,
+              promptVersion: row.prompt_version,
+              inputTokens: row.input_tokens,
+              outputTokens: row.output_tokens,
+              cost: row.cost_amount,
+              currency: row.cost_currency,
+              unsupportedCount: row.unsupported_count,
+            }
+          : null,
       evidence: row.evidence_json,
     };
   });

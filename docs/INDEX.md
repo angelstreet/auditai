@@ -76,36 +76,37 @@ Numbered, current, and tied to the milestone that introduced them. Order
 is also the chronology of design choices. **Never amend** an old ADR;
 write a new one that supersedes it.
 
-| #    | Title                                                                                      | Milestone                        | Status   |
-| ---- | ------------------------------------------------------------------------------------------ | -------------------------------- | -------- |
-| 0001 | [License & stack](adr/0001-license-and-stack.md)                                           | M1 (initial)                     | Accepted |
-| 0002 | [Monorepo + tooling](adr/0002-monorepo-tooling.md)                                         | M2                               | Accepted |
-| 0003 | [Postgres migrations + RLS](adr/0003-postgres-migrations-and-rls.md)                       | M4                               | Accepted |
-| 0004 | [Mobile web survey stack](adr/0004-mobile-web-survey-stack.md)                             | M5                               | Accepted |
-| 0005 | [Admin engagements page](adr/0005-admin-engagements-page.md)                               | M6                               | Accepted |
-| 0006 | [Local one-command runner](adr/0006-local-dev-runner.md)                                   | M7                               | Accepted |
-| 0007 | [AI pipeline worker](adr/0007-ai-pipeline.md)                                              | M9                               | Accepted |
-| 0008 | [Auditor review surface](adr/0008-auditor-review.md)                                       | M10                              | Accepted |
-| 0009 | [Opportunity register](adr/0009-opportunity-register.md)                                   | M11                              | Accepted |
-| 0010 | [Sponsor onboarding + portfolio board](adr/0010-sponsor-onboarding.md)                     | M12                              | Accepted |
-| 0011 | [Cross-team synergy — schema + contract](adr/0011-cross-team-synergy.md)                   | M13 slice A                      | Accepted |
-| 0012 | [Cross-team synergy — admin surface](adr/0012-synergy-admin-surface.md)                    | M13 slice C                      | Accepted |
-| 0013 | [Quiz badges + mascot SVGs](adr/0013-quiz-badges-and-mascots.md)                           | M14 slice A                      | Accepted |
-| 0014 | [Quiz form + result reveal](adr/0014-quiz-form-and-result.md)                              | M14 slice B                      | Accepted |
-| 0015 | [Team badge rollup + profile](adr/0015-team-badge-rollup.md)                               | M14 slice C                      | Accepted |
-| 0016 | [FR-09 retention + export + deletion](adr/0016-fr09-retention-export-deletion.md)          | M15 slice A                      | Accepted |
-| 0017 | [Board integration + landing](adr/0017-board-integration-and-landing.md)                   | M15 slice B                      | Accepted |
-| 0018 | [DevX + deploy](adr/0018-devx-and-deploy.md)                                               | M15 slice C                      | Accepted |
-| 0019 | [Public-routes Playwright suite](adr/0019-public-routes-playwright.md)                     | M15 slice D                      | Accepted |
-| 0020 | [Coverage gate scope](adr/0020-coverage-gate-scope.md)                                     | M15 review (CI gates)            | Accepted |
-| 0021 | [Manual e2e workflow](adr/0021-manual-e2e-workflow.md)                                     | M15 review (CI gates)            | Accepted |
-| 0022 | [Deploy token + static hosting](adr/0022-deploy-token-and-static-hosting.md)               | M15 review (CI gates)            | Accepted |
-| 0023 | [Auditor auth + session](adr/0023-auditor-auth-and-session.md)                             | TASK-A                           | Accepted |
-| 0024 | [French + English (i18n)](adr/0024-i18n-fr-en.md)                                          | TASK-C                           | Accepted |
-| 0025 | [Design tokens + style guard](adr/0025-design-tokens.md)                                   | TASK-E ([UX audit](UX_AUDIT.md)) | Accepted |
-| 0026 | [Rename to EvolAI](adr/0026-rename-to-evolai.md)                                           | TASK-F                           | Accepted |
-| 0027 | [One font, Playwright in CI](adr/0027-one-font-and-playwright-in-ci.md)                    | TASK-G                           | Accepted |
-| 0028 | [Accessibility gate, next steps](adr/0028-accessibility-gate-and-respondent-next-steps.md) | TASK-I                           | Accepted |
+| #    | Title                                                                                          | Milestone                        | Status   |
+| ---- | ---------------------------------------------------------------------------------------------- | -------------------------------- | -------- |
+| 0001 | [License & stack](adr/0001-license-and-stack.md)                                               | M1 (initial)                     | Accepted |
+| 0002 | [Monorepo + tooling](adr/0002-monorepo-tooling.md)                                             | M2                               | Accepted |
+| 0003 | [Postgres migrations + RLS](adr/0003-postgres-migrations-and-rls.md)                           | M4                               | Accepted |
+| 0004 | [Mobile web survey stack](adr/0004-mobile-web-survey-stack.md)                                 | M5                               | Accepted |
+| 0005 | [Admin engagements page](adr/0005-admin-engagements-page.md)                                   | M6                               | Accepted |
+| 0006 | [Local one-command runner](adr/0006-local-dev-runner.md)                                       | M7                               | Accepted |
+| 0007 | [AI pipeline worker](adr/0007-ai-pipeline.md)                                                  | M9                               | Accepted |
+| 0008 | [Auditor review surface](adr/0008-auditor-review.md)                                           | M10                              | Accepted |
+| 0009 | [Opportunity register](adr/0009-opportunity-register.md)                                       | M11                              | Accepted |
+| 0010 | [Sponsor onboarding + portfolio board](adr/0010-sponsor-onboarding.md)                         | M12                              | Accepted |
+| 0011 | [Cross-team synergy — schema + contract](adr/0011-cross-team-synergy.md)                       | M13 slice A                      | Accepted |
+| 0012 | [Cross-team synergy — admin surface](adr/0012-synergy-admin-surface.md)                        | M13 slice C                      | Accepted |
+| 0013 | [Quiz badges + mascot SVGs](adr/0013-quiz-badges-and-mascots.md)                               | M14 slice A                      | Accepted |
+| 0014 | [Quiz form + result reveal](adr/0014-quiz-form-and-result.md)                                  | M14 slice B                      | Accepted |
+| 0015 | [Team badge rollup + profile](adr/0015-team-badge-rollup.md)                                   | M14 slice C                      | Accepted |
+| 0016 | [FR-09 retention + export + deletion](adr/0016-fr09-retention-export-deletion.md)              | M15 slice A                      | Accepted |
+| 0017 | [Board integration + landing](adr/0017-board-integration-and-landing.md)                       | M15 slice B                      | Accepted |
+| 0018 | [DevX + deploy](adr/0018-devx-and-deploy.md)                                                   | M15 slice C                      | Accepted |
+| 0019 | [Public-routes Playwright suite](adr/0019-public-routes-playwright.md)                         | M15 slice D                      | Accepted |
+| 0020 | [Coverage gate scope](adr/0020-coverage-gate-scope.md)                                         | M15 review (CI gates)            | Accepted |
+| 0021 | [Manual e2e workflow](adr/0021-manual-e2e-workflow.md)                                         | M15 review (CI gates)            | Accepted |
+| 0022 | [Deploy token + static hosting](adr/0022-deploy-token-and-static-hosting.md)                   | M15 review (CI gates)            | Accepted |
+| 0023 | [Auditor auth + session](adr/0023-auditor-auth-and-session.md)                                 | TASK-A                           | Accepted |
+| 0024 | [French + English (i18n)](adr/0024-i18n-fr-en.md)                                              | TASK-C                           | Accepted |
+| 0025 | [Design tokens + style guard](adr/0025-design-tokens.md)                                       | TASK-E ([UX audit](UX_AUDIT.md)) | Accepted |
+| 0026 | [Rename to EvolAI](adr/0026-rename-to-evolai.md)                                               | TASK-F                           | Accepted |
+| 0027 | [One font, Playwright in CI](adr/0027-one-font-and-playwright-in-ci.md)                        | TASK-G                           | Accepted |
+| 0028 | [Accessibility gate, next steps](adr/0028-accessibility-gate-and-respondent-next-steps.md)     | TASK-I                           | Accepted |
+| 0029 | [Model-backed synthesis, provider abstraction](adr/0029-llm-synthesis-provider-abstraction.md) | TASK-H                           | Accepted |
 
 ## 4. The gates map (PRD §25.4)
 
@@ -190,9 +191,10 @@ follow-ups the owner should consider before any external pilot:
   (M12); synergies live under `/admin/synergies` (M13) and team
   mascots under `/admin/teams` (M14). A future slice can collapse
   these into the portfolio kanban for one-glance overview.
-- **LLM-backed synthesis (Gate B).** The current pipeline is fully
-  deterministic (ADR 0007). The four `synthesize*` functions are the
-  swap point; the row shape on `analyses` does not change.
+- **LLM-backed synthesis (Gate B).** Shipped behind an allowlisted
+  provider abstraction (ADR 0029); the default route is still the
+  rule-based pipeline (ADR 0007). Open: an EU-hosted route, a redaction
+  terms admin UI, and a real-model theme quality review.
 - **Real SSO / MFA (Gate C).** Today `x-audit-actor-id` is the
   stand-in; Gate C requires an integration with a real IdP.
 - **Playwright coverage of slice B/C smoke paths.** Today each milestone

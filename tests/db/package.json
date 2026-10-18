@@ -11,6 +11,7 @@
     "clean": "echo \"(nothing to clean)\" "
   },
   "dependencies": {
+    "@evolai/ai": "workspace:*",
     "@evolai/contracts": "workspace:*",
     "@evolai/domain": "workspace:*",
     "pg": "8.13.1"

@@ -1,0 +1,34 @@
+{
+  "$comment": "AI synthesis config (ADR 0029). Approved model routes, cost caps and timestamped rates. Real routes are added by the owner in a private copy pointed to by EVOLAI_AI_CONFIG; this public file only lists the offline routes. No real prices here.",
+  "approvedRoutes": [
+    {
+      "provider": "rule-based",
+      "model": "v1",
+      "region": "local",
+      "baseUrl": null
+    },
+    {
+      "provider": "mock",
+      "model": "fixture-v1",
+      "region": "local",
+      "baseUrl": null
+    }
+  ],
+  "caps": {
+    "currency": "EUR",
+    "maxInputTokensPerAnalysis": 24000,
+    "maxOutputTokensPerAnalysis": 4000,
+    "maxCostPerAnalysis": 0.5,
+    "maxCostPerTenantMonth": 50
+  },
+  "rates": [
+    {
+      "provider": "mock",
+      "model": "fixture-v1",
+      "effectiveFrom": "2026-01-01T00:00:00Z",
+      "currency": "EUR",
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    }
+  ]
+}

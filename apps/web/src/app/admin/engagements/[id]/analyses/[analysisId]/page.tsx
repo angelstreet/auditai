@@ -35,6 +35,39 @@ interface InterviewPromptView {
   themeId: string;
 }
 
+interface OpportunityView {
+  id: string;
+  title: string;
+  description: string;
+  evidenceCount: number;
+}
+
+const asOpportunities = (payload: unknown): OpportunityView[] => {
+  if (!payload || typeof payload !== 'object') return [];
+  const list = (payload as { opportunities?: unknown }).opportunities;
+  if (!Array.isArray(list)) return [];
+  return list.flatMap((o: unknown) => {
+    if (!o || typeof o !== 'object') return [];
+    const x = o as Record<string, unknown>;
+    if (
+      typeof x['id'] !== 'string' ||
+      typeof x['title'] !== 'string' ||
+      typeof x['description'] !== 'string'
+    ) {
+      return [];
+    }
+    const ev = Array.isArray(x['evidence']) ? (x['evidence'] as unknown[]) : [];
+    return [
+      {
+        id: x['id'] as string,
+        title: x['title'] as string,
+        description: x['description'] as string,
+        evidenceCount: ev.length,
+      },
+    ];
+  });
+};
+
 const asThemes = (payload: unknown): ThemeView[] => {
   if (!payload || typeof payload !== 'object') return [];
   const themes = (payload as { themes?: unknown }).themes;
@@ -150,12 +183,22 @@ export default async function AnalysisDetailPage({ params, searchParams }: PageP
   const themes = asThemes(detail.payload);
   const contradictions = asContradictions(detail.payload);
   const prompts = asPrompts(detail.payload);
+  const opportunities = asOpportunities(detail.payload);
+  const model = detail.model;
 
   return (
     <section aria-labelledby="detail-title" className="wide admin">
       <h1 id="detail-title">
         {t('admin.analysis.title', { pseudonym: detail.respondentPseudonym })}
       </h1>
+      {model && !detail.approvedAt ? (
+        <p>
+          <span className="pill pill-amber" data-testid="ai-draft">
+            {t('admin.analysis.aiDraft')}
+          </span>{' '}
+          <span className="muted">{t('admin.analysis.aiDraftNote')}</span>
+        </p>
+      ) : null}
       <p className="muted">
         {t('admin.analysis.meta', {
           org: label?.organisation ?? params.id,
@@ -164,6 +207,23 @@ export default async function AnalysisDetailPage({ params, searchParams }: PageP
           route: detail.modelRoute,
         })}
       </p>
+      {model ? (
+        <p className="muted" data-testid="ai-model">
+          {t('admin.analysis.modelLine', {
+            provider: model.provider,
+            model: model.modelVersion ?? model.model,
+            region: model.region ?? t('common.dash'),
+            prompt: model.promptVersion ?? t('common.dash'),
+            tokensIn: model.inputTokens,
+            tokensOut: model.outputTokens,
+            cost: model.cost,
+            currency: model.currency ?? '',
+          })}
+        </p>
+      ) : null}
+      {model && model.unsupportedCount > 0 ? (
+        <p className="muted">{t('admin.analysis.unsupported', { n: model.unsupportedCount })}</p>
+      ) : null}
       <p>
         <Link href={`/admin/engagements/${params.id}/analyses?tenant=${tenantId}`}>
           {t('admin.common.backToAnalyses')}
@@ -217,6 +277,28 @@ export default async function AnalysisDetailPage({ params, searchParams }: PageP
           ))}
         </ul>
       )}
+
+      {model ? (
+        <>
+          <h2 className="section-title">
+            {t('admin.analysis.opportunities', { n: opportunities.length })}
+          </h2>
+          {opportunities.length === 0 ? (
+            <p className="muted">{t('admin.analysis.noOpportunities')}</p>
+          ) : (
+            <ul>
+              {opportunities.map((o) => (
+                <li key={o.id}>
+                  <strong>{o.title}</strong> · <span className="muted">{o.description}</span>{' '}
+                  <span className="muted">
+                    {t('admin.analysis.opportunityEvidence', { n: o.evidenceCount })}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </>
+      ) : null}
 
       <h2 className="section-title">
         {t('admin.analysis.evidence', { n: detail.evidence.length })}

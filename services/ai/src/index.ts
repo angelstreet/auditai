@@ -10,6 +10,8 @@ export {
   type AnalysisPayload,
   type AnalysisTheme,
   type AnalysisClaim,
+  type AnalysisFact,
+  type AnalysisOpportunity,
   type AnalysisInterviewPrompt,
   type PipelineInput,
   type SubmissionRow,
@@ -32,3 +34,28 @@ export {
   type RetentionWorkerOptions,
   type RetentionWorkerResult,
 } from './retentionWorker.js';
+export {
+  loadAiConfig,
+  parseAiConfig,
+  resolveRoute,
+  RouteNotApprovedError,
+  type AiConfig,
+  type ResolvedRoute,
+} from './llm/config.js';
+export { CostCeilingError } from './llm/costs.js';
+export {
+  runLlmPipeline,
+  OutputValidationError,
+  TenantIsolationError,
+  type AnalysisMeta,
+  type LlmPipelineResult,
+} from './llm/llmPipeline.js';
+export {
+  MockProvider,
+  OpenAICompatibleProvider,
+  AnthropicProvider,
+  ProviderRefusalError,
+  createProvider,
+  type ModelProvider,
+} from './llm/providers.js';
+export { PROMPT_VERSION } from './llm/prompt.js';
