@@ -2,7 +2,19 @@ import Link from 'next/link';
 import type { AdminEngagementSummary } from '@/lib/adminData';
 import { enumLabel, getT } from '@/lib/i18n';
 import { formatDate, formatNumber } from '@evolai/i18n';
+import { StatusText, type Status } from '@evolai/ui';
 import type { TenantId } from '@evolai/contracts';
+
+// Status as icon plus word (UI_RULES §4): still running is neutral, done is success.
+const STATUS_ICON: Record<AdminEngagementSummary['engagement']['status'], Status> = {
+  draft: 'pending',
+  scheduled: 'pending',
+  in_field: 'running',
+  analysis: 'running',
+  review: 'running',
+  closed: 'success',
+  archived: 'info',
+};
 
 interface Props {
   summary: AdminEngagementSummary;
@@ -26,13 +38,15 @@ export default function EngagementRow({ summary, tenantId }: Props) {
   return (
     <tr>
       <th scope="row">
-        <span>{summary.organisation.tradingName ?? summary.organisation.legalName}</span>
-        <br />
         <Link href={`/admin/engagements/${summary.engagement.id}/analyses?tenant=${tenantId}`}>
-          {summary.engagement.id}
+          {summary.organisation.tradingName ?? summary.organisation.legalName}
         </Link>
       </th>
-      <td>{enumLabel(t, 'engagementStatus', summary.engagement.status)}</td>
+      <td>
+        <StatusText status={STATUS_ICON[summary.engagement.status]}>
+          {enumLabel(t, 'engagementStatus', summary.engagement.status)}
+        </StatusText>
+      </td>
       <td>{summary.expectedHeadcount}</td>
       <td>{summary.invitationsTotal}</td>
       <td>{summary.invitationsSubmitted}</td>

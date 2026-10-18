@@ -112,12 +112,11 @@ export const adminEn = {
     intro: 'Each team shown by its most common mascot. Raw quiz scores stay hidden.',
     takeQuiz: 'Take the literacy quiz',
     none: 'No teams yet for this organisation.',
-    noBadgesPill: 'no badges yet',
+    noBadgesPill: 'No badges yet',
     members: 'Members',
     computed: 'Computed',
     noBadges: 'The mascot appears once someone in this team takes the quiz.',
     footnote: 'A team shows its most common mascot. Ties go to fox, then owl, then tortoise.',
-    allTiers: 'All three mascot tiers:',
   },
   synergies: {
     title: 'Detected synergies',
