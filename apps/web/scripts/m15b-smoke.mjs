@@ -53,7 +53,7 @@ const main = async () => {
 
   // 2. /welcome renders the hero + CTA.
   const welcome = await fetchText('/welcome');
-  if (!/h1[^>]*>Discover how work/.test(welcome)) {
+  if (!/h1[^>]*>See how work/.test(welcome)) {
     fail('/welcome did not render the hero heading');
   }
   if (!welcome.includes('Start the intake')) {

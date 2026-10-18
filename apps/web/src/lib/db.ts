@@ -43,6 +43,32 @@ pg.types.setTypeParser(1114, (v) => new Date(`${v}Z`).toISOString());
 
 let poolInstance: pg.Pool | null = null;
 
+const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '::1', '[::1]']);
+
+/**
+ * TLS settings derived from the URL (TASK-K, ADR 0032). pg treats `sslmode=require` as an alias
+ * for verify-full and warns that this will change; passing `ssl` explicitly states the intent and
+ * silences the warning. Local Postgres (loopback host, or `sslmode=disable`) gets no TLS; every
+ * other host gets full certificate and hostname verification. `sslmode` is removed from the string
+ * because pg lets the connection string override the `ssl` option.
+ */
+export const resolveSsl = (
+  rawUrl: string,
+): { connectionString: string; ssl: false | { rejectUnauthorized: true } } => {
+  let u: URL;
+  try {
+    u = new URL(rawUrl);
+  } catch {
+    return { connectionString: rawUrl, ssl: false };
+  }
+  const mode = u.searchParams.get('sslmode');
+  u.searchParams.delete('sslmode');
+  const local = LOCAL_HOSTS.has(u.hostname.toLowerCase());
+  const ssl =
+    mode === 'disable' || (local && !mode) ? false : { rejectUnauthorized: true as const };
+  return { connectionString: u.toString(), ssl };
+};
+
 const buildPoolConfig = (): pg.PoolConfig => {
   const url = process.env['DATABASE_URL'];
   if (!url) {
@@ -54,8 +80,10 @@ const buildPoolConfig = (): pg.PoolConfig => {
   // running deployments. The migration runner creates `auditai_app` (NOSUPERUSER, NOBYPASSRLS) so every query is
   // subject to RLS. Override here for tests that need to run as the bootstrap user.
   const user = process.env['DATABASE_APP_USER'] ?? 'auditai_app';
+  const { connectionString, ssl } = resolveSsl(url);
   return {
-    connectionString: url,
+    connectionString,
+    ssl,
     user,
     password: resolveAppPassword(),
     max: 10,

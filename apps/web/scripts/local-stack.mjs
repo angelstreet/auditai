@@ -132,25 +132,27 @@ const waitFor = async (predicate, label, timeoutMs = 60_000, intervalMs = 500) =
 
 const log = (msg) => process.stderr.write(`[local-stack] ${msg}\n`);
 
-const runMigrations = async () => {
-  log('applying migrations');
-  const runner = spawn(
-    process.execPath,
-    [join(PROJECT_ROOT, 'infra', 'db', 'scripts', 'migrate.mjs')],
-    {
-      // The migration script imports `pg`, which is now hoisted at the repo root so it resolves
-      // from any cwd.
-      cwd: PROJECT_ROOT,
-      env: env(),
-      stdio: 'inherit',
-    },
-  );
+const runNodeScript = async (script, label) => {
+  const runner = spawn(process.execPath, [join(PROJECT_ROOT, 'infra', 'db', 'scripts', script)], {
+    // The scripts import `pg`, which is hoisted at the repo root so it resolves from any cwd.
+    cwd: PROJECT_ROOT,
+    env: env(),
+    stdio: 'inherit',
+  });
   await new Promise((resolve, reject) => {
     runner.on('exit', (code) =>
-      code === 0 ? resolve(undefined) : reject(new Error(`migrate exited with code ${code}`)),
+      code === 0 ? resolve(undefined) : reject(new Error(`${label} exited with code ${code}`)),
     );
     runner.on('error', reject);
   });
+};
+
+const runMigrations = async () => {
+  log('applying migrations');
+  await runNodeScript('migrate.mjs', 'migrate');
+  // Migration 0017 clears the synthetic auditors' passwords (they are public); local only.
+  log('seeding synthetic auditor passwords (local only)');
+  await runNodeScript('seed-synthetic-auth.mjs', 'seed-synthetic-auth');
 };
 
 const startPostgres = async () => {

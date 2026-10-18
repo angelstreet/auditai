@@ -15,3 +15,7 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
 zorblat.q@synthetic.invalid
 a@synthetic.invalid
+# TASK-K fixtures: reserved .invalid / .test domains and a dummy user:password in URL parsing tests.
+@synthetic.invalid
+@example.test
+postgres://u:p@

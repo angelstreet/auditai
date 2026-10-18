@@ -51,7 +51,8 @@ Work that came out of the Phase 1 and Phase 2 review. Each task has a brief in `
 | G    | One self-hosted font, Playwright in CI, neutral summary wording (ADR 0027)                                  | #33                   | done        |
 | H    | Model-backed synthesis behind an allowlisted provider abstraction, Gate B (ADR 0029)                        | #34                   | done        |
 | I    | Accessibility gate (axe, keyboard), next steps and contact block, French copy pass (ADR 0028)               | direct commit 6c7a69a | done        |
-| J    | Housekeeping: this roadmap and README, ADR number check, CODEOWNERS, smoke actors, name audit (ADR 0031)    | this PR               | in progress |
+| J    | Housekeeping: this roadmap and README, ADR number check, CODEOWNERS, smoke actors, name audit (ADR 0031)    | #35                   | done        |
+| K    | Production readiness: credentials, auditor CLI, login hardening, wording, region, health, cron (ADR 0032)   | this PR               | in progress |
 
 CI fixes that landed alongside: #27 (database URL passed through turbo to the tests) and #28 (smokes and
 mobile-survey e2e made green).
@@ -61,8 +62,10 @@ mobile-survey e2e made green).
 - **Gate B — AI synthesis:** the owner runs the real-model evaluation with credentials the owner provides
   (never committed); an EU-hosted or self-hosted model route; a human read of real-model theme quality; a
   contract-approved route before any real survey data; an admin UI for redaction terms.
-- **Gate C — enterprise hosting:** SSO/OIDC and MFA for auditors and company admins (PRD §15); production
-  hosting and backups with a tested recovery drill; a penetration test; an agreed SLA.
+- **Gate C — enterprise hosting:** done in TASK-K: production hosting (Vercel, Neon), no public credentials,
+  auditor CLI, login lockout, security headers, health check, retention cron, runbook. Still open: SSO/OIDC and MFA
+  for auditors and company admins (PRD §15); the recovery drill run once with a recorded result; a penetration test;
+  an agreed SLA.
 - **Gate D — cross-company benchmarks:** not started (Phase 3).
 - **Invitations and reminders (FR-03):** reminders and response tracking beyond the single-use invite link.
 - **Real devices and assistive technology:** a run on real phones at 360 px and a human screen-reader pass.

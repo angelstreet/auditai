@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { listTenantIds, tenantLabel } from '@/lib/adminData';
+import { listTenantIds } from '@/lib/adminData';
 import { getT } from '@/lib/i18n';
 import type { TenantId } from '@evolai/contracts';
 
@@ -13,7 +13,6 @@ export default async function WelcomePage() {
   const { t } = getT();
   const tenants = await listTenantIds();
   const current = (tenants[0] ?? '11111111-1111-4111-8111-111111111111') as TenantId;
-  const label = tenants[0] ? await tenantLabel(current) : 'Synthetic Co A';
   return (
     <div className="wide">
       <section aria-labelledby="welcome-title" className="hero">
@@ -42,11 +41,7 @@ export default async function WelcomePage() {
           <Link className="btn btn-primary" href={`/intake?tenant=${current}`}>
             {t('welcome.ctaIntake')}
           </Link>
-          <Link className="btn btn-secondary" href={`/board`}>
-            {t('welcome.ctaBoard')}
-          </Link>
         </p>
-        <p className="muted">{t('welcome.viewing', { label })}</p>
       </section>
     </div>
   );

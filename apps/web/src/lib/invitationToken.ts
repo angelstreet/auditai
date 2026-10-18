@@ -14,7 +14,20 @@ import { createHmac, timingSafeEqual } from 'node:crypto';
 
 const DEFAULT_DEV_SECRET = 'dev-only-survey-signing-secret-change-me';
 
-const getSecret = (): string => process.env['SURVEY_SIGNING_SECRET'] ?? DEFAULT_DEV_SECRET;
+/** Fails closed in production: the dev default is public, so it must never sign real invitations. */
+export const resolveSigningSecret = (
+  env: Record<string, string | undefined> = process.env,
+): string => {
+  const configured = env['SURVEY_SIGNING_SECRET'];
+  if (configured && configured.length >= 16) return configured;
+  // ALLOW_DEV_DB_PASSWORD=1 marks the local runner and Playwright (see db.ts); never set in a deployment.
+  if (env['NODE_ENV'] !== 'production' || env['ALLOW_DEV_DB_PASSWORD'] === '1') {
+    return configured ?? DEFAULT_DEV_SECRET;
+  }
+  throw new Error('SURVEY_SIGNING_SECRET must be set (16+ characters) when NODE_ENV=production.');
+};
+
+const getSecret = (): string => resolveSigningSecret();
 
 export interface ParsedToken {
   readonly reference: string;

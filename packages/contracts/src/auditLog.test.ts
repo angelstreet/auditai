@@ -32,6 +32,9 @@ describe('audit log schema (M10, FR-08, PRD §25.4)', () => {
       'export.complete',
       'badge.erase',
       'pseudonym.erase',
+      'user.create',
+      'user.set_password',
+      'user.disable',
     ]);
     expect(auditTargetKindSchema.options).toEqual([
       'analysis',
@@ -40,6 +43,7 @@ describe('audit log schema (M10, FR-08, PRD §25.4)', () => {
       'respondent_badge',
       'export_request',
       'invitation',
+      'user',
     ]);
   });
 

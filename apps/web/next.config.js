@@ -1,6 +1,43 @@
+const isDev = process.env.NODE_ENV !== 'production';
+
+// Next.js App Router emits inline bootstrap scripts, so script-src needs 'unsafe-inline' until the
+// app moves to per-request nonces. Everything else is locked to the same origin (ADR 0032).
+const CSP = [
+  "default-src 'self'",
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''}`,
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob:",
+  "font-src 'self' data:",
+  "connect-src 'self'",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+].join('; ');
+
+const SECURITY_HEADERS = [
+  { key: 'Content-Security-Policy', value: CSP },
+  { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
+  { key: 'X-Content-Type-Options', value: 'nosniff' },
+  { key: 'X-Frame-Options', value: 'DENY' },
+  { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+  { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(), payment=()' },
+];
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  poweredByHeader: false,
+  async headers() {
+    const noindex = [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }];
+    return [
+      { source: '/:path*', headers: SECURITY_HEADERS },
+      { source: '/admin/:path*', headers: noindex },
+      { source: '/login', headers: noindex },
+      { source: '/board', headers: noindex },
+      { source: '/api/:path*', headers: noindex },
+    ];
+  },
   transpilePackages: [
     // M10: server actions import Zod schemas from @evolai/contracts, whose source uses
     // NodeNext-style `.js` import specifiers. Webpack does not rewrite those to `.ts`, so

@@ -14,6 +14,7 @@
  * Exits 0 when all checks pass, non-zero on the first failure.
  */
 
+import { createHmac } from 'node:crypto';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { default as pg } from 'pg';
 import { loginCookie } from './smoke-auth.mjs';
@@ -84,9 +85,11 @@ const main = async () => {
   const about = await fetchJson('/about');
   const aboutHtml = await about.text();
   assert(aboutHtml.includes('EvolAI'), 'about page renders the product name');
-  const linkMatch = aboutHtml.match(/href="(\/s\/[^"]+)"/);
-  assert(Boolean(linkMatch), 'about page links to the synthetic sample survey');
-  const token = linkMatch[1].replace('/s/', '');
+  // The public pages no longer link to a sample survey: sign the seeded sample invitation here,
+  // with the same dev secret the local stack uses.
+  const reference = 'inv-synthetic-pilot-001';
+  const secret = process.env['SURVEY_SIGNING_SECRET'] ?? 'dev-only-survey-signing-secret-change-me';
+  const token = `${reference}.${createHmac('sha256', secret).update(reference).digest('base64url')}`;
 
   // 2. Welcome.
   const welcome = await fetchJson(`/s/${token}`);

@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { InvalidInviteToken, signInviteToken, verifyInviteToken } from './invitationToken';
+import {
+  InvalidInviteToken,
+  resolveSigningSecret,
+  signInviteToken,
+  verifyInviteToken,
+} from './invitationToken';
 
 const REFERENCE = 'inv-synthetic-pilot-001';
 
@@ -27,5 +32,24 @@ describe('invitationToken', () => {
     expect(() => verifyInviteToken('no-signature-here')).toThrow(InvalidInviteToken);
     // 'foo.bar' parses syntactically but the signature is too short to verify; signature check fails.
     expect(() => verifyInviteToken('only-one-half.sig')).toThrow(InvalidInviteToken);
+  });
+});
+
+describe('resolveSigningSecret', () => {
+  it('fails closed in production without a real secret', () => {
+    expect(() => resolveSigningSecret({ NODE_ENV: 'production' })).toThrow(/SURVEY_SIGNING_SECRET/);
+    expect(() =>
+      resolveSigningSecret({ NODE_ENV: 'production', SURVEY_SIGNING_SECRET: 'short' }),
+    ).toThrow(/SURVEY_SIGNING_SECRET/);
+    expect(
+      resolveSigningSecret({ NODE_ENV: 'production', SURVEY_SIGNING_SECRET: 'x'.repeat(32) }),
+    ).toBe('x'.repeat(32));
+  });
+
+  it('keeps the dev default outside production and for the local runner', () => {
+    expect(resolveSigningSecret({})).toMatch(/dev-only/);
+    expect(resolveSigningSecret({ NODE_ENV: 'production', ALLOW_DEV_DB_PASSWORD: '1' })).toMatch(
+      /dev-only/,
+    );
   });
 });

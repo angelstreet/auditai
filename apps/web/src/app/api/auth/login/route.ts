@@ -7,6 +7,7 @@ import {
   signSession,
 } from '@/lib/session';
 import { ADMIN_ROLES } from '@/lib/tenantAccess';
+import { clientAddress, isLockedOut, recentFailures, recordAttempt } from '@/lib/loginThrottle';
 
 export const dynamic = 'force-dynamic';
 
@@ -27,10 +28,20 @@ export async function POST(req: NextRequest) {
     email: String(form.get('email') ?? ''),
     password: String(form.get('password') ?? ''),
   };
+  const address = clientAddress(req.headers);
+  if (isLockedOut(await recentFailures(credentials.email, address))) return back('locked');
   const user = await activeProvider.authenticate(credentials);
-  if (!user) return back('invalid');
+  if (!user) {
+    await recordAttempt(credentials.email, address, false);
+    return back('invalid');
+  }
   const memberships = await loadMemberships(user.id);
-  if (!memberships.some((m) => ADMIN_ROLES.has(m.role))) return back('no-access');
+  // Same message as a wrong password: do not reveal that the credentials were right.
+  if (!memberships.some((m) => ADMIN_ROLES.has(m.role))) {
+    await recordAttempt(credentials.email, address, false);
+    return back('invalid');
+  }
+  await recordAttempt(credentials.email, address, true);
   const token = await signSession(newSessionPayload(user, memberships));
   const res = redirectTo(safeNext(String(form.get('next') ?? '')));
   res.cookies.set(SESSION_COOKIE, token, sessionCookieOptions());
