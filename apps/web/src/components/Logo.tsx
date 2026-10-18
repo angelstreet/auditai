@@ -40,8 +40,9 @@ const AMBER = 'var(--color-amber)';
 const BLUE = 'var(--color-blue)';
 const TEAL = 'var(--color-teal)';
 // Teal text on white fails 4.5:1; the wordmark uses the teal-ink text tone (ADR 0025).
-const TEAL_INK = 'var(--color-teal-ink)';
-const NAVY = 'var(--color-navy)';
+const TEAL_INK = 'var(--color-accent-ink)';
+// Wordmark follows the text colour so it reads in light and dark (ADR 0034).
+const NAVY = 'var(--color-fg)';
 
 export function Logo({ size = 'default', iconOnly = false, className, style }: LogoProps) {
   const iconSize = ICON_SIZES[size];

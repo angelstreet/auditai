@@ -1,7 +1,7 @@
 # UI glow-up plan (TASK-L)
 
 Plan for the owner's second live review. The rules are [UI_RULES.md](UI_RULES.md) §0-13; the decisions
-are in [ADR 0033](adr/0033-mui-theme-and-standard-chrome.md). The screenshots come from
+are in [ADR 0034](adr/0034-mui-theme-and-standard-chrome.md). The screenshots come from
 `apps/web/e2e/screens.spec.ts` (`SCREENS=1`, kept out of git): every page in light and dark, at 360 and
 1280, in fr and en.
 
@@ -40,7 +40,7 @@ are in [ADR 0033](adr/0033-mui-theme-and-standard-chrome.md). The screenshots co
     teams"), a one-line subtitle, one primary button ("Start the intake") and one secondary link ("How it
     works"). Right: a visual, the existing mascot set on a soft surface.
   - Four benefit tiles: an icon tile, a title and one line each (scene, listen, review, act).
-  - A trust line with the privacy icon ("No names stored. A person reviews every finding."), then the
+  - A trust line with the privacy icon ("We never ask for names. A person reviews every finding."; respondents are stored under a pseudonym only, staff accounts do hold a display name, so "no names stored" would not be true), then the
     footer.
 - **/login.** A centred card (max 400 px) with the logo mark, the title "Sign in", MUI text fields with
   labels (email with `autocomplete=username`, password with an eye toggle), an inline error above the

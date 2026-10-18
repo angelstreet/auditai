@@ -94,7 +94,7 @@ test.describe('public routes (every viewport, layout gate)', () => {
   test('header controls are at least 44px tall', async ({ page }) => {
     await page.goto('/privacy');
     const heights = await page
-      .locator('header a, header button')
+      .locator('header a:visible, header button:visible')
       .evaluateAll((els) => els.map((el) => el.getBoundingClientRect().height));
     expect(heights.length).toBeGreaterThan(0);
     for (const h of heights) expect(h).toBeGreaterThanOrEqual(44);

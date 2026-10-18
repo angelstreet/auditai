@@ -13,7 +13,7 @@ import type { MascotTier } from '@evolai/contracts';
  *   owl      = Teal         (engaged, confident)
  *
  * The component takes `size` (a width/height in px) and `label` so the SVG
- * is accessible by default.
+ * is accessible by default; an empty label makes it decorative (aria-hidden).
  */
 
 interface MascotProps {
@@ -38,12 +38,13 @@ const TorToiseSvg = ({
     viewBox="0 0 100 100"
     width={size}
     height={size}
-    role="img"
-    aria-label={label}
+    role={label ? 'img' : undefined}
+    aria-label={label || undefined}
+    aria-hidden={label ? undefined : true}
     className={className}
     xmlns="http://www.w3.org/2000/svg"
   >
-    <title>{label}</title>
+    {label ? <title>{label}</title> : null}
     {/* Shell */}
     <ellipse cx="50" cy="60" rx="36" ry="28" fill="#172B3A" />
     <path d="M14 60 H86" stroke="#19A999" strokeWidth="3" fill="none" />
@@ -72,12 +73,13 @@ const FoxSvg = ({
     viewBox="0 0 100 100"
     width={size}
     height={size}
-    role="img"
-    aria-label={label}
+    role={label ? 'img' : undefined}
+    aria-label={label || undefined}
+    aria-hidden={label ? undefined : true}
     className={className}
     xmlns="http://www.w3.org/2000/svg"
   >
-    <title>{label}</title>
+    {label ? <title>{label}</title> : null}
     {/* Body */}
     <ellipse cx="50" cy="58" rx="34" ry="24" fill="#E08A1A" />
     {/* White belly */}
@@ -107,12 +109,13 @@ const OwlSvg = ({
     viewBox="0 0 100 100"
     width={size}
     height={size}
-    role="img"
-    aria-label={label}
+    role={label ? 'img' : undefined}
+    aria-label={label || undefined}
+    aria-hidden={label ? undefined : true}
     className={className}
     xmlns="http://www.w3.org/2000/svg"
   >
-    <title>{label}</title>
+    {label ? <title>{label}</title> : null}
     {/* Body */}
     <ellipse cx="50" cy="60" rx="32" ry="30" fill="#19A999" />
     {/* Belly plumage */}

@@ -19,6 +19,16 @@ describe('session sign/verify', () => {
     const token = await signSession(payload, SECRET);
     expect(await verifySession(token, SECRET, 1001)).toEqual(payload);
   });
+  it('carries the normalised sign-in email for the account menu', async () => {
+    const withEmail = newSessionPayload(
+      { id: 'u1', name: 'U One', email: ' Someone@synthetic.invalid ' },
+      [],
+      1000,
+    );
+    expect(withEmail.email).toBe('someone@synthetic.invalid');
+    const token = await signSession(withEmail, SECRET);
+    expect((await verifySession(token, SECRET, 1001))?.email).toBe('someone@synthetic.invalid');
+  });
   it('rejects a tampered payload', async () => {
     const token = await signSession(payload, SECRET);
     const [, sig] = token.split('.');

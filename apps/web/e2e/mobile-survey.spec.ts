@@ -37,7 +37,7 @@ test.describe('employee mobile survey @ 360 px', () => {
     // Privacy notice and language toggle render fully.
     const privacy = page.locator('section.privacy');
     await expect(privacy).toBeVisible();
-    const toggle = page.getByRole('group', { name: /Interface language|Langue de l’interface/ });
+    const toggle = page.getByRole('button', { name: /Change language|Changer de langue/ });
     await expect(toggle).toBeVisible();
   });
 

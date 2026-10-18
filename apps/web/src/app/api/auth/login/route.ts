@@ -42,7 +42,9 @@ export async function POST(req: NextRequest) {
     return back('invalid');
   }
   await recordAttempt(credentials.email, address, true);
-  const token = await signSession(newSessionPayload(user, memberships));
+  const token = await signSession(
+    newSessionPayload({ ...user, email: credentials.email }, memberships),
+  );
   const res = redirectTo(safeNext(String(form.get('next') ?? '')));
   res.cookies.set(SESSION_COOKIE, token, sessionCookieOptions());
   return res;
