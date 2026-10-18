@@ -82,7 +82,7 @@ export const fr: Messages = {
     step4Body: 'Formations et cas d’usage, suivis jusqu’au bout.',
     ctaIntake: 'Démarrer le cadrage',
     ctaHow: 'Comment ça marche',
-    trust: 'Aucun nom conservé. Seulement des totaux d’équipe. Une personne valide tout partage.',
+    trust: 'Nous ne demandons jamais de nom. Seulement des totaux d’équipe. Une personne valide tout partage.',
     visualAlt: 'Les mascottes EvolAI, des premiers pas à un usage confiant de l’IA',
   },
 

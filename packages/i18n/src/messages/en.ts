@@ -81,7 +81,7 @@ export const en = {
     step4Body: 'Training and use cases, followed to delivery.',
     ctaIntake: 'Start the intake',
     ctaHow: 'How it works',
-    trust: 'No names stored. Team totals only. A person approves everything shared.',
+    trust: 'We never ask for names. Team totals only. A person approves everything shared.',
     visualAlt: 'The EvolAI mascots, from first steps to confident AI use',
   },
 
