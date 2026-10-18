@@ -189,7 +189,7 @@ a {
 
 .progress {
   width: 100%;
-  height: 8px;
+  height: 10px;
   background: var(--color-border);
   border-radius: var(--radius-pill);
   overflow: hidden;
@@ -248,17 +248,32 @@ a {
   text-align: left;
   font: inherit;
   cursor: pointer;
+  gap: var(--space-3);
+  justify-content: space-between;
 }
 
 .option-button:hover {
   background: var(--color-surface);
 }
 
+/* Selected: a teal edge plus a check icon, never colour alone (UI_RULES §3). The inset shadow
+   thickens the edge without changing the box. */
 .option-button[aria-pressed='true'],
 .option-button:has(input:checked) {
   border-color: var(--color-accent);
-  background: var(--color-accent);
-  color: var(--color-accent-fg);
+  box-shadow: inset 0 0 0 1px var(--color-accent);
+  background: var(--color-raised);
+}
+
+.option-check {
+  flex: none;
+  color: var(--color-accent-ink);
+  visibility: hidden;
+}
+
+.option-button[aria-pressed='true'] .option-check,
+.option-button:has(input:checked) .option-check {
+  visibility: visible;
 }
 
 .option-button[disabled] {
@@ -280,6 +295,18 @@ a {
 
 .privacy p {
   margin-bottom: var(--space-2);
+}
+
+.privacy-line {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  color: var(--color-muted);
+}
+
+.privacy-line svg {
+  flex: none;
+  color: var(--color-accent-ink);
 }
 
 details summary {

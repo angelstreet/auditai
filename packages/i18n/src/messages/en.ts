@@ -50,6 +50,7 @@ export const en = {
     dash: '—',
     notFoundTitle: 'This page does not exist',
     notFoundBody: 'Check that the link is complete. Or ask your team contact for a new one.',
+    notFoundHome: 'Go to the home page',
   },
   meta: {
     title: 'EvolAI — Understand. Adapt. Evolve.',

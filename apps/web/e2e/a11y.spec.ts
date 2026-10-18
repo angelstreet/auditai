@@ -109,7 +109,7 @@ test.describe('respondent path, keyboard only, with axe on every page', () => {
       await page.keyboard.press('Enter');
       await expect(page.locator('main details')).toHaveAttribute('open', '');
       await scan(page, `${locale} welcome, privacy open`);
-      await tabTo(page, 'main .btn-primary');
+      await tabTo(page, 'main .MuiButton-contained');
       await expectFocusRing(page, 'start');
       await page.keyboard.press('Enter');
 
@@ -133,7 +133,7 @@ test.describe('respondent path, keyboard only, with axe on every page', () => {
       await scan(page, `${locale} done`);
 
       // Optional quiz with arrows only.
-      await tabTo(page, 'main .btn-primary');
+      await tabTo(page, 'main .MuiButton-contained');
       await page.keyboard.press('Enter');
       await expect(page).toHaveURL(/\/quiz$/);
       await scan(page, `${locale} quiz`);

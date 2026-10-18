@@ -78,13 +78,13 @@ test.describe('respondent path is short, plain and in one language', () => {
       // Invitation: one primary action, visible without scrolling, privacy in one line.
       await page.goto(`/s/${token}`);
       await expect(page.locator('html')).toHaveAttribute('lang', locale);
-      await expect(page.locator('main .btn-primary')).toHaveCount(1);
-      await expect(page.locator('main .btn-primary')).toBeInViewport();
+      await expect(page.locator('main .MuiButton-contained')).toHaveCount(1);
+      await expect(page.locator('main .MuiButton-contained')).toBeInViewport();
       await expect(page.locator('main details')).toHaveCount(1);
       await expectPlainScreen(page, `${locale} welcome`);
       expect(await mainText(page)).not.toMatch(otherLang);
 
-      await page.locator('main .btn-primary').click();
+      await page.locator('main .MuiButton-contained').click();
       let taps = 1;
       for (let i = 0; ; i += 1) {
         await expect(page).toHaveURL(new RegExp(`/q/${i}$`));
@@ -103,11 +103,11 @@ test.describe('respondent path is short, plain and in one language', () => {
       // Done: team progress at a glance, what happens next, one primary action (optional quiz).
       await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
       await expect(page.getByRole('progressbar')).toBeVisible();
-      await expect(page.locator('main .btn-primary')).toHaveCount(1);
+      await expect(page.locator('main .MuiButton-contained')).toHaveCount(1);
       await expectPlainScreen(page, `${locale} done`);
 
       // Optional quiz: one question per screen, progress shown, last tap submits.
-      await page.locator('main .btn-primary').click();
+      await page.locator('main .MuiButton-contained').click();
       await expect(page).toHaveURL(/\/quiz$/);
       const questions = await page.locator('fieldset.question').count();
       for (let i = 0; i < questions; i += 1) {

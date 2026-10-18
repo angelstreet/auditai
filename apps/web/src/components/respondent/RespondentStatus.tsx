@@ -1,5 +1,9 @@
-import Link from 'next/link';
-import { Mascot } from '@evolai/ui';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Paper from '@mui/material/Paper';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import { AppIcon, Mascot, type IconName } from '@evolai/ui';
 import { formatDate, type SupportedLocale, type Translator } from '@evolai/i18n';
 import type { MascotTier } from '@evolai/contracts';
 import ProgressBar from '@/components/ProgressBar';
@@ -41,19 +45,43 @@ const nextStep = (team: TeamProgress, locale: SupportedLocale, t: Translator): s
  * names or answers (PRD §4.3, §15).
  */
 export default function RespondentStatus({ token, title, team, myTier, locale, t }: Props) {
+  const steps: ReadonlyArray<{ icon: IconName; text: string }> = [
+    { icon: 'success', text: t('survey.nextSaved') },
+    { icon: 'time', text: nextStep(team, locale, t) },
+    { icon: 'lock', text: t('survey.keepLink') },
+  ];
+  const teamLine = t('survey.teamProgress', { done: team.answered, total: team.invited });
   return (
-    <div className="stack">
-      <h1 id="status-title">{title}</h1>
-      <section className="card" aria-labelledby="team-title">
-        <h2 id="team-title">{t('survey.teamHeading')}</h2>
-        <p className="stat">
-          {t('survey.teamProgress', { done: team.answered, total: team.invited })}
-        </p>
+    <Stack sx={{ gap: 6 }}>
+      <Stack direction="row" sx={{ gap: 3, alignItems: 'center' }}>
+        <Box sx={{ color: 'success.main', display: 'flex' }}>
+          <AppIcon name="success" size={40} />
+        </Box>
+        <Typography id="status-title" variant="pageTitle" component="h1" sx={{ m: 0 }}>
+          {title}
+        </Typography>
+      </Stack>
+
+      <Paper
+        component="section"
+        variant="outlined"
+        aria-labelledby="team-title"
+        sx={{ p: 5, borderRadius: 3 }}
+      >
+        <Stack direction="row" sx={{ gap: 2, alignItems: 'center', mb: 3 }}>
+          <AppIcon name="team" />
+          <Typography id="team-title" variant="sectionTitle" component="h2" sx={{ m: 0 }}>
+            {t('survey.teamHeading')}
+          </Typography>
+        </Stack>
+        <Typography variant="body1" component="p" sx={{ fontWeight: 600, mt: 0, mb: 3 }}>
+          {teamLine}
+        </Typography>
         <ProgressBar
           current={team.answered}
           total={team.invited}
           ariaLabel={t('survey.teamProgressAria')}
-          valueText={t('survey.teamProgress', { done: team.answered, total: team.invited })}
+          valueText={teamLine}
         />
         {team.teamTier ? (
           <p className="inline-mascot">
@@ -61,47 +89,93 @@ export default function RespondentStatus({ token, title, team, myTier, locale, t
             {t('survey.teamMascot', { tier: t(`quiz.tier.${team.teamTier}`) })}
           </p>
         ) : null}
-      </section>
+      </Paper>
+
       <section aria-labelledby="next-title">
-        <h2 id="next-title">{t('survey.nextHeading')}</h2>
-        <ol>
-          <li>{t('survey.nextSaved')}</li>
-          <li>{nextStep(team, locale, t)}</li>
-          <li>{t('survey.keepLink')}</li>
-        </ol>
-        <p>
+        <Typography id="next-title" variant="sectionTitle" component="h2" sx={{ m: 0, mb: 3 }}>
+          {t('survey.nextHeading')}
+        </Typography>
+        <Stack component="ol" sx={{ listStyle: 'none', p: 0, m: 0, gap: 3 }}>
+          {steps.map((step) => (
+            <Stack
+              key={step.icon}
+              component="li"
+              direction="row"
+              sx={{ gap: 3, alignItems: 'flex-start' }}
+            >
+              <Box sx={{ color: 'primary.main', display: 'flex', pt: 0.5 }}>
+                <AppIcon name={step.icon} />
+              </Box>
+              <Typography variant="body1" component="span">
+                {step.text}
+              </Typography>
+            </Stack>
+          ))}
+        </Stack>
+        <Typography variant="body2" component="p" color="text.secondary" sx={{ mt: 4, mb: 0 }}>
           {team.contact
             ? t('survey.contactWith', { contact: team.contact })
             : t('survey.contactNone')}
-        </p>
+        </Typography>
       </section>
-      <section id="mascot" className="card" aria-labelledby="mascot-title">
+
+      <Paper
+        component="section"
+        id="mascot"
+        variant="outlined"
+        aria-labelledby="mascot-title"
+        sx={{ p: 5, borderRadius: 3 }}
+      >
         {myTier ? (
           <>
-            <h2 id="mascot-title" className="inline-mascot">
+            <Typography
+              id="mascot-title"
+              variant="sectionTitle"
+              component="h2"
+              className="inline-mascot"
+              sx={{ m: 0 }}
+            >
               <Mascot tier={myTier} size={64} label={t(`quiz.mascotAlt.${myTier}`)} />
               {t('survey.yourMascot', { tier: t(`quiz.tier.${myTier}`) })}
-            </h2>
-            <p>{t(`quiz.tierDescriptor.${myTier}`)}</p>
-            <p className="muted">{t('quiz.mascotIntro')}</p>
-            <Link className="btn btn-secondary" href={`/s/${token}/quiz`}>
+            </Typography>
+            <Typography variant="body1" component="p" sx={{ mt: 3, mb: 2 }}>
+              {t(`quiz.tierDescriptor.${myTier}`)}
+            </Typography>
+            <Typography variant="body2" component="p" color="text.secondary" sx={{ mt: 0, mb: 4 }}>
+              {t('quiz.mascotIntro')}
+            </Typography>
+            <Button variant="outlined" href={`/s/${token}/quiz`}>
               {t('survey.retakeQuiz')}
-            </Link>
+            </Button>
           </>
         ) : (
           <>
-            <h2 id="mascot-title">{t('survey.quizTitle')}</h2>
-            <p>{t('survey.quizBody')}</p>
-            <Link className="btn btn-primary" href={`/s/${token}/quiz`}>
+            <Typography id="mascot-title" variant="sectionTitle" component="h2" sx={{ m: 0 }}>
+              {t('survey.quizTitle')}
+            </Typography>
+            <Typography variant="body1" component="p" sx={{ mt: 3, mb: 4 }}>
+              {t('survey.quizBody')}
+            </Typography>
+            <Button variant="contained" href={`/s/${token}/quiz`}>
               {t('survey.quizCta')}
-            </Link>
+            </Button>
           </>
         )}
-      </section>
-      <section aria-labelledby="tip-title">
-        <h2 id="tip-title">{t('survey.tipHeading')}</h2>
-        <p>{t('survey.tip')}</p>
-      </section>
-    </div>
+      </Paper>
+
+      <Paper
+        component="section"
+        elevation={0}
+        aria-labelledby="tip-title"
+        sx={{ p: 5, borderRadius: 3, bgcolor: 'app.raised' }}
+      >
+        <Typography id="tip-title" variant="sectionTitle" component="h2" sx={{ m: 0, mb: 2 }}>
+          {t('survey.tipHeading')}
+        </Typography>
+        <Typography variant="body2" component="p" color="text.secondary" sx={{ m: 0 }}>
+          {t('survey.tip')}
+        </Typography>
+      </Paper>
+    </Stack>
   );
 }

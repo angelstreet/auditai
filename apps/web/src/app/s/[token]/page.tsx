@@ -1,4 +1,8 @@
-import Link from 'next/link';
+import Button from '@mui/material/Button';
+import Paper from '@mui/material/Paper';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import { AppIcon } from '@evolai/ui';
 import LinkProblem from '@/components/respondent/LinkProblem';
 import PrivacyNotice from '@/components/respondent/PrivacyNotice';
 import RespondentStatus from '@/components/respondent/RespondentStatus';
@@ -45,19 +49,40 @@ export default async function WelcomePage({ params }: { params: Params }) {
   const answered = Object.keys(state.answers).length;
   const next = Math.min(firstUnanswered(state.answers, total), total - 1);
   return (
-    <section className="stack" aria-labelledby="welcome-title">
-      <h1 id="welcome-title">{t('survey.title')}</h1>
-      <p className="lede">{t('survey.lede')}</p>
-      <p className="meta">
-        {answered > 0
-          ? t('survey.resumeProgress', { done: answered, n: total })
-          : t('survey.duration', { n: total, m: estimatedMinutes(total) })}
-      </p>
-      <Link className="btn btn-primary btn-block" href={`/s/${params.token}/q/${next}`}>
+    <Paper
+      component="section"
+      variant="outlined"
+      aria-labelledby="welcome-title"
+      sx={{ p: { xs: 5, sm: 8 }, borderRadius: 4 }}
+    >
+      <Typography id="welcome-title" variant="pageTitle" component="h1" sx={{ m: 0 }}>
+        {t('survey.title')}
+      </Typography>
+      <Typography variant="lede" component="p" color="text.secondary" sx={{ mt: 3, mb: 0 }}>
+        {t('survey.lede')}
+      </Typography>
+      <Stack direction="row" sx={{ mt: 4, gap: 2, alignItems: 'center', color: 'text.secondary' }}>
+        <AppIcon name="time" />
+        <Typography variant="body2" component="p" sx={{ m: 0 }}>
+          {answered > 0
+            ? t('survey.resumeProgress', { done: answered, n: total })
+            : t('survey.duration', { n: total, m: estimatedMinutes(total) })}
+        </Typography>
+      </Stack>
+      <Button
+        variant="contained"
+        size="large"
+        fullWidth
+        href={`/s/${params.token}/q/${next}`}
+        endIcon={<AppIcon name="forward" />}
+        sx={{ mt: 6 }}
+      >
         {answered > 0 ? t('survey.resume') : t('survey.start')}
-      </Link>
-      <p className="muted">{t('survey.howItWorks')}</p>
+      </Button>
+      <Typography variant="body2" component="p" color="text.secondary" sx={{ mt: 4, mb: 4 }}>
+        {t('survey.howItWorks')}
+      </Typography>
       <PrivacyNotice t={t} />
-    </section>
+    </Paper>
   );
 }
