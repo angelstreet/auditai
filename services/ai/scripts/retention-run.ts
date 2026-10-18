@@ -1,5 +1,5 @@
 /**
- * Scheduled entry point for the FR-09 retention worker (ADR 0020).
+ * Scheduled entry point for the FR-09 retention worker (ADR 0030).
  *
  * One pass by default (for cron / a systemd timer / `docker compose run`). Set
  * RETENTION_INTERVAL_SECONDS to loop in-process (the compose `retention` service).

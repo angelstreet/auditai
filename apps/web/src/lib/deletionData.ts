@@ -5,7 +5,7 @@ import { withTenant } from './db';
  * Deletion data layer (M15, FR-09, PRD §15, §25.4).
  *
  * The right-to-erasure flow runs `deletePseudonym`, which calls the SQL function
- * `erase_respondent_pseudonym` (migration 0014, ADR 0020) in one tenant transaction. It removes
+ * `erase_respondent_pseudonym` (migration 0014, ADR 0030) in one tenant transaction. It removes
  * the pseudonym's invitations, respondents, submissions, answers, analyses, badges and derived
  * draft opportunities, trims synergies, writes one `deletion_events` row per kind and one
  * `audit_log` row. The trails hold sha256(tenant:pseudonym), never the raw pseudonym.
@@ -61,7 +61,7 @@ export const deletePseudonym = async (
   actorUserId: UserId,
 ): Promise<PseudonymDeletionResult> => {
   return withTenant(tenantId, async (client) => {
-    // One SQL function owns the cascade (migration 0014, ADR 0020); the retention worker
+    // One SQL function owns the cascade (migration 0014, ADR 0030); the retention worker
     // calls the same function.
     const res = await client.query<{ r: Record<string, number | string> }>(
       `SELECT erase_respondent_pseudonym($1, $2, $3, 'respondent_pseudonym') AS r`,

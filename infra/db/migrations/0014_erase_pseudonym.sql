@@ -1,6 +1,6 @@
 -- 0014_erase_pseudonym.sql
 --
--- TASK-B (FR-09, PRD §15, ADR 0020): real right-to-erasure.
+-- TASK-B (FR-09, PRD §15, ADR 0030): real right-to-erasure.
 --
 -- One SQL function, `erase_respondent_pseudonym`, removes every row that
 -- carries a pseudonym or is derived from it, inside the caller's

@@ -2,6 +2,9 @@
  * Shared smoke helper (ADR 0023): sign in as a synthetic seeded auditor and return a Cookie
  * header for authenticated fetches against the admin surface. Credentials are the obviously
  * fake ones seeded by infra/db/migrations/0015_auth_password.sql.
+ *
+ * The actor id a smoke writes into `audit_log` comes from that same session (`sub`), not from a
+ * constant, so the audit rows carry the id the app itself would record.
  */
 export const SYNTHETIC_USERS = {
   a: {
@@ -30,4 +33,18 @@ export const loginCookie = async (base, user = SYNTHETIC_USERS.a) => {
   if (res.status !== 303 || !m) throw new Error(`smoke login failed: HTTP ${res.status}`);
   // The smokes assert English copy; the app defaults to French without a choice (ADR 0024).
   return `${m[0]}; evolai_locale=en`;
+};
+
+/** users.id of the signed-in auditor, read from the session payload (`sub`, ADR 0023). */
+export const sessionUserId = (cookie) => {
+  const token = /evolai_session=([^;]+)/.exec(cookie)?.[1];
+  const payload = token?.split('.')[0];
+  if (!payload) throw new Error('smoke: no session cookie to read the user id from');
+  return JSON.parse(Buffer.from(payload, 'base64url').toString('utf8')).sub;
+};
+
+/** Sign in like the app does and return the cookie plus the real user id behind it. */
+export const signIn = async (base, user = SYNTHETIC_USERS.a) => {
+  const cookie = await loginCookie(base, user);
+  return { cookie, userId: sessionUserId(cookie) };
 };

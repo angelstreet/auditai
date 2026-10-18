@@ -1,4 +1,6 @@
-# 0020 - Pseudonym erasure cascade and data-layer hardening
+# 0030 - Pseudonym erasure cascade and data-layer hardening
+
+> Renumbered from 0020 in TASK-J: two ADRs shared the number 0020. The coverage gate keeps 0020. Links were updated.
 
 - Status: Accepted
 - Date: 2026-10-17

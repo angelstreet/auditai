@@ -24,17 +24,17 @@
  */
 import { default as pg } from 'pg';
 import { spawnSync } from 'node:child_process';
-import { loginCookie } from './smoke-auth.mjs';
+import { signIn } from './smoke-auth.mjs';
 
 const base = process.env['LOCAL_WEB_URL'] ?? 'http://127.0.0.1:3101';
-const cookiePromise = loginCookie(base);
+const sessionPromise = signIn(base);
+const cookiePromise = sessionPromise.then((session) => session.cookie);
 const databaseUrl = process.env['DATABASE_URL'];
 if (!databaseUrl) {
   process.stderr.write('DATABASE_URL is required\n');
   process.exit(2);
 }
 const tenantId = process.env['SMOKE_TENANT_ID'] ?? '11111111-1111-4111-8111-111111111111';
-const auditorId = process.env['SMOKE_AUDITOR_ID'] ?? '99999999-9999-4999-8999-999999999999';
 const existingEngagementId = 'a5555555-4555-4555-8555-555555555555';
 const secondEngagementId = 'a5555666-4555-4555-8555-666666666666';
 const templateId = 'a3333333-3333-4333-8333-333333333333';
@@ -92,6 +92,8 @@ const spawnOk = (cmd, args, env) => {
 };
 
 const main = async () => {
+  // The actor is the user behind the session the smoke signed in with (ADR 0023).
+  const { userId: auditorId } = await sessionPromise;
   // Sanity: app responds.
   await fetchText('/admin/engagements');
   ok('web responded on /admin/engagements');

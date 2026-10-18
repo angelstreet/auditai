@@ -72,7 +72,7 @@ jobs:
       - name: Coverage gate
         run: pnpm coverage
 
-      - name: Script tests (style guard)
+      - name: Script tests (style guard, ADR numbers)
         run: pnpm test:scripts
 
   e2e:

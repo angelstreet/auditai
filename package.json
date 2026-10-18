@@ -36,7 +36,7 @@
     "retention:run": "pnpm --filter @evolai/ai run retention-run",
     "ai:eval": "pnpm --filter @evolai/ai run eval",
     "m15b:smoke": "node apps/web/scripts/m15b-smoke.mjs",
-    "test:scripts": "node --test scripts/style-guard.test.mjs",
+    "test:scripts": "node --test scripts/style-guard.test.mjs scripts/adr-numbers.test.mjs",
     "test:e2e:browser": "pnpm --filter @evolai/web exec playwright test"
   },
   "devDependencies": {

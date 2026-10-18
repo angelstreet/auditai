@@ -37,7 +37,7 @@ export const deletionEventSchema = z.object({
   tenantId: tenantIdSchema,
   requestedBy: userIdSchema,
   scope: deletionScopeSchema,
-  /** Raw pseudonym on legacy rows; sha256(tenantId:pseudonym) hex on rows written by ADR 0020. */
+  /** Raw pseudonym on legacy rows; sha256(tenantId:pseudonym) hex on rows written by ADR 0030. */
   respondentPseudonym: z.string().min(8).max(64).nullable(),
   targetKind: deletionTargetKindSchema,
   targetId: z.string().uuid().nullable(),

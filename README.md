@@ -9,7 +9,19 @@ get validated opportunities, an adoption roadmap, governance artefacts and measu
 It is **not** an employee performance-ranking tool: it assesses work practices, readiness and improvement opportunities,
 with privacy thresholds, human review of every AI output, and strict tenant isolation.
 
-**Status:** Phase 1 + M9–M15 merged (M1–M12 in [docs/ROADMAP.md](docs/ROADMAP.md), plus M13, M14 and M15). Monorepo, contracts + domain, Postgres + RLS, mobile survey, admin page, the local one-command runner, the rule-based AI pipeline, the auditor review surface, the opportunity register + publish gate, the sponsor onboarding + portfolio board, the cross-team synergy detection loop, the gamified literacy quiz + mascot badge system, the FR-09 retention + deletion + export trail (partial: erasure covers `respondent_badges` only, so the rest of FR-09 is still open), the `/admin/data` surface, the integrated `/board` (with mascot SVG inline), the public `/welcome` landing, the Dockerfile + docker-compose self-host path, the `pnpm test:e2e` alias, the `pnpm coverage` 80% gate, and the public Playwright cross-viewport suite are all in `main` with green CI. **Not yet implemented:** real authentication; actor identity still comes from the `x-audit-actor-id` header fallback, so the pilot must not be exposed to real users until auth lands. The product requirements are in [docs/PRD.md](docs/PRD.md); the phased delivery plan is in [docs/ROADMAP.md](docs/ROADMAP.md); the rationale for the local runner is in [ADR 0006](docs/adr/0006-local-dev-runner.md); the FR-09 retention design is in [ADR 0016](docs/adr/0016-fr09-retention-export-deletion.md); the data + board + landing integration is in [ADR 0017](docs/adr/0017-board-integration-and-landing.md); the DevX + Docker + static contracts-map deploy is in [ADR 0018](docs/adr/0018-devx-and-deploy.md); the cross-viewport Playwright suite is in [ADR 0019](docs/adr/0019-public-routes-playwright.md); the French + English i18n layer is in [ADR 0024](docs/adr/0024-i18n-fr-en.md). The full docs map (PRD ↔ ROADMAP ↔ ADRs) is in [docs/INDEX.md](docs/INDEX.md); the public contract surface is in [packages/contracts/src/contracts-map.md](packages/contracts/src/contracts-map.md); a static contracts-map page lives at [landing/m15-contracts/index.html](landing/m15-contracts/index.html).
+**Status:** milestones M1–M15 and the review follow-up tasks A–I are merged to `main` with green CI.
+The milestones cover the auditor review, opportunity register, sponsor onboarding and portfolio board,
+cross-team synergies, the gamified literacy quiz with mascot badges, and FR-09 retention, deletion and export.
+The follow-ups add real auditor sign-in with tenant isolation, real pseudonym erasure, French and English in
+the app, the accessibility gate, and the first model-backed AI synthesis behind an allowlisted provider (the
+default route is still the rule-based one). Open work is listed in [docs/ROADMAP.md](docs/ROADMAP.md#what-is-left):
+Gate B real-model run and EU or self-hosted route, Gate C SSO/MFA and production hosting, invitations and
+reminders (FR-03), real-device and screen-reader tests, and the Phase 3 items. Real survey data needs the Gate B
+and Gate C items closed first. The product requirements are in [docs/PRD.md](docs/PRD.md); the phased
+delivery plan is in [docs/ROADMAP.md](docs/ROADMAP.md); architecture decisions are in [docs/adr/](docs/adr/),
+and the full docs map (PRD ↔ ROADMAP ↔ ADRs) is in [docs/INDEX.md](docs/INDEX.md). The public contract surface
+is in [packages/contracts/src/contracts-map.md](packages/contracts/src/contracts-map.md); a static contracts-map
+page lives at [landing/m15-contracts/index.html](landing/m15-contracts/index.html).
 
 **Live landing page:** [bai7w0jcu7s8e.space.minimax.io](https://bai7w0jcu7s8e.space.minimax.io) — a
 public static showcase of the brand. The dynamic survey + admin app is run locally via

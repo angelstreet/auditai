@@ -41,3 +41,25 @@ remained as the working name in package scopes, URLs, cookies, temp paths and da
 - `.github/CODEOWNERS` is unchanged (team handle, not a package scope).
 
 The owner renames checkout folders on the hosts after merge; nothing here touches them.
+
+## Addendum (TASK-J): remaining `auditai` hits, October 2026
+
+Audit of `git grep -i auditai` outside `docs/adr/` after TASK-H and TASK-I. Two changes were made:
+
+- `landing/index.html` and `landing/m15-contracts/index.html` named the old package scope `@auditai/*`. They now
+  say `@evolai/*`, the real package names.
+- `.github/CODEOWNERS` named a team (`@auditai/maintainers`) that does not exist. It now names the owner account
+  `@angelstreet`, with the same path rules. This reverses the line in Consequences above.
+
+Kept on purpose, with the reason:
+
+| Hits                                                                                                                                                                                                                                                                                       | Reason                                                                                                             |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| `auditai_app` role, `auditai` bootstrap user, password and compose database (`db.ts`, `docker-compose.yml`, `Dockerfile` comment, CI and e2e service config, `local-stack.mjs`, `serve.mjs`, `tests/db`, smokes, `SET ROLE` in `services/ai`, README and landing local-dev `DATABASE_URL`) | Internal database identifiers. Running databases use them and migrations 0004 onward grant to them (see Decision). |
+| `infra/db/migrations/0001_init.sql` header comment and other migration comments                                                                                                                                                                                                            | Migration history; old migrations are never edited.                                                                |
+| `LEGACY_LOCALE_COOKIE = 'auditai_locale'` in `packages/i18n` and the legacy session cookie `aai_session`                                                                                                                                                                                   | Cookie names read as a fallback so open sessions and language choices survive the rename.                          |
+| `docs/tasks/*` briefs and the `docs/ROADMAP.md` M8 row                                                                                                                                                                                                                                     | Records of the task as written; the repository name `auditai` in them is the old name.                             |
+| `docs/adr/*` bodies                                                                                                                                                                                                                                                                        | ADR history.                                                                                                       |
+
+The retention of these identifiers is checked by reading this list, not by a test. Any new `auditai` hit outside
+these groups should be renamed.
