@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation';
 import EngagementRow from '@/components/admin/EngagementRow';
 import TenantSwitcher from '@/components/admin/TenantSwitcher';
-import { Logo } from '@/components/Logo';
 import { listEngagements, tenantLabel } from '@/lib/adminData';
 import { sessionTenantIds } from '@/lib/authServer';
 import { getT } from '@/lib/i18n';
@@ -23,7 +22,7 @@ export default async function AdminEngagementsPage({
   const tenants = await sessionTenantIds();
   if (tenants.length === 0) {
     return (
-      <section aria-labelledby="admin-empty-title" className="admin">
+      <section aria-labelledby="admin-empty-title" className="wide admin">
         <h1 id="admin-empty-title">{t('admin.common.noTenantsTitle')}</h1>
         <p>{t('admin.common.noTenantsBody', { command: 'pnpm local:reset' })}</p>
       </section>
@@ -45,11 +44,8 @@ export default async function AdminEngagementsPage({
   const totalRatio = totalExpected === 0 ? 0 : totalSubmitted / totalExpected;
 
   return (
-    <section aria-labelledby="admin-title" className="admin">
-      <Logo />
-      <h1 id="admin-title" style={{ marginTop: 'var(--space-4)' }}>
-        {t('admin.engagements.title')}
-      </h1>
+    <section aria-labelledby="admin-title" className="wide admin">
+      <h1 id="admin-title">{t('admin.engagements.title')}</h1>
       <p className="muted">{t('admin.engagements.dataFrom')}</p>
       <TenantSwitcher currentTenantId={current} />
       <p>

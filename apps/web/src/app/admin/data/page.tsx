@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { Logo } from '@/components/Logo';
 import { tenantLabel } from '@/lib/adminData';
 import { sessionTenantIds } from '@/lib/authServer';
 import { listDeletionEvents } from '@/lib/deletionData';
@@ -37,10 +36,9 @@ export default async function DataPage({ searchParams }: PageProps) {
     | undefined;
   if (!current) {
     return (
-      <main className="container">
-        <Logo />
+      <div className="wide">
         <p>{t('common.noTenants', { command: 'pnpm local:reset' })}</p>
-      </main>
+      </div>
     );
   }
   const [label, exports, deletions] = await Promise.all([
@@ -49,18 +47,17 @@ export default async function DataPage({ searchParams }: PageProps) {
     listDeletionEvents(current),
   ]);
   return (
-    <main className="container">
-      <Logo />
-      <h1 style={{ marginTop: 'var(--space-4)' }}>{t('admin.data.title')}</h1>
+    <div className="wide">
+      <h1>{t('admin.data.title')}</h1>
       <p className="muted">{t('admin.data.intro', { label })}</p>
-      <p>
-        <Link className="btn-ghost" href="/board">
+      <p className="actions">
+        <Link className="btn btn-secondary btn-sm" href="/board">
           {t('admin.common.backToBoard')}
         </Link>{' '}
-        <Link className="btn-ghost" href="/admin/synergies">
+        <Link className="btn btn-secondary btn-sm" href="/admin/synergies">
           {t('admin.data.synergiesLink')}
         </Link>{' '}
-        <Link className="btn-ghost" href="/admin/teams">
+        <Link className="btn btn-secondary btn-sm" href="/admin/teams">
           {t('admin.data.teamsLink')}
         </Link>
       </p>
@@ -82,7 +79,7 @@ export default async function DataPage({ searchParams }: PageProps) {
         {exports.length === 0 ? (
           <p className="muted">{t('admin.data.noExports')}</p>
         ) : (
-          <div style={{ overflowX: 'auto' }}>
+          <div className="table-scroll">
             <table className="data-table">
               <thead>
                 <tr>
@@ -114,7 +111,7 @@ export default async function DataPage({ searchParams }: PageProps) {
         {deletions.length === 0 ? (
           <p className="muted">{t('admin.data.noDeletions')}</p>
         ) : (
-          <div style={{ overflowX: 'auto' }}>
+          <div className="table-scroll">
             <table className="data-table">
               <thead>
                 <tr>
@@ -138,24 +135,7 @@ export default async function DataPage({ searchParams }: PageProps) {
           </div>
         )}
       </section>
-
-      <style>{`
-        .card { background: var(--color-card); border: 1px solid var(--color-border);
-          border-radius: 8px; padding: 16px 18px; margin: 14px 0; }
-        .card h2 { margin: 0 0 8px; font-size: 18px; }
-        .card h3 { margin: 0 0 8px; font-size: 15px; }
-        .data-form { display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
-          margin-top: 12px; }
-        .data-form label { display: flex; flex-direction: column; font-size: 12px;
-          color: var(--color-muted); gap: 4px; min-width: 0; width: 100%; max-width: 420px; }
-        .data-form input, .data-form select { width: 100%; box-sizing: border-box; }
-        .data-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
-        .data-table th, .data-table td { padding: 6px 8px; border-bottom: 1px solid var(--color-border);
-          text-align: left; font-size: 12px; }
-        .btn-ghost { display: inline-block; padding: 8px 14px; border: 1px solid var(--color-border);
-          border-radius: 6px; text-decoration: none; color: inherit; margin-right: 6px; }
-      `}</style>
-    </main>
+    </div>
   );
 }
 

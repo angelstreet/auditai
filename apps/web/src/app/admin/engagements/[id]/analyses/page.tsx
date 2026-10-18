@@ -1,6 +1,5 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { Logo } from '@/components/Logo';
 import { enumLabel, getT } from '@/lib/i18n';
 import { formatDate } from '@auditai/i18n';
 
@@ -23,8 +22,7 @@ export default async function AnalysesListPage({ params, searchParams }: PagePro
   const tenants = await sessionTenantIds();
   if (tenants.length === 0) {
     return (
-      <section aria-labelledby="empty-title" className="container admin">
-        <Logo />
+      <section aria-labelledby="empty-title" className="wide admin">
         <h1 id="empty-title">{t('admin.common.noTenantsTitle')}</h1>
         <p>{t('admin.common.noTenantsBody', { command: 'pnpm local:reset' })}</p>
       </section>
@@ -46,8 +44,7 @@ export default async function AnalysesListPage({ params, searchParams }: PagePro
 
   if (!label) {
     return (
-      <section aria-labelledby="missing-title" className="container admin">
-        <Logo />
+      <section aria-labelledby="missing-title" className="wide admin">
         <h1 id="missing-title">{t('admin.common.engagementNotFound')}</h1>
         <p>
           {t('admin.common.notInTenant', { id: params.id, tenant: tenantName })}{' '}
@@ -63,11 +60,8 @@ export default async function AnalysesListPage({ params, searchParams }: PagePro
   const pendingCount = summaries.length - approvedCount;
 
   return (
-    <section aria-labelledby="analyses-title" className="container admin">
-      <Logo />
-      <h1 id="analyses-title" style={{ marginTop: 'var(--space-4)' }}>
-        {t('admin.analyses.title', { org: label.organisation })}
-      </h1>
+    <section aria-labelledby="analyses-title" className="wide admin">
+      <h1 id="analyses-title">{t('admin.analyses.title', { org: label.organisation })}</h1>
       <p className="muted">
         {t('admin.analyses.meta', {
           tenant: tenantName,

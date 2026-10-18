@@ -1,6 +1,5 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { Logo } from '@/components/Logo';
 import { enumLabel, getT } from '@/lib/i18n';
 import { aroundLink } from '@/lib/richText';
 
@@ -22,8 +21,7 @@ export default async function NewOpportunityPage({ params, searchParams }: PageP
   const tenants = await sessionTenantIds();
   if (tenants.length === 0) {
     return (
-      <section aria-labelledby="empty-title" className="container admin">
-        <Logo />
+      <section aria-labelledby="empty-title" className="wide admin">
         <h1 id="empty-title">{t('admin.common.noTenantsTitle')}</h1>
       </section>
     );
@@ -46,8 +44,7 @@ export default async function NewOpportunityPage({ params, searchParams }: PageP
 
   if (!label) {
     return (
-      <section aria-labelledby="missing-title" className="container admin">
-        <Logo />
+      <section aria-labelledby="missing-title" className="wide admin">
         <h1 id="missing-title">{t('admin.common.engagementNotFound')}</h1>
       </section>
     );
@@ -58,8 +55,7 @@ export default async function NewOpportunityPage({ params, searchParams }: PageP
       t('admin.oppNew.noAnalysisBody', vars),
     );
     return (
-      <section aria-labelledby="missing-title" className="container admin">
-        <Logo />
+      <section aria-labelledby="missing-title" className="wide admin">
         <h1 id="missing-title">{t('admin.oppNew.noAnalysis')}</h1>
         <p>
           {noAnalysisBefore}
@@ -77,11 +73,8 @@ export default async function NewOpportunityPage({ params, searchParams }: PageP
   });
 
   return (
-    <section aria-labelledby="new-title" className="container admin">
-      <Logo />
-      <h1 id="new-title" style={{ marginTop: 'var(--space-4)' }}>
-        {t('admin.oppNew.title', { org: label.organisation })}
-      </h1>
+    <section aria-labelledby="new-title" className="wide admin">
+      <h1 id="new-title">{t('admin.oppNew.title', { org: label.organisation })}</h1>
       <p className="muted">
         {t('admin.oppNew.meta', {
           tenant: tenantName,

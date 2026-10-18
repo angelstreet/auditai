@@ -11,7 +11,7 @@ function SubmitButton() {
   const { t } = useI18n();
   const { pending } = useFormStatus();
   return (
-    <button type="submit" disabled={pending} className="btn-primary">
+    <button type="submit" disabled={pending} className="btn btn-primary">
       {pending ? t('admin.analysis.approving') : t('admin.analysis.approve')}
     </button>
   );
@@ -41,14 +41,13 @@ export function ApproveForm({ tenantId, analysisId }: Props) {
           name="rationale"
           rows={3}
           maxLength={2000}
-          style={{ width: '100%', maxWidth: '640px' }}
           placeholder={t('admin.analysis.rationalePlaceholder')}
         />
       </p>
       <p>
         <SubmitButton />
         {state.message ? (
-          <span style={{ marginLeft: '12px' }} aria-live="polite">
+          <span className="status-msg" aria-live="polite">
             {state.ok ? '\u2705' : '\u26a0\ufe0f'} {state.message}
             {state.result
               ? ` ${t('admin.analysis.auditRef', { id: state.result.auditLogId })}`

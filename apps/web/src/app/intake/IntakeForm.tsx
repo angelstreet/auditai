@@ -11,7 +11,7 @@ function SubmitButton() {
   const { t } = useI18n();
   const { pending } = useFormStatus();
   return (
-    <button type="submit" disabled={pending} className="btn-primary">
+    <button type="submit" disabled={pending} className="btn btn-primary">
       {pending ? t('intake.saving') : t('intake.save')}
     </button>
   );
@@ -27,13 +27,7 @@ interface ChipProps {
 function Chip({ name, value, label, defaultChecked }: ChipProps) {
   return (
     <label className="chip">
-      <input
-        type="checkbox"
-        name={name}
-        value={value}
-        defaultChecked={defaultChecked}
-        style={{ display: 'none' }}
-      />
+      <input type="checkbox" name={name} value={value} defaultChecked={defaultChecked} />
       {label}
     </label>
   );
@@ -52,7 +46,7 @@ export function IntakeForm({ tenantId }: Props) {
 
       <div className="card">
         <h3>{t('intake.s1Title')}</h3>
-        <p className="desc">{t('intake.s1Desc')}</p>
+        <p className="muted">{t('intake.s1Desc')}</p>
         <p>
           <label htmlFor="topPriorityWorkflow">{t('intake.topPriorityLabel')}</label>
           <input
@@ -117,7 +111,7 @@ export function IntakeForm({ tenantId }: Props) {
 
       <div className="card">
         <h3>{t('intake.s2Title')}</h3>
-        <p className="desc">{t('intake.s2Desc')}</p>
+        <p className="muted">{t('intake.s2Desc')}</p>
         <p>
           <label htmlFor="annualBudgetEur">{t('intake.budgetLabel')}</label>
           <input
@@ -141,7 +135,7 @@ export function IntakeForm({ tenantId }: Props) {
 
       <div className="card">
         <h3>{t('intake.s3Title')}</h3>
-        <p className="desc">{t('intake.s3Desc')}</p>
+        <p className="muted">{t('intake.s3Desc')}</p>
         <p>
           <label>{t('intake.regionsLabel')}</label>
           <div className="chips">
@@ -198,7 +192,7 @@ export function IntakeForm({ tenantId }: Props) {
 
       <div className="card">
         <h3>{t('intake.s4Title')}</h3>
-        <p className="desc">{t('intake.s4Desc')}</p>
+        <p className="muted">{t('intake.s4Desc')}</p>
         {(['leadershipLiteracy', 'operationalAdoption', 'policyGovernance'] as const).map((k) => (
           <p key={k}>
             <label htmlFor={k}>{t(`intake.${k}`)}</label>
@@ -210,32 +204,12 @@ export function IntakeForm({ tenantId }: Props) {
       <p>
         <SubmitButton />
         {state.message ? (
-          <span style={{ marginLeft: 12 }} aria-live="polite">
+          <span className="status-msg" aria-live="polite">
             {state.ok ? '\u2705' : '\u26a0\ufe0f'} {state.message}
             {state.briefId ? ` (${state.briefId})` : ''}
           </span>
         ) : null}
       </p>
-
-      <style>{`
-        .card { background: var(--color-bg); border: 1px solid var(--color-border);
-          border-radius: 8px; padding: 18px 20px; margin-bottom: 18px; }
-        .card h3 { margin: 0 0 4px; font-size: 16px; }
-        .card .desc { color: var(--color-muted); font-size: 13px; margin: 0 0 14px; }
-        .card p { margin: 0 0 12px; }
-        .card label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; }
-        .card input[type="text"], .card select {
-          width: 100%; max-width: 480px; padding: 8px 10px; border: 1px solid var(--color-border);
-          border-radius: 6px; font: inherit; }
-        .card input[type="range"] { width: 100%; max-width: 480px; }
-        .chips { display: flex; flex-wrap: wrap; gap: 6px; }
-        .chip { padding: 6px 10px; border: 1px solid var(--color-border); border-radius: 999px;
-          font-size: 12px; cursor: pointer; user-select: none; background: var(--color-bg); }
-        .chip:has(input:checked) { background: var(--color-brand-teal); color: var(--color-brand-off-white);
-          border-color: var(--color-brand-teal); }
-        .btn-primary { padding: 10px 18px; background: var(--color-brand-navy);
-          color: var(--color-brand-off-white); border: 0; border-radius: 8px; font: inherit; cursor: pointer; }
-      `}</style>
     </form>
   );
 }

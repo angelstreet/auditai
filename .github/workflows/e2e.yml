@@ -46,6 +46,10 @@ jobs:
           echo "local stack did not become ready"; tail -100 local-stack.log; exit 1
 
       - name: Milestone smokes
+        # The smokes read the database directly; local:up uses its preferred ports on a clean runner.
+        env:
+          DATABASE_URL: postgres://auditai:auditai@127.0.0.1:54340/auditai_local
+          LOCAL_WEB_URL: http://127.0.0.1:3101
         run: pnpm test:e2e
 
       - name: Stop local stack

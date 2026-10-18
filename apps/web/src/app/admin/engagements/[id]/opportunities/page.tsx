@@ -1,6 +1,5 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { Logo } from '@/components/Logo';
 import { enumLabel, getT } from '@/lib/i18n';
 import { aroundLink } from '@/lib/richText';
 import { formatDate, formatNumber } from '@auditai/i18n';
@@ -31,8 +30,7 @@ export default async function OpportunitiesListPage({ params, searchParams }: Pa
   const tenants = await sessionTenantIds();
   if (tenants.length === 0) {
     return (
-      <section aria-labelledby="empty-title" className="container admin">
-        <Logo />
+      <section aria-labelledby="empty-title" className="wide admin">
         <h1 id="empty-title">{t('admin.common.noTenantsTitle')}</h1>
       </section>
     );
@@ -53,8 +51,7 @@ export default async function OpportunitiesListPage({ params, searchParams }: Pa
 
   if (!label) {
     return (
-      <section aria-labelledby="missing-title" className="container admin">
-        <Logo />
+      <section aria-labelledby="missing-title" className="wide admin">
         <h1 id="missing-title">{t('admin.common.engagementNotFound')}</h1>
         <p>{t('admin.common.notInTenant', { id: params.id, tenant: tenantName })}</p>
       </section>
@@ -65,11 +62,8 @@ export default async function OpportunitiesListPage({ params, searchParams }: Pa
   const [noneBefore, noneAfter] = aroundLink((vars) => t('admin.opps.none', vars));
 
   return (
-    <section aria-labelledby="opp-title" className="container admin">
-      <Logo />
-      <h1 id="opp-title" style={{ marginTop: 'var(--space-4)' }}>
-        {t('admin.opps.title', { org: label.organisation })}
-      </h1>
+    <section aria-labelledby="opp-title" className="wide admin">
+      <h1 id="opp-title">{t('admin.opps.title', { org: label.organisation })}</h1>
       <p className="muted">
         {t('admin.opps.meta', { tenant: tenantName, id: params.id, n: opportunities.length })}
       </p>
@@ -83,20 +77,9 @@ export default async function OpportunitiesListPage({ params, searchParams }: Pa
         </Link>
       </p>
 
-      <ul
-        aria-label={t('admin.opps.countsAria')}
-        style={{ display: 'flex', gap: 8, flexWrap: 'wrap', listStyle: 'none', padding: 0 }}
-      >
+      <ul className="chips">
         {(['draft', 'approved', 'in_progress', 'delivered', 'archived'] as const).map((s) => (
-          <li
-            key={s}
-            style={{
-              background: 'var(--color-card)',
-              padding: '6px 12px',
-              borderRadius: 999,
-              fontSize: 13,
-            }}
-          >
+          <li key={s} className="pill pill-muted">
             <strong>{counts[s]}</strong> {t(`status.${s}`)}
           </li>
         ))}
