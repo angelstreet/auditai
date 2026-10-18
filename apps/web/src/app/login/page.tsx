@@ -14,7 +14,7 @@ interface PageProps {
 
 const MESSAGE_KEYS = { invalid: 'login.invalid', locked: 'login.locked' } as const;
 
-/** /login: auditor sign-in (ADR 0023), localised FR/EN (ADR 0024), standard card (ADR 0033). */
+/** /login: auditor sign-in (ADR 0023), localised FR/EN (ADR 0024), standard card (ADR 0034). */
 export default function LoginPage({ searchParams }: PageProps) {
   const { t } = getT();
   const errorKey = searchParams.error

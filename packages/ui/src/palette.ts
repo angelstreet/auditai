@@ -1,5 +1,5 @@
 /**
- * Colour values for the MUI theme (ADR 0033). The second token source next to tokens.css: MUI
+ * Colour values for the MUI theme (ADR 0034). The second token source next to tokens.css: MUI
  * needs real values to derive hover and disabled tones, so they live here once. tokens.test.ts
  * fails when a value here and its CSS custom property in tokens.css drift apart, and checks every
  * text/background pair for WCAG AA in both schemes.

@@ -2,7 +2,7 @@ import { createTheme, type Theme } from '@mui/material/styles';
 import { palette, type SchemePalette } from './palette.js';
 
 /**
- * The one MUI theme (ADR 0033), built from palette.ts (colours) and tokens.css (type, space,
+ * The one MUI theme (ADR 0034), built from palette.ts (colours) and tokens.css (type, space,
  * shape). Light and dark are CSS-variable colour schemes switched by `data-theme` on <html>, so
  * the server renders the right scheme from the cookie and there is no flash (docs/UI_RULES.md §1).
  */

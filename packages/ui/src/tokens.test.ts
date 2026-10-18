@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { palette, type SchemePalette } from './palette.js';
 
 /**
- * Design-token contract (ADR 0025, ADR 0033): brand palette present, the CSS tokens and the MUI
+ * Design-token contract (ADR 0025, ADR 0034): brand palette present, the CSS tokens and the MUI
  * palette agree in both schemes, and every text/background pair meets WCAG 2.2 AA (4.5:1 text,
  * 3:1 control edges and focus) in light AND dark.
  */

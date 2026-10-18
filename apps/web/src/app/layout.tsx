@@ -39,7 +39,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   const choice = getThemeChoice();
   return (
     // data-theme comes from the cookie; without one the inline script fills it from the system
-    // scheme before the first paint (ADR 0033). suppressHydrationWarning covers that attribute.
+    // scheme before the first paint (ADR 0034). suppressHydrationWarning covers that attribute.
     <html lang={locale} data-theme={choice ?? undefined} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />

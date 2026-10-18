@@ -8,7 +8,7 @@ import { NotifyProvider, theme } from '@evolai/ui';
 import type { ThemeChoice } from '@/lib/themeChoice';
 
 /**
- * MUI for the app router (ADR 0033): the emotion cache collects styles during server rendering
+ * MUI for the app router (ADR 0034): the emotion cache collects styles during server rendering
  * (no flash of unstyled content), the theme follows the cookie choice or the system scheme, and
  * MUI's own localStorage is off so the cookie is the single source of the choice.
  */

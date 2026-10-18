@@ -145,7 +145,7 @@
 
 /* Dark is not black (docs/UI_RULES.md §12): a lifted slate page, cards one step lighter, the
  * filled teal accent as the primary action. Elevation is a lighter surface, never a shadow.
- * Set by data-theme on <html> (cookie or system, ADR 0033); the media query covers pages without
+ * Set by data-theme on <html> (cookie or system, ADR 0034); the media query covers pages without
  * the attribute (landing/). Both blocks must stay identical (tokens.test.ts). */
 [data-theme='dark'] {
   color-scheme: dark;

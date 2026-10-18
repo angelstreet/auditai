@@ -1,7 +1,7 @@
 # UI glow-up plan (TASK-L)
 
 Plan for the owner's second live review. The rules are [UI_RULES.md](UI_RULES.md) §0-13; the decisions
-are in [ADR 0033](adr/0033-mui-theme-and-standard-chrome.md). The screenshots come from
+are in [ADR 0034](adr/0034-mui-theme-and-standard-chrome.md). The screenshots come from
 `apps/web/e2e/screens.spec.ts` (`SCREENS=1`, kept out of git): every page in light and dark, at 360 and
 1280, in fr and en.
 

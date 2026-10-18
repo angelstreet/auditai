@@ -2,7 +2,7 @@ import { expect, test, type Page } from '@playwright/test';
 import { signInAsAuditorA } from './helpers';
 
 /**
- * Standard chrome (TASK-L, ADR 0033, docs/UI_RULES.md §0, §6, §11, §12):
+ * Standard chrome (TASK-L, ADR 0034, docs/UI_RULES.md §0, §6, §11, §12):
  *  - header controls are icon buttons with names, and keep the same boxes in fr/en and light/dark,
  *  - after sign-in the header says who you are (name, email, role, organisation) and signs you out,
  *  - the theme toggle is a cookie the server renders, so a reload keeps it without a flash,

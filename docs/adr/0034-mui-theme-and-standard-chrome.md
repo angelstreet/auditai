@@ -1,4 +1,4 @@
-# 0033 - MUI component library, light and dark theme, standard chrome and identity
+# 0034 - MUI component library, light and dark theme, standard chrome and identity
 
 - Status: Accepted
 - Date: 2026-10-18

@@ -1,4 +1,4 @@
-/** Cookie that stores an explicit light/dark choice; absent means "follow the system" (ADR 0033). */
+/** Cookie that stores an explicit light/dark choice; absent means "follow the system" (ADR 0034). */
 export const THEME_COOKIE = 'evolai_theme';
 export type ThemeChoice = 'light' | 'dark';
 
