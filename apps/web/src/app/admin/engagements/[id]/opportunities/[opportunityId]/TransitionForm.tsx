@@ -2,6 +2,7 @@
 
 import { useFormState, useFormStatus } from 'react-dom';
 import type { OpportunityId, OpportunityStatus, TenantId } from '@evolai/contracts';
+import { StatusText } from '@evolai/ui';
 import { useI18n } from '@/components/I18nProvider';
 import { transitionOpportunityAction, type TransitionActionState } from '../actions';
 
@@ -52,7 +53,7 @@ export function TransitionForm({ tenantId, opportunityId, current, options }: Pr
       </p>
       {state.message ? (
         <p aria-live="polite">
-          {state.ok ? '\u2705' : '\u26a0\ufe0f'} {state.message}
+          <StatusText status={state.ok ? 'success' : 'error'}>{state.message}</StatusText>
         </p>
       ) : null}
     </form>

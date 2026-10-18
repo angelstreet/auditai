@@ -2,6 +2,7 @@
 
 import { useFormState, useFormStatus } from 'react-dom';
 import type { SynergyId, SynergyStatus, TenantId } from '@evolai/contracts';
+import { StatusText } from '@evolai/ui';
 import { useI18n } from '@/components/I18nProvider';
 import { enumLabelOf } from '@/lib/enumLabel';
 import { transitionSynergyAction, type SynergyTransitionState } from './actions';
@@ -56,7 +57,7 @@ export function TransitionSynergyForm({ tenantId, synergyId, currentStatus }: Pr
       <SubmitButton />
       {state.message ? (
         <span className="status-msg" aria-live="polite">
-          {state.ok ? '✅' : '⚠️'} {state.message}
+          <StatusText status={state.ok ? 'success' : 'error'}>{state.message}</StatusText>
         </span>
       ) : null}
     </form>
