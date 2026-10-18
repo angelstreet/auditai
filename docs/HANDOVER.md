@@ -1,0 +1,117 @@
+# EvolAI — handover (2026-10-18)
+
+Read this first, then [README](../README.md), [ROADMAP](ROADMAP.md), [PRD](PRD.md), the [ADR index](adr/) and
+[AGENTS.md](../AGENTS.md) (rules for AI agents: public repo, no secrets, tests with every change).
+
+## What it is
+
+An open-source platform for evidence-based AI-adoption audits and change enablement. A company team answers a
+short mobile survey (one tap per question, French or English). Auditors review the answers, an AI-assisted
+pipeline proposes themes and opportunities with citations, and the team sees its own progress and badges.
+Repository: `angelstreet/evolai` (formerly `auditai`; old URLs redirect). Licence: Apache-2.0. Public repo:
+never commit credentials, hostnames, client names or real survey data.
+
+## Map of the repo
+
+| Path                    | What is there                                                                                       |
+| ----------------------- | --------------------------------------------------------------------------------------------------- |
+| `apps/web`              | Next.js app: respondent flow (`/s/...`, quiz, done/return), welcome, auditor admin, login, `/board` |
+| `apps/mobile`           | Placeholder (Phase 3, optional)                                                                     |
+| `packages/contracts`    | Zod schemas and types shared everywhere (tenant, opportunity, export, deletion ...)                 |
+| `packages/domain`       | Scoring and domain rules (deterministic)                                                            |
+| `packages/i18n`         | Typed FR/EN catalogs, quiz items, locale helpers; glossary in `docs/glossary-fr-en.md`              |
+| `packages/ui`           | Design tokens (`tokens.css`), self-hosted Inter font, shared classes                                |
+| `services/ai`           | Analysis pipeline, provider abstraction (`src/llm`), redaction, cost caps, eval, retention worker   |
+| `infra/db`              | Forward-only SQL migrations (Postgres + row-level security per tenant)                              |
+| `tests/db`, `tests/e2e` | Isolation, erasure and end-to-end tests                                                             |
+| `landing`               | Static landing and mockup pages (use the same tokens and font)                                      |
+| `scripts`               | `leak-scan`, `style-guard`, `adr-numbers`, coverage threshold                                       |
+
+## Run, test, deploy
+
+```bash
+corepack pnpm install --frozen-lockfile
+pnpm local:up            # embedded Postgres 17 + migrations + app (synthetic seed data)
+pnpm test:e2e            # milestone smoke chain      pnpm ai:eval   # mock-provider evaluation
+pnpm run ci              # lint, typecheck, test, leak-scan, style-guard
+docker compose up --build   # one-host Postgres + migrate + web on :3000
+```
+
+Gates on every push (`.github/workflows/ci.yml`): format, lint, typecheck, unit tests, coverage (80% on
+contracts/domain/ai), style guard (design tokens, one font, no external font URLs), ADR numbers, leak scan,
+`ai:eval` on the mock provider, Playwright (chromium at 360/768/1280, French and English, axe accessibility
+scan, keyboard-only run). A manual/nightly workflow `e2e.yml` runs the milestone smokes. If turbo cannot find
+`pnpm`, put a `pnpm` shim on PATH (`exec corepack pnpm "$@"`).
+There is **no production deployment yet**. `docker-compose.yml` is for one host; hosting, backups and a recovery
+drill are open (see below). The contracts-map page deploy script only works inside its original environment (ADR 0022).
+
+## History of the follow-up work (all merged to main)
+
+| Task   | PR           | Result                                                                                                                                                                                  |
+| ------ | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| M1-M15 | 1-23         | Original build by a MiniMax session: schema + RLS, survey, auditor review, opportunities, quiz and badges, synergies, retention/export/deletion, Docker, coverage gate (ADRs 0001-0019) |
+| A      | 26 (+27, 28) | Auditor login and session, tenant taken from the session, real actor in the audit trail (ADR 0023); CI and smoke repairs                                                                |
+| B      | 25           | Real pseudonym erasure across tables, scheduled retention, CSV formula-injection fix, parameterised tenant setting, production password guard (ADR 0030)                                |
+| C      | 29           | French and English across the app (ADR 0024)                                                                                                                                            |
+| D      | 24           | Coverage gate, manual e2e workflow, docs hygiene                                                                                                                                        |
+| E      | 30, 31       | Respondent UX: 7 taps instead of 13, one language, team status on return; design tokens and style guard; `docs/UX_AUDIT.md` (ADR 0025)                                                  |
+| F      | 32           | Rename to EvolAI; internal DB identifiers `auditai_app` / `auditai` kept on purpose (ADR 0026)                                                                                          |
+| G      | 33           | One self-hosted font (Inter), deterministic Playwright, e2e in CI, neutral summary wording (ADR 0027)                                                                                   |
+| H      | 34           | Model-backed synthesis behind an allowlisted provider abstraction: redaction, injection suite, cost caps, citation checks, eval (ADR 0029)                                              |
+| I      | (6c7a69a)    | Accessibility gate (axe, keyboard), next-steps and contact block, French copy pass (ADR 0028)                                                                                           |
+| J      | 35           | ROADMAP truthful, unique ADR numbers, CODEOWNERS, real auditor ids in smokes (ADR 0031)                                                                                                 |
+
+Task briefs are kept in `docs/tasks/` (TASK-A to TASK-J).
+
+## Gates (PRD section 25.4)
+
+- **A, survey pilot:** isolation, retention, audit logs, erasure: implemented and tested. Approved AI data route: open.
+- **B, AI synthesis:** redaction, injection tests, source traceability, cost ceiling implemented and proven on the
+  mock. One real run on a cheap model with synthetic data: 100% of kept claims grounded, 0.0041 USD (ADR 0029).
+  That proves grounding, not theme quality. A person must read real themes.
+- **C, enterprise hosting:** not done (SSO/OIDC and MFA, hosting and backups, recovery drill, pen test, SLA).
+- **D, cross-company benchmarks:** not started.
+
+## Decisions made by the owner
+
+- Commit to main and merge yourself when gates pass; do not wait for approval.
+- Privacy line kept as is: "Your company sees team totals, not your answers." Three extra colours approved
+  (`teal-ink #0f7a6e`, `border-strong #8796a5`, `danger #b42318`). One font everywhere (Inter, self-hosted).
+- Wording polish and mascot names are deferred to the end (cosmetic). "Your managers" removed from the summary text.
+- Dedicated API key `ANTHROPIC_EVOLAI_API_KEY` (never reuse another project's key).
+
+## Turn on a real AI route (owner steps)
+
+Full detail in ADR 0029 section "Owner steps". Short version:
+
+1. Keep the key in a gitignored env file outside the repo as `ANTHROPIC_EVOLAI_API_KEY=...` (currently on codebox
+   in `~/.evolai.env`, mode 600). On the Mac it sits in a `.env` of another project folder: move it. The copy in
+   `/tmp/.env` on codebox is world-readable: delete it.
+2. Copy `services/ai/config/ai.config.json` outside the repo; add the approved route (provider, model, region
+   label, base URL), a timestamped price entry and spend caps.
+3. Run with `EVOLAI_AI_CONFIG`, `EVOLAI_AI_PROVIDER`, `EVOLAI_AI_MODEL`, `EVOLAI_AI_REGION`.
+4. Use real survey data only after a contract-approved route (EU-hosted or self-hosted if the client requires it).
+   Redaction terms per tenant go in the table `ai_redaction_terms` (no admin screen yet).
+
+## Open and deferred
+
+1. Production hosting, backups, recovery drill, SSO/MFA, pen test (Gate C).
+2. Invitations and reminders beyond the single-use link (FR-03), response tracking.
+3. Real-device test (low-end Android, iPhone, slow network) and a human screen-reader pass.
+4. Human review of real-model theme quality; admin screen for redaction terms.
+5. Phase 2 and 3 items (FR-10 to FR-17) and Gate D.
+6. Deferred cosmetics: mascot names, final French wording read by a native speaker.
+7. Cleanups: remove the old-cookie fallback after 8 hours (session) / 1 year (language cookie); optionally rename
+   the internal DB role with a forward migration; `m13-smoke` and `synergy-smoke` read `SMOKE_AUDITOR_ID` from the
+   environment (a real seeded user, fine).
+
+## Working with AI workers on codebox
+
+- Checkout: `~/evolai` on codebox (`~/auditai` is a symlink for old sessions). On the Mac: `~/auditai`, rename it
+  to `~/evolai` when no session is using it.
+- Start a worker: `ssh codebox '~/.local/bin/cbsession -n <name> -d ~/evolai -p claude -m <haiku|sonnet|opus> -H ~/handovers/auditai/<TASK>.md'`.
+  Workers use their own git worktree and branch, merge to main themselves when gates pass, and end with
+  `STATUS: done | needs-owner | blocked`. Sessions show on the dashboard and, for Claude, in the Claude app.
+- Model choice that worked: Haiku for config and docs, Sonnet for features and security-sensitive code,
+  Opus for audits and design-heavy work (UX audit, AI pipeline).
+- Do not edit the live checkout for feature work. Never `tmux kill-server`.
