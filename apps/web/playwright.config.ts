@@ -1,19 +1,13 @@
 import { defineConfig, devices } from '@playwright/test';
 
 /**
- * Playwright config for the employee mobile survey (PRD \u00a716).
+ * Playwright config for the web app (PRD §16, TASK-G).
  *
  * The base project targets a 360 px wide viewport, the minimum mobile size in the PRD. We boot
  * the production build (`next start`) so the test exercises the same code path the deploy will
- * run.
- *
- * M8: `e2e/global-setup.ts` boots an embedded PostgreSQL 17, applies the M4 migrations,
- * seeds the synthetic tenants, and writes the resolved `DATABASE_URL` to the parent process
- * environment. The `webServer` block inherits it from the parent. The same convention
- * (`tests/db/src/global-setup.ts`) is used by the unit-test suite.
- *
- * If `DATABASE_URL` is already in the environment (CI service container, developer-supplied
- * Postgres), `global-setup.ts` short-circuits and we trust it.
+ * run. `e2e/serve.mjs` is the single, deterministic startup path: database, migrations, build,
+ * server. With `DATABASE_URL` set (CI service container) it uses that database, otherwise an
+ * embedded PostgreSQL 17.
  */
 
 // Parallel agents share this host: override the port with PW_PORT to avoid reusing another
@@ -22,33 +16,27 @@ const PORT = process.env['PW_PORT'] ?? '3200';
 
 export default defineConfig({
   testDir: './e2e',
-  testIgnore: ['**/global-setup.ts', '**/global-teardown.ts'],
-  globalSetup: './e2e/global-setup.ts',
-  globalTeardown: './e2e/global-teardown.ts',
   fullyParallel: false,
   workers: 1,
   forbidOnly: !!process.env['CI'],
   retries: process.env['CI'] ? 2 : 0,
-  reporter: process.env['CI'] ? 'github' : 'list',
+  reporter: process.env['CI'] ? [['github'], ['html', { open: 'never' }]] : 'list',
   use: {
     baseURL: `http://127.0.0.1:${PORT}`,
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
   },
   webServer: {
-    command: `pnpm exec next start --port ${PORT}`,
-    url: `http://127.0.0.1:${PORT}`,
-    reuseExistingServer: !process.env['CI'],
-    timeout: 120_000,
-    env: {
-      // Synthetic, test-only session settings (ADR 0023).
-      AUTH_SESSION_SECRET: 'playwright-synthetic-session-secret',
-      AUTH_COOKIE_SECURE: '0',
-      ALLOW_DEV_DB_PASSWORD: '1',
-      // DATABASE_URL is inherited from the parent process. global-setup.ts sets it
-      // before this webServer is spawned. SURVEY_SIGNING_SECRET inherits too so the
-      // sign/verify pair agree end-to-end.
-    },
+    // e2e/serve.mjs boots the database (embedded unless DATABASE_URL is set), migrates, builds and
+    // starts the app with the test env. Playwright starts webServer before globalSetup, so no
+    // global setup is used.
+    command: 'node e2e/serve.mjs',
+    url: `http://127.0.0.1:${PORT}/login`,
+    reuseExistingServer: false,
+    timeout: 600_000,
+    gracefulShutdown: { signal: 'SIGTERM', timeout: 15_000 },
+    stdout: 'pipe',
+    stderr: 'pipe',
   },
   projects: [
     {

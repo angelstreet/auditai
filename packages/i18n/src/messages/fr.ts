@@ -107,11 +107,11 @@ export const fr: Messages = {
     teamProgressAria: 'Réponses de l’équipe',
     nextHeading: 'Et ensuite ?',
     nextOpenUntil:
-      'Les réponses sont ouvertes jusqu’au {date}. Ensuite, EvolAI présente une synthèse d’équipe à vos responsables.',
+      'Les réponses sont ouvertes jusqu’au {date}. Ensuite, EvolAI partage une synthèse pour toute l’équipe, sans noms.',
     nextOpen:
-      'Quand votre équipe aura répondu, EvolAI présentera une synthèse d’équipe à vos responsables.',
+      'Quand votre équipe aura répondu, EvolAI partagera une synthèse pour toute l’équipe, sans noms.',
     nextClosed: 'Les réponses sont closes. EvolAI prépare la synthèse d’équipe.',
-    nextDone: 'La synthèse d’équipe a été remise à vos responsables.',
+    nextDone: 'Une synthèse pour toute l’équipe, sans noms, a été partagée.',
     keepLink: 'Gardez ce lien pour suivre votre équipe plus tard.',
     teamMascot: 'La mascotte de votre équipe : {tier}',
     quizTitle: 'Facultatif : découvrez votre mascotte IA',

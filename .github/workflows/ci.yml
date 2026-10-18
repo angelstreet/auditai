@@ -68,3 +68,79 @@ jobs:
 
       - name: Coverage gate
         run: pnpm coverage
+
+      - name: Script tests (style guard)
+        run: pnpm test:scripts
+
+  e2e:
+    name: Playwright (chromium, 360 / 768 / 1280)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: auditai
+          POSTGRES_PASSWORD: auditai
+          POSTGRES_DB: evolai_test
+        ports:
+          - 54329:5432
+        options: >-
+          --health-cmd "pg_isready -U auditai"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgres://auditai:auditai@127.0.0.1:54329/evolai_test
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.3
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Playwright version
+        id: pw
+        working-directory: apps/web
+        run: echo "version=$(pnpm exec playwright --version | awk '{print $2}')" >> "$GITHUB_OUTPUT"
+
+      - name: Cache browsers
+        id: browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}
+
+      - name: Install browser (with system deps)
+        if: steps.browsers.outputs.cache-hit != 'true'
+        working-directory: apps/web
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Install system deps only (browser cached)
+        if: steps.browsers.outputs.cache-hit == 'true'
+        working-directory: apps/web
+        run: pnpm exec playwright install-deps chromium
+
+      - name: Playwright
+        working-directory: apps/web
+        run: pnpm exec playwright test
+
+      - name: Upload report, traces and screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-failure
+          path: |
+            apps/web/test-results/
+            apps/web/playwright-report/
+          retention-days: 7

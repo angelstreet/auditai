@@ -103,10 +103,11 @@ export const en = {
     teamProgressAria: 'Team answers',
     nextHeading: 'What happens next',
     nextOpenUntil:
-      'Answers are open until {date}. Then EvolAI shares a team summary with your managers.',
-    nextOpen: 'When your team has answered, EvolAI shares a team summary with your managers.',
+      'Answers are open until {date}. Then EvolAI shares a summary for the whole team, without names.',
+    nextOpen:
+      'When your team has answered, EvolAI shares a summary for the whole team, without names.',
     nextClosed: 'Answers are closed. EvolAI is preparing the team summary.',
-    nextDone: 'The team summary has been shared with your managers.',
+    nextDone: 'A summary for the whole team, without names, has been shared.',
     keepLink: 'Keep this link to check on your team later.',
     teamMascot: 'Your team’s mascot: {tier}',
     quizTitle: 'Optional: find your AI mascot',
