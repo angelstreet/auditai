@@ -71,7 +71,6 @@ test.describe('screenshot sweep', () => {
             ['07-survey-start', `/s/${fresh}`],
             ['15-quiz', '/quiz'],
             ['16-quiz-result-missing', '/quiz/result'],
-            ['17-intake', '/intake'],
             ['18-board', '/board'],
             ['19-not-found', '/does-not-exist'],
             ['20-bad-link', `/s/${'x'.repeat(10)}.${'y'.repeat(40)}`],
@@ -108,6 +107,7 @@ test.describe('screenshot sweep', () => {
             ['31-admin-teams', '/admin/teams'],
             ['32-admin-synergies', '/admin/synergies'],
             ['33-admin-data', '/admin/data'],
+            ['17-intake', '/intake'],
           ] as const) {
             await page.goto(path);
             await shoot(page, dir, name);

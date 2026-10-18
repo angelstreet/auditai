@@ -107,16 +107,15 @@ Full detail in ADR 0029 section "Owner steps". Short version:
 - TASK-P (ADR 0035): apply migration **0019** to Neon (forward only, audit verbs only), then run `pnpm seed:client`
   once for the first client with the names given in the brief (RUNBOOK "First client"), then sign out and in.
   The referent has a `.invalid` placeholder and no password until the owner supplies a real address.
-  Note: `/intake` and `/quiz` still accept writes without a session (see item 1); they now refuse during a view-as.
+  TASK-R (ADR 0037): `/intake` requires a staff session and uses the session's tenant; `/quiz` is a tenant-free demo.
+  No migration. Route inventory: `apps/web/src/routeAccess.json`.
 
 0. Invitations admin screen (TASK-N) lives in new files under `apps/web/src/app/admin/invitations/`. It is reachable by URL; TASK-L should add a header/nav link and fold it into the restyled admin shell (no existing admin file was touched). Migration 0018 only; no new migration in this step.
 
 1. Gate C: run the recovery drill once and record the result, SSO/MFA, pen test, SLA. One-time owner commands after
    TASK-K merges: apply migration 0017 to Neon, set `CRON_SECRET` and a real `SURVEY_SIGNING_SECRET` in Vercel,
    create the first auditor (RUNBOOK). Until `SURVEY_SIGNING_SECRET` is set, invitation links fail closed.
-   `/intake` and `/quiz` are public and list the seeded test tenants (intake also shows the latest sponsor brief and
-   accepts writes without a session): gate or remove before real tenants exist. The seeded synthetic tenants and
-   users still exist in the live database.
+   The seeded synthetic tenants and users still exist in the live database.
 2. FR-03 (TASK-N, ADR 0033) is built: apply migration 0018 to Neon before the deploy that reads it, set `APP_BASE_URL`
    (optional), and for email mode `INVITE_EMAIL_KEY`, `EMAIL_PROVIDER=brevo`, `BREVO_API_KEY`, `EMAIL_FROM`. The Brevo
    adapter has only been tested against a stub.

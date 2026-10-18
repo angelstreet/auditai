@@ -161,3 +161,55 @@ describe('tenant isolation (PRD \u00a716, \u00a725.1, \u00a733)', () => {
     });
   });
 });
+
+/** Sponsor briefs behind /intake (TASK-R, ADR 0037). Synthetic text only. */
+describe('sponsor_briefs tenant scoping', () => {
+  beforeAll(async () => {
+    await withServiceAccount(pgClient, async () => {
+      for (const [tenant, text] of [
+        [TENANT_A, 'Demo brief A'],
+        [TENANT_B, 'Demo brief B'],
+      ] as const) {
+        await pgClient.query(
+          'INSERT INTO sponsor_briefs (tenant_id, top_priority_workflow) VALUES ($1, $2)',
+          [tenant, text],
+        );
+      }
+    });
+  });
+
+  it('each tenant reads only its own brief, even when asking for the other id', async () => {
+    await withTenant(pgClient, TENANT_A, async () => {
+      const own = await pgClient.query('SELECT top_priority_workflow AS w FROM sponsor_briefs');
+      expect(own.rows).toEqual([{ w: 'Demo brief A' }]);
+      const other = await pgClient.query('SELECT 1 FROM sponsor_briefs WHERE tenant_id = $1', [
+        TENANT_B,
+      ]);
+      expect(other.rowCount).toBe(0);
+    });
+    await withTenant(pgClient, TENANT_B, async () => {
+      const own = await pgClient.query('SELECT top_priority_workflow AS w FROM sponsor_briefs');
+      expect(own.rows).toEqual([{ w: 'Demo brief B' }]);
+    });
+  });
+
+  it('a tenant cannot write or update a brief of another tenant', async () => {
+    await withTenant(pgClient, TENANT_A, async () => {
+      const upd = await pgClient.query(
+        `UPDATE sponsor_briefs SET top_priority_workflow = 'x' WHERE tenant_id = $1`,
+        [TENANT_B],
+      );
+      expect(upd.rowCount).toBe(0);
+      await pgClient.query('SAVEPOINT s');
+      await expect(
+        pgClient.query('INSERT INTO sponsor_briefs (tenant_id) VALUES ($1)', [TENANT_B]),
+      ).rejects.toThrow(/row-level security/);
+      await pgClient.query('ROLLBACK TO SAVEPOINT s');
+    });
+  });
+
+  it('without a tenant context no brief is visible', async () => {
+    const { rows } = await pgClient.query('SELECT 1 FROM sponsor_briefs');
+    expect(rows).toEqual([]);
+  });
+});

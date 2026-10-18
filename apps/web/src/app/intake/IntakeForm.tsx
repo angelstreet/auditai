@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useState, type ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -14,7 +14,6 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { AppIcon, StatusText } from '@evolai/ui';
-import type { TenantId } from '@evolai/contracts';
 import { useI18n } from '@/components/I18nProvider';
 import { saveSponsorBriefAction, type IntakeActionState } from './actions';
 
@@ -29,11 +28,6 @@ function SubmitButton() {
     </Button>
   );
 }
-
-// Memoised so a chip toggle never re-renders it (React rewrites a hidden input's value on render).
-const TenantField = memo(function TenantField({ tenantId }: { tenantId: TenantId }) {
-  return <input type="hidden" name="tenantId" value={tenantId} />;
-});
 
 /**
  * Multi-select as toggle chips (UI_RULES §0, §3): pressed = accent edge and a check icon, unpressed =
@@ -102,19 +96,13 @@ function Section({ title, desc, children }: { title: string; desc: string; child
   );
 }
 
-interface Props {
-  tenantId: TenantId;
-}
-
-export function IntakeForm({ tenantId }: Props) {
+export function IntakeForm() {
   const { t } = useI18n();
   const [state, formAction] = useFormState(saveSponsorBriefAction, INITIAL);
   const opts = (group: string, values: readonly string[]) =>
     values.map((value) => ({ value, label: t(`intake.${group}.${value}` as never) }));
   return (
     <Stack component="form" action={formAction} sx={{ gap: 4, minWidth: 0 }}>
-      <TenantField tenantId={tenantId} />
-
       <Section title={t('intake.s1Title')} desc={t('intake.s1Desc')}>
         <TextField
           id="topPriorityWorkflow"

@@ -1,0 +1,64 @@
+{
+  "_doc": "Every page and API route that the middleware matcher does NOT gate, with the reason it may be reached without a session. A new route outside the matcher fails src/routeInventory.test.ts until it is listed here (ADR 0037). Public pages must hold no tenant data.",
+  "routes": {
+    "/": { "access": "public", "reason": "Redirect to /welcome; no data." },
+    "/welcome": {
+      "access": "public",
+      "reason": "Static product page; links to /intake, reads nothing from the database."
+    },
+    "/about": { "access": "public", "reason": "Static text." },
+    "/privacy": { "access": "public", "reason": "Static text." },
+    "/login": { "access": "public", "reason": "Sign-in form; throttled, no tenant data." },
+    "/quiz": { "access": "public", "reason": "Demo quiz. No tenant, nothing stored." },
+    "/quiz/result": {
+      "access": "public",
+      "reason": "Mascot reveal from the tier in the URL; no tenant, no database read."
+    },
+    "/s/[token]": {
+      "access": "invitation",
+      "reason": "Signed invitation token fixes tenant and pseudonym; respondent sees only their own state."
+    },
+    "/s/[token]/done": {
+      "access": "invitation",
+      "reason": "Signed invitation token; own state only."
+    },
+    "/s/[token]/q/[index]": {
+      "access": "invitation",
+      "reason": "Signed invitation token; own survey."
+    },
+    "/s/[token]/quiz": {
+      "access": "invitation",
+      "reason": "Signed invitation token; tenant and pseudonym come from it."
+    },
+    "/api/answer": {
+      "access": "invitation",
+      "reason": "Verifies the invitation token before any write."
+    },
+    "/api/locale": {
+      "access": "invitation",
+      "reason": "Verifies the invitation token; changes only that respondent's locale."
+    },
+    "/api/auth/login": {
+      "access": "public",
+      "reason": "Credential check, throttled; returns no tenant data."
+    },
+    "/api/auth/logout": { "access": "public", "reason": "Clears the caller's own cookie." },
+    "/api/health": { "access": "public", "reason": "SELECT 1; returns two booleans." },
+    "/api/cron/reminders": {
+      "access": "secret",
+      "reason": "CRON_SECRET bearer; bare 401 otherwise."
+    },
+    "/api/cron/retention": {
+      "access": "secret",
+      "reason": "CRON_SECRET bearer; bare 401 otherwise."
+    },
+    "/api/admin/invitations": {
+      "access": "session",
+      "reason": "Route handler checks the session and tenant membership itself; bare 403 otherwise."
+    },
+    "/api/view-as": {
+      "access": "session",
+      "reason": "Route handler checks the session (platform owner only) itself."
+    }
+  }
+}

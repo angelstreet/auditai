@@ -1,4 +1,5 @@
-import { listTenantIds, tenantLabel } from '@/lib/adminData';
+import { tenantLabel } from '@/lib/adminData';
+import { sessionTenantFor } from '@/lib/authServer';
 import { getLatestSponsorBrief } from '@/lib/sponsorBriefData';
 import { IntakeForm } from './IntakeForm';
 import Box from '@mui/material/Box';
@@ -8,19 +9,18 @@ import { PageTitle } from '@evolai/ui';
 import { formatCurrency, formatNumber } from '@evolai/i18n';
 import { getT } from '@/lib/i18n';
 import type { MessageKey } from '@evolai/i18n';
-import type { TenantId } from '@evolai/contracts';
 
 export const dynamic = 'force-dynamic';
-
-interface PageProps {
-  searchParams: { tenant?: string };
-}
 
 export function generateMetadata() {
   return { title: getT().t('meta.pages.intake') };
 }
 
-export default async function IntakePage({ searchParams }: PageProps) {
+/**
+ * Staff only (ADR 0037). The tenant is the session's own first permitted tenant: never read from the
+ * query string or the form, so a user of tenant A cannot reach tenant B's brief.
+ */
+export default async function IntakePage() {
   const { t, locale } = getT();
   const dash = t('common.dash');
   const pick = (group: string, value: string): string => {
@@ -31,9 +31,7 @@ export default async function IntakePage({ searchParams }: PageProps) {
   const pickAll = (group: string, values: readonly string[]): string =>
     values.map((v) => pick(group, v)).join(', ');
   const formatEur = (n: number | null): string => (n === null ? dash : formatCurrency(locale, n));
-  const tenants = await listTenantIds();
-  const requested = searchParams.tenant;
-  const current = (tenants.find((t) => t === requested) ?? tenants[0]) as TenantId | undefined;
+  const current = await sessionTenantFor(undefined);
   if (!current) {
     return (
       <div className="wide">
@@ -53,7 +51,7 @@ export default async function IntakePage({ searchParams }: PageProps) {
           gridTemplateColumns: { xs: '1fr', md: 'minmax(0, 2fr) minmax(0, 1fr)' },
         }}
       >
-        <IntakeForm tenantId={current} />
+        <IntakeForm />
         <Paper
           component="aside"
           variant="outlined"
