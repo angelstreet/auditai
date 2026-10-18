@@ -2,6 +2,7 @@
 
 import { useFormState, useFormStatus } from 'react-dom';
 import type { AnalysisId, TenantId } from '@evolai/contracts';
+import { StatusText } from '@evolai/ui';
 import { useI18n } from '@/components/I18nProvider';
 import { approveAnalysisAction, type ApproveActionState } from './actions';
 
@@ -48,7 +49,7 @@ export function ApproveForm({ tenantId, analysisId }: Props) {
         <SubmitButton />
         {state.message ? (
           <span className="status-msg" aria-live="polite">
-            {state.ok ? '\u2705' : '\u26a0\ufe0f'} {state.message}
+            <StatusText status={state.ok ? 'success' : 'error'}>{state.message}</StatusText>
             {state.result
               ? ` ${t('admin.analysis.auditRef', { id: state.result.auditLogId })}`
               : ''}

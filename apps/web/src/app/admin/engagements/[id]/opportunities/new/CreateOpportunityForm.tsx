@@ -3,6 +3,7 @@
 import { useFormState, useFormStatus } from 'react-dom';
 import Link from 'next/link';
 import type { AnalysisId, EngagementId, TenantId } from '@evolai/contracts';
+import { StatusText } from '@evolai/ui';
 import { useI18n } from '@/components/I18nProvider';
 import { enumLabelOf } from '@/lib/enumLabel';
 import { createOpportunityAction, type CreateOpportunityActionState } from '../actions';
@@ -82,7 +83,7 @@ export function CreateOpportunityForm({ tenantId, analysisId, engagementId, defa
         <SubmitButton />
         {state.message ? (
           <span className="status-msg" aria-live="polite">
-            {state.ok ? '\u2705' : '\u26a0\ufe0f'} {state.message}
+            <StatusText status={state.ok ? 'success' : 'error'}>{state.message}</StatusText>
             {state.opportunityId ? (
               <>
                 {' \u2014 '}
