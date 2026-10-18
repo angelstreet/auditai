@@ -41,7 +41,7 @@ beforeEach(() => {
   state.session = staffA;
 });
 
-describe('intake tenant scoping (ADR 0036)', () => {
+describe('intake tenant scoping (ADR 0037)', () => {
   it('writes to the session tenant and ignores a forged tenantId in the form', async () => {
     const { saveSponsorBriefAction } = await import('./actions');
     await saveSponsorBriefAction({ ok: false, message: '' }, form({ tenantId: B }));

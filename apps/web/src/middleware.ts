@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { readSessionCookie, verifySession } from '@/lib/session';
 
 /**
- * Gate for the auditor and client surfaces (ADR 0023, ADR 0035). /intake joins them (ADR 0036). Respondent routes
+ * Gate for the auditor and client surfaces (ADR 0023, ADR 0035). /intake joins them (ADR 0037). Respondent routes
  * (/s, /quiz, /welcome, /privacy, /about) are deliberately outside the matcher. Pages and actions re-check the
  * session themselves; this is the first line, not the only one.
  */

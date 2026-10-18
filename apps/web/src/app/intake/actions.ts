@@ -30,7 +30,7 @@ export async function saveSponsorBriefAction(
   const { t } = getT();
   const readOnly = await viewAsRefusal('/intake');
   if (readOnly) return { ok: false, message: readOnly };
-  // The tenant is the session's own (ADR 0036); a tenantId in the form is ignored.
+  // The tenant is the session's own (ADR 0037); a tenantId in the form is ignored.
   const session = await getSession();
   if (!session) return { ok: false, message: t('auth.notSignedIn') };
   const tenantId = pickTenant(session, undefined);

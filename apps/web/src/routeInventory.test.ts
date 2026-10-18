@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { config } from './middleware';
 
 /**
- * Route inventory (TASK-R, ADR 0036). Every page and route handler is either behind the middleware
+ * Route inventory (TASK-R, ADR 0037). Every page and route handler is either behind the middleware
  * matcher (a session is required) or listed in routeAccess.json with a reason. A new route that is
  * reachable without a session fails here until someone writes down why that is fine.
  */

@@ -1,5 +1,5 @@
 {
-  "_doc": "Every page and API route that the middleware matcher does NOT gate, with the reason it may be reached without a session. A new route outside the matcher fails src/routeInventory.test.ts until it is listed here (ADR 0036). Public pages must hold no tenant data.",
+  "_doc": "Every page and API route that the middleware matcher does NOT gate, with the reason it may be reached without a session. A new route outside the matcher fails src/routeInventory.test.ts until it is listed here (ADR 0037). Public pages must hold no tenant data.",
   "routes": {
     "/": { "access": "public", "reason": "Redirect to /welcome; no data." },
     "/welcome": {

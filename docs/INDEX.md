@@ -114,6 +114,7 @@ write a new one that supersedes it.
 | 0033 | [Invitations, tracking, reminders](adr/0033-invitations-tracking-reminders.md)                                    | TASK-N (FR-03)                   | Accepted |
 | 0034 | [MUI theme + standard chrome](adr/0034-mui-theme-and-standard-chrome.md)                                          | TASK-L                           | Accepted |
 | 0036 | [Redaction terms admin](adr/0036-redaction-terms-admin.md)                                                        | TASK-Q                           | Accepted |
+| 0037 | [/intake behind sign-in, route inventory](adr/0037-intake-behind-sign-in-and-route-inventory.md)                  | TASK-R                           | Accepted |
 
 ## 4. The gates map (PRD §25.4)
 
@@ -271,7 +272,8 @@ docs/
    ├── 0032-production-readiness.md
    ├── 0033-invitations-tracking-reminders.md
    ├── 0034-mui-theme-and-standard-chrome.md
-   └── 0036-redaction-terms-admin.md
+   ├── 0036-redaction-terms-admin.md
+   └── 0037-intake-behind-sign-in-and-route-inventory.md
 ```
 
 The contract map of every Zod schema and TS type in `@evolai/contracts`

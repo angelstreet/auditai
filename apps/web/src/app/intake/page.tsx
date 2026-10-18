@@ -17,7 +17,7 @@ export function generateMetadata() {
 }
 
 /**
- * Staff only (ADR 0036). The tenant is the session's own first permitted tenant: never read from the
+ * Staff only (ADR 0037). The tenant is the session's own first permitted tenant: never read from the
  * query string or the form, so a user of tenant A cannot reach tenant B's brief.
  */
 export default async function IntakePage() {

@@ -6,7 +6,7 @@ import { getT } from '@/lib/i18n';
 export const dynamic = 'force-dynamic';
 
 /**
- * /quiz: the public demo of the literacy quiz (M14, ADR 0036). No login and no tenant: nothing is
+ * /quiz: the public demo of the literacy quiz (M14, ADR 0037). No login and no tenant: nothing is
  * stored. The score becomes a mascot tier in the URL of the result page. The stored quiz lives at
  * `/s/[token]/quiz`, where the invitation fixes tenant and pseudonym.
  */

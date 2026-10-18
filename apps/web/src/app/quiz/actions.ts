@@ -90,7 +90,7 @@ const saveQuiz = async (
 };
 
 /**
- * Public demo quiz (`/quiz`, ADR 0036): anonymous, so it has no tenant and stores nothing. It scores
+ * Public demo quiz (`/quiz`, ADR 0037): anonymous, so it has no tenant and stores nothing. It scores
  * the answers and shows the tier; only the invitation-bound quiz writes a badge.
  */
 export async function submitQuizAction(

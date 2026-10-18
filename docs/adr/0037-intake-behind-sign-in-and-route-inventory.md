@@ -1,4 +1,4 @@
-# 0036 - /intake behind sign-in, tenant from the session, and a route inventory
+# 0037 - /intake behind sign-in, tenant from the session, and a route inventory
 
 - Status: Accepted
 - Date: 2026-10-18

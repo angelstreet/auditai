@@ -13,7 +13,7 @@ interface PageProps {
   searchParams: { tier?: string };
 }
 
-/** /quiz/result: the mascot reveal (M14). Public and tenant-free (ADR 0036): the tier comes from the URL. */
+/** /quiz/result: the mascot reveal (M14). Public and tenant-free (ADR 0037): the tier comes from the URL. */
 export default function QuizResult({ searchParams }: PageProps) {
   const { t } = getT();
   const requestedTier = mascotTierSchema.safeParse(searchParams.tier);

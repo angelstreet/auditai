@@ -162,7 +162,7 @@ describe('tenant isolation (PRD \u00a716, \u00a725.1, \u00a733)', () => {
   });
 });
 
-/** Sponsor briefs behind /intake (TASK-R, ADR 0036). Synthetic text only. */
+/** Sponsor briefs behind /intake (TASK-R, ADR 0037). Synthetic text only. */
 describe('sponsor_briefs tenant scoping', () => {
   beforeAll(async () => {
     await withServiceAccount(pgClient, async () => {

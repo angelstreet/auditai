@@ -5,7 +5,7 @@ import { expect, test } from '@playwright/test';
 import { signInAsAuditorA } from './helpers';
 
 /**
- * TASK-R, ADR 0036: /intake needs an auditor session and is scoped to the session's tenant.
+ * TASK-R, ADR 0037: /intake needs an auditor session and is scoped to the session's tenant.
  * Synthetic data only.
  */
 const TENANT_A = '11111111-1111-4111-8111-111111111111';
