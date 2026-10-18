@@ -75,16 +75,16 @@ theme, baseline).
 
 ## 4. Copy cuts
 
-| Where           | Before                                                             | After                                                              |
-| --------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------ |
-| welcome eyebrow | "AUDIT D'ADOPTION DE L'IA"                                         | removed                                                            |
-| welcome h1      | "See how work really happens. Build confidence with AI." (3 lines) | "Find where AI really helps your teams"                            |
-| welcome lede    | 2 sentences                                                        | "Employees share how they work. A person checks every finding."    |
-| step cards      | 2-line bodies                                                      | one line each, e.g. "Goals, budget and limits, in one short form." |
-| login title     | "Auditor sign-in"                                                  | "Sign in"                                                          |
-| admin subtitles | "Tenant Synthetic tenant A. M15 slice B covers requirement FR-09…" | "Export tables and erase a respondent's data."                     |
-| synergies       | 2-sentence detector explanation                                    | "Themes that come up in two or more teams."                        |
-| intake          | "Tenant … This form saves a new sponsor record…"                   | "Goals, budget and limits for this organisation."                  |
+| Where           | Before                                                             | After                                                           |
+| --------------- | ------------------------------------------------------------------ | --------------------------------------------------------------- |
+| welcome eyebrow | "AUDIT D'ADOPTION DE L'IA"                                         | removed                                                         |
+| welcome h1      | "See how work really happens. Build confidence with AI." (3 lines) | "Find where AI really helps your teams"                         |
+| welcome lede    | 2 sentences                                                        | "Employees share how they work. A person checks every finding." |
+| step cards      | 2-line bodies                                                      | one line each, e.g. "Goals, budget and limits."                 |
+| login title     | "Auditor sign-in"                                                  | "Sign in"                                                       |
+| admin subtitles | "Tenant Synthetic tenant A. M15 slice B covers requirement FR-09…" | "Export tables and erase a respondent's data."                  |
+| synergies       | 2-sentence detector explanation                                    | "Themes that come up in two or more teams."                     |
+| intake          | "Tenant … This form saves a new sponsor record…"                   | "Goals, budget and limits for this organisation."               |
 
 ## 5. Lifted dark palette (UI_RULES §12)
 
