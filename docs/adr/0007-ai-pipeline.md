@@ -1,6 +1,6 @@
 # 0007 - AI pipeline (M9): rule-based first cut, evidence contract, approval gate
 
-- Status: Accepted
+- Status: Accepted (the model-backed route is in [0029](0029-llm-synthesis-provider-abstraction.md))
 - Date: 2026-10-15
 - Deciders: maintainers
 - Related: [0001](0001-license-and-stack.md), [0003](0003-rls-and-tenant-isolation.md), [0004](0004-mobile-survey-and-admin.md), [0005](0005-admin-data.md), [0006](0006-local-dev-runner.md)

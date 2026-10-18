@@ -16,6 +16,9 @@ import type { Sensitivity } from '@evolai/contracts';
 
 export interface AnswerRow {
   readonly id: string;
+  /** Loaded by the worker; the LLM path refuses rows without it (tenant isolation check). */
+  readonly tenant_id?: string;
+  readonly submission_id?: string;
   readonly question_item_id: string;
   readonly value_json: unknown;
   readonly sequence: number;
@@ -23,6 +26,7 @@ export interface AnswerRow {
 
 export interface QuestionItemRow {
   readonly id: string;
+  readonly tenant_id?: string;
   readonly axis: string;
   readonly code: string;
   readonly kind: string;
@@ -66,8 +70,42 @@ export interface AnalysisInterviewPrompt {
   readonly themeId: string;
 }
 
+/** A fact drafted by a model, already checked against its source answer (TASK-H). */
+export interface AnalysisFact {
+  readonly id: string;
+  readonly statement: string;
+  readonly sourceKind: 'answer';
+  readonly sourceId: string;
+  readonly quote: string;
+  /** Numbers are only ever copied from the quote, and stay self-reported until verified. */
+  readonly number: {
+    readonly value: string;
+    readonly unit: string;
+    readonly kind: 'volume' | 'time' | 'benefit' | 'other';
+    readonly selfReported: true;
+  } | null;
+}
+
+export interface AnalysisOpportunity {
+  readonly id: string;
+  readonly title: string;
+  readonly description: string;
+  readonly themeId: string;
+  readonly evidence: ReadonlyArray<AnalysisClaim>;
+}
+
 export interface AnalysisPayload {
-  readonly version: 1;
+  /** 1: rule-based pipeline. 2: model-drafted (TASK-H), with the optional fields below. */
+  readonly version: 1 | 2;
+  /** True when a model drafted the payload; the auditor UI labels it "AI draft". */
+  readonly aiDraft?: boolean;
+  readonly facts?: ReadonlyArray<AnalysisFact>;
+  readonly opportunities?: ReadonlyArray<AnalysisOpportunity>;
+  readonly unsupported?: ReadonlyArray<{
+    readonly kind: string;
+    readonly id: string;
+    readonly reason: string;
+  }>;
   readonly sensitivity: Sensitivity;
   readonly themes: ReadonlyArray<AnalysisTheme>;
   readonly contradictions: ReadonlyArray<{
@@ -104,7 +142,7 @@ export const classifySensitivity = (items: ReadonlyArray<QuestionItemRow>): Sens
   return 'public';
 };
 
-const labelFor = (item: QuestionItemRow, value: unknown): string => {
+export const labelFor = (item: QuestionItemRow, value: unknown): string => {
   if (typeof value !== 'string') return String(value);
   const opt = item.options_json.find((o) => o.value === value);
   return opt?.label ?? value;

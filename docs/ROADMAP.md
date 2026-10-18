@@ -45,6 +45,12 @@ cohort analytics, optional native apps.
 
 - **Gate A — survey pilot:** tenant isolation, retention, audit logs, approved AI data route.
 - **Gate B — AI synthesis:** redaction, prompt-injection tests, source traceability, model cost ceiling.
+  Status (TASK-H, ADR 0029): all four controls are implemented and proven on the mock provider in
+  CI (unit tests, injection suite, DB test, `pnpm ai:eval`). One manual run on a cheap real model
+  (`anthropic/claude-haiku-5-5`, synthetic FR/EN gold set) kept 100 % grounded claims and dropped
+  2 of 40 proposed items. Still open: an EU-hosted or self-hosted route, a human read of
+  real-model theme quality, a contract-approved route before any real survey data, and an admin
+  UI for redaction terms. The default route stays `rule-based/v1`.
 - **Gate C — enterprise hosting:** recovery drill, SSO/MFA, penetration test, agreed SLA.
 - **Gate D — cross-company benchmarks:** aggregation thresholds, de-identification review.
 

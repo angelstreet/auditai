@@ -197,6 +197,15 @@ export const adminFr: AdminMessages = {
     notFoundBody: '{id} n’appartient pas au locataire {tenant}. Retournez à la {link}.',
     listLink: 'liste des analyses',
     meta: 'Mission {org} · locataire {tenant} · sensibilité {sensitivity} · route du modèle {route}',
+    aiDraft: 'Brouillon IA',
+    aiDraftNote:
+      'Un modèle a écrit ce brouillon. Vérifiez chaque point avec sa citation avant de valider.',
+    modelLine:
+      'Rédigé par {provider} · modèle {model} · région {region} · prompt {prompt} · {tokensIn} jetons en entrée / {tokensOut} en sortie · coût {cost} {currency}',
+    unsupported: 'Les contrôles ont retiré {n} élément(s) sans citation correspondante.',
+    opportunities: 'Opportunités ({n})',
+    noOpportunities: 'Aucune opportunité proposée.',
+    opportunityEvidence: '({n} citation(s))',
     themes: 'Thèmes ({n})',
     noThemes: 'Aucun thème dans cette analyse.',
     themeLine: 'axe {axis} · {n} élément(s) de preuve.',

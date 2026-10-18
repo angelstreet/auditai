@@ -66,6 +66,9 @@ jobs:
       - name: Test
         run: pnpm test
 
+      - name: AI eval on the mock provider (ADR 0029)
+        run: pnpm ai:eval
+
       - name: Coverage gate
         run: pnpm coverage
 
