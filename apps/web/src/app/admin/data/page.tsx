@@ -1,5 +1,4 @@
-import Link from 'next/link';
-import { tenantLabel } from '@/lib/adminData';
+import { PageTitle } from '@evolai/ui';
 import { sessionTenantIds } from '@/lib/authServer';
 import { listDeletionEvents } from '@/lib/deletionData';
 import { listExportRequests } from '@/lib/exportData';
@@ -15,7 +14,7 @@ interface PageProps {
 }
 
 /**
- * /admin/data \u2014 M15 slice B.
+ * /admin/data: exports and right-to-erasure.
  *
  * Two widgets:
  *   - **Export** \u2014 picks one of the six `ExportKind`s and renders the first
@@ -41,26 +40,13 @@ export default async function DataPage({ searchParams }: PageProps) {
       </div>
     );
   }
-  const [label, exports, deletions] = await Promise.all([
-    tenantLabel(current),
+  const [exports, deletions] = await Promise.all([
     listExportRequests(current),
     listDeletionEvents(current),
   ]);
   return (
     <div className="wide">
-      <h1>{t('admin.data.title')}</h1>
-      <p className="muted">{t('admin.data.intro', { label })}</p>
-      <p className="actions">
-        <Link className="btn btn-secondary btn-sm" href="/board">
-          {t('admin.common.backToBoard')}
-        </Link>{' '}
-        <Link className="btn btn-secondary btn-sm" href="/admin/synergies">
-          {t('admin.data.synergiesLink')}
-        </Link>{' '}
-        <Link className="btn btn-secondary btn-sm" href="/admin/teams">
-          {t('admin.data.teamsLink')}
-        </Link>
-      </p>
+      <PageTitle title={t('admin.data.title')} subtitle={t('admin.data.intro')} />
 
       <section className="card">
         <h2>{t('admin.data.exportTitle')}</h2>

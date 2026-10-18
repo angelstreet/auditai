@@ -1,7 +1,6 @@
-import Link from 'next/link';
-import { Mascot } from '@evolai/ui';
+import Button from '@mui/material/Button';
+import { EmptyState, Mascot, PageTitle } from '@evolai/ui';
 import { mascotTierOrder, type MascotTier, type TenantId } from '@evolai/contracts';
-import { tenantLabel } from '@/lib/adminData';
 import { sessionTenantIds } from '@/lib/authServer';
 import { getT } from '@/lib/i18n';
 import { formatDate } from '@evolai/i18n';
@@ -34,28 +33,21 @@ export default async function TeamsPage({ searchParams }: PageProps) {
       </div>
     );
   }
-  const [label, teams, badges] = await Promise.all([
-    tenantLabel(current),
-    listTeamsInTenant(current),
-    listTeamBadges(current),
-  ]);
+  const [teams, badges] = await Promise.all([listTeamsInTenant(current), listTeamBadges(current)]);
   const badgeByTeam = new Map(badges.map((b) => [b.teamId, b]));
   return (
     <div className="wide">
-      <h1>{t('admin.teams.title')}</h1>
-      <p className="muted">{t('admin.teams.intro', { label })}</p>
-      <p className="actions">
-        <Link className="btn btn-secondary btn-sm" href="/board">
-          {t('admin.common.backToBoard')}
-        </Link>{' '}
-        <Link className="btn btn-secondary btn-sm" href="/quiz">
-          {t('admin.teams.takeQuiz')}
-        </Link>
-      </p>
+      <PageTitle
+        title={t('admin.teams.title')}
+        subtitle={t('admin.teams.intro')}
+        actions={
+          <Button variant="outlined" href="/quiz">
+            {t('admin.teams.takeQuiz')}
+          </Button>
+        }
+      />
       {teams.length === 0 ? (
-        <section className="empty-state">
-          <p className="muted">{t('admin.teams.none')}</p>
-        </section>
+        <EmptyState icon="team" title={t('admin.teams.none')} />
       ) : (
         <ul className="card-list card-grid">
           {teams.map((team) => {
