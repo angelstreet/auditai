@@ -1,3 +1,4 @@
+import { invitationsEn } from './admin.invitations.en.js';
 /** Admin / auditor / board copy (English). Mirrored by `admin.fr.ts`. */
 export const adminEn = {
   enums: {
@@ -292,4 +293,5 @@ export const adminEn = {
     statusSet: 'Status set to {status}',
     errTransition: 'Transition failed. Please try again.',
   },
+  invitations: invitationsEn,
 } as const;

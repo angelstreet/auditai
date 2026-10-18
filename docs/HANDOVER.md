@@ -107,7 +107,9 @@ Full detail in ADR 0029 section "Owner steps". Short version:
    `/intake` and `/quiz` are public and list the seeded test tenants (intake also shows the latest sponsor brief and
    accepts writes without a session): gate or remove before real tenants exist. The seeded synthetic tenants and
    users still exist in the live database.
-2. Invitations and reminders beyond the single-use link (FR-03), response tracking.
+2. FR-03 (TASK-N, ADR 0033) is built: apply migration 0018 to Neon before the deploy that reads it, set `APP_BASE_URL`
+   (optional), and for email mode `INVITE_EMAIL_KEY`, `EMAIL_PROVIDER=brevo`, `BREVO_API_KEY`, `EMAIL_FROM`. The Brevo
+   adapter has only been tested against a stub.
 3. Real-device test (low-end Android, iPhone, slow network) and a human screen-reader pass.
 4. Human review of real-model theme quality; admin screen for redaction terms.
 5. Phase 2 and 3 items (FR-10 to FR-17) and Gate D.
