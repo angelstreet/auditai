@@ -18,7 +18,7 @@
     "test": "turbo run test",
     "leak-scan": "node scripts/leak-scan.mjs",
     "style-guard": "node scripts/style-guard.mjs",
-    "ci": "pnpm install --frozen-lockfile && pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run leak-scan && pnpm run style-guard",
+    "ci": "pnpm install --frozen-lockfile && pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run test:scripts && pnpm run leak-scan && pnpm run style-guard",
     "clean": "turbo run clean && rm -rf node_modules",
     "local:up": "node apps/web/scripts/local-stack.mjs up",
     "local:down": "node apps/web/scripts/local-stack.mjs down",
@@ -34,7 +34,9 @@
     "m14:smoke": "node apps/web/scripts/m14-smoke.mjs",
     "m15:smoke": "node apps/web/scripts/m15-smoke.mjs",
     "retention:run": "pnpm --filter @evolai/ai run retention-run",
-    "m15b:smoke": "node apps/web/scripts/m15b-smoke.mjs"
+    "m15b:smoke": "node apps/web/scripts/m15b-smoke.mjs",
+    "test:scripts": "node --test scripts/style-guard.test.mjs",
+    "test:e2e:browser": "pnpm --filter @evolai/web exec playwright test"
   },
   "devDependencies": {
     "@types/node": "20.14.10",

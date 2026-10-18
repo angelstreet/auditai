@@ -75,8 +75,8 @@ Source: `packages/ui/src/tokens.css` (landing copy: `landing/brand/tokens.css`).
   they are for trained users and are outside the jargon rule. They now share the tokens and components.
 - **Header links (About, Privacy) on survey screens**: kept, they are small and expected; the survey
   has no other navigation to lose.
-- **Archived mockups** (`landing/m12-mockup.html`, `landing/m14-quiz-mockup.html`) are exempt from the
-  guard; they are design history, not served pages.
+- **Archived mockups** (`landing/m12-mockup.html`, `landing/m14-quiz-mockup.html`) were deleted in
+  TASK-G: unreferenced duplicates of the tokenised M12/M14 pages (ADR 0027).
 - **Dark mode**: not in the MVP PRD. Semantic roles make it a later addition.
 - **Quiz content** (five items, including one about AI coding help) is reworded but not re-scoped; it
   is the PRD's literacy calibration, and choosing items is a product decision.
@@ -91,8 +91,11 @@ Source: `packages/ui/src/tokens.css` (landing copy: `landing/brand/tokens.css`).
 2. **Derived colours**: `teal-ink #0f7a6e`, `border-strong #8796a5` and `danger #b42318`. Approved
    2026-10-18; they stay as tokens (see ADR 0025).
 3. **Mascot names and descriptors** (Tortue/Renard/Chouette, now shorter and plainer) and the French
-   tagline remain drafts for owner review (see ADR 0024).
+   tagline remain drafts for owner review (see ADR 0024). Deferred to the end, cosmetic.
 4. **Survey and quiz wording** (FR and EN) was rewritten for plain language; please review the French
-   in `apps/web/src/lib/syntheticTemplate.ts` and `packages/i18n/src/quizItems.ts`.
-5. **"What happens next" sentences** promise that EvolAI presents a team summary to "your managers".
-   Confirm that this is the right audience (managers, sponsor or team).
+   in `apps/web/src/lib/syntheticTemplate.ts` and `packages/i18n/src/quizItems.ts`. French copy review:
+   deferred to the end, cosmetic.
+5. ~~**"What happens next" audience.**~~ Closed. Decision: audience-neutral wording, per the PRD's
+   aggregate-by-default rule (managers get aggregate results, never individual answers). The sentences
+   now say "a summary for the whole team, without names" (FR: "une synthèse pour toute l’équipe, sans
+   noms"); the text lives only in the message catalogs.
