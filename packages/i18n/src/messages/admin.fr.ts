@@ -60,6 +60,7 @@ export const adminFr: AdminMessages = {
     tabsAria: 'Sections d’administration',
     tabPortfolio: 'Portefeuille',
     tabEngagements: 'Missions',
+    tabInvitations: 'Invitations',
     tabTeams: 'Équipes',
     tabSynergies: 'Synergies',
     tabData: 'Données',

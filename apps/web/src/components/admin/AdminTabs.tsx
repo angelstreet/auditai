@@ -8,6 +8,7 @@ import { useI18n } from '@/components/I18nProvider';
 const SECTIONS = [
   { href: '/board', key: 'tabPortfolio' },
   { href: '/admin/engagements', key: 'tabEngagements' },
+  { href: '/admin/invitations', key: 'tabInvitations' },
   { href: '/admin/teams', key: 'tabTeams' },
   { href: '/admin/synergies', key: 'tabSynergies' },
   { href: '/admin/data', key: 'tabData' },
@@ -21,6 +22,8 @@ export default function AdminTabs() {
   const { t } = useI18n();
   const pathname = usePathname() ?? '';
   const tenant = useSearchParams()?.get('tenant');
+  // The printable QR sheet is a document, not a screen: no chrome on it.
+  if (pathname.endsWith('/sheet')) return null;
   const current = SECTIONS.find((s) => pathname === s.href || pathname.startsWith(`${s.href}/`));
   return (
     <Tabs
@@ -29,7 +32,7 @@ export default function AdminTabs() {
       value={current?.href ?? false}
       variant="scrollable"
       scrollButtons={false}
-      sx={{ mb: 6, borderBottom: 1, borderColor: 'divider' }}
+      sx={{ mb: 6, borderBottom: 1, borderColor: 'divider', displayPrint: 'none' }}
     >
       {SECTIONS.map((s) => (
         <Tab

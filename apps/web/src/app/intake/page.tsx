@@ -1,7 +1,10 @@
 import { listTenantIds, tenantLabel } from '@/lib/adminData';
 import { getLatestSponsorBrief } from '@/lib/sponsorBriefData';
 import { IntakeForm } from './IntakeForm';
-import { OPPORTUNITY_STATUS_LABELS } from '@evolai/contracts';
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import { PageTitle } from '@evolai/ui';
 import { formatCurrency, formatNumber } from '@evolai/i18n';
 import { getT } from '@/lib/i18n';
 import type { MessageKey } from '@evolai/i18n';
@@ -41,13 +44,27 @@ export default async function IntakePage({ searchParams }: PageProps) {
   const [label, latest] = await Promise.all([tenantLabel(current), getLatestSponsorBrief(current)]);
   return (
     <div className="wide">
-      <h1>{t('intake.title')}</h1>
-      <p className="muted">{t('intake.intro', { label })}</p>
-      <div className="split">
+      <PageTitle title={t('intake.title')} subtitle={t('intake.intro')} />
+      <Box
+        sx={{
+          display: 'grid',
+          gap: 4,
+          alignItems: 'start',
+          gridTemplateColumns: { xs: '1fr', md: 'minmax(0, 2fr) minmax(0, 1fr)' },
+        }}
+      >
         <IntakeForm tenantId={current} />
-        <aside className="card summary">
-          <h3>{t('intake.summary')}</h3>
-          <p className="muted">{t('intake.summaryIntro')}</p>
+        <Paper
+          component="aside"
+          variant="outlined"
+          sx={{ p: { xs: 4, sm: 6 }, borderRadius: 3, position: { md: 'sticky' }, top: { md: 16 } }}
+        >
+          <Typography variant="sectionTitle" component="h2" sx={{ m: 0 }}>
+            {t('intake.summary')}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 1, mb: 4 }}>
+            {t('intake.summaryIntro')}
+          </Typography>
           {latest ? (
             <dl className="dl-grid">
               <dt>{t('intake.tenant')}</dt>
@@ -88,15 +105,8 @@ export default async function IntakePage({ searchParams }: PageProps) {
           ) : (
             <p className="muted">{t('intake.none')}</p>
           )}
-          <p className="muted">
-            {t('intake.statusPills', {
-              statuses: Object.keys(OPPORTUNITY_STATUS_LABELS)
-                .map((k) => t(`status.${k as keyof typeof OPPORTUNITY_STATUS_LABELS}`))
-                .join(' \u00b7 '),
-            })}
-          </p>
-        </aside>
-      </div>
+        </Paper>
+      </Box>
     </div>
   );
 }

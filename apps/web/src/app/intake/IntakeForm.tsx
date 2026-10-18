@@ -1,6 +1,19 @@
 'use client';
 
+import { memo, useState, type ReactNode } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Chip from '@mui/material/Chip';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Paper from '@mui/material/Paper';
+import Slider from '@mui/material/Slider';
+import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import { AppIcon, StatusText } from '@evolai/ui';
 import type { TenantId } from '@evolai/contracts';
 import { useI18n } from '@/components/I18nProvider';
 import { saveSponsorBriefAction, type IntakeActionState } from './actions';
@@ -11,25 +24,81 @@ function SubmitButton() {
   const { t } = useI18n();
   const { pending } = useFormStatus();
   return (
-    <button type="submit" disabled={pending} className="btn btn-primary">
+    <Button type="submit" variant="contained" disabled={pending} sx={{ minWidth: 180 }}>
       {pending ? t('intake.saving') : t('intake.save')}
-    </button>
+    </Button>
   );
 }
 
-interface ChipProps {
+// Memoised so a chip toggle never re-renders it (React rewrites a hidden input's value on render).
+const TenantField = memo(function TenantField({ tenantId }: { tenantId: TenantId }) {
+  return <input type="hidden" name="tenantId" value={tenantId} />;
+});
+
+/**
+ * Multi-select as toggle chips (UI_RULES §0, §3): pressed = accent edge and a check icon, unpressed =
+ * a plus icon, so the chip keeps its size when toggled. Hidden inputs carry the values to the form.
+ */
+function ToggleChips({
+  name,
+  label,
+  options,
+  initial,
+}: {
   name: string;
-  value: string;
   label: string;
-  defaultChecked?: boolean;
+  options: ReadonlyArray<{ value: string; label: string }>;
+  initial: ReadonlyArray<string>;
+}) {
+  const [selected, setSelected] = useState<ReadonlySet<string>>(() => new Set(initial));
+  const toggle = (value: string) =>
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(value)) next.delete(value);
+      else next.add(value);
+      return next;
+    });
+  return (
+    <FormControl component="fieldset" sx={{ border: 0, p: 0, m: 0 }}>
+      <FormLabel component="legend" sx={{ mb: 2 }}>
+        {label}
+      </FormLabel>
+      <Stack direction="row" sx={{ flexWrap: 'wrap', gap: 2 }}>
+        {options.map((o) => {
+          const on = selected.has(o.value);
+          return (
+            <Chip
+              key={o.value}
+              label={o.label}
+              clickable
+              variant="outlined"
+              color={on ? 'primary' : 'default'}
+              aria-pressed={on}
+              onClick={() => toggle(o.value)}
+              icon={<AppIcon name={on ? 'success' : 'add'} size={16} />}
+              sx={{ minHeight: 44, borderRadius: 999 }}
+            />
+          );
+        })}
+      </Stack>
+      {[...selected].map((v) => (
+        <input key={v} type="hidden" name={name} value={v} />
+      ))}
+    </FormControl>
+  );
 }
 
-function Chip({ name, value, label, defaultChecked }: ChipProps) {
+function Section({ title, desc, children }: { title: string; desc: string; children: ReactNode }) {
   return (
-    <label className="chip">
-      <input type="checkbox" name={name} value={value} defaultChecked={defaultChecked} />
-      {label}
-    </label>
+    <Paper variant="outlined" sx={{ p: { xs: 4, sm: 6 }, borderRadius: 3 }}>
+      <Typography variant="sectionTitle" component="h2" sx={{ m: 0 }}>
+        {title}
+      </Typography>
+      <Typography variant="body2" color="text.secondary" sx={{ mt: 1, mb: 5 }}>
+        {desc}
+      </Typography>
+      <Stack sx={{ gap: 5 }}>{children}</Stack>
+    </Paper>
   );
 }
 
@@ -40,176 +109,129 @@ interface Props {
 export function IntakeForm({ tenantId }: Props) {
   const { t } = useI18n();
   const [state, formAction] = useFormState(saveSponsorBriefAction, INITIAL);
+  const opts = (group: string, values: readonly string[]) =>
+    values.map((value) => ({ value, label: t(`intake.${group}.${value}` as never) }));
   return (
-    <form action={formAction}>
-      <input type="hidden" name="tenantId" value={tenantId} />
+    <Stack component="form" action={formAction} sx={{ gap: 4, minWidth: 0 }}>
+      <TenantField tenantId={tenantId} />
 
-      <div className="card">
-        <h3>{t('intake.s1Title')}</h3>
-        <p className="muted">{t('intake.s1Desc')}</p>
-        <p>
-          <label htmlFor="topPriorityWorkflow">{t('intake.topPriorityLabel')}</label>
-          <input
-            id="topPriorityWorkflow"
-            name="topPriorityWorkflow"
-            type="text"
-            placeholder={t('intake.topPriorityPlaceholder')}
-          />
-        </p>
-        <p>
-          <label>{t('intake.departmentsLabel')}</label>
-          <div className="chips">
-            <Chip
-              name="departmentsInScope"
-              value="operations"
-              label={t('intake.dept.operations')}
-              defaultChecked
-            />
-            <Chip
-              name="departmentsInScope"
-              value="sales"
-              label={t('intake.dept.sales')}
-              defaultChecked
-            />
-            <Chip name="departmentsInScope" value="finance" label={t('intake.dept.finance')} />
-            <Chip name="departmentsInScope" value="legal" label={t('intake.dept.legal')} />
-            <Chip
-              name="departmentsInScope"
-              value="engineering"
-              label={t('intake.dept.engineering')}
-            />
-            <Chip name="departmentsInScope" value="people" label={t('intake.dept.people')} />
-          </div>
-        </p>
-        <p>
-          <label>{t('intake.sensitivityLabel')}</label>
-          <div className="chips">
-            <Chip
-              name="dataSensitivityBoundary"
-              value="internal_only"
-              label={t('intake.sens.internal_only')}
-              defaultChecked
-            />
-            <Chip
-              name="dataSensitivityBoundary"
-              value="public_web"
-              label={t('intake.sens.public_web')}
-            />
-            <Chip
-              name="dataSensitivityBoundary"
-              value="customer_pii"
-              label={t('intake.sens.customer_pii')}
-            />
-            <Chip
-              name="dataSensitivityBoundary"
-              value="regulated"
-              label={t('intake.sens.regulated')}
-            />
-          </div>
-        </p>
-      </div>
+      <Section title={t('intake.s1Title')} desc={t('intake.s1Desc')}>
+        <TextField
+          id="topPriorityWorkflow"
+          name="topPriorityWorkflow"
+          label={t('intake.topPriorityLabel')}
+          placeholder={t('intake.topPriorityPlaceholder')}
+          fullWidth
+        />
+        <ToggleChips
+          name="departmentsInScope"
+          label={t('intake.departmentsLabel')}
+          options={opts('dept', [
+            'operations',
+            'sales',
+            'finance',
+            'legal',
+            'engineering',
+            'people',
+          ])}
+          initial={['operations', 'sales']}
+        />
+        <ToggleChips
+          name="dataSensitivityBoundary"
+          label={t('intake.sensitivityLabel')}
+          options={opts('sens', ['internal_only', 'public_web', 'customer_pii', 'regulated'])}
+          initial={['internal_only']}
+        />
+      </Section>
 
-      <div className="card">
-        <h3>{t('intake.s2Title')}</h3>
-        <p className="muted">{t('intake.s2Desc')}</p>
-        <p>
-          <label htmlFor="annualBudgetEur">{t('intake.budgetLabel')}</label>
-          <input
-            id="annualBudgetEur"
-            name="annualBudgetEur"
-            type="text"
-            defaultValue=""
-            placeholder={t('intake.budgetPlaceholder')}
-          />
-        </p>
-        <p>
-          <label htmlFor="onsiteAppetite">{t('intake.onsiteLabel')}</label>
-          <select id="onsiteAppetite" name="onsiteAppetite" defaultValue="limited_team">
-            <option value="">{t('common.dash')}</option>
-            <option value="full_pilot">{t('intake.onsiteOpt.full_pilot')}</option>
-            <option value="limited_team">{t('intake.onsiteOpt.limited_team')}</option>
-            <option value="remote_only">{t('intake.onsiteOpt.remote_only')}</option>
-          </select>
-        </p>
-      </div>
+      <Section title={t('intake.s2Title')} desc={t('intake.s2Desc')}>
+        <TextField
+          id="annualBudgetEur"
+          name="annualBudgetEur"
+          label={t('intake.budgetLabel')}
+          placeholder={t('intake.budgetPlaceholder')}
+          inputProps={{ inputMode: 'numeric' }}
+          sx={{ maxWidth: 360 }}
+        />
+        <TextField
+          select
+          id="onsiteAppetite"
+          name="onsiteAppetite"
+          label={t('intake.onsiteLabel')}
+          defaultValue="limited_team"
+          sx={{ maxWidth: 360 }}
+        >
+          <MenuItem value="">{t('common.dash')}</MenuItem>
+          {opts('onsiteOpt', ['full_pilot', 'limited_team', 'remote_only']).map((o) => (
+            <MenuItem key={o.value} value={o.value}>
+              {o.label}
+            </MenuItem>
+          ))}
+        </TextField>
+      </Section>
 
-      <div className="card">
-        <h3>{t('intake.s3Title')}</h3>
-        <p className="muted">{t('intake.s3Desc')}</p>
-        <p>
-          <label>{t('intake.regionsLabel')}</label>
-          <div className="chips">
-            <Chip
-              name="approvedModelRegions"
-              value="eu_only"
-              label={t('intake.region.eu_only')}
-              defaultChecked
-            />
-            <Chip
-              name="approvedModelRegions"
-              value="us_enterprise"
-              label={t('intake.region.us_enterprise')}
-            />
-            <Chip
-              name="approvedModelRegions"
-              value="self_hosted"
-              label={t('intake.region.self_hosted')}
-            />
-            <Chip
-              name="approvedModelRegions"
-              value="no_constraint"
-              label={t('intake.region.no_constraint')}
-            />
-          </div>
-        </p>
-        <p>
-          <label>{t('intake.residencyLabel')}</label>
-          <div className="chips">
-            <Chip
-              name="dataResidency"
-              value="eu_frankfurt"
-              label={t('intake.res.eu_frankfurt')}
-              defaultChecked
-            />
-            <Chip name="dataResidency" value="us" label={t('intake.res.us')} />
-            <Chip name="dataResidency" value="client_vpc" label={t('intake.res.client_vpc')} />
-          </div>
-        </p>
-        <p>
-          <label htmlFor="promptInjectionReview">{t('intake.injectionLabel')}</label>
-          <select
-            id="promptInjectionReview"
-            name="promptInjectionReview"
-            defaultValue="external_auditor"
-          >
-            <option value="">{t('common.dash')}</option>
-            <option value="external_auditor">{t('intake.injection.external_auditor')}</option>
-            <option value="internal">{t('intake.injection.internal')}</option>
-            <option value="none_yet">{t('intake.injection.none_yet')}</option>
-          </select>
-        </p>
-      </div>
+      <Section title={t('intake.s3Title')} desc={t('intake.s3Desc')}>
+        <ToggleChips
+          name="approvedModelRegions"
+          label={t('intake.regionsLabel')}
+          options={opts('region', ['eu_only', 'us_enterprise', 'self_hosted', 'no_constraint'])}
+          initial={['eu_only']}
+        />
+        <ToggleChips
+          name="dataResidency"
+          label={t('intake.residencyLabel')}
+          options={opts('res', ['eu_frankfurt', 'us', 'client_vpc'])}
+          initial={['eu_frankfurt']}
+        />
+        <TextField
+          select
+          id="promptInjectionReview"
+          name="promptInjectionReview"
+          label={t('intake.injectionLabel')}
+          defaultValue="external_auditor"
+          sx={{ maxWidth: 480 }}
+        >
+          <MenuItem value="">{t('common.dash')}</MenuItem>
+          {opts('injection', ['external_auditor', 'internal', 'none_yet']).map((o) => (
+            <MenuItem key={o.value} value={o.value}>
+              {o.label}
+            </MenuItem>
+          ))}
+        </TextField>
+      </Section>
 
-      <div className="card">
-        <h3>{t('intake.s4Title')}</h3>
-        <p className="muted">{t('intake.s4Desc')}</p>
+      <Section title={t('intake.s4Title')} desc={t('intake.s4Desc')}>
         {(['leadershipLiteracy', 'operationalAdoption', 'policyGovernance'] as const).map((k) => (
-          <p key={k}>
-            <label htmlFor={k}>{t(`intake.${k}`)}</label>
-            <input id={k} name={k} type="range" min={0} max={5} defaultValue={2} />
-          </p>
+          <Box key={k} sx={{ maxWidth: 480 }}>
+            <Typography id={`${k}-label`} variant="body2" component="p" sx={{ m: 0 }}>
+              {t(`intake.${k}`)}
+            </Typography>
+            <Slider
+              name={k}
+              min={0}
+              max={5}
+              step={1}
+              marks
+              defaultValue={2}
+              valueLabelDisplay="auto"
+              aria-labelledby={`${k}-label`}
+            />
+          </Box>
         ))}
-      </div>
+      </Section>
 
-      <p>
+      {/* At least 24 px between the last card and the button (UI_RULES §13). */}
+      <Stack
+        direction={{ xs: 'column', sm: 'row' }}
+        sx={{ mt: 2, gap: 3, alignItems: { sm: 'center' } }}
+      >
         <SubmitButton />
-        {state.message ? (
-          <span className="status-msg" aria-live="polite">
-            {state.ok ? '\u2705' : '\u26a0\ufe0f'} {state.message}
-            {state.briefId ? ` (${state.briefId})` : ''}
-          </span>
-        ) : null}
-      </p>
-    </form>
+        <Box aria-live="polite" sx={{ minHeight: 24 }}>
+          {state.message ? (
+            <StatusText status={state.ok ? 'success' : 'error'}>{state.message}</StatusText>
+          ) : null}
+        </Box>
+      </Stack>
+    </Stack>
   );
 }
