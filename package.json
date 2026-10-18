@@ -25,7 +25,7 @@
     "local:reset": "node apps/web/scripts/local-stack.mjs reset",
     "local:status": "node apps/web/scripts/local-stack.mjs status",
     "local:smoke": "node apps/web/scripts/local-smoke.mjs",
-    "test:e2e": "pnpm local:smoke && pnpm m10:smoke && pnpm m11:smoke && pnpm m12:smoke && pnpm m13:smoke && pnpm m14:smoke && pnpm m15:smoke && pnpm m15b:smoke",
+    "test:e2e": "pnpm local:smoke && pnpm m10:smoke && pnpm m11:smoke && pnpm m12:smoke && pnpm m13:smoke && pnpm m14:smoke && pnpm m15:smoke && pnpm m15b:smoke && pnpm n:smoke && pnpm m16:smoke",
     "coverage": "turbo run test -- --coverage --coverage.provider=v8 --coverage.reporter=json-summary --coverage.reporter=text --coverage.include='src/**/*.ts' && node scripts/coverage-threshold.mjs",
     "m10:smoke": "node apps/web/scripts/m10-smoke.mjs",
     "m11:smoke": "node apps/web/scripts/m11-smoke.mjs",
@@ -42,6 +42,7 @@
     "ai:eval": "pnpm --filter @evolai/ai run eval",
     "m15b:smoke": "node apps/web/scripts/m15b-smoke.mjs",
     "n:smoke": "node apps/web/scripts/n-smoke.mjs",
+    "m16:smoke": "node apps/web/scripts/m16-smoke.mjs",
     "test:scripts": "node --test scripts/style-guard.test.mjs scripts/adr-numbers.test.mjs",
     "test:e2e:browser": "pnpm --filter @evolai/web exec playwright test"
   },

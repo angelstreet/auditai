@@ -52,6 +52,7 @@ export const en = {
     notFoundTitle: 'This page does not exist',
     notFoundBody: 'Check that the link is complete. Or ask your team contact for a new one.',
     notFoundHome: 'Go to the home page',
+    action: 'Action',
   },
   meta: {
     title: 'EvolAI — Understand. Adapt. Evolve.',

@@ -111,6 +111,9 @@ write a new one that supersedes it.
 | 0030 | [Pseudonym erasure cascade](adr/0030-pseudonym-erasure-cascade.md)                                                | TASK-B (renumbered from 0020)    | Accepted |
 | 0031 | [Housekeeping: ADR number check, CODEOWNERS, smoke actors](adr/0031-housekeeping-adr-numbers-and-smoke-actors.md) | TASK-J                           | Accepted |
 | 0032 | [Production readiness](adr/0032-production-readiness.md)                                                          | TASK-K                           | Accepted |
+| 0033 | [Invitations, tracking, reminders](adr/0033-invitations-tracking-reminders.md)                                    | TASK-N (FR-03)                   | Accepted |
+| 0034 | [MUI theme + standard chrome](adr/0034-mui-theme-and-standard-chrome.md)                                          | TASK-L                           | Accepted |
+| 0036 | [Redaction terms admin](adr/0036-redaction-terms-admin.md)                                                        | TASK-Q                           | Accepted |
 
 ## 4. The gates map (PRD §25.4)
 
@@ -174,7 +177,7 @@ Manual URLs (ports come from the `READY` line):
 - **RLS** — Every tenant-scoped table has a four-policy RLS pattern
   (`SELECT`, `INSERT`, `UPDATE`, `DELETE`) plus a `SET LOCAL
 app.tenant_id` / `app.is_service_account` switch. See ADR 0003.
-- **ADR numbering** — Next free is `0029`. One decision per ADR; never
+- **ADR numbering** — Next free is `0037`. One decision per ADR; never
   amend an old one.
 - **ROADMAP updates** — The State column flips and the README Status
   block updates in the same PR (or the immediately-following commit
@@ -185,29 +188,43 @@ app.tenant_id` / `app.is_service_account` switch. See ADR 0003.
 These are **NOT** blockers for the current shipment but are explicit
 follow-ups the owner should consider before any external pilot:
 
-- **FR-09 (PRD §9) — team report export + retention / deletion workflow.**
-  Audit logs are done (M10/M11). Export (CSV / PDF), the explicit
-  _deletion_ workflow per tenant, and a periodic cleanup worker that
-  honours `retention_at` on `respondent_badges` (and the matching date
-  on `submissions`) are not yet shipped. The data layer is ready.
-- **`/board` integration with synergies + team mascots.** Today the
-  kanban shows engagements + opportunities + sponsor briefs
-  (M12); synergies live under `/admin/synergies` (M13) and team
-  mascots under `/admin/teams` (M14). A future slice can collapse
-  these into the portfolio kanban for one-glance overview.
+- **FR-09 (PRD §9) — done.** Retention cascade, scheduled worker
+  (`services/ai/src/retentionWorker.ts`), per-tenant deletion (`apps/web/src/lib/deletionData.ts`),
+  CSV export (`apps/web/src/lib/exportData.ts`), and the admin surface at `/admin/data` are
+  all in `main` ([0016](adr/0016-fr09-retention-export-deletion.md), [0017](adr/0017-board-integration-and-landing.md),
+  [ADR 0030](adr/0030-pseudonym-erasure-cascade.md)). Smoke: `pnpm m15:smoke`.
+- **`/board` integration with synergies + team mascots — done.** The kanban
+  pulls synergies + team badges in parallel and renders the inline-SVG
+  `Mascot` ([0017](adr/0017-board-integration-and-landing.md)).
 - **LLM-backed synthesis (Gate B).** Shipped behind an allowlisted
-  provider abstraction (ADR 0029); the default route is still the
-  rule-based pipeline (ADR 0007). Open: an EU-hosted route, a redaction
-  terms admin UI, and a real-model theme quality review.
+  provider abstraction ([0029](adr/0029-llm-synthesis-provider-abstraction.md));
+  the default route is still the rule-based pipeline ([0007](adr/0007-ai-pipeline.md)).
+  Open: an EU-hosted or self-hosted route, a real-model theme quality
+  review by a person, and a contract-approved route before any real survey data.
+  The redaction terms UI at `/admin/redaction` is now live ([0036](adr/0036-redaction-terms-admin.md));
+  the per-tenant list of names the redactor scrubs before any model call is
+  editable from the admin shell.
 - **Real SSO / MFA (Gate C).** Auditors sign in with a password and a
-  signed session (ADR 0023); Gate C requires SSO/OIDC and MFA with a real IdP.
-- **Playwright coverage of slice B/C smoke paths.** Today each milestone
-  ships a Node smoke (`apps/web/scripts/m*‑smoke.mjs`). A
-  Playwright suite that exercises the **rendered UI** end-to-end
-  (especially the 360 px mobile layout, FR-09 in admin views) would
-  complement the data-layer assertions.
-- **Accessibility on real devices.** The axe and keyboard gates (ADR 0028) cover
+  signed session ([0023](adr/0023-auditor-auth-and-session.md)); Gate C
+  requires SSO/OIDC and MFA with a real IdP. The production cut-over
+  ([0032](adr/0032-production-readiness.md)) covers the hosting substrate
+  (Vercel + Neon), auditor accounts by CLI, login lockout, security headers,
+  health check and retention cron. Open: run the recovery drill once with
+  a recorded result; SSO/MFA; pen test; SLA.
+- **Playwright coverage of admin views.** Today Playwright ([0027](adr/0027-one-font-and-playwright-in-ci.md))
+  covers the six public surfaces (`/welcome`, `/about`, `/s/[token]`, `/intake`, `/quiz`,
+  `/quiz/result`) at three viewports. Admin pages still rely on the Node smokes
+  (`apps/web/scripts/m*‑smoke.mjs`). A future slice can add admin-viewport
+  Playwright specs, especially for FR-09 in admin views.
+- **Accessibility on real devices.** The axe and keyboard gates
+  ([0028](adr/0028-accessibility-gate-and-respondent-next-steps.md)) cover
   automation only; a human screen-reader pass and real phones at 360 px are still open.
+- **Invitations and reminders (FR-03) — done.** Bulk links, tracking with
+  a minimum group, reminders, revoke / extend / regenerate, optional
+  email behind a provider interface, admin Invitations page
+  ([0033](adr/0033-invitations-tracking-reminders.md)). Open: live run
+  of the Brevo adapter (needs the owner's key) and the client address-window
+  notice.
 - **Phase 3 (PRD §18) — cross-client benchmark knowledge base, cohort
   analytics, optional native mobile apps.** Not started.
 
@@ -234,7 +251,27 @@ docs/
    ├── 0012-synergy-admin-surface.md
    ├── 0013-quiz-badges-and-mascots.md
    ├── 0014-quiz-form-and-result.md
-   └── 0015-team-badge-rollup.md
+   ├── 0015-team-badge-rollup.md
+   ├── 0016-fr09-retention-export-deletion.md
+   ├── 0017-board-integration-and-landing.md
+   ├── 0018-devx-and-deploy.md
+   ├── 0019-public-routes-playwright.md
+   ├── 0020-coverage-gate-scope.md
+   ├── 0021-manual-e2e-workflow.md
+   ├── 0022-deploy-token-and-static-hosting.md
+   ├── 0023-auditor-auth-and-session.md
+   ├── 0024-i18n-fr-en.md
+   ├── 0025-design-tokens.md
+   ├── 0026-rename-to-evolai.md
+   ├── 0027-one-font-and-playwright-in-ci.md
+   ├── 0028-accessibility-gate-and-respondent-next-steps.md
+   ├── 0029-llm-synthesis-provider-abstraction.md
+   ├── 0030-pseudonym-erasure-cascade.md
+   ├── 0031-housekeeping-adr-numbers-and-smoke-actors.md
+   ├── 0032-production-readiness.md
+   ├── 0033-invitations-tracking-reminders.md
+   ├── 0034-mui-theme-and-standard-chrome.md
+   └── 0036-redaction-terms-admin.md
 ```
 
 The contract map of every Zod schema and TS type in `@evolai/contracts`

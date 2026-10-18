@@ -49,6 +49,8 @@ describe('audit log schema (M10, FR-08, PRD §25.4)', () => {
       'view_as.refused',
       'client.seed',
       'user.set_email',
+      'redaction_term.add',
+      'redaction_term.remove',
     ]);
     expect(auditTargetKindSchema.options).toEqual([
       'analysis',
@@ -59,6 +61,7 @@ describe('audit log schema (M10, FR-08, PRD §25.4)', () => {
       'invitation',
       'user',
       'engagement',
+      'redaction_term',
     ]);
   });
 
