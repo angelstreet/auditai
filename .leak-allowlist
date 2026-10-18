@@ -19,5 +19,5 @@ a@synthetic.invalid
 @synthetic.invalid
 @example.test
 postgres://u:p@
-# TASK-P brief: a placeholder pattern, not an address.
-email (`...@
+# TASK-P DB test: placeholder referent address of a synthetic tenant (reserved .invalid TLD).
+@synthetique-client-d.invalid
