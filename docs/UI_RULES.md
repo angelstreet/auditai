@@ -100,3 +100,31 @@ the text colour. No emoji anywhere in the UI. A new meaning is one new row in th
 5. Axe and keyboard Playwright checks pass; contrast test passes.
 6. Nothing shifts when data, time or language changes.
 7. Respondent screens pass the jargon test and the tap-count test.
+
+## 11. Identity and orientation (added after the first live review)
+
+After sign-in the user must always know who they are, where they are and how to leave. The header shows an
+avatar/initials button with the name (or email), role and current organisation, opening a menu: profile, switch
+organisation, theme, language, sign out. The current section is marked in the nav and every page has a title. A
+signed-in screen is never anonymous.
+
+## 12. Dark mode is not black
+
+Page about `#16181d` to `#1c1f26`, cards one step lighter (`#232730` to `#2a2f3a`), hairline borders, text
+`#e8ebf0`, muted `#a0a8b5`, accent lightened a little. Never a near-black page with navy-on-black buttons: the
+primary action is the filled teal accent in both themes. Elevation is a lighter surface, not a shadow. Measure
+contrast in code.
+
+## 13. Hierarchy, headings, copy length (glow-up rules)
+
+- Headings: at most 2 lines on desktop. Use `text-wrap: balance`, a max width of about 20 to 24 characters per
+  line, one alignment axis for the whole screen. If a title needs three lines, shorten it.
+- No shouting eyebrow pills in capitals above titles.
+- Cards: an icon tile as the lead, a title, one line of text (two at most). Three lines of card text means the
+  copy is wrong: cut it.
+- The primary button is never glued to the cards above it: at least 24 px of space, aligned to the same edge.
+- Welcome and landing pages look like a product: short headline, one-line subtitle, one primary action and one
+  secondary link, a visual (mascot or screenshot), three or four benefit tiles, a trust line, a footer. Not a
+  document.
+- A global skill `web-ui-ux-rules` carries these rules for every project; this file overrides it where it is
+  more specific.
