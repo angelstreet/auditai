@@ -13,7 +13,8 @@ export const clientEn = {
     banner: 'You are viewing {tenant} as {name} ({role}). Read only.',
     back: 'Back to my view',
     backAria: 'Leave the client view and go back to your own view',
-    readOnly: 'Read only: you are viewing the app as a client. Go back to your view to make changes.',
+    readOnly:
+      'Read only: you are viewing the app as a client. Go back to your view to make changes.',
     roles: { team_referent: 'referent' },
   },
   nav: {

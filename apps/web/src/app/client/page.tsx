@@ -66,11 +66,7 @@ export default async function ClientHome() {
   const invited = rows.reduce((n, r) => n + r.invited, 0);
   const anySuppressed = rows.some((r) => r.suppressed);
   const sum = (pick: (r: Extract<(typeof rows)[number], { suppressed: false }>) => number) =>
-    anySuppressed
-      ? fewer
-      : String(
-          rows.reduce((n, r) => (r.suppressed ? n : n + pick(r)), 0),
-        );
+    anySuppressed ? fewer : String(rows.reduce((n, r) => (r.suppressed ? n : n + pick(r)), 0));
   const statusKey = STATUS_KEYS.has(survey.status) ? survey.status : 'none';
   return (
     <section aria-labelledby="client-title">

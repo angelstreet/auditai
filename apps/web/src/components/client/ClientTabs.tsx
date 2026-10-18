@@ -21,9 +21,8 @@ export default function ClientTabs() {
   const pathname = usePathname() ?? '';
   if (pathname.endsWith('/sheet')) return null;
   const current =
-    [...SECTIONS]
-      .reverse()
-      .find((s) => pathname === s.href || pathname.startsWith(`${s.href}/`))?.href ?? false;
+    [...SECTIONS].reverse().find((s) => pathname === s.href || pathname.startsWith(`${s.href}/`))
+      ?.href ?? false;
   return (
     <Tabs
       component="nav"

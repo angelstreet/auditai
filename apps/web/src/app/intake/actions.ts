@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { sponsorBriefWriteSchema, type TenantId } from '@evolai/contracts';
 import { createSponsorBrief } from '@/lib/sponsorBriefData';
 import { getT } from '@/lib/i18n';
+import { viewAsRefusal } from '@/lib/viewAsGuard';
 
 const isUuidV4 = (v: string): boolean =>
   /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(v);
@@ -28,6 +29,8 @@ export async function saveSponsorBriefAction(
   formData: FormData,
 ): Promise<IntakeActionState> {
   const { t } = getT();
+  const readOnly = await viewAsRefusal('/intake');
+  if (readOnly) return { ok: false, message: readOnly };
   const tenantId = String(formData.get('tenantId') ?? '');
   if (!isUuidV4(tenantId)) {
     return { ok: false, message: t('intake.errInvalidTenant') };

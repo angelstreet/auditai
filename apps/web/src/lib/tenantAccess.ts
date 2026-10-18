@@ -83,9 +83,7 @@ export const effectiveContext = (session: SessionPayload): EffectiveContext => {
     kind: 'client',
     role: first.role,
     tenantId: first.id,
-    teamIds: [
-      ...new Set(client.filter((t) => t.id === first.id).map((t) => t.teamId as string)),
-    ],
+    teamIds: [...new Set(client.filter((t) => t.id === first.id).map((t) => t.teamId as string))],
     readOnly: false,
     viewAs: null,
   };

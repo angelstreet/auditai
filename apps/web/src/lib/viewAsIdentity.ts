@@ -9,7 +9,10 @@ import { effectiveContext, ownedTenantIds } from './tenantAccess';
 import { viewAsRoleLabel } from './viewAsLabels';
 
 /** The "View as" menu for a platform owner, or null for everyone else (ADR 0035). */
-export const viewAsMenuFor = async (session: SessionPayload, t: Translator): Promise<ViewAsMenu | null> => {
+export const viewAsMenuFor = async (
+  session: SessionPayload,
+  t: Translator,
+): Promise<ViewAsMenu | null> => {
   if (ownedTenantIds(session).length === 0) return null;
   let personas: Awaited<ReturnType<typeof listPersonas>> = [];
   try {

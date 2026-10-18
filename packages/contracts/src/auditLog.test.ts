@@ -35,6 +35,20 @@ describe('audit log schema (M10, FR-08, PRD §25.4)', () => {
       'user.create',
       'user.set_password',
       'user.disable',
+      'invitation.create_batch',
+      'invitation.export',
+      'invitation.revoke',
+      'invitation.extend',
+      'invitation.regenerate',
+      'invitation.remind',
+      'invitation.purge_addresses',
+      'invitation.settings',
+      'view_as.start',
+      'view_as.stop',
+      'view_as.request',
+      'view_as.refused',
+      'client.seed',
+      'user.set_email',
     ]);
     expect(auditTargetKindSchema.options).toEqual([
       'analysis',
@@ -44,6 +58,7 @@ describe('audit log schema (M10, FR-08, PRD §25.4)', () => {
       'export_request',
       'invitation',
       'user',
+      'engagement',
     ]);
   });
 

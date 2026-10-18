@@ -2,8 +2,8 @@
 
 import { revalidatePath } from 'next/cache';
 import { exportKindSchema } from '@evolai/contracts';
-import { deletePseudonym, listDeletionEvents } from '@/lib/deletionData';
-import { listExportRequests, runExport } from '@/lib/exportData';
+import { deletePseudonym } from '@/lib/deletionData';
+import { runExport } from '@/lib/exportData';
 import { resolveActor } from '@/lib/authServer';
 import { enumLabel, getT } from '@/lib/i18n';
 
@@ -73,5 +73,3 @@ export async function triggerDeletePseudonymAction(
     return { ok: false, message: t('admin.data.errDelete') };
   }
 }
-
-export { listDeletionEvents, listExportRequests };

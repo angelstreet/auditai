@@ -4,16 +4,16 @@ import type { ClientMessages } from './index.js';
 export const clientFr: ClientMessages = {
   viewAs: {
     section: 'Voir en tant que',
-    me: 'Moi : auditeur',
+    me: 'Moi : auditeur',
     meAria: 'Revenir à votre vue d’auditeur',
-    persona: '{tenant} : {name}, {role}',
+    persona: '{tenant} : {name}, {role}',
     personaAria: 'Voir l’application comme {name}, {role} chez {tenant}. Lecture seule.',
     current: 'Vue actuelle',
     banner: 'Vous voyez {tenant} en tant que {name} ({role}). Lecture seule.',
     back: 'Revenir à ma vue',
     backAria: 'Quitter la vue client et revenir à votre vue',
     readOnly:
-      'Lecture seule : vous voyez l’application comme un client. Revenez à votre vue pour modifier.',
+      'Lecture seule : vous voyez l’application comme un client. Revenez à votre vue pour modifier.',
     roles: { team_referent: 'référent' },
   },
   nav: {
@@ -22,7 +22,7 @@ export const clientFr: ClientMessages = {
     invitations: 'Invitations',
     results: 'Résultats',
   },
-  organisation: 'Organisation : {tenant}',
+  organisation: 'Organisation : {tenant}',
   home: {
     title: 'Votre équipe',
     subtitle: 'Où en est le questionnaire pour {team}.',

@@ -29,7 +29,13 @@ export const auditViewAs = async (
     await client.query(
       `INSERT INTO audit_log (tenant_id, actor_user_id, action, target_kind, target_id, payload_json)
        VALUES ($1, $2, $3, 'user', $4, $5)`,
-      [viewAs.tenantId, session.sub, action, viewAs.personaId, JSON.stringify(viewAsPayload(viewAs, extra))],
+      [
+        viewAs.tenantId,
+        session.sub,
+        action,
+        viewAs.personaId,
+        JSON.stringify(viewAsPayload(viewAs, extra)),
+      ],
     );
   });
 };

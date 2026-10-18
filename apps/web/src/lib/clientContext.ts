@@ -40,7 +40,8 @@ export const requireClientContext = async (): Promise<{
   ctx: ClientContext;
 }> => {
   const { session, ctx } = await resolveClient();
-  if (ctx.viewAs) await auditViewAs(session, ctx.viewAs, 'view_as.request', { path: requestPath() });
+  if (ctx.viewAs)
+    await auditViewAs(session, ctx.viewAs, 'view_as.request', { path: requestPath() });
   return { session, ctx };
 };
 

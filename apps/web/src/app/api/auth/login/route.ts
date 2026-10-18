@@ -22,11 +22,7 @@ const safeNext = (raw: string | null): string =>
 
 /** A team referent lands on the client surface; staff keep their `next` (TASK-P). */
 const landing = (staff: boolean, raw: string | null): string =>
-  staff
-    ? safeNext(raw)
-    : raw && /^\/client(\/[A-Za-z0-9_\-./?=&%]*)?$/.test(raw)
-      ? raw
-      : '/client';
+  staff ? safeNext(raw) : raw && /^\/client(\/[A-Za-z0-9_\-./?=&%]*)?$/.test(raw) ? raw : '/client';
 
 const back = (error: string) => redirectTo(`/login?error=${error}`);
 

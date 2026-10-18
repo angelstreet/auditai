@@ -28,7 +28,13 @@ export interface ViewAsMenu {
  * JavaScript and the server decides. Returned as an array: MUI Menu does not accept fragments.
  */
 export function viewAsMenuItems(menu: ViewAsMenu, t: ReturnType<typeof useI18n>['t']) {
-  const entry = (value: string, label: string, aria: string, current: boolean, icon: 'account' | 'visibility') => (
+  const entry = (
+    value: string,
+    label: string,
+    aria: string,
+    current: boolean,
+    icon: 'account' | 'visibility',
+  ) => (
     <Box key={value} component="form" method="post" action="/api/view-as" sx={{ m: 0 }}>
       <input type="hidden" name="persona" value={value} />
       <MenuItem
@@ -55,7 +61,13 @@ export function viewAsMenuItems(menu: ViewAsMenu, t: ReturnType<typeof useI18n>[
     <ListSubheader key="view-as-title" sx={{ bgcolor: 'transparent', lineHeight: 2.5 }}>
       {t('client.viewAs.section')}
     </ListSubheader>,
-    entry('self', t('client.viewAs.me'), t('client.viewAs.meAria'), menu.currentId === null, 'account'),
+    entry(
+      'self',
+      t('client.viewAs.me'),
+      t('client.viewAs.meAria'),
+      menu.currentId === null,
+      'account',
+    ),
     ...menu.options.map((o) => entry(o.id, o.label, o.aria, menu.currentId === o.id, 'visibility')),
     <Divider key="view-as-divider" />,
   ];

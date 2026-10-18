@@ -71,6 +71,8 @@ export const loadMemberships = async (userId: string): Promise<SessionTenant[]> 
       [userId],
     );
     return rows.map((r) =>
-      r.team_id ? { id: r.tenant_id, role: r.role, teamId: r.team_id } : { id: r.tenant_id, role: r.role },
+      r.team_id
+        ? { id: r.tenant_id, role: r.role, teamId: r.team_id }
+        : { id: r.tenant_id, role: r.role },
     );
   });

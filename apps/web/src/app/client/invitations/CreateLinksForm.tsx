@@ -29,7 +29,11 @@ function Submit({ readOnly }: { readOnly: boolean }) {
   );
   // A disabled-looking primary always says why (UI_RULES §3). It still posts, and the server
   // refuses: the read-only rule is enforced there, not here.
-  return readOnly ? <Tooltip title={t('client.invitations.readOnlyHint')}>{button}</Tooltip> : button;
+  return readOnly ? (
+    <Tooltip title={t('client.invitations.readOnlyHint')}>{button}</Tooltip>
+  ) : (
+    button
+  );
 }
 
 /** "Create links" for the referent's team: one number, one primary action. */
@@ -53,7 +57,11 @@ export default function CreateLinksForm({
   return (
     <form action={run} data-testid="client-create-form">
       {teams.length > 1 ? null : <input type="hidden" name="teamId" value={teams[0]?.id ?? ''} />}
-      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} sx={{ alignItems: { sm: 'flex-start' } }}>
+      <Stack
+        direction={{ xs: 'column', sm: 'row' }}
+        spacing={3}
+        sx={{ alignItems: { sm: 'flex-start' } }}
+      >
         {teams.length > 1 ? (
           <TextField
             select
@@ -73,7 +81,9 @@ export default function CreateLinksForm({
           name="count"
           type="number"
           label={t('client.invitations.count')}
-          helperText={readOnly ? t('client.invitations.readOnlyHint') : t('client.invitations.countHint')}
+          helperText={
+            readOnly ? t('client.invitations.readOnlyHint') : t('client.invitations.countHint')
+          }
           defaultValue={5}
           slotProps={{ htmlInput: { min: 1, max: 500, inputMode: 'numeric' } }}
           sx={{ maxWidth: 220 }}
