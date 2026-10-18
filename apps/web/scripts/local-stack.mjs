@@ -57,6 +57,8 @@ const env = (extra = {}) => ({
   // Synthetic, local-only. Real deployments set their own AUTH_SESSION_SECRET.
   AUTH_SESSION_SECRET: process.env.AUTH_SESSION_SECRET ?? 'local-stack-synthetic-session-secret',
   AUTH_COOKIE_SECURE: '0',
+  // Synthetic, local-only; lets the n:smoke exercise the protected cron route.
+  CRON_SECRET: process.env.CRON_SECRET ?? 'local-stack-synthetic-cron-secret',
   ALLOW_DEV_DB_PASSWORD: '1',
   ...extra,
 });

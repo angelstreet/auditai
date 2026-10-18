@@ -1,5 +1,6 @@
 import type { Answer, AnswerValue, InvitationId, SubmissionId, TenantId } from '@evolai/contracts';
 import { withTenant } from './db';
+import { purgeDelivery } from './invitationData';
 
 /**
  * Survey persistence backed by the M4 schema (PRD \u00a714, \u00a75, \u00a717).
@@ -117,7 +118,10 @@ export const getOrCreateState = async (
       [created.id, invitationId],
     );
     await client.query(
-      `UPDATE invitations SET status = 'in_progress', updated_at = now() WHERE id = $1`,
+      `UPDATE invitations
+          SET status = 'opened', open_count = LEAST(open_count + 1, 1000),
+              last_activity_on = current_date, updated_at = now()
+        WHERE id = $1`,
       [invitationId],
     );
 
@@ -172,6 +176,15 @@ export const recordAnswer = async (
       [tenantId, submissionId, questionItemId, value, sequence],
     );
     void result;
+    // First answer: the invitation moves from "opened" to "in progress" (FR-03 tracking). Counts only.
+    await client.query(
+      `UPDATE invitations i
+          SET status = CASE WHEN i.status IN ('pending','opened') THEN 'in_progress' ELSE i.status END,
+              last_activity_on = current_date, updated_at = now()
+         FROM submissions s
+        WHERE s.id = $1 AND i.id = s.invitation_id AND i.status IN ('pending','opened','in_progress')`,
+      [submissionId],
+    );
     return { questionId: questionItemId, value };
   });
 };
@@ -194,6 +207,17 @@ export const submitState = async (
   invitationId: InvitationId,
   submissionId: SubmissionId,
 ): Promise<SurveyState> => {
+  const state = await markSubmitted(tenantId, invitationId, submissionId);
+  // Delivery address (email mode only) is purged on completion (ADR 0033).
+  await purgeDelivery(tenantId, invitationId);
+  return state;
+};
+
+const markSubmitted = async (
+  tenantId: TenantId,
+  invitationId: InvitationId,
+  submissionId: SubmissionId,
+): Promise<SurveyState> => {
   return withTenant(tenantId, async (client) => {
     await client.query(
       `UPDATE submissions
@@ -203,7 +227,7 @@ export const submitState = async (
     );
     await client.query(
       `UPDATE invitations
-         SET status = 'submitted', updated_at = now()
+         SET status = 'submitted', last_activity_on = current_date, updated_at = now()
        WHERE id = $1 AND status <> 'submitted'`,
       [invitationId],
     );

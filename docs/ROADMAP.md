@@ -67,7 +67,10 @@ mobile-survey e2e made green).
   for auditors and company admins (PRD §15); the recovery drill run once with a recorded result; a penetration test;
   an agreed SLA.
 - **Gate D — cross-company benchmarks:** not started (Phase 3).
-- **Invitations and reminders (FR-03):** reminders and response tracking beyond the single-use invite link.
+- **Invitations and reminders (FR-03):** done in TASK-N (ADR 0033): bulk links with CSV and QR sheet, optional
+  email delivery behind a provider interface, per-team tracking with a minimum group of 5, reminders by cron or a
+  resend list, revoke, extend and regenerate. Still open: a live run of the Brevo adapter (needs the owner's key),
+  and the owner telling each client about the address window before email mode is switched on.
 - **Real devices and assistive technology:** a run on real phones at 360 px and a human screen-reader pass.
   The axe and keyboard gates cover automation only.
 - **Phase 2 and Phase 3 items:** the remaining audit-operations items; Phase 3 (FR-15 to FR-17) is drafted

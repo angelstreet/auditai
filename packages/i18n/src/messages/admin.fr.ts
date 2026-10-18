@@ -1,4 +1,5 @@
 import type { AdminMessages } from './index.js';
+import { invitationsFr } from './admin.invitations.fr.js';
 
 /** Textes d'administration / audit / tableau (français, vouvoiement). */
 export const adminFr: AdminMessages = {
@@ -297,4 +298,5 @@ export const adminFr: AdminMessages = {
     statusSet: 'Statut passé à {status}',
     errTransition: 'Le changement de statut a échoué. Veuillez réessayer.',
   },
+  invitations: invitationsFr,
 };

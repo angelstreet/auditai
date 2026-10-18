@@ -64,6 +64,37 @@ If a user is locked out (5 failures in 15 minutes), wait 15 minutes. Nothing els
    prompts; do not paste the password into a shared place), update `DATABASE_APP_PASSWORD` in `$ENV_FILE` and
    Vercel, redeploy. Check `/api/health`.
 
+## Invitations and reminders (FR-03, ADR 0033)
+
+Create links on the live database (default mode: no names, no addresses). Sign in as an auditor, then either use
+the admin screen _Invitations_ for the engagement, or the JSON API with the session cookie:
+
+```bash
+set -a; . "$ENV_FILE"; set +a
+BASE=https://evolai.io
+curl -sS -c jar -X POST "$BASE/api/auth/login" --data-urlencode "email=$AUDITOR_EMAIL" \
+  --data-urlencode "password=$AUDITOR_PASSWORD"   # prompt for the password, do not paste it into history
+curl -sS -b jar -H 'content-type: application/json' "$BASE/api/admin/invitations" \
+  -d '{"tenantId":"<tenant>","engagementId":"<engagement>","op":"create","counts":{"<team id>":25},"expiresInDays":14}'
+curl -sS -b jar "$BASE/admin/invitations/export?tenant=<tenant>&engagement=<engagement>" -o links.csv
+```
+
+The CSV is `link,team` and lists links not yet completed. Hand it to the client's HR; never mail it to yourself in
+clear text. Progress: `GET /api/admin/invitations?tenant=..&engagement=..` (aggregates; teams under 5 show nothing).
+Revoke, extend, regenerate: `op` = `revoke | extend | regenerate` with `invitationId`.
+
+Reminders run from `apps/web/vercel.json`: `GET /api/cron/reminders` daily at 07:43 UTC with the same
+`CRON_SECRET` bearer as the retention route. Default mode: it only counts what is due; use the _Reminder list_
+(`...&view=reminders`, or `/admin/invitations/export?...&kind=reminders`) and press "mark as resent" after the
+client sends it. Email mode (per engagement setting, off by default): it sends and consumes each step, then purges
+stored addresses. Run it by hand: `curl -sS -H "Authorization: Bearer $CRON_SECRET" "$BASE/api/cron/reminders"`;
+the body is `{ok, engagements, sent, failed, listModeDue, purged, emailUnavailable}`.
+
+Email mode needs `INVITE_EMAIL_KEY` (`openssl rand -base64 32`), `EMAIL_PROVIDER=brevo`, `BREVO_API_KEY` and
+`EMAIL_FROM` in Vercel (Sensitive). Without them, creating with addresses fails before anything is stored.
+Rotating `INVITE_EMAIL_KEY` makes stored addresses unreadable (they are short-lived: purge them first by revoking
+or waiting for expiry). Migration 0018 must be applied first (previous section).
+
 ## Health and monitoring
 
 Point an uptime check (any external monitor, 1-minute interval) at `https://evolai.io/api/health`; alert on a
