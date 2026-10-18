@@ -46,7 +46,7 @@ test.describe('employee mobile survey @ 360 px', () => {
     await page.goto(href);
 
     // Start (or "continue where you left off" when an earlier project already answered).
-    await page.locator('main a.btn-primary').click();
+    await page.locator('main a.MuiButton-contained').click();
     await expect(page).toHaveURL(/\/q\/\d+$/);
     await page.goto(`${href}/q/0`);
 

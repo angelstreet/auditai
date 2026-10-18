@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
+import { AppIcon } from '@evolai/ui';
 
 interface Option {
   readonly value: string;
@@ -70,7 +71,8 @@ export default function QuestionClient(props: Props) {
               disabled={busy}
               onClick={() => void choose(option.value)}
             >
-              {option.label}
+              <span>{option.label}</span>
+              <AppIcon name="success" className="option-check" />
             </button>
           </li>
         ))}

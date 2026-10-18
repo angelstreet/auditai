@@ -51,6 +51,7 @@ export const fr: Messages = {
     notFoundTitle: 'Cette page n’existe pas',
     notFoundBody:
       'Vérifiez que le lien est complet. Ou demandez-en un nouveau à votre contact d’équipe.',
+    notFoundHome: 'Aller à l’accueil',
   },
   meta: {
     title: 'EvolAI — Comprendre. S’adapter. Évoluer.',

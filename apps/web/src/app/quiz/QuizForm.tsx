@@ -5,6 +5,7 @@ import { useFormState, useFormStatus } from 'react-dom';
 import type { TenantId } from '@evolai/contracts';
 import type { QuizQuestion } from '@evolai/domain';
 import { quizItems } from '@evolai/i18n';
+import { AppIcon } from '@evolai/ui';
 import ProgressBar from '@/components/ProgressBar';
 import { useI18n } from '@/components/I18nProvider';
 import type { QuizActionState } from './actions';
@@ -90,6 +91,7 @@ export function QuizForm({ action, questions, tenantId, pseudonym }: Props) {
                   onChange={() => choose(idx)}
                 />
                 <span>{copy[q.code]?.options[o.value] ?? o.label}</span>
+                <AppIcon name="success" className="option-check" />
               </label>
             ))}
           </div>

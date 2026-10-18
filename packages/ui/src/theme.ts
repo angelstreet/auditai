@@ -90,7 +90,19 @@ export const theme: Theme = createTheme({
   shape: { borderRadius: 8 },
   spacing: 4,
   components: {
-    MuiButtonBase: { defaultProps: { disableRipple: true } },
+    // No ripple, so the focus ring is ours: ButtonBase resets outline to 0, which would hide the
+    // global :focus-visible ring on every MUI control (UI_RULES §6, WCAG 2.4.7).
+    MuiButtonBase: {
+      defaultProps: { disableRipple: true },
+      styleOverrides: {
+        root: ({ theme: t }) => ({
+          '&.Mui-focusVisible, &:focus-visible': {
+            outline: `3px solid ${t.vars.palette.app.focus}`,
+            outlineOffset: 2,
+          },
+        }),
+      },
+    },
     MuiButton: {
       defaultProps: { disableElevation: true },
       styleOverrides: {

@@ -1,11 +1,15 @@
 import Link from 'next/link';
+import { AppIcon } from '@evolai/ui';
 import type { Translator } from '@evolai/i18n';
 
-/** One reassuring line; the detail is one tap away (PRD §5, §15). */
+/** One reassuring line with the shield icon; the detail is one tap away (PRD §5, §15). */
 export default function PrivacyNotice({ t }: { t: Translator }) {
   return (
     <section className="privacy" aria-label={t('survey.privacyMore')}>
-      <p>{t('survey.privacyShort')}</p>
+      <p className="privacy-line">
+        <AppIcon name="privacy" />
+        <span>{t('survey.privacyShort')}</span>
+      </p>
       <details>
         <summary>{t('survey.privacyMore')}</summary>
         <ul>
