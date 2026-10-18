@@ -1,0 +1,150 @@
+import { notFound } from 'next/navigation';
+import type { InvitationId, MascotTier, TenantId } from '@auditai/contracts';
+import type { SupportedLocale, Translator } from '@auditai/i18n';
+import { withServiceAccount, withTenant } from './db';
+import { getT } from './i18n';
+import { InvalidInviteToken, verifyInviteToken } from './invitationToken';
+import { getOrCreateState, setLocale, type SurveyState } from './surveyState';
+
+/**
+ * Shared loader for every `/s/[token]` page (PRD §4.2, §5, §16).
+ *
+ * - A malformed or unknown token is a 404 (no hint that the invitation exists).
+ * - An expired or withdrawn invitation returns `{ kind: 'blocked' }` so the page can say so in
+ *   plain words instead of a dead end.
+ * - The respondent's interface language (header switcher cookie, else Accept-Language) is the
+ *   survey language; it is written back to the submission so the stored locale matches what
+ *   the person actually read. One switcher, no mixed-language screens.
+ */
+
+export interface InvitationRecord {
+  readonly tenantId: TenantId;
+  readonly invitationId: InvitationId;
+  readonly engagementId: string;
+  readonly teamId: string;
+  readonly pseudonym: string;
+  readonly status: string;
+  readonly expiresAt: string;
+}
+
+export type InvitationGate = 'ok' | 'expired' | 'withdrawn';
+
+export const gateFor = (invite: Pick<InvitationRecord, 'status' | 'expiresAt'>, now: Date) => {
+  if (invite.status === 'revoked' || invite.status === 'declined') return 'withdrawn';
+  // A submitted invitation stays readable after expiry: the person can still see team progress.
+  if (invite.status === 'submitted') return 'ok';
+  if (invite.status === 'expired' || new Date(invite.expiresAt).getTime() < now.getTime()) {
+    return 'expired';
+  }
+  return 'ok';
+};
+
+export const findInvitation = async (reference: string): Promise<InvitationRecord | null> =>
+  withServiceAccount(async (client) => {
+    const { rows } = await client.query<{
+      tenant_id: string;
+      id: string;
+      engagement_id: string;
+      team_id: string;
+      respondent_pseudonym: string;
+      status: string;
+      expires_at: Date | string;
+    }>(
+      `SELECT tenant_id, id, engagement_id, team_id, respondent_pseudonym, status, expires_at
+         FROM invitations WHERE token_reference = $1 LIMIT 1`,
+      [reference],
+    );
+    const row = rows[0];
+    if (!row) return null;
+    return {
+      tenantId: row.tenant_id as TenantId,
+      invitationId: row.id as InvitationId,
+      engagementId: row.engagement_id,
+      teamId: row.team_id,
+      pseudonym: row.respondent_pseudonym,
+      status: row.status,
+      expiresAt: new Date(row.expires_at).toISOString(),
+    };
+  });
+
+export type RespondentContext =
+  | { kind: 'blocked'; gate: Exclude<InvitationGate, 'ok'>; locale: SupportedLocale; t: Translator }
+  | {
+      kind: 'ok';
+      token: string;
+      invite: InvitationRecord;
+      state: SurveyState;
+      locale: SupportedLocale;
+      t: Translator;
+    };
+
+/** Resolve the invitation behind a token, or 404. Pages call this first. */
+export const loadRespondent = async (token: string): Promise<RespondentContext> => {
+  try {
+    verifyInviteToken(token);
+  } catch (err) {
+    if (err instanceof InvalidInviteToken) notFound();
+    throw err;
+  }
+  const invite = await findInvitation(token.split('.')[0] as string);
+  if (!invite) notFound();
+  const { locale, t } = getT();
+  const gate = gateFor(invite, new Date());
+  if (gate !== 'ok') return { kind: 'blocked', gate, locale, t };
+  const state = await getOrCreateState(invite.tenantId, invite.invitationId);
+  if (state.submissionId && state.locale !== locale) {
+    await setLocale(invite.tenantId, state.submissionId, locale);
+    state.locale = locale;
+  }
+  return { kind: 'ok', token, invite, state, locale, t };
+};
+
+/** Index of the first question without an answer, or `total` when every question has one. */
+export const firstUnanswered = (answers: SurveyState['answers'], total: number): number => {
+  for (let i = 0; i < total; i += 1) if (!answers[i]) return i;
+  return total;
+};
+
+export interface TeamProgress {
+  readonly answered: number;
+  readonly invited: number;
+  readonly engagementStatus: string;
+  readonly closesAt: string | null;
+  readonly teamTier: MascotTier | null;
+}
+
+/**
+ * What a respondent may see about their team: counts only (PRD §4.3, §15). No names, no answers,
+ * no per-person mascots; the team mascot is the precomputed dominant tier (ADR 0015).
+ */
+export const teamProgress = async (invite: InvitationRecord): Promise<TeamProgress> =>
+  withTenant(invite.tenantId, async (client) => {
+    const counts = await client.query<{ invited: number; answered: number }>(
+      `SELECT COUNT(*)::int AS invited,
+              COUNT(*) FILTER (WHERE status = 'submitted')::int AS answered
+         FROM invitations
+        WHERE tenant_id = $1 AND engagement_id = $2 AND team_id = $3`,
+      [invite.tenantId, invite.engagementId, invite.teamId],
+    );
+    const engagement = await client.query<{ status: string; closes_at: Date | string | null }>(
+      `SELECT status, closes_at FROM engagements WHERE tenant_id = $1 AND id = $2`,
+      [invite.tenantId, invite.engagementId],
+    );
+    const badge = await client.query<{ dominant_tier: MascotTier }>(
+      `SELECT dominant_tier FROM team_badges WHERE tenant_id = $1 AND team_id = $2
+        ORDER BY computed_at DESC LIMIT 1`,
+      [invite.tenantId, invite.teamId],
+    );
+    const closes = engagement.rows[0]?.closes_at ?? null;
+    return {
+      invited: counts.rows[0]?.invited ?? 0,
+      answered: counts.rows[0]?.answered ?? 0,
+      engagementStatus: engagement.rows[0]?.status ?? 'in_field',
+      closesAt: closes ? new Date(closes).toISOString() : null,
+      teamTier: badge.rows[0]?.dominant_tier ?? null,
+    };
+  });
+
+/** Honest time estimate: about 20 seconds per one-tap question, rounded up, never under a minute. */
+export const estimatedMinutes = (questions: number): number =>
+  Math.max(1, Math.ceil((questions * 20) / 60));

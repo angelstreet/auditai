@@ -1,35 +1,18 @@
-/* Mobile-first globals for the employee survey (PRD \u00a75).
- * No Tailwind in M5 \u2014 plain CSS keeps the bundle small and the 360 px viewport
- * constraints easier to audit. Single column, generous tap targets, WCAG 2.2 AA contrast.
- *
- * M8 rebrand: the brand palette is documented in ADR 0006. The legacy `--color-accent`
- * variable is kept for back-compat with the existing M5 mobile styles; new code should
- * prefer the `--color-brand-*` tokens.
+/* Web app styles. Every colour, size, space and radius comes from the tokens in
+ * packages/ui/src/tokens.css (ADR 0025); `pnpm style-guard` fails on literals.
+ * Mobile first: one column, 44px tap targets, WCAG 2.2 AA contrast.
  */
+@import '../../../../packages/ui/src/tokens.css';
 
+/* Legacy names still used by admin pages; removed once they move to the semantic roles. */
 :root {
-  --color-bg: #ffffff;
-  --color-fg: #111111;
-  --color-muted: #5a5a5a;
-  --color-accent: #172b3a; /* migrated to brand navy in M8 */
-  --color-accent-fg: #ffffff;
-  --color-border: #d0d0d0;
-  --color-card: #f4f6fa;
-  --color-brand-navy: #172b3a;
-  --color-brand-teal: #19a999;
-  --color-brand-blue: #4a7fe8;
-  --color-brand-amber: #ffb86a;
-  --color-brand-off-white: #f7fafc;
-  --color-brand-supporting: #536575;
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 24px;
-  --space-6: 32px;
-  --tap-min: 44px;
-  --max-width: 360px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --color-card: var(--color-surface);
+  --color-brand-navy: var(--color-navy);
+  --color-brand-teal: var(--color-teal);
+  --color-brand-blue: var(--color-blue);
+  --color-brand-amber: var(--color-amber);
+  --color-brand-off-white: var(--color-off-white);
+  --color-brand-supporting: var(--color-slate);
 }
 
 * {
@@ -46,56 +29,212 @@ body {
 
 body {
   min-height: 100vh;
-  font-size: 16px;
-  line-height: 1.5;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
 }
 
 main,
 .container {
-  max-width: var(--max-width);
+  max-width: var(--width-narrow);
   margin: 0 auto;
   padding: var(--space-4);
   width: 100%;
 }
 
+/* Admin, board and other dense pages opt into the wide column with a `.wide` root element. */
+main.container:has(> .wide),
+.container.admin {
+  max-width: var(--width-wide);
+}
+
 h1,
-h2 {
+h2,
+h3 {
   margin: 0 0 var(--space-3) 0;
-  font-weight: 600;
-  line-height: 1.25;
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
 }
 
 h1 {
-  font-size: 1.5rem;
+  font-size: var(--text-xl);
 }
 
 h2 {
-  font-size: 1.125rem;
+  font-size: var(--text-lg);
+}
+
+h3 {
+  font-size: var(--text-base);
+}
+
+@media (min-width: 768px) {
+  .wide h1 {
+    font-size: var(--text-2xl);
+  }
 }
 
 p {
   margin: 0 0 var(--space-4) 0;
 }
 
+a {
+  color: var(--color-accent);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-blue);
+  outline-offset: 2px;
+}
+
 .muted {
   color: var(--color-muted);
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
+}
+
+.lede {
+  font-size: var(--text-lg);
+  color: var(--color-muted);
+}
+
+.meta {
+  font-weight: var(--weight-bold);
+}
+
+.stat {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  margin-bottom: var(--space-2);
+}
+
+.alert {
+  color: var(--color-danger);
+  font-weight: var(--weight-medium);
+}
+
+/* Vertical rhythm for a page section: children separated by one spacing step. */
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.stack > * {
+  margin: 0;
+}
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+}
+
+.card > :last-child {
+  margin-bottom: 0;
+}
+
+/* Buttons: one primary per screen, secondary for the rest, link-button for quiet actions. */
+.btn,
+.cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--tap-min);
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  font: inherit;
+  font-weight: var(--weight-bold);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btn-primary,
+.cta {
+  background: var(--color-accent);
+  color: var(--color-accent-fg);
+}
+
+.btn-secondary {
+  background: var(--color-bg);
+  color: var(--color-accent);
+  border-color: var(--color-border-strong);
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.btn[disabled],
+.cta[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.link-button {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-min);
+  padding: 0 var(--space-2);
+  margin: 0 calc(-1 * var(--space-2));
+  background: none;
+  border: 0;
+  color: var(--color-accent);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.step-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.step-bar.end {
+  justify-content: flex-end;
 }
 
 .progress {
   width: 100%;
-  height: 4px;
-  background: var(--color-card);
-  border-radius: 2px;
+  height: 8px;
+  background: var(--color-border);
+  border-radius: var(--radius-pill);
   overflow: hidden;
-  margin-bottom: var(--space-4);
 }
 
 .progress > span {
   display: block;
   height: 100%;
-  background: var(--color-accent);
+  background: var(--color-teal);
+  border-radius: var(--radius-pill);
   transition: width 0.2s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progress > span {
+    transition: none;
+  }
+}
+
+/* Answer options: whole row is the tap target. */
+.prompt {
+  font-size: var(--text-xl);
+}
+
+.question {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+
+.question legend {
+  padding: 0;
+  margin-bottom: var(--space-4);
 }
 
 .option-list {
@@ -108,105 +247,177 @@ p {
 }
 
 .option-button {
-  display: block;
+  display: flex;
+  align-items: center;
   width: 100%;
-  min-height: var(--tap-min);
+  min-height: 56px;
   padding: var(--space-3) var(--space-4);
-  border-radius: 8px;
-  border: 1px solid var(--color-border);
-  background: var(--color-card);
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-bg);
   color: var(--color-fg);
   text-align: left;
   font: inherit;
   cursor: pointer;
-  transition: transform 0.1s ease;
 }
 
-.option-button:focus,
-.option-button:focus-visible {
-  outline: 3px solid var(--color-accent);
-  outline-offset: 2px;
+.option-button:hover {
+  background: var(--color-surface);
 }
 
-.option-button[aria-pressed="true"] {
+.option-button[aria-pressed='true'],
+.option-button:has(input:checked) {
   border-color: var(--color-accent);
   background: var(--color-accent);
   color: var(--color-accent-fg);
 }
 
-.cta {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: var(--tap-min);
-  padding: var(--space-3) var(--space-5);
-  border-radius: 8px;
-  border: none;
-  background: var(--color-accent);
-  color: var(--color-accent-fg);
-  font: inherit;
-  font-weight: 600;
-  cursor: pointer;
+.option-button[disabled] {
+  cursor: progress;
 }
 
-.cta:focus,
-.cta:focus-visible {
-  outline: 3px solid var(--color-accent);
+/* Radio inputs inside label.option-button: visually hidden, still focusable. */
+.option-button input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.option-button:has(input:focus-visible) {
+  outline: 3px solid var(--color-blue);
   outline-offset: 2px;
 }
 
-.cta[disabled] {
-  background: var(--color-muted);
-  cursor: not-allowed;
+.privacy p {
+  margin-bottom: var(--space-2);
 }
 
-.privacy {
-  background: var(--color-card);
-  border: 1px solid var(--color-border);
-  padding: var(--space-4);
-  border-radius: 8px;
-  margin-bottom: var(--space-5);
+details summary {
+  min-height: var(--tap-min);
+  display: flex;
+  align-items: center;
+  color: var(--color-accent);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+details a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-min);
+}
+
+details ul {
+  padding-left: var(--space-5);
+  margin: var(--space-2) 0;
+}
+
+.inline-mascot {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.inline-mascot svg {
+  flex-shrink: 0;
+}
+
+.reveal {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  flex-wrap: wrap;
+}
+
+.tier-name {
+  font-size: var(--text-2xl);
+  margin: 0;
+}
+
+.tier-list {
+  list-style: none;
+  padding: 0;
+}
+
+.tier-list li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2);
+  border-radius: var(--radius);
+}
+
+.tier-list li[aria-current='true'] {
+  background: var(--color-surface);
+  font-weight: var(--weight-bold);
+}
+
+/* Header */
+.site-header {
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg);
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding-top: var(--space-2);
+  padding-bottom: var(--space-2);
+}
+
+.topbar nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-3);
+  font-size: var(--text-sm);
+}
+
+.topbar nav a,
+.topbar .home-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-min);
+}
+
+.home-link {
+  text-decoration: none;
+  color: inherit;
 }
 
 .locale-toggle {
   display: inline-flex;
-  gap: var(--space-2);
-  margin-bottom: var(--space-3);
+  gap: var(--space-1);
 }
 
 .locale-toggle button {
   background: transparent;
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  padding: 4px 8px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  padding: var(--space-1) var(--space-2);
   font: inherit;
+  color: var(--color-fg);
   cursor: pointer;
   min-height: var(--tap-min);
+  min-width: var(--tap-min);
 }
 
-.locale-toggle button[aria-pressed="true"] {
+.locale-toggle button[aria-pressed='true'] {
   border-color: var(--color-accent);
   background: var(--color-accent);
   color: var(--color-accent-fg);
 }
 
-a {
-  color: var(--color-accent);
-}
-
-/* Admin section (M6). Uses the same colour palette as the mobile survey but widens the
- * container so a desktop admin can read a table without horizontal scrolling.
- */
-main.admin,
-.container.admin {
-  max-width: 960px;
-}
-
+/* Admin tables (wide pages). */
 .admin table {
   width: 100%;
   border-collapse: collapse;
   margin-top: var(--space-4);
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
 }
 
 .admin th,
@@ -217,8 +428,8 @@ main.admin,
   vertical-align: top;
 }
 
-.admin th[scope="col"] {
-  background: var(--color-card);
+.admin th[scope='col'] {
+  background: var(--color-surface);
   position: sticky;
   top: 0;
 }
@@ -233,6 +444,6 @@ main.admin,
 }
 
 .admin .admin-tenant-switcher li a[aria-current='page'] {
-  font-weight: 600;
+  font-weight: var(--weight-bold);
   text-decoration: underline;
 }

@@ -3,6 +3,7 @@
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import {
+  type MascotTier,
   type QuizAnswer,
   type RespondentBadgeWrite,
   mascotTierForScore,
@@ -11,6 +12,8 @@ import {
 import { computeQuizScore, isCompleteQuizSubmission, LITERACY_QUIZ } from '@auditai/domain';
 import { writeRespondentBadge } from '@/lib/respondentBadgeData';
 import { getT } from '@/lib/i18n';
+import { verifyInviteToken } from '@/lib/invitationToken';
+import { findInvitation, gateFor } from '@/lib/respondent';
 
 export interface QuizActionState {
   ok: boolean;
@@ -24,13 +27,16 @@ const isPseudonym = (v: string): boolean => /^[a-z0-9-]{8,64}$/.test(v);
 const findOption = (code: string, value: string): { weight: number } | undefined =>
   LITERACY_QUIZ.find((q) => q.code === code)?.options.find((o) => o.value === value);
 
-export async function submitQuizAction(
-  _prev: QuizActionState,
+type SaveResult = { ok: false; message: string } | { ok: true; tier: MascotTier };
+
+/** Validate the five answers, write the badge row, return the mascot tier (never the raw score). */
+const saveQuiz = async (
+  tenantId: string,
+  pseudonym: string,
+  engagementId: string | null,
   formData: FormData,
-): Promise<QuizActionState> {
+): Promise<SaveResult> => {
   const { t } = getT();
-  const tenantId = String(formData.get('tenantId') ?? '');
-  const pseudonym = String(formData.get('respondentPseudonym') ?? '');
   if (!isUuidV4(tenantId)) return { ok: false, message: t('quiz.errInvalidTenant') };
   if (!isPseudonym(pseudonym)) return { ok: false, message: t('quiz.errInvalidPseudonym') };
   const answers: Record<string, string> = {};
@@ -43,33 +49,67 @@ export async function submitQuizAction(
     return { ok: false, message: t('quiz.errIncomplete') };
   }
   for (const q of LITERACY_QUIZ) {
-    const v = answers[q.code] ?? '';
-    if (!findOption(q.code, v)) {
-      return { ok: false, message: t('quiz.errUnknownAnswer', { code: q.code, value: v }) };
+    if (!findOption(q.code, answers[q.code] ?? '')) {
+      return { ok: false, message: t('quiz.errUnknownAnswer') };
     }
   }
-  const sourceAnswers: QuizAnswer[] = LITERACY_QUIZ.map((q) => {
-    const v = answers[q.code] ?? '';
-    return { questionCode: q.code, value: v };
-  });
+  const sourceAnswers: QuizAnswer[] = LITERACY_QUIZ.map((q) => ({
+    questionCode: q.code,
+    value: answers[q.code] ?? '',
+  }));
   const quizScore = computeQuizScore(answers);
   const payload: RespondentBadgeWrite = {
     tenantId: tenantId as TenantId,
     respondentPseudonym: pseudonym,
-    engagementId: null,
+    engagementId: engagementId as RespondentBadgeWrite['engagementId'],
     quizScore,
     sourceAnswers,
   };
   try {
     await writeRespondentBadge(tenantId as TenantId, payload);
-    revalidatePath('/quiz');
-    revalidatePath('/quiz/result');
   } catch (err) {
     // The raw error stays server-side: it may contain SQL or tenant details.
     console.error('quiz save failed', err);
     return { ok: false, message: t('quiz.errSaveFailed') };
   }
+  return { ok: true, tier: mascotTierForScore(quizScore) };
+};
+
+/** Public demo quiz (`/quiz`): tenant + pseudonym come from the form. */
+export async function submitQuizAction(
+  _prev: QuizActionState,
+  formData: FormData,
+): Promise<QuizActionState> {
+  const pseudonym = String(formData.get('respondentPseudonym') ?? '');
+  const result = await saveQuiz(String(formData.get('tenantId') ?? ''), pseudonym, null, formData);
+  if (!result.ok) return result;
+  revalidatePath('/quiz');
+  revalidatePath('/quiz/result');
   // Redirect after successful submission; the result page reads the badge back.
-  const tier = mascotTierForScore(quizScore);
-  redirect(`/quiz/result?pseudonym=${encodeURIComponent(pseudonym)}&tier=${tier}`);
+  redirect(`/quiz/result?pseudonym=${encodeURIComponent(pseudonym)}&tier=${result.tier}`);
+}
+
+/**
+ * Respondent quiz (`/s/[token]/quiz`): tenant, pseudonym and engagement come from the signed
+ * invitation, never from the form, so a respondent can only write their own badge.
+ */
+export async function submitRespondentQuizAction(
+  token: string,
+  _prev: QuizActionState,
+  formData: FormData,
+): Promise<QuizActionState> {
+  const { t } = getT();
+  try {
+    verifyInviteToken(token);
+  } catch {
+    return { ok: false, message: t('quiz.errInvalidTenant') };
+  }
+  const invite = await findInvitation(token.split('.')[0] as string);
+  if (!invite || gateFor(invite, new Date()) !== 'ok') {
+    return { ok: false, message: t('quiz.errInvalidTenant') };
+  }
+  const result = await saveQuiz(invite.tenantId, invite.pseudonym, invite.engagementId, formData);
+  if (!result.ok) return result;
+  revalidatePath(`/s/${token}`);
+  redirect(`/s/${token}#mascot`);
 }

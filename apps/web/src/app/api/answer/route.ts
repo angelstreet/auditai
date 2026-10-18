@@ -1,7 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { InvalidInviteToken, verifyInviteToken } from '@/lib/invitationToken';
-import { findTenantForInvitation, withServiceAccount } from '@/lib/db';
-import { getOrCreateState, recordAnswer } from '@/lib/surveyState';
+import { withServiceAccount } from '@/lib/db';
+import { findInvitation, gateFor } from '@/lib/respondent';
+import { getOrCreateState, isSubmitted, recordAnswer } from '@/lib/surveyState';
 import { SYNTHETIC_QUESTIONS } from '@/lib/syntheticTemplate';
 import { parseAnswerValue } from '@/lib/answerParser';
 
@@ -15,7 +16,7 @@ interface Body {
  * POST /api/answer \u2014 persist a single answer against the M4 schema.
  *
  * 1. Verify the token (HMAC).
- * 2. Resolve the tenant + invitation via `findTenantForInvitation` (service-account lookup so RLS
+ * 2. Resolve the tenant + invitation via `findInvitation` (service-account lookup so RLS
  *    cannot deny it; the invitation row carries the tenant id we need).
  * 3. Get-or-create the submission row.
  * 4. Insert the answer with the synthetic question item id (the deterministic uuid we mint at
@@ -43,13 +44,20 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, error: 'invalid_token' }, { status: 401 });
   }
   const reference = body.token.split('.')[0] as string;
-  const resolved = await findTenantForInvitation(reference);
+  const resolved = await findInvitation(reference);
   if (!resolved) {
     return NextResponse.json({ ok: false, error: 'invitation_not_found' }, { status: 404 });
+  }
+  if (gateFor(resolved, new Date()) !== 'ok') {
+    return NextResponse.json({ ok: false, error: 'invitation_closed' }, { status: 410 });
   }
   const state = await getOrCreateState(resolved.tenantId, resolved.invitationId);
   if (!state.submissionId) {
     return NextResponse.json({ ok: false, error: 'submission_not_ready' }, { status: 500 });
+  }
+  // Answers are final once submitted.
+  if (await isSubmitted(resolved.tenantId, state.submissionId)) {
+    return NextResponse.json({ ok: false, error: 'already_submitted' }, { status: 409 });
   }
   const question = SYNTHETIC_QUESTIONS[body.index];
   if (!question) {

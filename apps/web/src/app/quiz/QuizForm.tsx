@@ -1,73 +1,93 @@
 'use client';
 
+import { useRef, useState } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
 import type { TenantId } from '@auditai/contracts';
 import type { QuizQuestion } from '@auditai/domain';
 import { quizItems } from '@auditai/i18n';
+import ProgressBar from '@/components/ProgressBar';
 import { useI18n } from '@/components/I18nProvider';
-import { submitQuizAction, type QuizActionState } from './actions';
+import type { QuizActionState } from './actions';
 
 const INITIAL: QuizActionState = { ok: false, message: '' };
 
-function SubmitButton() {
+function Saving() {
   const { t } = useI18n();
   const { pending } = useFormStatus();
-  return (
-    <button type="submit" disabled={pending} className="btn-primary">
-      {pending ? t('quiz.saving') : t('quiz.submit')}
-    </button>
-  );
+  return pending ? (
+    <p className="muted" aria-live="polite">
+      {t('quiz.saving')}
+    </p>
+  ) : null;
 }
 
 interface Props {
-  tenantId: TenantId;
-  pseudonym: string;
+  action: (prev: QuizActionState, formData: FormData) => Promise<QuizActionState>;
   questions: ReadonlyArray<QuizQuestion>;
+  /** Only the public demo quiz posts these; the respondent quiz derives them from the token. */
+  tenantId?: TenantId;
+  pseudonym?: string;
 }
 
-export function QuizForm({ tenantId, pseudonym, questions }: Props) {
-  const { locale } = useI18n();
+/**
+ * One question per screen (PRD §5). Every question stays in the DOM (hidden) so the form posts all
+ * five answers at once; tapping an option moves to the next question, and the last tap submits.
+ */
+export function QuizForm({ action, questions, tenantId, pseudonym }: Props) {
+  const { locale, t } = useI18n();
   const copy = quizItems[locale];
-  const [state, formAction] = useFormState(submitQuizAction, INITIAL);
+  const [state, formAction] = useFormState(action, INITIAL);
+  const [step, setStep] = useState(0);
+  const form = useRef<HTMLFormElement>(null);
+  const total = questions.length;
+
+  const choose = (idx: number) => {
+    if (idx === total - 1) form.current?.requestSubmit();
+    else setStep(idx + 1);
+  };
+
   return (
-    <form action={formAction} className="quiz-form">
-      <input type="hidden" name="tenantId" value={tenantId} />
-      <input type="hidden" name="respondentPseudonym" value={pseudonym} />
+    <form ref={form} action={formAction} className="stack">
+      {tenantId ? <input type="hidden" name="tenantId" value={tenantId} /> : null}
+      {pseudonym ? <input type="hidden" name="respondentPseudonym" value={pseudonym} /> : null}
+      <div className="step-bar">
+        {step > 0 ? (
+          <button type="button" className="link-button" onClick={() => setStep(step - 1)}>
+            ← {t('quiz.back')}
+          </button>
+        ) : (
+          <span />
+        )}
+        <span className="muted">{t('quiz.questionOf', { i: step + 1, n: total })}</span>
+      </div>
+      <ProgressBar current={step + 1} total={total} ariaLabel={t('quiz.progress')} />
       {questions.map((q, idx) => (
-        <fieldset key={q.code} className="quiz-q">
+        <fieldset key={q.code} className="question" hidden={idx !== step}>
           <legend>
-            <span className="num">{idx + 1}</span> {copy[q.code]?.prompt ?? q.prompt}
+            <h1 className="prompt">{copy[q.code]?.prompt ?? q.prompt}</h1>
           </legend>
-          {q.options.map((o) => (
-            <label key={o.value} className="opt">
-              <input type="radio" name={q.code} value={o.value} required />
-              <span>{copy[q.code]?.options[o.value] ?? o.label}</span>
-            </label>
-          ))}
+          <div className="option-list">
+            {q.options.map((o) => (
+              <label key={o.value} className="option-button">
+                <input
+                  type="radio"
+                  name={q.code}
+                  value={o.value}
+                  required
+                  onChange={() => choose(idx)}
+                />
+                <span>{copy[q.code]?.options[o.value] ?? o.label}</span>
+              </label>
+            ))}
+          </div>
         </fieldset>
       ))}
-      <p>
-        <SubmitButton />
-        {state.message ? (
-          <span style={{ marginLeft: 12 }} aria-live="polite">
-            {state.ok ? '✅' : '⚠️'} {state.message}
-          </span>
-        ) : null}
-      </p>
-      <style>{`
-        .quiz-form { display: grid; gap: 16px; max-width: 720px; margin-top: 20px; }
-        .quiz-q { background: var(--color-card); border: 1px solid var(--color-border);
-          border-radius: 8px; padding: 14px 18px; }
-        .quiz-q legend { font-weight: 600; }
-        .quiz-q .num { display: inline-block; min-width: 22px; padding: 2px 6px;
-          background: var(--color-brand-teal); color: var(--color-brand-off-white);
-          border-radius: 999px; font-size: 11px; margin-right: 6px; }
-        .quiz-q .opt { display: flex; gap: 10px; align-items: center;
-          padding: 4px 0; font-size: 14px; }
-        .btn-primary { padding: 10px 18px; background: var(--color-brand-navy);
-          color: var(--color-brand-off-white); border: 0; border-radius: 8px;
-          font: inherit; cursor: pointer; }
-      `}</style>
+      <Saving />
+      {state.message ? (
+        <p role="alert" className="alert">
+          {state.message}
+        </p>
+      ) : null}
     </form>
   );
 }

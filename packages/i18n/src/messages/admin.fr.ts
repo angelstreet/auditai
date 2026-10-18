@@ -55,12 +55,12 @@ export const adminFr: AdminMessages = {
     utc: '{value} UTC',
     pending: 'en attente',
     tenantNavAria: 'Choisir un locataire',
-    tenantLabel: 'Locataire :',
+    tenantLabel: 'Locataire :',
   },
   engagements: {
     title: 'EvolAI — missions d’audit',
-    dataFrom: 'Données issues de Postgres ; le schéma M4 pilote les requêtes.',
-    viewing: 'Vous consultez {label}. Taux de réalisation global : {pct}',
+    dataFrom: 'Données issues de Postgres ; le schéma M4 pilote les requêtes.',
+    viewing: 'Vous consultez {label}. Taux de réalisation global : {pct}',
     expected: '({submitted} / {expected} réponses attendues)',
     colEngagement: 'Mission',
     colStatus: 'Statut',
@@ -77,7 +77,7 @@ export const adminFr: AdminMessages = {
   board: {
     title: 'Tableau du portefeuille',
     summary:
-      '{engagements} mission(s), {briefs} fiche(s) sponsor. Chaque carte tient sur une ligne ; les barres de niveau par axe sont le seul signal quantitatif de la page de profil d’équipe.',
+      '{engagements} mission(s), {briefs} fiche(s) sponsor. Chaque carte tient sur une ligne ; les barres de niveau par axe sont le seul signal quantitatif de la page de profil d’équipe.',
     welcome: '← Accueil',
     openIntake: 'Ouvrir le cadrage',
     colIntake: 'Cadrage',
@@ -98,7 +98,7 @@ export const adminFr: AdminMessages = {
     teamFallback: 'équipe',
     teamMeta: '{n} membre(s) · {t}/{f}/{o}',
     footnote:
-      'Ce que montre cet écran. Les cartes de cadrage sont des fiches sponsor (M12) ; les cartes terrain / relecture sont des missions (M6) ; les cartes d’opportunités comptent les lignes de la table des opportunités (M11) ; les cartes de livraison comptent les lignes au statut {delivered}. Aucun chiffre brut n’est affiché ici.',
+      'Ce que montre cet écran. Les cartes de cadrage sont des fiches sponsor (M12) ; les cartes terrain / relecture sont des missions (M6) ; les cartes d’opportunités comptent les lignes de la table des opportunités (M11) ; les cartes de livraison comptent les lignes au statut {delivered}. Aucun chiffre brut n’est affiché ici.',
   },
   teams: {
     title: 'Profils d’équipe',
@@ -112,13 +112,13 @@ export const adminFr: AdminMessages = {
     noBadges:
       'Aucun badge actuel pour cette équipe. Dès qu’au moins un pseudonyme de l’équipe aura fait le bilan et que le traitement de consolidation aura tourné, la mascotte dominante apparaîtra ici.',
     footnote:
-      'Ce que montre cet écran. Le niveau d’équipe est le niveau de mascotte le plus fréquent parmi les badges actuels des répondants de l’équipe. Départage : renard > chouette > tortue. Les scores bruts restent internes ; l’analyste consulte directement la table des badges si nécessaire.',
-    allTiers: 'Les trois niveaux de mascotte :',
+      'Ce que montre cet écran. Le niveau d’équipe est le niveau de mascotte le plus fréquent parmi les badges actuels des répondants de l’équipe. Départage : renard > chouette > tortue. Les scores bruts restent internes ; l’analyste consulte directement la table des badges si nécessaire.',
+    allTiers: 'Les trois niveaux de mascotte :',
   },
   synergies: {
     title: 'Synergies détectées',
     intro:
-      'Locataire {label}. Le détecteur inter-équipes écrit une ligne chaque fois qu’un thème de maturité revient dans au moins 2 missions de ce locataire. Chaque ligne est en ajout seul une fois détectée ; les transitions (remonter / écarter / archiver) sont tracées dans le journal d’audit.',
+      'Locataire {label}. Le détecteur inter-équipes écrit une ligne chaque fois qu’un thème de maturité revient dans au moins 2 missions de ce locataire. Chaque ligne est en ajout seul une fois détectée ; les transitions (remonter / écarter / archiver) sont tracées dans le journal d’audit.',
     count:
       '{n} synergie(s). Lancez le test de synergie après la validation des analyses pour alimenter ou rafraîchir cette liste.',
     none: 'Aucune synergie détectée pour l’instant. Validez des analyses dans au moins deux missions de ce locataire, puis relancez le détecteur.',
@@ -134,13 +134,13 @@ export const adminFr: AdminMessages = {
     apply: 'Appliquer la transition',
     errInvalidId: 'Identifiant invalide',
     errInvalidStatus: 'Statut invalide',
-    nowStatus: 'La synergie est maintenant : {status}',
+    nowStatus: 'La synergie est maintenant : {status}',
     errTransition: 'La transition a échoué. Veuillez réessayer.',
   },
   data: {
     title: 'Exports de données et conservation',
     intro:
-      'Locataire {label}. La tranche B de M15 couvre l’exigence FR-09 pour l’équipe d’audit : chaque export et chaque droit à l’effacement est consigné dans les journaux d’export et de suppression.',
+      'Locataire {label}. La tranche B de M15 couvre l’exigence FR-09 pour l’équipe d’audit : chaque export et chaque droit à l’effacement est consigné dans les journaux d’export et de suppression.',
     synergiesLink: 'Synergies',
     teamsLink: 'Équipes',
     exportTitle: '1. Exporter une table du locataire',
@@ -148,7 +148,7 @@ export const adminFr: AdminMessages = {
       'CSV — échappement RFC 4180. Chaque export est consigné avec le nombre de lignes et l’auteur.',
     eraseTitle: '2. Droit à l’effacement (un pseudonyme)',
     eraseBody:
-      'Supprime tout ce qui est conservé pour ce pseudonyme dans ce locataire (invitation, répondant, soumission, réponses, analyses, badges, opportunités brouillon dérivées) et met à jour les synergies. Écrit un événement de suppression par type et une ligne du journal d’audit ; les deux ne conservent qu’une empreinte du pseudonyme.',
+      'Supprime tout ce qui est conservé pour ce pseudonyme dans ce locataire (invitation, répondant, soumission, réponses, analyses, badges, opportunités brouillon dérivées) et met à jour les synergies. Écrit un événement de suppression par type et une ligne du journal d’audit ; les deux ne conservent qu’une empreinte du pseudonyme.',
     recentExports: 'Exports récents ({n})',
     noExports: 'Aucun export pour l’instant dans ce locataire.',
     recentDeletions: 'Suppressions récentes ({n})',
@@ -171,9 +171,9 @@ export const adminFr: AdminMessages = {
     errInvalidTenant: 'Identifiant de locataire invalide',
     errInvalidKind: 'Type d’export invalide',
     errInvalidPseudonym: 'Pseudonyme invalide',
-    exported: 'Export réalisé : {kind}',
+    exported: 'Export réalisé : {kind}',
     errExport: 'L’export a échoué. Veuillez réessayer.',
-    removed: '{rows} ligne(s) supprimée(s) ; {events} événement(s) de suppression écrit(s)',
+    removed: '{rows} ligne(s) supprimée(s) ; {events} événement(s) de suppression écrit(s)',
     errDelete: 'La suppression a échoué. Veuillez réessayer.',
   },
   analyses: {
@@ -219,7 +219,7 @@ export const adminFr: AdminMessages = {
     auditLine: '{when} · {action} par {actor} — contenu {payload}',
     rationaleLabel: 'Justification (facultative, 2 000 caractères max.)',
     rationalePlaceholder:
-      'Pourquoi validez-vous cette analyse ? La justification est consignée dans le journal d’audit.',
+      'Pourquoi validez-vous cette analyse ? La justification est consignée dans le journal d’audit.',
     approving: 'Validation…',
     approve: 'Valider l’analyse',
     auditRef: '(journal d’audit {id})',
@@ -273,14 +273,14 @@ export const adminFr: AdminMessages = {
     description: 'Description',
     noDescription: 'Aucune description pour l’instant.',
     metadata: 'Métadonnées',
-    axis: 'Axe : {value}',
-    impact: 'Score d’impact : {value}',
-    createdBy: 'Créée par : {who} le {when}',
-    updatedAt: 'Mise à jour le : {when}',
-    archivedAt: 'Archivée le : {when}',
+    axis: 'Axe : {value}',
+    impact: 'Score d’impact : {value}',
+    createdBy: 'Créée par : {who} le {when}',
+    updatedAt: 'Mise à jour le : {when}',
+    archivedAt: 'Archivée le : {when}',
     transition: 'Changement de statut',
     noTransition: 'Aucune transition possible depuis le statut {status}.',
-    current: 'Statut actuel : {status}. Passer à :',
+    current: 'Statut actuel : {status}. Passer à :',
     updating: 'Mise à jour…',
     errInvalidIds: 'Identifiant de locataire ou d’opportunité invalide',
     errInvalidStatus: 'Statut cible invalide',

@@ -1,13 +1,11 @@
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
-import LocaleSync from '@/components/LocaleSync';
-import PrivacyNotice from '@/components/PrivacyNotice';
-import WelcomeClient from '@/components/WelcomeClient';
-import { findTenantForInvitation } from '@/lib/db';
-import { InvalidInviteToken, verifyInviteToken } from '@/lib/invitationToken';
-import { SYNTHETIC_QUESTIONS, totalQuestionCount } from '@/lib/syntheticTemplate';
-import { getOrCreateState, isSubmitted } from '@/lib/surveyState';
-import { createTranslator } from '@auditai/i18n';
+import LinkProblem from '@/components/respondent/LinkProblem';
+import PrivacyNotice from '@/components/respondent/PrivacyNotice';
+import RespondentStatus from '@/components/respondent/RespondentStatus';
+import { estimatedMinutes, firstUnanswered, loadRespondent, teamProgress } from '@/lib/respondent';
+import { getCurrentBadgeForPseudonym } from '@/lib/respondentBadgeData';
+import { totalQuestionCount } from '@/lib/syntheticTemplate';
+import { isSubmitted } from '@/lib/surveyState';
 
 // Always render at request time so the DB connection is fresh.
 export const dynamic = 'force-dynamic';
@@ -16,48 +14,50 @@ interface Params {
   token: string;
 }
 
+/**
+ * Invitation landing. First visit: what this is, how long, privacy in one line, one Start button.
+ * Interrupted visit: the same, with "continue where you left off". After submitting: the
+ * respondent's status view (team progress, what happens next).
+ */
 export default async function WelcomePage({ params }: { params: Params }) {
-  try {
-    verifyInviteToken(params.token);
-  } catch (err) {
-    if (err instanceof InvalidInviteToken) notFound();
-    throw err;
-  }
-  const reference = params.token.split('.')[0] as string;
-  const resolved = await findTenantForInvitation(reference);
-  if (!resolved) notFound();
-  const state = await getOrCreateState(resolved.tenantId, resolved.invitationId);
-  const locale = state.locale;
-  const t = createTranslator(locale);
+  const ctx = await loadRespondent(params.token);
+  if (ctx.kind === 'blocked') return <LinkProblem gate={ctx.gate} t={ctx.t} />;
+  const { invite, state, locale, t } = ctx;
   const total = totalQuestionCount();
 
-  if (state.submissionId) {
-    const submitted = await isSubmitted(resolved.tenantId, state.submissionId);
-    if (submitted) {
-      return (
-        <section aria-labelledby="already-submitted-title">
-          <LocaleSync locale={locale} />
-          <h1 id="already-submitted-title">{t('survey.alreadySubmitted')}</h1>
-          <p>
-            <Link href={`/s/${params.token}/done`}>{t('survey.viewThanks')}</Link>.
-          </p>
-        </section>
-      );
-    }
+  if (state.submissionId && (await isSubmitted(invite.tenantId, state.submissionId))) {
+    const [team, badge] = await Promise.all([
+      teamProgress(invite),
+      getCurrentBadgeForPseudonym(invite.tenantId, invite.pseudonym),
+    ]);
+    return (
+      <RespondentStatus
+        token={params.token}
+        title={t('survey.alreadyTitle')}
+        team={team}
+        myTier={badge?.mascotTier ?? null}
+        locale={locale}
+        t={t}
+      />
+    );
   }
 
+  const answered = Object.keys(state.answers).length;
+  const next = Math.min(firstUnanswered(state.answers, total), total - 1);
   return (
-    <section aria-labelledby="welcome-title">
-      <LocaleSync locale={locale} />
-      <h1 id="welcome-title">EvolAI</h1>
-      <p className="muted">
-        {t('survey.questionsCount', { n: total })} · {t('survey.estimated')}
+    <section className="stack" aria-labelledby="welcome-title">
+      <h1 id="welcome-title">{t('survey.title')}</h1>
+      <p className="lede">{t('survey.lede')}</p>
+      <p className="meta">
+        {answered > 0
+          ? t('survey.resumeProgress', { done: answered, n: total })
+          : t('survey.duration', { n: total, m: estimatedMinutes(total) })}
       </p>
-      <PrivacyNotice locale={locale} />
-      <WelcomeClient token={params.token} initialLocale={locale} totalQuestions={total} />
+      <Link className="btn btn-primary btn-block" href={`/s/${params.token}/q/${next}`}>
+        {answered > 0 ? t('survey.resume') : t('survey.start')}
+      </Link>
+      <p className="muted">{t('survey.howItWorks')}</p>
+      <PrivacyNotice t={t} />
     </section>
   );
 }
-
-// Reference the questions so the bundler keeps the synthetic template reachable.
-void SYNTHETIC_QUESTIONS;

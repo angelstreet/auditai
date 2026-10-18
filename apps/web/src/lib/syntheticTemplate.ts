@@ -5,7 +5,7 @@ import type { SupportedLocale } from '@auditai/i18n';
  * Synthetic survey template used by the mobile web flow (M5).
  *
  * Six scenario-choice questions aligned with the synthetic rubric that the M3 test fixtures use.
- * Each question carries the FR text; the EN text is a literal translation. No PII, no real
+ * Plain words, one idea per question, FR and EN written side by side (TASK-E UX pass). No PII, no real
  * client data. Phase 2 will replace this with a frozen questionnaire version loaded from Postgres.
  */
 
@@ -28,26 +28,20 @@ export const SYNTHETIC_QUESTIONS: ReadonlyArray<SurveyQuestion> = [
     axis: 'literacy',
     code: 'synthetic_source_checking',
     prompt: {
-      fr: 'Un assistant g\u00e9n\u00e9ratif produit une r\u00e9ponse de politique non sourc\u00e9e. Que faites-vous\u00a0?',
-      en: 'A generative assistant produces an unsourced policy answer. What do you do?',
+      fr: 'Une IA vous donne une réponse sans citer de source. Que faites-vous\u00a0?',
+      en: 'An AI tool gives you an answer with no source. What do you do?',
     },
     helper: {
-      fr: 'Choisissez la r\u00e9ponse qui refl\u00e8te le mieux votre pratique.',
-      en: 'Pick the option that best reflects your usual practice.',
+      fr: 'Choisissez ce que vous faites d’habitude.',
+      en: 'Pick what you usually do.',
     },
     options: [
-      {
-        value: 'use_as_is',
-        label: {
-          fr: 'L\u2019utiliser telle quelle',
-          en: 'Use it as-is',
-        },
-      },
+      { value: 'use_as_is', label: { fr: 'Je l’utilise telle quelle', en: 'I use it as it is' } },
       {
         value: 'verify_source',
         label: {
-          fr: 'V\u00e9rifier une source autoritaire',
-          en: 'Check an authoritative source',
+          fr: 'Je vérifie dans une source fiable',
+          en: 'I check it against a trusted source',
         },
       },
     ],
@@ -58,26 +52,17 @@ export const SYNTHETIC_QUESTIONS: ReadonlyArray<SurveyQuestion> = [
     axis: 'literacy',
     code: 'synthetic_data_safety',
     prompt: {
-      fr: 'Un coll\u00e8gue veut coller des dossiers client dans un chatbot public. Quelle est la bonne prochaine \u00e9tape\u00a0?',
-      en: 'A colleague wants to paste client records into a public chatbot. What is the right next step?',
+      fr: 'Un collègue veut coller des fiches clients dans un chatbot public. Que faire\u00a0?',
+      en: 'A colleague wants to paste client files into a public chatbot. What should happen?',
     },
-    helper: {
-      fr: 'Pensez classification des donn\u00e9es et approbation.',
-      en: 'Think data classification and approval.',
-    },
+    helper: { fr: null, en: null },
     options: [
-      {
-        value: 'paste_anyway',
-        label: {
-          fr: 'Coller tout de m\u00eame',
-          en: 'Paste them anyway',
-        },
-      },
+      { value: 'paste_anyway', label: { fr: 'Le laisser faire', en: 'Let them do it' } },
       {
         value: 'check_policy',
         label: {
-          fr: 'V\u00e9rifier la politique de classification',
-          en: 'Check the classification policy',
+          fr: 'Vérifier d’abord les règles de l’entreprise',
+          en: 'Check the company rules first',
         },
       },
     ],
@@ -88,26 +73,23 @@ export const SYNTHETIC_QUESTIONS: ReadonlyArray<SurveyQuestion> = [
     axis: 'literacy',
     code: 'synthetic_prompting',
     prompt: {
-      fr: 'Quel \u00e9nonc\u00e9 donne le meilleur contexte pour r\u00e9sumer les retours clients\u00a0?',
-      en: 'Which prompt gives the best context to summarise customer feedback?',
+      fr: 'Quelle demande donne le meilleur résumé des avis clients\u00a0?',
+      en: 'Which request gets the best summary of customer feedback?',
     },
     helper: {
-      fr: 'Un bon brief\u00a0: objectif, public, contraintes, format.',
-      en: 'A good brief: objective, audience, constraints, format.',
+      fr: 'Une bonne demande dit le but, le public et le format.',
+      en: 'A good request says the goal, the audience and the format.',
     },
     options: [
       {
         value: 'short_vague',
-        label: {
-          fr: 'R\u00e9sume les retours.',
-          en: 'Summarise the feedback.',
-        },
+        label: { fr: '«\u00a0Résume les avis.\u00a0»', en: '“Summarise the feedback.”' },
       },
       {
         value: 'specific_brief',
         label: {
-          fr: 'R\u00e9sume ces retours pour la direction\u00a0: 5 th\u00e8mes, 100 mots, fran\u00e7ais.',
-          en: 'Summarise this feedback for the leadership team: 5 themes, 100 words, in English.',
+          fr: '«\u00a0Résume ces avis pour la direction\u00a0: 5 thèmes, 100 mots.\u00a0»',
+          en: '“Summarise this feedback for the leadership team: 5 themes, 100 words.”',
         },
       },
     ],
@@ -118,26 +100,23 @@ export const SYNTHETIC_QUESTIONS: ReadonlyArray<SurveyQuestion> = [
     axis: 'context',
     code: 'synthetic_workflow',
     prompt: {
-      fr: 'Un rapport manuel traverse 4 outils. Premier mouvement\u00a0?',
-      en: 'A manual report crosses 4 tools. What is the first move?',
+      fr: 'Un rapport fait à la main passe par 4 outils. Par quoi commencer\u00a0?',
+      en: 'A report made by hand goes through 4 tools. Where do you start?',
     },
-    helper: {
-      fr: 'Regarder avant et apr\u00e8s votre propre t\u00e2che.',
-      en: 'Look before and after your own task.',
-    },
+    helper: { fr: null, en: null },
     options: [
       {
         value: 'jump_to_ai',
         label: {
-          fr: 'Automatiser avec l\u2019IA tout de suite.',
-          en: 'Automate with AI right away.',
+          fr: 'L’automatiser tout de suite avec l’IA',
+          en: 'Automate it with AI right away',
         },
       },
       {
         value: 'map_first',
         label: {
-          fr: 'Cartographier le flux et les frictions d\u2019abord.',
-          en: 'Map the workflow and friction first.',
+          fr: 'Noter d’abord les étapes et ce qui bloque',
+          en: 'First write down the steps and what slows them',
         },
       },
     ],
@@ -148,26 +127,20 @@ export const SYNTHETIC_QUESTIONS: ReadonlyArray<SurveyQuestion> = [
     axis: 'literacy',
     code: 'synthetic_automation_choice',
     prompt: {
-      fr: 'Une copie de donn\u00e9es fixe se r\u00e9p\u00e8te chaque jour. Doit-elle passer par l\u2019IA g\u00e9n\u00e9rative\u00a0?',
-      en: 'A fixed data copy runs every day. Does it have to use generative AI?',
+      fr: 'La même copie de données se fait chaque jour. Faut-il de l’IA pour ça\u00a0?',
+      en: 'The same data copy runs every day. Does it need AI?',
     },
     helper: {
-      fr: 'L\u2019IA g\u00e9n\u00e9rative n\u2019est pas toujours la bonne r\u00e9ponse.',
-      en: 'Generative AI is not always the right answer.',
+      fr: 'L’IA n’est pas toujours la bonne réponse.',
+      en: 'AI is not always the answer.',
     },
     options: [
-      {
-        value: 'always_ai',
-        label: {
-          fr: 'Oui, c\u2019est de l\u2019IA.',
-          en: 'Yes, that is AI.',
-        },
-      },
+      { value: 'always_ai', label: { fr: 'Oui, il faut de l’IA', en: 'Yes, it needs AI' } },
       {
         value: 'deterministic_first',
         label: {
-          fr: 'Non, commencer par une automatisation d\u00e9terministe.',
-          en: 'No, start with deterministic automation.',
+          fr: 'Non, une simple automatisation suffit',
+          en: 'No, a simple automation is enough',
         },
       },
     ],
@@ -178,30 +151,18 @@ export const SYNTHETIC_QUESTIONS: ReadonlyArray<SurveyQuestion> = [
     axis: 'practice',
     code: 'synthetic_context_time',
     prompt: {
-      fr: 'Combien de temps passez-vous en moyenne chaque semaine sur des t\u00e2ches r\u00e9p\u00e9titives\u00a0?',
-      en: 'How much time do you spend on repetitive tasks each week, on average?',
+      fr: 'Combien de temps passez-vous chaque semaine sur des tâches répétitives\u00a0?',
+      en: 'How much time do you spend on repetitive tasks each week?',
     },
     helper: {
-      fr: 'Estimation honn\u00eate\u00a0; le questionnaire dure moins de huit minutes.',
-      en: 'An honest estimate; the survey is under eight minutes.',
+      fr: 'Une estimation suffit.',
+      en: 'A rough guess is fine.',
     },
     options: [
-      {
-        value: 'lt_1h',
-        label: { fr: 'Moins d\u20191 heure', en: 'Less than 1 hour' },
-      },
-      {
-        value: '1_3h',
-        label: { fr: '1 \u00e0 3 heures', en: '1 to 3 hours' },
-      },
-      {
-        value: '3_6h',
-        label: { fr: '3 \u00e0 6 heures', en: '3 to 6 hours' },
-      },
-      {
-        value: 'gt_6h',
-        label: { fr: 'Plus de 6 heures', en: 'More than 6 hours' },
-      },
+      { value: 'lt_1h', label: { fr: 'Moins d’1 heure', en: 'Less than 1 hour' } },
+      { value: '1_3h', label: { fr: '1 à 3 heures', en: '1 to 3 hours' } },
+      { value: '3_6h', label: { fr: '3 à 6 heures', en: '3 to 6 hours' } },
+      { value: 'gt_6h', label: { fr: 'Plus de 6 heures', en: 'More than 6 hours' } },
     ],
     kind: 'scenario_choice',
   },

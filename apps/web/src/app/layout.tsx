@@ -38,41 +38,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang={locale}>
       <body>
         <I18nProvider locale={locale}>
-          <header
-            style={{
-              borderBottom: '1px solid var(--color-border)',
-              background: 'var(--color-bg)',
-            }}
-          >
-            <div
-              className="container topbar"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                flexWrap: 'wrap',
-                gap: 'var(--space-2)',
-                paddingTop: '12px',
-                paddingBottom: '12px',
-              }}
-            >
-              <Link
-                href="/"
-                aria-label={t('common.homeAria')}
-                style={{ display: 'inline-flex', textDecoration: 'none', color: 'inherit' }}
-              >
+          <header className="site-header">
+            <div className="container topbar">
+              <Link href="/" aria-label={t('common.homeAria')} className="home-link">
                 <Logo />
               </Link>
-              <nav
-                aria-label={t('common.navPrimaryAria')}
-                style={{
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  alignItems: 'center',
-                  gap: 'var(--space-3)',
-                  fontSize: '0.875rem',
-                }}
-              >
+              <nav aria-label={t('common.navPrimaryAria')}>
                 <Link href="/about">{t('common.nav.about')}</Link>
                 <Link href="/privacy">{t('common.nav.privacy')}</Link>
                 <LanguageSwitcher />

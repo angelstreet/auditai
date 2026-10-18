@@ -17,46 +17,45 @@ interface Props {
   /** Pre-selected value if the user resumed. */
   initialChoice: string | null;
   nextHref: string;
-  /** Localised label for the continue button. */
-  ctaLabel: string;
   ariaQuestionLabel: string;
-  messages: { pickOption: string; saveFailed: string };
+  messages: { saving: string; saveFailed: string };
 }
 
 /**
- * Client island that renders one question and posts the choice via the /api/answer route.
- * Kept small on purpose: nothing else in the survey needs interactivity.
+ * Client island that renders one question. Tapping an option saves it via /api/answer and moves
+ * on: one tap per question (PRD §5). A failed save keeps the person on the question with a plain
+ * message; the option they tapped stays selected so tapping again retries.
  */
 export default function QuestionClient(props: Props) {
   const [selected, setSelected] = useState<string | null>(props.initialChoice);
-  const [pending, startTransition] = useTransition();
-  const [error, setError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [navigating, startTransition] = useTransition();
+  const [failed, setFailed] = useState(false);
   const router = useRouter();
+  const busy = saving || navigating;
 
-  const handleContinue = async () => {
-    if (!selected) {
-      setError('choose_one');
-      return;
-    }
-    setError(null);
-    const response = await fetch(`/api/answer`, {
+  const choose = async (choice: string) => {
+    if (busy) return;
+    setSelected(choice);
+    setFailed(false);
+    setSaving(true);
+    const ok = await fetch(`/api/answer`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({
-        token: props.token,
-        index: props.index,
-        choice: selected,
-      }),
-    });
-    if (!response.ok) {
-      setError('save_failed');
+      body: JSON.stringify({ token: props.token, index: props.index, choice }),
+    })
+      .then((r) => r.ok)
+      .catch(() => false);
+    setSaving(false);
+    if (!ok) {
+      setFailed(true);
       return;
     }
     startTransition(() => router.push(props.nextHref));
   };
 
   return (
-    <section aria-labelledby="question-prompt">
+    <section aria-labelledby="question-prompt" aria-busy={busy}>
       <h1 id="question-prompt" className="prompt">
         {props.prompt}
       </h1>
@@ -68,25 +67,19 @@ export default function QuestionClient(props: Props) {
               type="button"
               className="option-button"
               aria-pressed={selected === option.value}
-              onClick={() => setSelected(option.value)}
+              disabled={busy}
+              onClick={() => void choose(option.value)}
             >
               {option.label}
             </button>
           </li>
         ))}
       </ul>
-      <p style={{ marginTop: '24px' }}>
-        <button type="button" className="cta" onClick={handleContinue} disabled={pending}>
-          {props.ctaLabel}
-        </button>
+      <p className="muted" aria-live="polite">
+        {busy ? props.messages.saving : ''}
       </p>
-      {error === 'choose_one' ? (
-        <p role="alert" className="muted">
-          {props.messages.pickOption}
-        </p>
-      ) : null}
-      {error === 'save_failed' ? (
-        <p role="alert" className="muted">
+      {failed ? (
+        <p role="alert" className="alert">
           {props.messages.saveFailed}
         </p>
       ) : null}

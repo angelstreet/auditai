@@ -1,13 +1,11 @@
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
-import LocaleSync from '@/components/LocaleSync';
+import { notFound, redirect } from 'next/navigation';
 import ProgressBar from '@/components/ProgressBar';
-import QuestionClient from '@/components/QuestionClient';
-import { findTenantForInvitation } from '@/lib/db';
-import { InvalidInviteToken, verifyInviteToken } from '@/lib/invitationToken';
+import LinkProblem from '@/components/respondent/LinkProblem';
+import QuestionClient from '@/components/respondent/QuestionClient';
+import { loadRespondent } from '@/lib/respondent';
 import { questionByIndex, totalQuestionCount } from '@/lib/syntheticTemplate';
-import { getOrCreateState } from '@/lib/surveyState';
-import { createTranslator } from '@auditai/i18n';
+import { isSubmitted } from '@/lib/surveyState';
 
 // Always render at request time so the DB connection is fresh.
 export const dynamic = 'force-dynamic';
@@ -18,38 +16,34 @@ interface Params {
 }
 
 export default async function QuestionPage({ params }: { params: Params }) {
-  try {
-    verifyInviteToken(params.token);
-  } catch (err) {
-    if (err instanceof InvalidInviteToken) notFound();
-    throw err;
-  }
-
-  const reference = params.token.split('.')[0] as string;
-  const resolved = await findTenantForInvitation(reference);
-  if (!resolved) notFound();
-
   const total = totalQuestionCount();
   const index = Number.parseInt(params.index, 10);
   if (!Number.isInteger(index) || index < 0 || index >= total) notFound();
 
-  const state = await getOrCreateState(resolved.tenantId, resolved.invitationId);
+  const ctx = await loadRespondent(params.token);
+  if (ctx.kind === 'blocked') return <LinkProblem gate={ctx.gate} t={ctx.t} />;
+  const { invite, state, locale, t } = ctx;
   if (!state.submissionId) notFound();
+  // Answers are final once submitted; send the person to their status view instead.
+  if (await isSubmitted(invite.tenantId, state.submissionId)) redirect(`/s/${params.token}`);
 
   const question = questionByIndex(index);
-  const locale = state.locale;
-  const t = createTranslator(locale);
-
   const isLast = index === total - 1;
   const nextHref = isLast ? `/s/${params.token}/done` : `/s/${params.token}/q/${index + 1}`;
+  const backHref = index === 0 ? `/s/${params.token}` : `/s/${params.token}/q/${index - 1}`;
   const initialChoice =
     state.answers[index]?.value.kind === 'scenario_choice'
       ? (state.answers[index]?.value.choice ?? null)
       : null;
 
   return (
-    <section aria-labelledby="question-prompt">
-      <LocaleSync locale={locale} />
+    <div className="stack">
+      <div className="step-bar">
+        <Link className="link-button" href={backHref}>
+          ← {t('survey.back')}
+        </Link>
+        <span className="muted">{t('survey.questionOf', { i: index + 1, n: total })}</span>
+      </div>
       <ProgressBar current={index + 1} total={total} ariaLabel={t('survey.progress')} />
       <QuestionClient
         token={params.token}
@@ -59,16 +53,14 @@ export default async function QuestionPage({ params }: { params: Params }) {
         options={question.options.map((o) => ({ value: o.value, label: o.label[locale] }))}
         initialChoice={initialChoice}
         nextHref={nextHref}
-        ctaLabel={isLast ? t('survey.finish') : t('survey.continue')}
         ariaQuestionLabel={t('survey.answerOptions')}
-        messages={{
-          pickOption: t('survey.pickOption'),
-          saveFailed: t('survey.saveFailed'),
-        }}
+        messages={{ saving: t('survey.saving'), saveFailed: t('survey.saveFailed') }}
       />
-      <p className="muted" style={{ marginTop: '16px' }}>
-        <Link href={`/s/${params.token}`}>{t('survey.backToWelcome')}</Link>
-      </p>
-    </section>
+      <div className="step-bar end">
+        <Link className="link-button" href={nextHref}>
+          {t('survey.skip')} →
+        </Link>
+      </div>
+    </div>
   );
 }
