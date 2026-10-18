@@ -67,7 +67,7 @@ If a user is locked out (5 failures in 15 minutes), wait 15 minutes. Nothing els
 ## Invitations and reminders (FR-03, ADR 0033)
 
 Create links on the live database (default mode: no names, no addresses). Sign in as an auditor, then either use
-the admin screen _Invitations_ for the engagement, or the JSON API with the session cookie:
+the admin screen _Invitations_ (`/admin/invitations`, pick the engagement; create, progress by team, CSV, printable QR sheet at `/admin/invitations/sheet`, reminders, revoke, extend), or the JSON API with the session cookie:
 
 ```bash
 set -a; . "$ENV_FILE"; set +a

@@ -101,6 +101,8 @@ Full detail in ADR 0029 section "Owner steps". Short version:
 
 ## Open and deferred
 
+0. Invitations admin screen (TASK-N) lives in new files under `apps/web/src/app/admin/invitations/`. It is reachable by URL; TASK-L should add a header/nav link and fold it into the restyled admin shell (no existing admin file was touched). Migration 0018 only; no new migration in this step.
+
 1. Gate C: run the recovery drill once and record the result, SSO/MFA, pen test, SLA. One-time owner commands after
    TASK-K merges: apply migration 0017 to Neon, set `CRON_SECRET` and a real `SURVEY_SIGNING_SECRET` in Vercel,
    create the first auditor (RUNBOOK). Until `SURVEY_SIGNING_SECRET` is set, invitation links fail closed.
