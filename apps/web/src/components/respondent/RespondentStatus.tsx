@@ -53,6 +53,7 @@ export default function RespondentStatus({ token, title, team, myTier, locale, t
           current={team.answered}
           total={team.invited}
           ariaLabel={t('survey.teamProgressAria')}
+          valueText={t('survey.teamProgress', { done: team.answered, total: team.invited })}
         />
         {team.teamTier ? (
           <p className="inline-mascot">
@@ -63,8 +64,16 @@ export default function RespondentStatus({ token, title, team, myTier, locale, t
       </section>
       <section aria-labelledby="next-title">
         <h2 id="next-title">{t('survey.nextHeading')}</h2>
-        <p>{nextStep(team, locale, t)}</p>
-        <p className="muted">{t('survey.keepLink')}</p>
+        <ol>
+          <li>{t('survey.nextSaved')}</li>
+          <li>{nextStep(team, locale, t)}</li>
+          <li>{t('survey.keepLink')}</li>
+        </ol>
+        <p>
+          {team.contact
+            ? t('survey.contactWith', { contact: team.contact })
+            : t('survey.contactNone')}
+        </p>
       </section>
       <section id="mascot" className="card" aria-labelledby="mascot-title">
         {myTier ? (

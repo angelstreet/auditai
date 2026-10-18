@@ -9,6 +9,7 @@ export const fr: Messages = {
     brand: 'EvolAI',
     tagline: 'Comprendre. S’adapter. Évoluer.',
     homeAria: 'Accueil EvolAI',
+    skipToContent: 'Aller au contenu',
     navPrimaryAria: 'principale',
     nav: { about: 'À propos', privacy: 'Confidentialité' },
     language: {
@@ -64,15 +65,15 @@ export const fr: Messages = {
   },
   about: {
     title: 'EvolAI — sur invitation uniquement',
-    body: 'Ce questionnaire s’ouvre depuis un lien d’invitation sécurisé envoyé par le référent de votre équipe. Si vous êtes arrivé ici sans lien, veuillez contacter votre référent.',
+    body: 'Ce questionnaire s’ouvre depuis un lien d’invitation sécurisé envoyé par votre contact d’équipe. Si vous êtes arrivé ici sans lien, demandez-le à votre contact d’équipe.',
     sample: 'Ouvrir le questionnaire d’exemple synthétique (développement uniquement)',
     seePrivacy: 'Consultez la {link} pour savoir comment vos réponses sont traitées.',
     privacyLink: 'politique de confidentialité',
   },
   privacy: {
     title: 'Politique de confidentialité (synthétique)',
-    p1: 'EvolAI sert à évaluer les pratiques de travail et les pistes d’amélioration, pas à classer les collaborateurs. La plateforme enregistre un pseudonyme non identifiant plutôt que votre nom ; le référent voit les statistiques de participation, jamais les réponses individuelles, sauf accès explicitement accordé.',
-    p2: 'Votre organisation maîtrise la durée de conservation. Vous pouvez retirer votre participation à tout moment en contactant le référent de votre équipe ; les données seront supprimées dans le délai de conservation convenu.',
+    p1: 'EvolAI sert à évaluer les pratiques de travail et les pistes d’amélioration, pas à classer les collaborateurs. La plateforme enregistre un pseudonyme non identifiant plutôt que votre nom ; votre contact d’équipe voit les statistiques de participation, jamais les réponses individuelles, sauf accès explicitement accordé.',
+    p2: 'Votre organisation maîtrise la durée de conservation. Vous pouvez retirer votre participation à tout moment en contactant votre contact d’équipe ; les données seront supprimées dans le délai de conservation convenu.',
     seeAbout: 'Consultez {link} pour l’exemple synthétique.',
     aboutLink: 'la page À propos',
   },
@@ -88,7 +89,7 @@ export const fr: Messages = {
     privacy3: 'EvolAI utilise vos réponses uniquement pour simplifier votre travail.',
     privacyFull: 'Notice de confidentialité complète',
     howItWorks:
-      'Une touche par question. Vos réponses sont enregistrées au fur et à mesure. Vous pouvez passer une question.',
+      'Un appui par question. Vos réponses sont enregistrées au fur et à mesure. Vous pouvez passer une question.',
     start: 'Commencer',
     resume: 'Reprendre là où vous en étiez',
     resumeProgress: '{done} sur {n} répondues',
@@ -99,7 +100,7 @@ export const fr: Messages = {
     skip: 'Passer',
     saving: 'Enregistrement…',
     saveFailed:
-      'Votre réponse n’a pas été enregistrée. Vérifiez votre connexion et touchez à nouveau.',
+      'Votre réponse n’a pas été enregistrée. Vérifiez votre connexion, puis touchez à nouveau.',
     thanksTitle: 'Merci, c’est terminé',
     alreadyTitle: 'Vous avez déjà répondu. Merci !',
     teamHeading: 'Votre équipe',
@@ -113,6 +114,10 @@ export const fr: Messages = {
     nextClosed: 'Les réponses sont closes. EvolAI prépare la synthèse d’équipe.',
     nextDone: 'Une synthèse pour toute l’équipe, sans noms, a été partagée.',
     keepLink: 'Gardez ce lien pour suivre votre équipe plus tard.',
+    nextSaved: 'Vos réponses sont enregistrées. Vous pouvez fermer cette page.',
+    contactWith: 'Une question ? Vous souhaitez supprimer vos réponses ? Contactez {contact}.',
+    contactNone:
+      'Une question ? Vous souhaitez supprimer vos réponses ? Demandez à la personne qui vous a invité.',
     teamMascot: 'La mascotte de votre équipe : {tier}',
     quizTitle: 'Facultatif : découvrez votre mascotte IA',
     quizBody: '5 questions rapides, environ 1 minute.',
@@ -120,7 +125,7 @@ export const fr: Messages = {
     yourMascot: 'Votre mascotte : {tier}',
     retakeQuiz: 'Refaire le quiz',
     tipHeading: 'Une astuce à essayer',
-    tip: 'Dites quel résultat vous voulez avant de choisir un outil. Commencez petit et vérifiez le résultat.',
+    tip: 'Dites d’abord le résultat voulu, puis choisissez un outil. Commencez petit et vérifiez le résultat.',
     expiredTitle: 'Ce lien a expiré',
     withdrawnTitle: 'Ce lien ne fonctionne plus',
     askNewLink: 'Demandez un nouveau lien à votre contact d’équipe.',
@@ -155,8 +160,8 @@ export const fr: Messages = {
     tier: { tortoise: 'Tortue', fox: 'Renard', owl: 'Chouette' },
     mascotAlt: {
       tortoise: 'Mascotte tortue — prudente, elle apprend les bases',
-      fox: 'Mascotte renard — pragmatique, explorateur régulier de l’IA',
-      owl: 'Mascotte chouette — engagée, praticienne confiante de l’IA',
+      fox: 'Mascotte renard — pragmatique, exploratrice régulière de l’IA',
+      owl: 'Mascotte chouette — engagée, elle utilise l’IA en confiance',
     },
     tierDescriptor: {
       tortoise: 'Vous débutez. De petits essais réguliers aident beaucoup.',

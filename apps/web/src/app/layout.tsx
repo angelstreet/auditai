@@ -5,6 +5,7 @@ import './globals.css';
 import { Logo } from '@/components/Logo';
 import { I18nProvider } from '@/components/I18nProvider';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
+import RouteFocus from '@/components/RouteFocus';
 import { getT } from '@/lib/i18n';
 
 const SITE_URL = process.env['NEXT_PUBLIC_SITE_URL'] ?? 'https://bai7w0jcu7s8e.space.minimax.io';
@@ -38,6 +39,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang={locale}>
       <body>
         <I18nProvider locale={locale}>
+          <a className="skip-link" href="#main">
+            {t('common.skipToContent')}
+          </a>
+          <RouteFocus />
           <header className="site-header">
             <div className="container topbar">
               <Link href="/" aria-label={t('common.homeAria')} className="home-link">
@@ -50,7 +55,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               </nav>
             </div>
           </header>
-          <main className="container">{children}</main>
+          <main id="main" tabIndex={-1} className="container">
+            {children}
+          </main>
         </I18nProvider>
       </body>
     </html>

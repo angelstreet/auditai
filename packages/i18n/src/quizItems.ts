@@ -75,17 +75,17 @@ export const quizItems: Record<SupportedLocale, Readonly<Record<string, QuizItem
       options: {
         never: 'Jamais',
         occasional: 'Quand je tombe dessus',
-        weekly: 'Chaque semaine (lettre, podcast)',
+        weekly: 'Chaque semaine (lettre d’information, podcast)',
         daily: 'Tous les jours',
       },
     },
     ai_chatbot_use: {
-      prompt: 'Utilisez-vous un chatbot d’IA au travail\u00a0?',
+      prompt: 'Utilisez-vous un assistant d’IA au travail\u00a0?',
       options: {
         never: 'Non',
         curious: 'Parfois, pour essayer',
         weekly: 'Chaque semaine',
-        daily: 'Tous les jours, pour de vraies tâches',
+        daily: 'Tous les jours, pour du vrai travail',
       },
     },
     ai_assisted_coding: {
@@ -98,7 +98,7 @@ export const quizItems: Record<SupportedLocale, Readonly<Record<string, QuizItem
       },
     },
     ai_built_projects: {
-      prompt: 'Cette année, avez-vous mené à bien un projet qui s’appuie sur l’IA\u00a0?',
+      prompt: 'Ces 12 derniers mois, avez-vous mené à bien un projet qui s’appuie sur l’IA\u00a0?',
       options: {
         never: 'Non',
         experiment: 'Seulement un essai',

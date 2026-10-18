@@ -39,6 +39,8 @@ const WORDMARK_SIZES = {
 const AMBER = 'var(--color-amber)';
 const BLUE = 'var(--color-blue)';
 const TEAL = 'var(--color-teal)';
+// Teal text on white fails 4.5:1; the wordmark uses the teal-ink text tone (ADR 0025).
+const TEAL_INK = 'var(--color-teal-ink)';
 const NAVY = 'var(--color-navy)';
 
 export function Logo({ size = 'default', iconOnly = false, className, style }: LogoProps) {
@@ -82,7 +84,7 @@ export function Logo({ size = 'default', iconOnly = false, className, style }: L
       </svg>
       {!iconOnly && (
         <span style={{ whiteSpace: 'nowrap' }}>
-          Evol<span style={{ color: TEAL }}>AI</span>
+          Evol<span style={{ color: TEAL_INK }}>AI</span>
         </span>
       )}
     </span>

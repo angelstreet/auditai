@@ -58,12 +58,25 @@ describe('design tokens', () => {
     ['--color-danger', '--color-bg'],
     ['--color-white', '--color-slate'],
     ['--color-navy', '--color-amber'],
+    ['--color-accent', '--color-bg'],
+    ['--color-accent', '--color-surface'],
+    ['--color-teal-ink', '--color-surface'],
+    ['--color-danger', '--color-surface'],
+    ['--color-fg', '--color-highlight'],
   ])('text %s on %s meets 4.5:1', (fg, bg) => {
     expect(contrast(fg, bg)).toBeGreaterThanOrEqual(4.5);
   });
 
   it('form-control edges meet 3:1 (WCAG 1.4.11)', () => {
     expect(contrast('--color-border-strong', '--color-bg')).toBeGreaterThanOrEqual(3);
+  });
+
+  it.each([
+    ['--color-blue', '--color-bg'],
+    ['--color-blue', '--color-surface'],
+    ['--color-teal-ink', '--color-border'],
+  ])('non-text %s against %s meets 3:1 (focus ring, edges, progress)', (a, b) => {
+    expect(contrast(a, b)).toBeGreaterThanOrEqual(3);
   });
 
   it('keeps the type scale small', () => {

@@ -69,6 +69,29 @@ Source: `packages/ui/src/tokens.css` (landing copy: `landing/brand/tokens.css`).
   assert English copy) failed; the shared smoke login now pins `evolai_locale=en`. The manual
   E2E workflow also passes `DATABASE_URL` to the smokes (it stopped at "DATABASE_URL is required").
 
+## Changelog
+
+### TASK-I (accessibility, trust, French pass)
+
+- **Done and return view**: "What happens next" is now three short steps (answers saved; when the team
+  summary comes; keep the link) plus one contact line. The contact is the per-engagement
+  `respondentContact` (engagement privacy settings); without it the text says "ask the person who
+  invited you". Deletion is honest: it is requested through the contact (there is no respondent
+  self-service erasure; the auditor runs it by code).
+- **Accessibility**: axe-core in Playwright (`e2e/a11y.spec.ts`), keyboard-only respondent run, skip
+  link, focus moves to the new heading after each navigation and quiz step, progress bars have value
+  text, global reduced-motion rule, wordmark and progress fill use the teal-ink token for contrast.
+- **French items changed** (keys unchanged):
+  - Quiz `ai_chatbot_use`: "chatbot d’IA" is now "assistant d’IA"; `daily` is "pour du vrai travail".
+  - Quiz `ai_media_consumption`: "lettre" is now "lettre d’information".
+  - Quiz `ai_built_projects`: "Cette année" is now "Ces 12 derniers mois" (matches "past year").
+  - Scenario `paste client files`: "chatbot public" is now "assistant d’IA public".
+  - Scenario `summary request`: the sample requests use the vouvoiement ("Résumez…").
+  - Scenario `data copy`: "Chaque jour, on recopie les mêmes données."
+  - Scenario `repetitive time`: "Moins d’une heure".
+  - Catalog: "référent" replaced by "contact d’équipe" (FR and EN); mascot alt texts agree in gender;
+    "touche" replaced by "appui"; the tip sentence is shorter. See `docs/glossary-fr-en.md`.
+
 ## Deliberately left
 
 - **Admin and consultant screens keep their vocabulary** (engagement, analysis, pseudonym, synergy):

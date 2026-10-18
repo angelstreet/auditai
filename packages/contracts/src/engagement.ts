@@ -39,6 +39,11 @@ export const engagementPrivacySchema = z.object({
   benchmarkCandidate: z.boolean(),
   /** Locale the engagement was negotiated in; drives the privacy notice copy. */
   noticeLocale: localeSchema,
+  /**
+   * Who respondents contact with questions or to ask for deletion (TASK-I). Free text, shown as
+   * is on the done page; absent means "ask the person who invited you".
+   */
+  respondentContact: z.string().trim().min(1).max(200).optional(),
 });
 export type EngagementPrivacy = z.infer<typeof engagementPrivacySchema>;
 

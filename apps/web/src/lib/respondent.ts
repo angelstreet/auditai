@@ -111,6 +111,8 @@ export interface TeamProgress {
   readonly engagementStatus: string;
   readonly closesAt: string | null;
   readonly teamTier: MascotTier | null;
+  /** Per-engagement contact for questions and deletion requests, or null. */
+  readonly contact: string | null;
 }
 
 /**
@@ -126,8 +128,12 @@ export const teamProgress = async (invite: InvitationRecord): Promise<TeamProgre
         WHERE tenant_id = $1 AND engagement_id = $2 AND team_id = $3`,
       [invite.tenantId, invite.engagementId, invite.teamId],
     );
-    const engagement = await client.query<{ status: string; closes_at: Date | string | null }>(
-      `SELECT status, closes_at FROM engagements WHERE tenant_id = $1 AND id = $2`,
+    const engagement = await client.query<{
+      status: string;
+      closes_at: Date | string | null;
+      contact: string | null;
+    }>(
+      `SELECT status, closes_at, privacy_json->>'respondentContact' AS contact FROM engagements WHERE tenant_id = $1 AND id = $2`,
       [invite.tenantId, invite.engagementId],
     );
     const badge = await client.query<{ dominant_tier: MascotTier }>(
@@ -142,6 +148,7 @@ export const teamProgress = async (invite: InvitationRecord): Promise<TeamProgre
       engagementStatus: engagement.rows[0]?.status ?? 'in_field',
       closesAt: closes ? new Date(closes).toISOString() : null,
       teamTier: badge.rows[0]?.dominant_tier ?? null,
+      contact: engagement.rows[0]?.contact?.trim() || null,
     };
   });
 

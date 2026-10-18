@@ -44,7 +44,12 @@ export default async function QuestionPage({ params }: { params: Params }) {
         </Link>
         <span className="muted">{t('survey.questionOf', { i: index + 1, n: total })}</span>
       </div>
-      <ProgressBar current={index + 1} total={total} ariaLabel={t('survey.progress')} />
+      <ProgressBar
+        current={index + 1}
+        total={total}
+        ariaLabel={t('survey.progress')}
+        valueText={t('survey.questionOf', { i: index + 1, n: total })}
+      />
       <QuestionClient
         token={params.token}
         index={index}

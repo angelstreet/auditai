@@ -85,6 +85,45 @@ describe('catalog parity', () => {
       );
     expect(shape('fr')).toEqual(shape('en'));
   });
+  it('uses the same placeholders in quiz items', () => {
+    for (const [code, item] of Object.entries(quizItems.en)) {
+      const fr = quizItems.fr[code];
+      expect(placeholders(fr?.prompt ?? ''), code).toEqual(placeholders(item.prompt));
+    }
+  });
+});
+
+describe('French typography and length', () => {
+  const fr = flatten(messages.fr);
+  const frQuiz = Object.entries(quizItems.fr).flatMap(([code, item]) => [
+    [`quizItems.${code}.prompt`, item.prompt] as const,
+    ...Object.entries(item.options).map(([o, v]) => [`quizItems.${code}.${o}`, v] as const),
+  ]);
+  const all = [...Object.entries(fr), ...frQuiz];
+
+  it('puts a no-break space before : ; ? ! and uses typographic apostrophes', () => {
+    for (const [k, v] of all) {
+      // Plain text only: skip placeholders and technical tokens such as {command}.
+      const text = v.replace(/\{[^}]*\}/g, '');
+      expect(text, `${k}: regular space before high punctuation`).not.toMatch(/ [:;?!]/);
+      expect(text, `${k}: missing no-break space before ? ! ;`).not.toMatch(/\S[?!;]/);
+      expect(text, `${k}: straight apostrophe`).not.toMatch(/'/);
+      expect(text, `${k}: three dots instead of an ellipsis`).not.toMatch(/\.\.\./);
+      expect(text, `${k}: straight double quote`).not.toMatch(/"/);
+    }
+  });
+  it('keeps respondent sentences short (survey, quiz, done, return, errors)', () => {
+    const respondent = all.filter(([k]) => /^(survey|quiz|quizItems)\./.test(k));
+    for (const [k, v] of respondent) {
+      for (const sentence of v.split(/(?<=[.?!])\s+/)) {
+        const words = sentence
+          .replace(/\{[^}]*\}/g, 'x')
+          .split(/\s+/)
+          .filter(Boolean).length;
+        expect(words, `${k}: "${sentence}"`).toBeLessThanOrEqual(18);
+      }
+    }
+  });
 });
 
 describe('formatMessage / createTranslator', () => {

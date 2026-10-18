@@ -52,7 +52,7 @@ export const SYNTHETIC_QUESTIONS: ReadonlyArray<SurveyQuestion> = [
     axis: 'literacy',
     code: 'synthetic_data_safety',
     prompt: {
-      fr: 'Un collègue veut coller des fiches clients dans un chatbot public. Que faire\u00a0?',
+      fr: 'Un collègue veut coller des fiches clients dans un assistant d’IA public. Que faire\u00a0?',
       en: 'A colleague wants to paste client files into a public chatbot. What should happen?',
     },
     helper: { fr: null, en: null },
@@ -83,12 +83,12 @@ export const SYNTHETIC_QUESTIONS: ReadonlyArray<SurveyQuestion> = [
     options: [
       {
         value: 'short_vague',
-        label: { fr: '«\u00a0Résume les avis.\u00a0»', en: '“Summarise the feedback.”' },
+        label: { fr: '«\u00a0Résumez les avis.\u00a0»', en: '“Summarise the feedback.”' },
       },
       {
         value: 'specific_brief',
         label: {
-          fr: '«\u00a0Résume ces avis pour la direction\u00a0: 5 thèmes, 100 mots.\u00a0»',
+          fr: '«\u00a0Résumez ces avis pour la direction\u00a0: 5 thèmes, 100 mots.\u00a0»',
           en: '“Summarise this feedback for the leadership team: 5 themes, 100 words.”',
         },
       },
@@ -127,7 +127,7 @@ export const SYNTHETIC_QUESTIONS: ReadonlyArray<SurveyQuestion> = [
     axis: 'literacy',
     code: 'synthetic_automation_choice',
     prompt: {
-      fr: 'La même copie de données se fait chaque jour. Faut-il de l’IA pour ça\u00a0?',
+      fr: 'Chaque jour, on recopie les mêmes données. Faut-il de l’IA pour ça\u00a0?',
       en: 'The same data copy runs every day. Does it need AI?',
     },
     helper: {
@@ -159,7 +159,7 @@ export const SYNTHETIC_QUESTIONS: ReadonlyArray<SurveyQuestion> = [
       en: 'A rough guess is fine.',
     },
     options: [
-      { value: 'lt_1h', label: { fr: 'Moins d’1 heure', en: 'Less than 1 hour' } },
+      { value: 'lt_1h', label: { fr: 'Moins d’une heure', en: 'Less than 1 hour' } },
       { value: '1_3h', label: { fr: '1 à 3 heures', en: '1 to 3 hours' } },
       { value: '3_6h', label: { fr: '3 à 6 heures', en: '3 to 6 hours' } },
       { value: 'gt_6h', label: { fr: 'Plus de 6 heures', en: 'More than 6 hours' } },

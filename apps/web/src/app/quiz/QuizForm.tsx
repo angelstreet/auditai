@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
 import type { TenantId } from '@evolai/contracts';
 import type { QuizQuestion } from '@evolai/domain';
@@ -41,6 +41,14 @@ export function QuizForm({ action, questions, tenantId, pseudonym }: Props) {
   const form = useRef<HTMLFormElement>(null);
   const total = questions.length;
 
+  // Move focus to the new question's heading so keyboard and screen reader users follow along.
+  useEffect(() => {
+    if (step === 0) return;
+    const h1 = form.current?.querySelectorAll('fieldset')[step]?.querySelector('h1');
+    h1?.setAttribute('tabindex', '-1');
+    h1?.focus();
+  }, [step]);
+
   const choose = (idx: number) => {
     if (idx === total - 1) form.current?.requestSubmit();
     else setStep(idx + 1);
@@ -60,7 +68,12 @@ export function QuizForm({ action, questions, tenantId, pseudonym }: Props) {
         )}
         <span className="muted">{t('quiz.questionOf', { i: step + 1, n: total })}</span>
       </div>
-      <ProgressBar current={step + 1} total={total} ariaLabel={t('quiz.progress')} />
+      <ProgressBar
+        current={step + 1}
+        total={total}
+        ariaLabel={t('quiz.progress')}
+        valueText={t('quiz.questionOf', { i: step + 1, n: total })}
+      />
       {questions.map((q, idx) => (
         <fieldset key={q.code} className="question" hidden={idx !== step}>
           <legend>

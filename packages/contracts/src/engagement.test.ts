@@ -16,6 +16,18 @@ const privacy = {
 };
 
 describe('engagementPrivacySchema', () => {
+  it('accepts an optional respondent contact, trimmed and bounded', () => {
+    expect(engagementPrivacySchema.parse(privacy).respondentContact).toBeUndefined();
+    expect(
+      engagementPrivacySchema.parse({ ...privacy, respondentContact: '  Team lead  ' })
+        .respondentContact,
+    ).toBe('Team lead');
+    expect(() => engagementPrivacySchema.parse({ ...privacy, respondentContact: '' })).toThrow();
+    expect(() =>
+      engagementPrivacySchema.parse({ ...privacy, respondentContact: 'x'.repeat(201) }),
+    ).toThrow();
+  });
+
   it('enforces a minimum cohort threshold >= 3', () => {
     expect(() =>
       engagementPrivacySchema.parse({ ...privacy, minResponsesForGroupBreakdown: 2 }),

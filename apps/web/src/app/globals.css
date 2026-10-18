@@ -198,7 +198,7 @@ a {
 .progress > span {
   display: block;
   height: 100%;
-  background: var(--color-teal);
+  background: var(--color-teal-ink);
   border-radius: var(--radius-pill);
   transition: width 0.2s ease-out;
 }
@@ -306,6 +306,7 @@ details ul {
   display: flex;
   align-items: center;
   gap: var(--space-3);
+  flex-wrap: wrap;
 }
 
 .inline-mascot svg {
@@ -340,6 +341,22 @@ details ul {
 .tier-list li[aria-current='true'] {
   background: var(--color-surface);
   font-weight: var(--weight-bold);
+}
+
+/* Skip link: off-screen until focused. */
+.skip-link {
+  position: absolute;
+  left: var(--space-2);
+  top: -100px;
+  z-index: 10;
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-accent);
+  color: var(--color-accent-fg);
+  border-radius: var(--radius);
+}
+
+.skip-link:focus {
+  top: var(--space-2);
 }
 
 /* Header */
@@ -937,4 +954,15 @@ input[type='range'] {
   display: block;
   font-weight: var(--weight-medium);
   margin-bottom: var(--space-1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
