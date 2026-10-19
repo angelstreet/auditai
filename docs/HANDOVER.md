@@ -109,6 +109,10 @@ Full detail in ADR 0029 section "Owner steps". Short version:
   The referent has a `.invalid` placeholder and no password until the owner supplies a real address.
   TASK-R (ADR 0037): `/intake` requires a staff session and uses the session's tenant; `/quiz` is a tenant-free demo.
   No migration. Route inventory: `apps/web/src/routeAccess.json`.
+  TASK-T (ADR 0038): apply migration **0021** to Neon before the deploy (forward only: `engagements.name`,
+  `invitations.batch_id`, audit verbs). The auditor now sets an audit up in the admin (new engagement, teams and
+  sizes, launch, preview, first-run guide on the portfolio). The chosen organisation lives in the `evolai_org`
+  cookie. Catalog words are guarded by `packages/i18n/src/jargon.test.ts`.
 
 0. Invitations admin screen (TASK-N) lives in new files under `apps/web/src/app/admin/invitations/`. It is reachable by URL; TASK-L should add a header/nav link and fold it into the restyled admin shell (no existing admin file was touched). Migration 0018 only; no new migration in this step.
 

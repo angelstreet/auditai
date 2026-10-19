@@ -35,6 +35,6 @@ export { createTranslator, formatMessage } from './translate.js';
 export type { Translator, MessageKey, MessageVars } from './translate.js';
 export { messages } from './messages/index.js';
 export type { Messages } from './messages/index.js';
-export { formatDate, formatNumber, formatCurrency } from './format.js';
+export { deName, formatDate, formatNumber, formatCurrency } from './format.js';
 export { quizItems, QUIZ_ITEM_STATUS } from './quizItems.js';
 export type { QuizItemCopy } from './quizItems.js';

@@ -14,6 +14,7 @@ import {
   createInvitationsAction,
   invitationOperationAction,
   markRemindedAction,
+  revokeBatchAction,
   updateInvitationSettingsAction,
 } from './actions';
 import { idleState, type InviteActionState } from './state';
@@ -43,6 +44,8 @@ interface Props {
   }[];
   open: { id: string; code: string; teamName: string; expiresOn: string }[];
   dueCount: number;
+  /** Link batches with their words already built by the page (locale dates and plurals). */
+  batches: { batchId: string; label: string; stillOpen: string; canRevoke: boolean }[];
 }
 
 const sub = (copy: Copy, key: string): Dict => copy[key] as Dict;
@@ -138,6 +141,45 @@ function OpenRow({ p, row }: { p: Props; row: Props['open'][number] }) {
   );
 }
 
+function BatchRow({ p, row }: { p: Props; row: Props['batches'][number] }) {
+  const batches = sub(p.copy, 'batches');
+  const [state, run] = useFormState(revokeBatchAction, idleState);
+  const [confirm, setConfirm] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
+  return (
+    <Box component="li" sx={{ py: 2, borderBottom: 1, borderColor: 'divider', listStyle: 'none' }}>
+      <form action={run} ref={formRef}>
+        <Hidden p={p} />
+        <input type="hidden" name="batchId" value={row.batchId} />
+        <Stack direction="row" spacing={2} sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
+          <Typography>{row.label}</Typography>
+          <Typography color="text.secondary">{row.stillOpen}</Typography>
+          <Box sx={{ flex: 1 }} />
+          {row.canRevoke ? (
+            <Button variant="outlined" color="error" onClick={() => setConfirm(true)}>
+              {batches['revoke']}
+            </Button>
+          ) : null}
+        </Stack>
+        <Result state={state} copy={p.copy} />
+      </form>
+      <ConfirmDialog
+        open={confirm}
+        danger
+        title={batches['revoke']}
+        body={batches['revokeConfirm']}
+        confirmLabel={batches['revoke']}
+        cancelLabel="×"
+        onClose={() => setConfirm(false)}
+        onConfirm={() => {
+          setConfirm(false);
+          formRef.current?.requestSubmit();
+        }}
+      />
+    </Box>
+  );
+}
+
 export default function InvitationsPanel(p: Props) {
   const create = sub(p.copy, 'create');
   const settings = sub(p.copy, 'settings');
@@ -170,6 +212,7 @@ export default function InvitationsPanel(p: Props) {
                   key={team.id}
                   name={`count:${team.id}`}
                   label={fill(create['perTeam'] ?? '', { team: team.name })}
+                  defaultValue={created.echo?.[`count:${team.id}`] ?? ''}
                   type="number"
                   slotProps={{ htmlInput: { min: 0, max: 2000 } }}
                 />
@@ -178,7 +221,7 @@ export default function InvitationsPanel(p: Props) {
                 name="expiresInDays"
                 label={create['expiry']}
                 type="number"
-                defaultValue={14}
+                defaultValue={created.echo?.['expiresInDays'] ?? 14}
                 slotProps={{ htmlInput: { min: 1, max: 90 } }}
               />
               {p.emailDelivery ? (
@@ -200,6 +243,11 @@ export default function InvitationsPanel(p: Props) {
                     ))}
                   </TextField>
                 </>
+              ) : null}
+              {created.code === 'duplicate_batch' ? (
+                <label>
+                  <input type="checkbox" name="confirmDuplicate" /> {create['duplicateConfirm']}
+                </label>
               ) : null}
               <div>
                 <Button type="submit" variant="contained">
@@ -303,6 +351,24 @@ export default function InvitationsPanel(p: Props) {
           <Box component="ul" sx={{ p: 0, m: 0 }}>
             {p.open.map((row) => (
               <OpenRow key={row.id} p={p} row={row} />
+            ))}
+          </Box>
+        )}
+      </Paper>
+
+      <Paper variant="outlined" sx={{ p: 4, borderRadius: 3 }} component="section">
+        <Typography variant="sectionTitle" component="h2">
+          {sub(p.copy, 'batches')['title']}
+        </Typography>
+        <Typography color="text.secondary" sx={{ mb: 2 }}>
+          {sub(p.copy, 'batches')['hint']}
+        </Typography>
+        {p.batches.length === 0 ? (
+          <EmptyState title={sub(p.copy, 'batches')['empty'] ?? ''} />
+        ) : (
+          <Box component="ul" sx={{ p: 0, m: 0 }}>
+            {p.batches.map((row) => (
+              <BatchRow key={row.batchId} p={p} row={row} />
             ))}
           </Box>
         )}

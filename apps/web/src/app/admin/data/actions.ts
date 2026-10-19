@@ -2,7 +2,8 @@
 
 import { revalidatePath } from 'next/cache';
 import { exportKindSchema } from '@evolai/contracts';
-import { deletePseudonym } from '@/lib/deletionData';
+import { deletePseudonym, respondentExists } from '@/lib/deletionData';
+import type { MessageKey } from '@evolai/i18n';
 import { runExport } from '@/lib/exportData';
 import { resolveActor } from '@/lib/authServer';
 import { enumLabel, getT } from '@/lib/i18n';
@@ -32,7 +33,15 @@ export async function triggerExportAction(
     return { ok: false, message: t('admin.data.errInvalidKind') };
   }
   try {
-    const { csv } = await runExport(who.tenantId, kindRaw as never, who.actor);
+    // Plain column names in the reader's language (the stored column names stay technical).
+    const labels = new Proxy({} as Record<string, string>, {
+      get: (_o, col: string) => {
+        const key = `admin.setup.exportColumns.${col}` as MessageKey;
+        const label = t(key);
+        return label === key ? col : label;
+      },
+    });
+    const { csv } = await runExport(who.tenantId, kindRaw as never, who.actor, labels);
     revalidatePath('/admin/data');
     return {
       ok: true,
@@ -57,16 +66,21 @@ export async function triggerDeletePseudonymAction(
   if (!who.ok) return { ok: false, message: who.message };
   if (!isPseudonym(pseudonym)) return { ok: false, message: t('admin.data.errInvalidPseudonym') };
   try {
+    // An unknown code is said plainly; no green check, no erasure event for nothing.
+    if (!(await respondentExists(who.tenantId, pseudonym))) {
+      return { ok: false, message: t('admin.setup.data.errNoSuchRespondent') };
+    }
+    // The confirmation is typed by the person; a post without it is refused (belt and braces).
+    if (String(formData.get('confirmCode') ?? '') !== pseudonym) {
+      return { ok: false, message: t('admin.setup.data.confirmMismatch') };
+    }
     const result = await deletePseudonym(who.tenantId, pseudonym, who.actor);
     revalidatePath('/admin/data');
     revalidatePath('/admin/synergies');
     revalidatePath('/admin/teams');
     return {
       ok: true,
-      message: t('admin.data.removed', {
-        rows: result.removedRowCount,
-        events: result.events.length,
-      }),
+      message: t('admin.setup.data.removedPlain', { rows: result.removedRowCount }),
     };
   } catch (err) {
     console.error('pseudonym deletion failed', err);

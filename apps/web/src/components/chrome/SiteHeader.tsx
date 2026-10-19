@@ -2,9 +2,12 @@ import Link from 'next/link';
 import type { TenantId } from '@evolai/contracts';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
 import { Logo } from '@/components/Logo';
 import { tenantLabel } from '@/lib/adminData';
 import { getSession } from '@/lib/authServer';
+import { orderTenants, preferredOrg } from '@/lib/orgContext';
+import { allowedTenantIds } from '@/lib/tenantAccess';
 import { getT } from '@/lib/i18n';
 import { clientIdentity, viewAsMenuFor } from '@/lib/viewAsIdentity';
 import { AccountMenu, LanguageMenu, NavMenu, ThemeToggle, type Identity } from './HeaderControls';
@@ -18,22 +21,34 @@ const loadIdentity = async (): Promise<Identity | null> => {
   const { t } = getT();
   const asClient = await clientIdentity(session, t);
   if (asClient) return asClient;
-  const first = session.tenants[0];
+  // The organisation chosen with the switcher (cookie) comes first; never silently the first one.
+  const ids = orderTenants(allowedTenantIds(session), preferredOrg());
+  const currentId = ids[0] ?? session.tenants[0]?.id ?? null;
+  const first = session.tenants.find((m) => m.id === currentId) ?? session.tenants[0];
   const roleKey = first && KNOWN_ROLES.has(first.role) ? first.role : 'other';
-  let organisation: string | null = null;
-  if (first) {
+  const labelOf = async (id: string): Promise<string> => {
     try {
-      organisation = await tenantLabel(first.id as TenantId);
+      return await tenantLabel(id as TenantId);
     } catch {
-      organisation = null;
+      return id;
     }
-  }
+  };
+  const organisations = await Promise.all(
+    (ids.length > 0 ? ids : currentId ? [currentId] : []).map(async (id) => ({
+      id,
+      label: await labelOf(id),
+    })),
+  );
+  const organisation = organisations.find((o) => o.id === currentId)?.label ?? null;
   return {
     name: session.name || session.email || t('common.account.roles.other'),
     email: session.email ?? null,
     role: t(`common.account.roles.${roleKey}` as 'common.account.roles.other'),
     organisation,
     organisationCount: new Set(session.tenants.map((m) => m.id)).size,
+    organisations,
+    organisationId: currentId,
+    homeHref: '/board',
     viewAs: await viewAsMenuFor(session, t),
   };
 };
@@ -71,6 +86,32 @@ export default async function SiteHeader() {
         <Link href="/" aria-label={t('common.homeAria')} className="home-link">
           <Logo />
         </Link>
+        {identity?.organisation ? (
+          // The organisation being worked on is always visible, never only in a menu (ADR 0038).
+          <Typography
+            data-testid="header-organisation"
+            variant="body2"
+            component="p"
+            title={identity.organisation}
+            sx={{
+              m: 0,
+              px: 2,
+              py: 1,
+              borderLeft: 1,
+              borderColor: 'divider',
+              color: 'text.secondary',
+              // One header row on a phone: there the organisation sits above the admin tabs instead.
+              display: { xs: 'none', sm: 'block' },
+              maxWidth: 280,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              flexShrink: 1,
+            }}
+          >
+            {identity.organisation}
+          </Typography>
+        ) : null}
         <Stack
           component="nav"
           aria-label={t('common.navPrimaryAria')}

@@ -86,7 +86,7 @@ for (const locale of LOCALES) {
   }) => {
     const copy = COPY[locale];
     await setLocale(context, baseURL, locale);
-    await signIn(page, OWNER, /\/admin\//);
+    await signIn(page, OWNER, /\/(admin\/|board)/);
     const [owner] = await query<{ id: string }>(
       `SELECT u.id FROM users u JOIN memberships m ON m.user_id = u.id
         WHERE m.role = 'platform_owner' AND u.display_name = 'Synthetic Owner' LIMIT 1`,
@@ -182,7 +182,7 @@ for (const locale of LOCALES) {
 }
 
 test('a tampered view-as cookie is not accepted', async ({ page, context, baseURL }) => {
-  await signIn(page, OWNER, /\/admin\//);
+  await signIn(page, OWNER, /\/(admin\/|board)/);
   const cookies = await context.cookies();
   const session = cookies.find((c) => c.name === 'evolai_session');
   expect(session).toBeDefined();
@@ -225,7 +225,7 @@ test('a non-owner cannot start a view-as, even with a real persona id', async ({
   expect(anon.status()).toBe(303);
   expect(anon.headers()['set-cookie'] ?? '').not.toContain('evolai_session=');
   // An auditor of another tenant (direct POST with a forged form field).
-  await signIn(page, AUDITOR_A, /\/admin\//);
+  await signIn(page, AUDITOR_A, /\/(admin\/|board)/);
   await page.getByTestId('account-button').click();
   await expect(page.getByTestId('view-as-self')).toHaveCount(0);
   await page.keyboard.press('Escape');

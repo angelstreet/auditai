@@ -29,6 +29,8 @@ export const fr: Messages = {
       signOut: 'Se déconnecter',
       organisation: 'Organisation',
       switchOrganisation: 'Changer d’organisation',
+      switchTitle: 'Organisation',
+      portfolio: 'Portefeuille',
       workspace: 'Espace de travail',
       roles: {
         platform_owner: 'Responsable de la plateforme',
@@ -47,7 +49,7 @@ export const fr: Messages = {
       source: 'Code source',
     },
     noTenants:
-      'Aucun locataire configuré. Exécutez {command} pour charger les données de démonstration.',
+      'Aucune organisation configurée. Exécutez {command} pour charger les données de démonstration.',
     dash: '—',
     notFoundTitle: 'Cette page n’existe pas',
     notFoundBody:
@@ -58,7 +60,7 @@ export const fr: Messages = {
   meta: {
     title: 'EvolAI — Comprendre. S’adapter. Évoluer.',
     description:
-      'Audits d’adoption de l’IA ouverts et fondés sur des preuves. Confidentialité d’abord, isolation par locataire, ouverts à l’IA.',
+      'Audits d’adoption de l’IA ouverts et fondés sur des preuves. Confidentialité d’abord, données de chaque organisation séparées, ouverts à l’IA.',
     ogAlt: 'Logotype EvolAI avec son symbole de marches adaptatives',
     pages: {
       welcome: 'Bienvenue',
@@ -267,7 +269,7 @@ export const fr: Messages = {
     leadershipLiteracy: 'Culture IA de la direction',
     operationalAdoption: 'Adoption opérationnelle',
     policyGovernance: 'Politiques et gouvernance',
-    errInvalidTenant: 'Identifiant de locataire invalide',
+    errInvalidTenant: 'Cette organisation n’est pas valide',
     errBudget: 'Le budget annuel doit être un nombre positif ou nul',
     errInvalidInput: 'Saisie invalide : {fields}',
     maturityValue: '{value} / 5',
@@ -278,14 +280,14 @@ export const fr: Messages = {
     draft: 'Brouillon',
     approved: 'Validée',
     in_progress: 'En cours',
-    delivered: 'Livrée',
+    delivered: 'Terminée',
     archived: 'Archivée',
   },
   admin: adminFr,
   client: clientFr,
   auth: {
     notSignedIn: 'Vous n’êtes pas connecté',
-    notMember: 'Vous n’êtes pas membre de ce locataire',
+    notMember: 'Vous n’appartenez pas à cette organisation',
   },
   login: {
     title: 'Se connecter',

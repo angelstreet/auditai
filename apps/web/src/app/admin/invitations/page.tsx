@@ -1,12 +1,13 @@
 import Link from 'next/link';
 import { headers } from 'next/headers';
 import { EmptyState, PageTitle, StatTiles } from '@evolai/ui';
-import { formatNumber, messages } from '@evolai/i18n';
+import { formatDate, formatNumber, messages } from '@evolai/i18n';
 import { listEngagements } from '@/lib/adminData';
 import { sessionTenantIds } from '@/lib/authServer';
 import { getT } from '@/lib/i18n';
 import {
   getSettings,
+  listBatches,
   listEngagementTeams,
   listOpen,
   progress,
@@ -73,12 +74,13 @@ export default async function InvitationsPage({ searchParams }: { searchParams: 
     h.get('x-forwarded-host') ?? h.get('host'),
     h.get('x-forwarded-proto'),
   );
-  const [settings, teams, prog, open, due] = await Promise.all([
+  const [settings, teams, prog, open, due, batchList] = await Promise.all([
     getSettings(tenantId, engagementId),
     listEngagementTeams(tenantId, engagementId),
     progress(tenantId, engagementId),
     listOpen(tenantId, engagementId, baseUrl),
     reminderList(tenantId, engagementId, baseUrl),
+    listBatches(tenantId, engagementId),
   ]);
   if (!settings) {
     return (
@@ -103,7 +105,12 @@ export default async function InvitationsPage({ searchParams }: { searchParams: 
           { label: t('admin.invitations.tiles.completed'), value: String(totals.completed) },
           { label: t('admin.invitations.tiles.rate'), value: pct(totals.completionRate) },
         ]
-      : [{ label: t('admin.invitations.tiles.opened'), value: fewer }]),
+      : [
+          {
+            label: t('admin.invitations.tiles.rate'),
+            value: t('admin.invitations.teams.hidden'),
+          },
+        ]),
   ];
 
   return (
@@ -130,15 +137,25 @@ export default async function InvitationsPage({ searchParams }: { searchParams: 
           suppressed: r.suppressed,
           completionRate: r.suppressed ? 0 : r.completionRate,
           completed: r.suppressed ? 0 : r.completed,
-          lastActivityOn: r.suppressed ? null : r.lastActivityOn,
+          lastActivityOn:
+            r.suppressed || !r.lastActivityOn ? null : formatDate(locale, r.lastActivityOn),
         }))}
         open={open.map((o) => ({
           id: o.id,
           code: o.code,
           teamName: o.teamName,
-          expiresOn: o.expiresOn,
+          expiresOn: formatDate(locale, o.expiresOn),
         }))}
         dueCount={due.length}
+        batches={batchList.map((b) => ({
+          batchId: b.batchId,
+          label: t('admin.invitations.batches.label', {
+            n: b.total,
+            date: formatDate(locale, b.createdOn),
+          }),
+          stillOpen: t('admin.invitations.batches.stillOpen', { n: b.open }),
+          canRevoke: b.open > 0,
+        }))}
       />
     </section>
   );

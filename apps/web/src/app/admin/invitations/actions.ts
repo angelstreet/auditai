@@ -10,6 +10,7 @@ import {
   markReminded,
   regenerate,
   revoke,
+  revokeBatch,
   updateSettings,
 } from '@/lib/invitationData';
 import { sendInvitationEmails } from '@/lib/invitationDelivery';
@@ -72,6 +73,8 @@ export async function createInvitationsAction(
       groups: parsed.groups,
       addresses: parsed.addresses,
       expiresInDays: parsed.expiresInDays,
+      checkDuplicate: true,
+      confirmDuplicate: fd.get('confirmDuplicate') === 'on',
     });
     let emailSent = 0;
     let emailFailed = 0;
@@ -90,7 +93,14 @@ export async function createInvitationsAction(
     revalidatePath('/admin/invitations');
     return { ok: true, code: 'created', count: out.invitations.length, emailSent, emailFailed };
   } catch (err) {
-    return { ok: false, code: codeOf(err) };
+    const code = codeOf(err);
+    if (code !== 'duplicate_batch') return { ok: false, code };
+    // Keep what was typed: the form is reset after the action, and the next step is only a tick.
+    const echo: Record<string, string> = {};
+    for (const [k, v] of fd.entries()) {
+      if (typeof v === 'string' && (k.startsWith('count:') || k === 'expiresInDays')) echo[k] = v;
+    }
+    return { ok: false, code, echo };
   }
 }
 
@@ -127,6 +137,22 @@ export async function markRemindedAction(
     const count = await markReminded(g.who.tenantId, g.engagementId, g.who.actor);
     revalidatePath('/admin/invitations');
     return { ok: true, code: 'reminded', count };
+  } catch (err) {
+    return { ok: false, code: codeOf(err) };
+  }
+}
+
+export async function revokeBatchAction(
+  _prev: InviteActionState,
+  fd: FormData,
+): Promise<InviteActionState> {
+  const g = await guard(fd);
+  const batchId = String(fd.get('batchId') ?? '');
+  if (!g || !isUuid(batchId)) return { ok: false, code: 'forbidden' };
+  try {
+    const count = await revokeBatch(g.who.tenantId, g.engagementId, batchId, g.who.actor);
+    revalidatePath('/admin/invitations');
+    return { ok: true, code: 'batch_revoked', count };
   } catch (err) {
     return { ok: false, code: codeOf(err) };
   }

@@ -38,8 +38,8 @@ export default function EngagementRow({ summary, tenantId }: Props) {
   return (
     <tr>
       <th scope="row">
-        <Link href={`/admin/engagements/${summary.engagement.id}/analyses?tenant=${tenantId}`}>
-          {summary.organisation.tradingName ?? summary.organisation.legalName}
+        <Link href={`/admin/engagements/${summary.engagement.id}/settings?tenant=${tenantId}`}>
+          {summary.name ?? summary.organisation.tradingName ?? summary.organisation.legalName}
         </Link>
       </th>
       <td>
@@ -64,6 +64,11 @@ export default function EngagementRow({ summary, tenantId }: Props) {
         {summary.engagement.closesAt
           ? formatDate(locale, summary.engagement.closesAt)
           : t('common.dash')}
+      </td>
+      <td>
+        <Link href={`/admin/engagements/${summary.engagement.id}/analyses?tenant=${tenantId}`}>
+          {t('admin.engagements.viewAnalyses')}
+        </Link>
       </td>
     </tr>
   );

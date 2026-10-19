@@ -18,6 +18,16 @@ test.describe('admin invitations page', () => {
       .first()
       .fill('2');
     await page.getByRole('button', { name: 'Create links' }).click();
+    // The same batch twice within ten minutes asks for a tick (other projects ran it already).
+    const again = page.getByLabel('Yes, create them again');
+    const asked = await again
+      .waitFor({ state: 'visible', timeout: 3000 })
+      .then(() => true)
+      .catch(() => false);
+    if (asked) {
+      await again.check();
+      await page.getByRole('button', { name: 'Create links' }).click();
+    }
     await expect(page.getByRole('status').filter({ hasText: '2 links created.' })).toBeVisible();
 
     // Progress per team appears; suppression below 5 people is covered by unit tests.

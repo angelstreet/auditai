@@ -200,6 +200,9 @@ test.describe('login and admin pages', () => {
       await signInAsAuditorA(page);
       for (const path of [
         '/admin/engagements',
+        '/admin/engagements/new',
+        '/admin/engagements/a5555555-4555-4555-8555-555555555555/settings',
+        '/admin/engagements/a5555555-4555-4555-8555-555555555555/preview',
         '/admin/teams',
         '/admin/synergies',
         '/admin/data',

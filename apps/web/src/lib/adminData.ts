@@ -12,6 +12,8 @@ import { withServiceAccount } from './db';
 
 export interface AdminEngagementSummary {
   readonly engagement: Engagement;
+  /** The auditor's own label for the engagement, or null (the page then shows the organisation). */
+  readonly name: string | null;
   readonly organisation: Organisation;
   readonly expectedHeadcount: number;
   readonly invitationsTotal: number;
@@ -24,6 +26,7 @@ export interface AdminEngagementSummary {
 
 interface EngagementRow {
   id: string;
+  name: string | null;
   tenant_id: string;
   team_ids: string[];
   template_id: string;
@@ -100,7 +103,7 @@ const toOrganisation = (row: EngagementRow): Organisation => ({
 export const listEngagements = async (tenantId: TenantId): Promise<AdminEngagementSummary[]> => {
   return withServiceAccount(async (client) => {
     const { rows } = await client.query<EngagementRow>(
-      `SELECT e.id, e.tenant_id,
+      `SELECT e.id, e.name, e.tenant_id,
               COALESCE(
                 (SELECT array_agg(et.team_id) FROM engagement_teams et WHERE et.engagement_id = e.id),
                 ARRAY[]::uuid[]
@@ -139,6 +142,7 @@ const summarise = (row: EngagementRow): AdminEngagementSummary => {
   const expected = Math.max(row.expected_headcount, 1);
   return {
     engagement: toEngagement(row),
+    name: row.name,
     organisation: toOrganisation(row),
     expectedHeadcount: expected,
     invitationsTotal: total,

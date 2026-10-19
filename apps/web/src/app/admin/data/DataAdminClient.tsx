@@ -88,6 +88,19 @@ export function ExportForm({ tenantId }: Props) {
       </Stack>
       <Result state={state} />
       {state.csv ? (
+        <Button
+          component="a"
+          variant="outlined"
+          href={`data:text/csv;charset=utf-8,${encodeURIComponent(`\uFEFF${state.csv.body}`)}`}
+          download={state.csv.filename}
+          startIcon={<AppIcon name="download" size={20} />}
+          sx={{ alignSelf: 'flex-start' }}
+          data-testid="export-download"
+        >
+          {t('admin.setup.data.download')} ({state.csv.filename})
+        </Button>
+      ) : null}
+      {state.csv ? (
         <pre className="csv-preview" aria-label={t('admin.data.csvPreview')}>
           {state.csv.body.slice(0, 1200)}
           {state.csv.body.length > 1200 ? '\n…' : ''}
@@ -106,6 +119,7 @@ export function DeleteForm({ tenantId }: Props) {
   const [state, formAction] = useFormState(triggerDeletePseudonymAction, INITIAL);
   const formRef = useRef<HTMLFormElement>(null);
   const [pseudonym, setPseudonym] = useState('');
+  const [typed, setTyped] = useState('');
   const [open, setOpen] = useState(false);
   const valid = PSEUDONYM_PATTERN.test(pseudonym);
   return (
@@ -119,14 +133,19 @@ export function DeleteForm({ tenantId }: Props) {
           value={pseudonym}
           onChange={(e) => setPseudonym(e.target.value.trim())}
           required
+          helperText={t('admin.setup.data.codeHelp')}
           inputProps={{ pattern: '[a-z0-9-]{8,64}', autoComplete: 'off', spellCheck: false }}
           sx={{ minWidth: 280 }}
         />
+        <input type="hidden" name="confirmCode" value={typed} />
         <Button
           variant="outlined"
           color="error"
           disabled={!valid}
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            setTyped('');
+            setOpen(true);
+          }}
           startIcon={<AppIcon name="delete" size={20} />}
           sx={{ minWidth: 160 }}
         >
@@ -141,12 +160,24 @@ export function DeleteForm({ tenantId }: Props) {
         body={t('admin.data.eraseConfirmBody', { pseudonym })}
         confirmLabel={t('admin.data.erase')}
         cancelLabel={t('admin.data.cancel')}
+        confirmDisabled={typed !== pseudonym}
         onClose={() => setOpen(false)}
         onConfirm={() => {
           setOpen(false);
           formRef.current?.requestSubmit();
         }}
-      />
+      >
+        <TextField
+          autoFocus
+          fullWidth
+          margin="dense"
+          label={t('admin.setup.data.confirmField')}
+          helperText={t('admin.setup.data.confirmType', { code: pseudonym })}
+          value={typed}
+          onChange={(e) => setTyped(e.target.value.trim())}
+          inputProps={{ autoComplete: 'off', spellCheck: false }}
+        />
+      </ConfirmDialog>
     </Stack>
   );
 }

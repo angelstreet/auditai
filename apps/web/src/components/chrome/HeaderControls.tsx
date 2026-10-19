@@ -1,7 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useState, type MouseEvent } from 'react';
+import { useState, useTransition, type MouseEvent } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -9,12 +8,14 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import ListSubheader from '@mui/material/ListSubheader';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { useColorScheme } from '@mui/material/styles';
-import { LOCALE_COOKIE, supportedLocales, type SupportedLocale } from '@evolai/i18n';
+import { supportedLocales, type SupportedLocale } from '@evolai/i18n';
+import { setLocaleAction } from '@/lib/localeAction';
 import { AppIcon } from '@evolai/ui';
 import { THEME_COOKIE } from '@/lib/themeChoice';
 import { useI18n } from '../I18nProvider';
@@ -22,16 +23,23 @@ import { ViewAsForm, viewAsMenuItems, type ViewAsMenu } from './ViewAsMenuSectio
 
 const YEAR = 31536000;
 
+/** Same icon column and text start on every account menu row, links and buttons alike. */
+const MENU_ITEM_SX = {
+  minHeight: 44,
+  gap: 0,
+  '& .MuiListItemIcon-root': { minWidth: 36 },
+} as const;
+
 /** Globe icon button opening a language menu (docs/UI_RULES.md §0). Same size in every locale. */
 export function LanguageMenu() {
   const { locale, t } = useI18n();
-  const router = useRouter();
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
+  const [, startTransition] = useTransition();
   const choose = (next: SupportedLocale) => {
     setAnchor(null);
     if (next === locale) return;
-    document.cookie = `${LOCALE_COOKIE}=${next}; Path=/; Max-Age=${YEAR}; SameSite=Lax`;
-    router.refresh();
+    // Server action: sets the cookie and re-renders on the server in one round trip (no flash).
+    startTransition(() => setLocaleAction(next));
   };
   return (
     <>
@@ -102,6 +110,10 @@ export interface Identity {
   readonly role: string;
   readonly organisation: string | null;
   readonly organisationCount: number;
+  /** Organisations the session may work on, current first (staff only). */
+  readonly organisations?: ReadonlyArray<{ id: string; label: string }>;
+  readonly organisationId?: string | null;
+  readonly homeHref?: string;
   /** Where "Workspace" leads: the admin area, or the team space for a client view. */
   readonly workspaceHref?: string;
   /** Owner only: the "View as" section (TASK-P). */
@@ -205,15 +217,34 @@ export function AccountMenu({ identity }: { identity: Identity | null }) {
         </Box>
         <Divider />
         {identity.viewAs ? viewAsMenuItems(identity.viewAs, t) : null}
-        {identity.organisationCount > 1 ? (
-          <MenuItem component="a" href="/admin/engagements">
-            <ListItemIcon>
-              <AppIcon name="organisation" />
-            </ListItemIcon>
-            <ListItemText>{t('common.account.switchOrganisation')}</ListItemText>
-          </MenuItem>
-        ) : null}
-        <MenuItem component="a" href={identity.workspaceHref ?? '/admin/data'}>
+        {(identity.organisations?.length ?? 0) > 1
+          ? [
+              <ListSubheader key="org-head" component="div" sx={{ lineHeight: '32px' }}>
+                {t('common.account.switchOrganisation')}
+              </ListSubheader>,
+              ...(identity.organisations ?? []).map((o) => {
+                const current = o.id === identity.organisationId;
+                return (
+                  <MenuItem
+                    key={o.id}
+                    component="a"
+                    href={`${identity.homeHref ?? '/board'}?tenant=${encodeURIComponent(o.id)}`}
+                    selected={current}
+                    aria-current={current ? 'true' : undefined}
+                    sx={MENU_ITEM_SX}
+                    data-testid="switch-organisation"
+                  >
+                    <ListItemIcon sx={{ visibility: current ? 'visible' : 'hidden' }}>
+                      <AppIcon name="success" />
+                    </ListItemIcon>
+                    <ListItemText>{o.label}</ListItemText>
+                  </MenuItem>
+                );
+              }),
+              <Divider key="org-div" />,
+            ]
+          : null}
+        <MenuItem component="a" href={identity.workspaceHref ?? '/board'} sx={MENU_ITEM_SX}>
           <ListItemIcon>
             <AppIcon name="settings" />
           </ListItemIcon>
@@ -224,7 +255,7 @@ export function AccountMenu({ identity }: { identity: Identity | null }) {
           component="button"
           type="submit"
           form="account-sign-out-form"
-          sx={{ width: '100%' }}
+          sx={{ ...MENU_ITEM_SX, width: '100%', font: 'inherit', textAlign: 'left' }}
           data-testid="sign-out"
         >
           <ListItemIcon>
