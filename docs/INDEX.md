@@ -118,6 +118,7 @@ write a new one that supersedes it.
 | 0038 | [Audit set-up, organisation context, plain wording, language](adr/0038-audit-setup-organisation-context-and-language.md) | TASK-T                           | Accepted |
 | 0039 | [The team referent never sees a per-link status](adr/0039-referent-sees-no-per-link-status.md)                           | TASK-S                           | Accepted |
 | 0041 | [Audit report, improvement catalogue, readiness score](adr/0041-audit-report-improvement-catalogue-readiness.md)         | TASK-V                           | Accepted |
+| 0042 | [Server-side PDF of the audit report](adr/0042-report-pdf-export.md)                                                     | TASK-V                           | Accepted |
 
 ## 4. The gates map (PRD §25.4)
 
@@ -279,7 +280,8 @@ docs/
    ├── 0037-intake-behind-sign-in-and-route-inventory.md
    ├── 0038-audit-setup-organisation-context-and-language.md
    ├── 0039-referent-sees-no-per-link-status.md
-   └── 0041-audit-report-improvement-catalogue-readiness.md
+   ├── 0041-audit-report-improvement-catalogue-readiness.md
+   └── 0042-report-pdf-export.md
 ```
 
 The contract map of every Zod schema and TS type in `@evolai/contracts`

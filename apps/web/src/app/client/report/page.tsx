@@ -1,5 +1,6 @@
 import type { TenantId } from '@evolai/contracts';
-import { EmptyState, PageTitle } from '@evolai/ui';
+import Button from '@mui/material/Button';
+import { AppIcon, EmptyState, PageTitle } from '@evolai/ui';
 import PrintReportButton from '@/components/report/PrintReportButton';
 import ReportView from '@/components/report/ReportView';
 import { requireClientContext } from '@/lib/clientContext';
@@ -31,7 +32,20 @@ export default async function ClientReportPage() {
       {published ? (
         <ReportView
           snapshot={published.snapshot}
-          actions={<PrintReportButton label={t('report.view.print')} />}
+          actions={
+            <>
+              <Button
+                href="/client/report/pdf"
+                variant="contained"
+                startIcon={<AppIcon name="download" size={20} />}
+                sx={{ minHeight: 44 }}
+                data-testid="report-download"
+              >
+                {t('report.view.download')}
+              </Button>
+              <PrintReportButton label={t('report.view.print')} />
+            </>
+          }
         />
       ) : (
         <EmptyState icon="pending" title={t('report.view.empty')} />
