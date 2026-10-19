@@ -42,6 +42,22 @@ export const AUDIT_GROUPS = {
     'password.reset',
   ],
   privacy: ['privacy_request.create', 'privacy_request.handle'],
+  reports: [
+    'report.create',
+    'report.update',
+    'report.plan',
+    'report.suggest',
+    'report.ai_draft',
+    'report.submit',
+    'report.publish',
+    'report.unpublish',
+    'report.new_version',
+    'report.export',
+    'report_step.add',
+    'report_step.update',
+    'report_step.accept',
+    'report_step.reject',
+  ],
 } as const;
 
 export type AuditGroup = 'all' | keyof typeof AUDIT_GROUPS;
