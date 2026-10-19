@@ -50,7 +50,13 @@ const INVITES = {
   en: 'inv-synthetic-bbbb-bbbb-bbbb-bbbbbbbb0003',
 } as const;
 
-const mainText = (page: Page) => page.locator('main').innerText();
+// The organisation named in "who is asking" is data (the seed calls it Synthetic Co), not copy.
+const mainText = (page: Page) =>
+  page.locator('main').evaluate((el) => {
+    const copy = el.cloneNode(true) as HTMLElement;
+    copy.querySelectorAll('[data-testid=who-is-asking]').forEach((n) => n.remove());
+    return copy.textContent ?? '';
+  });
 
 const expectPlainScreen = async (page: Page, label: string) => {
   const text = await mainText(page);

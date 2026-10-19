@@ -110,7 +110,12 @@ export default async function AuditPage({ searchParams }: PageProps) {
       {entries.length === 0 ? (
         <p>{t('trust.audit.empty')}</p>
       ) : (
-        <div className="table-scroll">
+        <div
+          className="table-scroll"
+          tabIndex={0}
+          role="region"
+          aria-label={t('trust.audit.title')}
+        >
           <table className="data-table" data-testid="audit-table">
             <thead>
               <tr>

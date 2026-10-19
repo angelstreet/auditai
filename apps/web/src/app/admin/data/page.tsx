@@ -142,7 +142,12 @@ export default async function DataPage({ searchParams }: PageProps) {
             <p>{t('trust.data.noneFound')}</p>
           ) : (
             <>
-              <div className="table-scroll">
+              <div
+                className="table-scroll"
+                tabIndex={0}
+                role="region"
+                aria-label={t('trust.data.findTitle')}
+              >
                 <table className="data-table" data-testid="code-results">
                   <thead>
                     <tr>
@@ -191,7 +196,12 @@ export default async function DataPage({ searchParams }: PageProps) {
         {requests.length === 0 ? (
           <p>{t('trust.data.requestsNone')}</p>
         ) : (
-          <div className="table-scroll">
+          <div
+            className="table-scroll"
+            tabIndex={0}
+            role="region"
+            aria-label={t('trust.data.requestsTitle')}
+          >
             <table className="data-table" data-testid="privacy-requests">
               <thead>
                 <tr>
