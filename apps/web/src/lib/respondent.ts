@@ -7,6 +7,7 @@ import {
   type Translator,
 } from '@evolai/i18n';
 import { withServiceAccount, withTenant } from './db';
+import { MIN_GROUP_SIZE } from './invitationTracking';
 import { getLocale, localeIsChosen } from './i18n';
 import { InvalidInviteToken, verifyInviteToken } from './invitationToken';
 import { getOrCreateState, setLocale, type SurveyState } from './surveyState';
@@ -170,9 +171,11 @@ export const teamProgress = async (invite: InvitationRecord): Promise<TeamProgre
       [invite.tenantId, invite.engagementId],
     );
     const badge = await client.query<{ dominant_tier: MascotTier }>(
+      // Small-group guard (TASK-U): no team mascot under the minimum group.
       `SELECT dominant_tier FROM team_badges WHERE tenant_id = $1 AND team_id = $2
+          AND member_count >= $3
         ORDER BY computed_at DESC LIMIT 1`,
-      [invite.tenantId, invite.teamId],
+      [invite.tenantId, invite.teamId, MIN_GROUP_SIZE],
     );
     const closes = engagement.rows[0]?.closes_at ?? null;
     return {

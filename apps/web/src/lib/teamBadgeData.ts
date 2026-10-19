@@ -1,5 +1,6 @@
 import type { MascotTier, TeamBadge, TenantId } from '@evolai/contracts';
 import { withServiceAccount, withTenant } from './db';
+import { MIN_GROUP_SIZE } from './invitationTracking';
 
 /**
  * Team-badge data layer (M14 slice C, FR-08, PRD §6, §9, §15).
@@ -37,6 +38,13 @@ const fromRow = (r: TeamBadgeRow): TeamBadge => ({
   updatedAt: r.updated_at,
 });
 
+/** Small-group guard (TASK-U, ADR 0039): a team result needs at least MIN_GROUP_SIZE completed answers. */
+export const isGroupHidden = (memberCount: number): boolean => memberCount < MIN_GROUP_SIZE;
+
+/**
+ * Visible team badges only. A team under the minimum group never leaves this function, so no page
+ * can show its mascot or counts by forgetting the check.
+ */
 export const listTeamBadges = async (tenantId: TenantId): Promise<ReadonlyArray<TeamBadge>> => {
   return withTenant(tenantId, async (client) => {
     const { rows } = await client.query<TeamBadgeRow>(
@@ -44,13 +52,23 @@ export const listTeamBadges = async (tenantId: TenantId): Promise<ReadonlyArray<
               tortoise_count, fox_count, owl_count,
               computed_at, created_at, updated_at
          FROM team_badges
-        WHERE tenant_id = $1
+        WHERE tenant_id = $1 AND member_count >= $2
         ORDER BY dominant_tier ASC, computed_at DESC`,
-      [tenantId],
+      [tenantId, MIN_GROUP_SIZE],
     );
     return rows.map(fromRow);
   });
 };
+
+/** Teams that have a mascot rollup but too few answers to show it. Ids only, no counts. */
+export const listHiddenTeamIds = async (tenantId: TenantId): Promise<ReadonlySet<string>> =>
+  withTenant(tenantId, async (client) => {
+    const { rows } = await client.query<{ team_id: string }>(
+      `SELECT team_id FROM team_badges WHERE tenant_id = $1 AND member_count < $2`,
+      [tenantId, MIN_GROUP_SIZE],
+    );
+    return new Set(rows.map((r) => r.team_id));
+  });
 
 export const listTeamsInTenant = async (
   tenantId: TenantId,

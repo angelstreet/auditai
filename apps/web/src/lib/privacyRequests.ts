@@ -21,9 +21,7 @@ export interface RequestInput {
 const CODE_RE = /^[A-Za-z0-9-]{0,64}$/;
 
 /** Clean the public form values; null when anything is off. */
-export const parseRequest = (
-  get: (name: string) => string | null,
-): RequestInput | null => {
+export const parseRequest = (get: (name: string) => string | null): RequestInput | null => {
   const kind = (get('kind') ?? '') as RequestKind;
   const code = (get('code') ?? '').trim();
   const message = (get('message') ?? '').trim();
@@ -70,9 +68,7 @@ export interface PrivacyRequestRow {
   readonly createdAt: string;
 }
 
-export const listPrivacyRequests = async (
-  tenantId: TenantId,
-): Promise<PrivacyRequestRow[]> =>
+export const listPrivacyRequests = async (tenantId: TenantId): Promise<PrivacyRequestRow[]> =>
   withTenant(tenantId, async (client) => {
     const { rows } = await client.query<{
       id: string;
