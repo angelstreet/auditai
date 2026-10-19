@@ -310,6 +310,27 @@ for (const locale of ['fr', 'en'] as const) {
     await axe(ref, `${size} ${locale} client report`);
     await noHorizontalScroll(ref, `${size} ${locale} client report`);
 
+    // PDF: the referent and the auditor download the published version; each download is logged.
+    await expect(ref.getByTestId('report-download')).toBeVisible();
+    for (const [who, url] of [
+      [ref, '/client/report/pdf'],
+      [own, `/admin/reports/${fx.engagement}/pdf?tenant=${fx.tenant}`],
+    ] as const) {
+      const res = await who.request.get(url);
+      expect(res.status(), url).toBe(200);
+      expect(res.headers()['content-type']).toBe('application/pdf');
+      expect(res.headers()['content-disposition']).toMatch(
+        /attachment; filename="[a-z0-9-]+-v1\.pdf"/,
+      );
+      expect((await res.body()).subarray(0, 5).toString('latin1')).toBe('%PDF-');
+    }
+    const exports = await query<{ n: string }>(
+      `SELECT count(*) AS n FROM audit_log WHERE tenant_id = $1 AND action = 'report.export'
+          AND created_at > now() - interval '5 minutes'`,
+      [fx.tenant],
+    );
+    expect(Number(exports[0]?.n)).toBeGreaterThanOrEqual(2);
+
     // Unpublish: the referent no longer sees it.
     await own.getByTestId('report-unpublish').click();
     await own.getByRole('dialog').getByRole('button').last().click();
@@ -318,6 +339,7 @@ for (const locale of ['fr', 'en'] as const) {
     );
     await ref.reload();
     await expect(ref.getByTestId('report-view')).toHaveCount(0);
+    expect((await ref.request.get('/client/report/pdf')).status()).toBe(404);
 
     await refCtx.close();
   });

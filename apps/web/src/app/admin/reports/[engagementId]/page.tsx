@@ -130,16 +130,29 @@ export default async function ReportEditorPage({
         title={r.title}
         subtitle={t('report.editor.subtitle', { version: r.version })}
         actions={
-          <Button
-            component={Link}
-            href={`/admin/reports/${params.engagementId}/preview?tenant=${tenantId}`}
-            variant="outlined"
-            startIcon={<AppIcon name="visibility" size={20} />}
-            sx={{ minHeight: 44 }}
-            data-testid="report-preview-link"
-          >
-            {t('report.editor.preview')}
-          </Button>
+          <>
+            {visibleVersion ? (
+              <Button
+                href={`/admin/reports/${params.engagementId}/pdf?tenant=${tenantId}`}
+                variant="outlined"
+                startIcon={<AppIcon name="download" size={20} />}
+                sx={{ minHeight: 44 }}
+                data-testid="report-admin-download"
+              >
+                {t('report.view.download')}
+              </Button>
+            ) : null}
+            <Button
+              component={Link}
+              href={`/admin/reports/${params.engagementId}/preview?tenant=${tenantId}`}
+              variant="outlined"
+              startIcon={<AppIcon name="visibility" size={20} />}
+              sx={{ minHeight: 44 }}
+              data-testid="report-preview-link"
+            >
+              {t('report.editor.preview')}
+            </Button>
+          </>
         }
       />
       <Stack spacing={4}>

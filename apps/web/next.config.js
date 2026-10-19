@@ -1,3 +1,5 @@
+const path = require('node:path');
+
 const isDev = process.env.NODE_ENV !== 'production';
 
 // Next.js App Router emits inline bootstrap scripts, so script-src needs 'unsafe-inline' until the
@@ -66,6 +68,14 @@ const nextConfig = {
   },
   experimental: {
     // No PWA / no extra instrumentation: M5 only renders the employee mobile survey.
+    // TASK-V (ADR 0042): pdfkit runs from node_modules (it reads its own files at run time), and
+    // the report PDF routes ship the two Inter files of the design system with the function.
+    serverComponentsExternalPackages: ['pdfkit'],
+    outputFileTracingRoot: path.join(__dirname, '..', '..'),
+    outputFileTracingIncludes: {
+      '/admin/reports/[engagementId]/pdf': ['../../packages/ui/pdf-fonts/inter-latin-*.ttf'],
+      '/client/report/pdf': ['../../packages/ui/pdf-fonts/inter-latin-*.ttf'],
+    },
   },
 };
 
