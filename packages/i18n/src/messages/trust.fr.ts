@@ -22,21 +22,21 @@ export const trustFr: Messages['trust'] = {
     newLink: 'Demander un nouveau lien',
   },
   forgot: {
-    title: 'Mot de passe oublié ?',
+    title: 'Mot de passe oublié ?',
     lede: 'Saisissez votre adresse e-mail. Si nous la connaissons, nous envoyons un lien pour choisir un nouveau mot de passe.',
     email: 'E-mail',
     submit: 'Envoyer le lien',
     sending: 'Envoi…',
-    done: 'Si cette adresse est connue, un lien est en route. Il ne sert qu’une fois, pendant 60 minutes. Rien reçu au bout de quelques minutes ? Demandez à la personne qui vous a donné l’accès.',
+    done: 'Si cette adresse est connue, un lien est en route. Il ne sert qu’une fois, pendant 60 minutes. Rien reçu au bout de quelques minutes ? Demandez à la personne qui vous a donné l’accès.',
     back: 'Retour à la connexion',
   },
   email: {
     inviteSubject: 'Choisissez votre mot de passe',
     inviteBody:
-      'Vous pouvez maintenant vous connecter. Ouvrez ce lien pour choisir votre mot de passe. Il ne sert qu’une fois, pendant 3 jours :\n\n{link}\n\nSi ce message ne vous était pas destiné, ignorez-le.',
+      'Vous pouvez maintenant vous connecter. Ouvrez ce lien pour choisir votre mot de passe. Il ne sert qu’une fois, pendant 3 jours :\n\n{link}\n\nSi ce message ne vous était pas destiné, ignorez-le.',
     resetSubject: 'Choisissez un nouveau mot de passe',
     resetBody:
-      'Ouvrez ce lien pour choisir un nouveau mot de passe. Il ne sert qu’une fois, pendant 60 minutes :\n\n{link}\n\nSi vous n’avez rien demandé, ignorez ce message. Votre mot de passe n’a pas changé.',
+      'Ouvrez ce lien pour choisir un nouveau mot de passe. Il ne sert qu’une fois, pendant 60 minutes :\n\n{link}\n\nSi vous n’avez rien demandé, ignorez ce message. Votre mot de passe n’a pas changé.',
     requestSubject: 'Une demande vie privée a été reçue',
     requestBody:
       'Une personne a envoyé une demande depuis la page de confidentialité. Ouvrez la page Données de l’espace d’administration pour la lire et la traiter.',
@@ -147,7 +147,7 @@ export const trustFr: Messages['trust'] = {
       'Cette page explique ce que deviennent vos réponses. Elle s’adresse aux personnes invitées à répondre.',
     whoTitle: 'Qui pose les questions',
     whoBody: '{org} organise ce questionnaire et décide de l’usage des réponses.',
-    contactLine: 'Questions sur la vie privée : {contact}',
+    contactLine: 'Questions sur la vie privée : {contact}',
     purposeTitle: 'Pourquoi nous demandons',
     defaultPurpose:
       'Pour comprendre comment l’IA est utilisée au quotidien et où elle pourrait aider votre équipe. Les résultats portent sur les équipes, pas sur les personnes.',
@@ -164,7 +164,7 @@ export const trustFr: Messages['trust'] = {
       'Si votre lien a été envoyé par e-mail, l’adresse n’est gardée que le temps d’envoyer le lien et les rappels, puis supprimée.',
     notCollectedTitle: 'Ce qui n’est pas recueilli',
     notCollected:
-      'Votre nom. Merci de ne pas écrire de noms dans les textes libres : les noms sont masqués avant que quiconque lise les réponses.',
+      'Votre nom. Merci de ne pas écrire de noms dans les textes libres : les noms sont masqués avant que quiconque lise les réponses.',
     seesTitle: 'Qui voit quoi',
     seesAuditor: 'L’auditeur voit les réponses liées à votre code, jamais votre nom.',
     seesReferent:
@@ -175,10 +175,10 @@ export const trustFr: Messages['trust'] = {
     retention:
       'Les réponses sont gardées {days, plural, one {# jour} other {# jours}}, puis supprimées.',
     hostingTitle: 'Où c’est stocké et qui nous aide',
-    hosting: 'Stockage : {region}.',
-    providers: 'Prestataires qui traitent des données pour nous : {list}.',
+    hosting: 'Stockage : {region}.',
+    providers: 'Prestataires qui traitent des données pour nous : {list}.',
     aiTitle: 'Usage de l’IA',
-    ai: 'L’IA aide l’auditeur à résumer les réponses. Elle n’utilise que ce service approuvé : {route}. Une personne relit chaque résultat de l’IA avant que quiconque d’autre le voie.',
+    ai: 'L’IA aide l’auditeur à résumer les réponses. Elle n’utilise que ce service approuvé : {route}. Une personne relit chaque résultat de l’IA avant que quiconque d’autre le voie.',
     rightsTitle: 'Vos droits',
     rights:
       'Vous pouvez demander à voir, corriger ou supprimer vos réponses, vous retirer, ou vous opposer. Vous n’avez pas à passer par votre responsable.',
@@ -189,7 +189,7 @@ export const trustFr: Messages['trust'] = {
     requestTitle: 'Vous retirer ou supprimer vos réponses',
     requestIntro:
       'Envoyez votre demande ici. L’auditeur la reçoit directement. Votre responsable et votre équipe ne la voient pas.',
-    kind: 'Que souhaitez-vous ?',
+    kind: 'Que souhaitez-vous ?',
     kindErase: 'Supprimer mes réponses',
     kindWithdraw: 'Ne plus utiliser mes réponses',
     kindQuestion: 'Poser une question sur la vie privée',
@@ -208,19 +208,19 @@ export const trustFr: Messages['trust'] = {
   },
   entry: {
     asking: '{org} vous demande votre avis.',
-    contact: 'Questions : {contact}.',
-    why: 'Pourquoi : {purpose}',
+    contact: 'Questions : {contact}.',
+    why: 'Pourquoi : {purpose}',
   },
   noticeForm: {
     title: 'Notice de confidentialité',
     intro:
       'Affichée sur la page publique de confidentialité et sur la première page du questionnaire. Laissez un champ vide pour garder le texte par défaut, ou pour masquer cette partie.',
     controller: 'Organisation responsable',
-    controllerHelp: 'Par défaut : {org}',
-    contactName: 'Contact pour les questions de vie privée : nom ou fonction',
+    controllerHelp: 'Par défaut : {org}',
+    contactName: 'Contact pour les questions de vie privée : nom ou fonction',
     contactEmail: 'E-mail du contact',
     purpose: 'Pourquoi vous demandez',
-    purposeHelp: 'Une ou deux phrases simples. Vide : texte standard.',
+    purposeHelp: 'Une ou deux phrases simples. Vide : texte standard.',
     basis: 'Sur quelle base',
     basisConsent: 'Accord de la personne',
     basisInterest: 'Intérêt légitime de l’organisation',
@@ -270,7 +270,7 @@ export const trustFr: Messages['trust'] = {
       'Cherchez par lot de liens ou par date. Seuls les codes sont affichés, jamais à qui ils appartiennent.',
     batch: 'Lot de liens',
     allBatches: 'Tous les lots',
-    batchOption: '{when} : {n, plural, one {# lien} other {# liens}}',
+    batchOption: '{when} : {n, plural, one {# lien} other {# liens}}',
     from: 'Du',
     to: 'Au',
     search: 'Chercher',

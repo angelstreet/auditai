@@ -14,6 +14,7 @@ import { useI18n } from '@/components/I18nProvider';
 import { enumLabelOf } from '@/lib/enumLabel';
 import type { ErasurePreview } from '@/lib/deletionData';
 import {
+  handleRequestAction,
   previewErasureAction,
   triggerDeletePseudonymAction,
   triggerExportAction,
@@ -159,7 +160,10 @@ export function DeleteForm({ tenantId, initialCode = '' }: Props & { initialCode
           onClick={async () => {
             setChecking(true);
             setNotFound('');
-            const res = await previewErasureAction(tenantId, pseudonym);
+            const fd = new FormData();
+            fd.set('tenantId', tenantId);
+            fd.set('respondentPseudonym', pseudonym);
+            const res = await previewErasureAction({ ok: false, message: '' }, fd);
             setChecking(false);
             if (!res.ok || !res.preview) {
               setNotFound(res.message);
@@ -218,5 +222,21 @@ export function DeleteForm({ tenantId, initialCode = '' }: Props & { initialCode
         />
       </ConfirmDialog>
     </Stack>
+  );
+}
+
+/** "Mark as handled" for one privacy request; the list refreshes after the action. */
+export function HandleRequestForm({ tenantId, id }: { tenantId: TenantId; id: string }) {
+  const { t } = useI18n();
+  const [state, formAction] = useFormState(handleRequestAction, INITIAL);
+  return (
+    <form action={formAction}>
+      <input type="hidden" name="tenantId" value={tenantId} />
+      <input type="hidden" name="id" value={id} />
+      <Button type="submit" size="small" variant="outlined">
+        {t('trust.data.handle')}
+      </Button>
+      {state.message && !state.ok ? <StatusText status="error">{state.message}</StatusText> : null}
+    </form>
   );
 }

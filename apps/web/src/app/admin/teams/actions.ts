@@ -28,11 +28,10 @@ export async function inviteReferentAction(
   const email = String(formData.get('email') ?? '')
     .trim()
     .toLowerCase();
-  if (!isUuid(tenantId) || !isUuid(userId)) {
-    return { ok: false, message: t('trust.referents.errNotReferent') };
-  }
+  if (!isUuid(tenantId)) return { ok: false, message: t('trust.referents.errNotReferent') };
   const who = await resolveActor(tenantId);
   if (!who.ok) return { ok: false, message: who.message };
+  if (!isUuid(userId)) return { ok: false, message: t('trust.referents.errNotReferent') };
   if (email && !isPlausibleEmail(email))
     return { ok: false, message: t('trust.referents.errEmail') };
   try {

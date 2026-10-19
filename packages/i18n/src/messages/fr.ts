@@ -303,6 +303,6 @@ export const fr: Messages = {
     invalid: 'L’adresse e-mail ou le mot de passe est incorrect.',
     locked: 'Trop de tentatives. Réessayez dans quelques minutes.',
     failed: 'La connexion a échoué.',
-    forgot: 'Mot de passe oublié ?',
+    forgot: 'Mot de passe oublié ?',
   },
 };

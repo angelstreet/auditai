@@ -13,11 +13,10 @@ import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
-import { handleRequestAction } from './actions';
 import { listExportRequests } from '@/lib/exportData';
 import { enumLabel, getT } from '@/lib/i18n';
 import { formatDate, type MessageKey } from '@evolai/i18n';
-import { DeleteForm, ExportForm } from './DataAdminClient';
+import { DeleteForm, ExportForm, HandleRequestForm } from './DataAdminClient';
 import type { TenantId } from '@evolai/contracts';
 
 export const dynamic = 'force-dynamic';
@@ -223,13 +222,7 @@ export default async function DataPage({ searchParams }: PageProps) {
                     </td>
                     <td>
                       {r.status === 'open' ? (
-                        <form action={handleRequestAction}>
-                          <input type="hidden" name="tenantId" value={current} />
-                          <input type="hidden" name="id" value={r.id} />
-                          <Button type="submit" size="small" variant="outlined">
-                            {t('trust.data.handle')}
-                          </Button>
-                        </form>
+                        <HandleRequestForm tenantId={current} id={r.id} />
                       ) : (
                         t('trust.data.handled')
                       )}

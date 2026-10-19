@@ -110,6 +110,8 @@ type Action = (prev: never, fd: FormData) => Promise<unknown>;
 const ACTIONS: [string, () => Promise<Record<string, unknown>>][] = [
   ['admin/data', () => import('@/app/admin/data/actions')],
   ['admin/engagements', () => import('@/app/admin/engagements/actions')],
+  ['admin/teams', () => import('@/app/admin/teams/actions')],
+  ['admin/notice', () => import('@/app/admin/engagements/[id]/settings/actions')],
   ['admin/opportunities', () => import('@/app/admin/engagements/[id]/opportunities/actions')],
   ['admin/analyses', () => import('@/app/admin/engagements/[id]/analyses/[analysisId]/actions')],
   ['admin/synergies', () => import('@/app/admin/synergies/actions')],

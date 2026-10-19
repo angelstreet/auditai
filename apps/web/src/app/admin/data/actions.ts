@@ -102,10 +102,12 @@ export interface PreviewState {
 
 /** Count what an erasure would remove. Read only; an unknown code is said plainly. */
 export async function previewErasureAction(
-  tenantId: string,
-  pseudonym: string,
+  _prev: PreviewState,
+  formData: FormData,
 ): Promise<PreviewState> {
   const { t } = getT();
+  const tenantId = String(formData.get('tenantId') ?? '');
+  const pseudonym = String(formData.get('respondentPseudonym') ?? '');
   if (!isUuidV4(tenantId)) return { ok: false, message: t('admin.data.errInvalidTenant') };
   const who = await resolveActor(tenantId);
   if (!who.ok) return { ok: false, message: who.message };
@@ -123,12 +125,20 @@ export async function previewErasureAction(
 }
 
 /** Mark a privacy request as handled (clears the reply address). */
-export async function handleRequestAction(formData: FormData): Promise<void> {
+export async function handleRequestAction(
+  _prev: DataActionState,
+  formData: FormData,
+): Promise<DataActionState> {
+  const { t } = getT();
   const tenantId = String(formData.get('tenantId') ?? '');
   const id = String(formData.get('id') ?? '');
-  if (!isUuidV4(tenantId) || !/^[0-9a-f-]{36}$/i.test(id)) return;
+  if (!isUuidV4(tenantId)) return { ok: false, message: t('admin.data.errInvalidTenant') };
   const who = await resolveActor(tenantId);
-  if (!who.ok) return;
-  await handlePrivacyRequest(who.tenantId, who.actor, id);
+  if (!who.ok) return { ok: false, message: who.message };
+  if (!/^[0-9a-f-]{36}$/i.test(id)) return { ok: false, message: t('admin.data.errDelete') };
+  const done = await handlePrivacyRequest(who.tenantId, who.actor, id);
   revalidatePath('/admin/data');
+  return done
+    ? { ok: true, message: t('trust.data.handledOk') }
+    : { ok: false, message: t('admin.data.errDelete') };
 }
