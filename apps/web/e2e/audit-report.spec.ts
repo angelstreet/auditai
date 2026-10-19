@@ -52,6 +52,33 @@ interface Fixture {
   engagement: string;
 }
 
+/**
+ * Remove the report and every fixture row, so the specs that run after this one (TASK-S counts and
+ * next steps on the referent home) see client C exactly as seeded.
+ */
+const cleanupFixture = async (): Promise<void> => {
+  const [eng] = await query<{ id: string; tenant_id: string }>(
+    `SELECT e.id, e.tenant_id FROM engagements e JOIN tenants t ON t.id = e.tenant_id
+      WHERE t.slug = 'synthetic-client-c' ORDER BY e.created_at LIMIT 1`,
+  );
+  if (!eng) return;
+  await query('DELETE FROM audit_report_versions WHERE engagement_id = $1', [eng.id]);
+  await query('DELETE FROM audit_reports WHERE engagement_id = $1', [eng.id]);
+  await query('DELETE FROM opportunities WHERE engagement_id = $1 AND title = $2', [
+    eng.id,
+    OPP_TITLE,
+  ]);
+  await query(
+    `DELETE FROM invitations WHERE engagement_id = $1 AND respondent_pseudonym LIKE 'rpt-%'`,
+    [eng.id],
+  );
+  await query(`DELETE FROM teams WHERE tenant_id = $1 AND name = 'Synthetic report team'`, [
+    eng.tenant_id,
+  ]);
+};
+
+test.afterAll(cleanupFixture);
+
 /** Remove any report and fixture rows from an earlier run, then insert fresh ones. */
 const resetFixture = async (): Promise<Fixture> => {
   const [eng] = await query<{ id: string; tenant_id: string; qv: string }>(
