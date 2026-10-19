@@ -6,13 +6,10 @@ import Button from '@mui/material/Button';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
-import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { AppIcon } from '@evolai/ui';
 import { useI18n } from '@/components/I18nProvider';
-
-/** Remembers that the full banner was shown for this persona (UI state only, no authority). */
-export const VIEW_AS_SEEN_COOKIE = 'evolai_view_as_seen';
+import { VIEW_AS_SEEN_COOKIE } from '@/lib/viewAsSeen';
 
 /**
  * The view-as banner itself. Desktop: always the full sentence. Phones: the full sentence on the
@@ -95,18 +92,16 @@ export default function ViewAsBannerBar({
           ) : null}
         </Typography>
         {compact ? (
-          <Tooltip title={open ? t('client.viewAs.hideDetails') : t('client.viewAs.details')}>
-            <IconButton
-              onClick={() => setOpen((o) => !o)}
-              aria-expanded={open}
-              aria-controls="view-as-details"
-              aria-label={open ? t('client.viewAs.hideDetails') : t('client.viewAs.details')}
-              data-testid="view-as-details"
-              sx={{ display: { xs: 'inline-flex', sm: 'none' }, width: 44, height: 44 }}
-            >
-              <AppIcon name={open ? 'collapse' : 'expand'} />
-            </IconButton>
-          </Tooltip>
+          <IconButton
+            onClick={() => setOpen((o) => !o)}
+            aria-expanded={open}
+            aria-controls="view-as-details"
+            aria-label={open ? t('client.viewAs.hideDetails') : t('client.viewAs.details')}
+            data-testid="view-as-details"
+            sx={{ display: { xs: 'inline-flex', sm: 'none' }, width: 44, height: 44 }}
+          >
+            <AppIcon name={open ? 'collapse' : 'expand'} />
+          </IconButton>
         ) : null}
         <Box component="form" method="post" action="/api/view-as" sx={{ m: 0 }}>
           <input type="hidden" name="persona" value="self" />

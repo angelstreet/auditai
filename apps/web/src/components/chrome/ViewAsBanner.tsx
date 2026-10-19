@@ -2,7 +2,8 @@ import { cookies } from 'next/headers';
 import { getSession } from '@/lib/authServer';
 import { getT } from '@/lib/i18n';
 import { viewAsRoleLabel } from '@/lib/viewAsLabels';
-import ViewAsBannerBar, { VIEW_AS_SEEN_COOKIE } from './ViewAsBannerBar';
+import { VIEW_AS_SEEN_COOKIE } from '@/lib/viewAsSeen';
+import ViewAsBannerBar from './ViewAsBannerBar';
 
 /**
  * Sticky banner under the header while the owner views the app as a client persona (TASK-P,
