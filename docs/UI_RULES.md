@@ -135,4 +135,6 @@ While the owner views the app as someone else (ADR 0035): a sticky one-line bann
 every page, with the eye icon, the sentence "You are viewing <organisation> as <name> (<role>). Read only." and one
 outlined "Back to my view" button. Page surface with a warning-colour bottom border (state, not decoration). The
 avatar shows the persona's initials, the organisation is stated above the page title, and actions that would write
-show the read-only message instead. Never hide the banner on phones; it wraps rather than truncates.
+show the read-only message instead. Never hide the banner on phones. On a phone the first page shows the full
+sentence; after that it is one compact line ("Viewing as <name>. Read only.", a details toggle, the back button as
+an icon with its label as accessible name) so it does not eat the screen (ADR 0038).

@@ -116,6 +116,7 @@ write a new one that supersedes it.
 | 0036 | [Redaction terms admin](adr/0036-redaction-terms-admin.md)                                                               | TASK-Q                           | Accepted |
 | 0037 | [/intake behind sign-in, route inventory](adr/0037-intake-behind-sign-in-and-route-inventory.md)                         | TASK-R                           | Accepted |
 | 0038 | [Audit set-up, organisation context, plain wording, language](adr/0038-audit-setup-organisation-context-and-language.md) | TASK-T                           | Accepted |
+| 0039 | [The team referent never sees a per-link status](adr/0039-referent-sees-no-per-link-status.md)                    | TASK-S                           | Accepted |
 
 ## 4. The gates map (PRD §25.4)
 
@@ -179,7 +180,7 @@ Manual URLs (ports come from the `READY` line):
 - **RLS** — Every tenant-scoped table has a four-policy RLS pattern
   (`SELECT`, `INSERT`, `UPDATE`, `DELETE`) plus a `SET LOCAL
 app.tenant_id` / `app.is_service_account` switch. See ADR 0003.
-- **ADR numbering** — Next free is `0037`. One decision per ADR; never
+- **ADR numbering** — Next free is `0039`. One decision per ADR; never
   amend an old one.
 - **ROADMAP updates** — The State column flips and the README Status
   block updates in the same PR (or the immediately-following commit
@@ -274,7 +275,8 @@ docs/
    ├── 0033-invitations-tracking-reminders.md
    ├── 0034-mui-theme-and-standard-chrome.md
    ├── 0036-redaction-terms-admin.md
-   └── 0037-intake-behind-sign-in-and-route-inventory.md
+   ├── 0037-intake-behind-sign-in-and-route-inventory.md
+   └── 0038-referent-sees-no-per-link-status.md
 ```
 
 The contract map of every Zod schema and TS type in `@evolai/contracts`

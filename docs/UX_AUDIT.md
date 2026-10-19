@@ -71,6 +71,23 @@ Source: `packages/ui/src/tokens.css` (landing copy: `landing/brand/tokens.css`).
 
 ## Changelog
 
+### TASK-S (referent self-service and the per-link privacy fix, ADR 0038)
+
+From the five-persona test (docs/TEST_FEEDBACK_2026-10-19.md, items 1, 2, 3, 6, 14).
+
+- **Privacy**: the team space shows no per-link status anywhere (list, CSV, QR sheet, Home). The reminder list
+  is gone for referents; one generic reminder replaces it. Under 5 answers a team shows a band ("some",
+  "most"), never a number.
+- **Invitations**: every link in a bordered list with a copy button each, "copy all", CSV, QR sheet, and per
+  link a menu to copy the message with the link, share by email or WhatsApp. The ready-made message (what, how
+  long, anonymous, closing date, contact) is editable, in French or English.
+- **Reminders**: suggested days from the closing date; the Home call to action appears only on those days and
+  scrolls to the reminder; no "nobody to remind".
+- **Home**: the survey card (status in plain words, closing date, days left), answers per team as a bar with
+  "12 of 24 answered", and a next step that matches.
+- **Phone**: the view-as banner becomes one line with a details toggle after the first page; tabs are full
+  width with words only on phones, never clipped; the count field is full width; body text 16 px.
+
 ### TASK-L (UI glow-up on MUI, ADR 0034)
 
 The rules are [UI_RULES.md](UI_RULES.md); the plan and the screenshot sweep are in
