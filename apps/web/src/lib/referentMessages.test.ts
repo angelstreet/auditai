@@ -8,7 +8,7 @@ describe('prepareMessages (fr and en)', () => {
     const en = prepareMessages('en', facts).invite.text;
     expect(en).toContain('about 6 minutes');
     expect(en).toContain('anonymous');
-    expect(en).toContain('12 November 2026');
+    expect(en).toContain('November 12, 2026');
     expect(en).toContain('Demo Referent');
     const fr = prepareMessages('fr', facts).invite.text;
     expect(fr).toContain('environ 6 minutes');
