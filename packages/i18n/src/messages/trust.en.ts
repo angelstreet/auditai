@@ -51,7 +51,8 @@ export const trustEn = {
     statusReady: 'Can sign in',
     statusDisabled: 'Disabled',
     email: 'Their email address',
-    emailHelp: 'Leave empty to keep the current address. It is used to sign in and is not shown again.',
+    emailHelp:
+      'Leave empty to keep the current address. It is used to sign in and is not shown again.',
     create: 'Create sign-in link',
     creating: 'Creating…',
     linkLabel: 'Sign-in link',
@@ -67,7 +68,8 @@ export const trustEn = {
   },
   audit: {
     title: 'Audit trail',
-    intro: 'Who did what in this organisation, newest first. Nothing here shows answers or secrets.',
+    intro:
+      'Who did what in this organisation, newest first. Nothing here shows answers or secrets.',
     filterGroup: 'What',
     filterFrom: 'From',
     filterTo: 'To',
@@ -226,7 +228,8 @@ export const trustEn = {
     aiOn: 'AI is used to analyse answers',
     aiRoute: 'Approved AI service',
     aiHelp: 'Name the approved service. Without it the AI part stays hidden.',
-    retention: 'Answers are kept for {days, plural, one {# day} other {# days}}. This is set for the whole organisation.',
+    retention:
+      'Answers are kept for {days, plural, one {# day} other {# days}}. This is set for the whole organisation.',
     retentionMissing: 'No retention period is set for this organisation.',
     save: 'Save notice',
     saving: 'Saving…',

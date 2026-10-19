@@ -194,7 +194,8 @@ export const trustFr: Messages['trust'] = {
     kindWithdraw: 'Ne plus utiliser mes réponses',
     kindQuestion: 'Poser une question sur la vie privée',
     code: 'Votre code (facultatif)',
-    codeHelp: 'Avec votre code nous retrouvons vos réponses. Sans lui, nous ne pourrons peut-être pas.',
+    codeHelp:
+      'Avec votre code nous retrouvons vos réponses. Sans lui, nous ne pourrons peut-être pas.',
     message: 'Message (facultatif)',
     replyTo: 'E-mail pour vous répondre (facultatif)',
     replyHelp: 'Gardé seulement jusqu’au traitement de la demande.',
@@ -239,7 +240,8 @@ export const trustFr: Messages['trust'] = {
     errTooLong: 'Un des textes est trop long.',
     errFailed: 'La notice n’a pas pu être enregistrée. Réessayez.',
     warnTitle: 'Pas encore configuré',
-    warnHint: 'Ces parties restent masquées sur la page publique tant que vous ne les remplissez pas.',
+    warnHint:
+      'Ces parties restent masquées sur la page publique tant que vous ne les remplissez pas.',
     warnContact: 'Contact pour les questions de vie privée',
     warnProviders: 'Prestataires',
     warnRetention: 'Durée de conservation des réponses',
