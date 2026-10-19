@@ -3,7 +3,14 @@ import { AppIcon } from '@evolai/ui';
 import type { Translator } from '@evolai/i18n';
 
 /** One reassuring line with the shield icon; the detail is one tap away (PRD §5, §15). */
-export default function PrivacyNotice({ t }: { t: Translator }) {
+export default function PrivacyNotice({
+  t,
+  engagementId,
+}: {
+  t: Translator;
+  /** Opens the notice with this organisation's published details. */
+  engagementId?: string;
+}) {
   return (
     <section className="privacy" aria-label={t('survey.privacyMore')}>
       <p className="privacy-line">
@@ -17,7 +24,9 @@ export default function PrivacyNotice({ t }: { t: Translator }) {
           <li>{t('survey.privacy2')}</li>
           <li>{t('survey.privacy3')}</li>
         </ul>
-        <Link href="/privacy">{t('survey.privacyFull')}</Link>
+        <Link href={engagementId ? `/privacy?e=${engagementId}` : '/privacy'}>
+          {t('survey.privacyFull')}
+        </Link>
       </details>
     </section>
   );

@@ -88,6 +88,19 @@ From the five-persona test (docs/TEST_FEEDBACK_2026-10-19.md, items 1, 2, 3, 6, 
 - **Phone**: the view-as banner becomes one line with a details toggle after the first page; tabs are full
   width with words only on phones, never clipped; the count field is full width; body text 16 px.
 
+### TASK-U (referent login, privacy notice, audit trail, data safety, ADR 0040)
+
+- **Sign-in family**: `/set-password` and `/forgot-password` share the login card; one rule told up front
+  (12 characters), show/hide eye, errors inline, the same words whether or not an address exists. The login page has
+  a "Forgot password?" link.
+- **Privacy page** rebuilt as sections (who is asking, why, basis, what is and is not collected, who sees what,
+  retention, hosting and providers, AI use, rights) plus a plain request form. A part that is not configured is
+  left out and one line says who to ask. The first survey page says who is asking, why and for how long.
+- **Admin**: Audit trail tab (plain-words list, filter by kind and date, CSV); Referents section on Teams (create
+  sign-in link, copy); privacy notice fields and a "Not configured yet" warning on the engagement settings; Data
+  page shows what an erase removes before the confirmation, finds codes by batch or date, lists privacy requests.
+- **Small groups**: teams under 5 completed answers show "Hidden" and one sentence, no mascot, no counts.
+
 ### TASK-L (UI glow-up on MUI, ADR 0034)
 
 The rules are [UI_RULES.md](UI_RULES.md); the plan and the screenshot sweep are in

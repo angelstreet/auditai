@@ -267,15 +267,11 @@ test.describe('data page', () => {
     const code = 'no-such-respondent-0001';
     await page.locator('input[name=respondentPseudonym]').fill(code);
     await page.getByRole('button', { name: /Erase respondent|Effacer le répondant/ }).click();
-    const dialog = page.getByRole('dialog');
-    const confirm = dialog.getByRole('button', { name: /Erase respondent|Effacer le répondant/ });
-    await expect(confirm).toBeDisabled();
-    await dialog.getByRole('textbox').fill(code);
-    await expect(confirm).toBeEnabled();
-    await confirm.click();
+    // An unknown code is said plainly before any confirmation step (TASK-U, ADR 0040).
     await expect(
       page.getByText(/No respondent has this code|Aucun répondant n’a ce code/),
     ).toBeVisible();
+    await expect(page.getByRole('dialog')).toHaveCount(0);
   });
 
   test('an export shows a download button and plain column names', async ({ page }) => {

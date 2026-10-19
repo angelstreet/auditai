@@ -112,3 +112,125 @@ export const listDeletionEvents = async (
     return rows.map(fromRow);
   });
 };
+
+export interface ErasurePreview {
+  readonly links: number;
+  readonly surveys: number;
+  readonly answers: number;
+  readonly mascots: number;
+}
+
+/**
+ * What erasing this respondent code would remove, counted without changing anything (TASK-U). All
+ * zero means the code is unknown. Same scope as `erase_respondent_pseudonym`, shown in plain kinds.
+ */
+export const previewErasure = async (
+  tenantId: TenantId,
+  pseudonym: string,
+): Promise<ErasurePreview> =>
+  withTenant(tenantId, async (client) => {
+    const { rows } = await client.query<{
+      links: string;
+      surveys: string;
+      answers: string;
+      mascots: string;
+    }>(
+      `WITH inv AS (
+         SELECT id FROM invitations WHERE tenant_id = $1 AND respondent_pseudonym = $2
+       ), sub AS (
+         SELECT id FROM submissions WHERE tenant_id = $1 AND invitation_id IN (SELECT id FROM inv)
+       )
+       SELECT (SELECT count(*) FROM inv)::text AS links,
+              (SELECT count(*) FROM sub)::text AS surveys,
+              (SELECT count(*) FROM answers WHERE tenant_id = $1
+                  AND submission_id IN (SELECT id FROM sub))::text AS answers,
+              (SELECT count(*) FROM respondent_badges
+                WHERE tenant_id = $1 AND respondent_pseudonym = $2)::text AS mascots`,
+      [tenantId, pseudonym],
+    );
+    const r = rows[0];
+    return {
+      links: Number(r?.links ?? 0),
+      surveys: Number(r?.surveys ?? 0),
+      answers: Number(r?.answers ?? 0),
+      mascots: Number(r?.mascots ?? 0),
+    };
+  });
+
+export interface BatchOption {
+  readonly id: string;
+  readonly createdAt: string;
+  readonly count: number;
+}
+
+export interface CodeRow {
+  readonly code: string;
+  readonly teamName: string;
+  readonly status: string;
+  readonly createdAt: string;
+}
+
+export const CODE_SEARCH_LIMIT = 100;
+
+/** Batches of links, newest first, so the auditor can pick one by date. */
+export const listLinkBatches = async (tenantId: TenantId): Promise<BatchOption[]> =>
+  withTenant(tenantId, async (client) => {
+    const { rows } = await client.query<{ batch_id: string; created: Date | string; n: string }>(
+      `SELECT batch_id, min(created_at) AS created, count(*)::text AS n
+         FROM invitations WHERE tenant_id = $1 AND batch_id IS NOT NULL
+        GROUP BY batch_id ORDER BY min(created_at) DESC LIMIT 50`,
+      [tenantId],
+    );
+    return rows.map((r) => ({
+      id: r.batch_id,
+      createdAt: new Date(r.created).toISOString(),
+      count: Number(r.n),
+    }));
+  });
+
+/**
+ * Find respondent codes by batch and/or creation date. Returns codes, team, status and date only:
+ * never a delivery address or anything that says who the person is. The page is staff-only.
+ */
+export const findRespondentCodes = async (
+  tenantId: TenantId,
+  filter: { batchId?: string; from?: string; to?: string },
+): Promise<{ rows: CodeRow[]; truncated: boolean }> =>
+  withTenant(tenantId, async (client) => {
+    const params: unknown[] = [tenantId];
+    const where = ['i.tenant_id = $1'];
+    if (filter.batchId) {
+      params.push(filter.batchId);
+      where.push(`i.batch_id = $${params.length}`);
+    }
+    if (filter.from) {
+      params.push(filter.from);
+      where.push(`i.created_at >= $${params.length}::date`);
+    }
+    if (filter.to) {
+      params.push(filter.to);
+      where.push(`i.created_at < ($${params.length}::date + 1)`);
+    }
+    const { rows } = await client.query<{
+      respondent_pseudonym: string;
+      team_name: string;
+      status: string;
+      created_at: Date | string;
+    }>(
+      `SELECT i.respondent_pseudonym, t.name AS team_name, i.status, i.created_at
+         FROM invitations i JOIN teams t ON t.id = i.team_id
+        WHERE ${where.join(' AND ')}
+        ORDER BY i.created_at DESC, i.respondent_pseudonym
+        LIMIT ${CODE_SEARCH_LIMIT + 1}`,
+      params,
+    );
+    return {
+      rows: rows.slice(0, CODE_SEARCH_LIMIT).map((r) => ({
+        code: r.respondent_pseudonym,
+        teamName: r.team_name,
+        status: r.status,
+        createdAt: new Date(r.created_at).toISOString(),
+      })),
+      truncated: rows.length > CODE_SEARCH_LIMIT,
+    };
+  });

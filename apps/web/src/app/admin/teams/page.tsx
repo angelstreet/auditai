@@ -9,7 +9,10 @@ import type { MascotTier, TenantId } from '@evolai/contracts';
 import { sessionTenantIds } from '@/lib/authServer';
 import { getT } from '@/lib/i18n';
 import { formatDate } from '@evolai/i18n';
-import { listTeamBadges, listTeamsInTenant } from '@/lib/teamBadgeData';
+import { listHiddenTeamIds, listTeamBadges, listTeamsInTenant } from '@/lib/teamBadgeData';
+import { MIN_GROUP_SIZE } from '@/lib/invitationTracking';
+import { listReferents } from '@/lib/referentData';
+import ReferentInviteForm from './ReferentInviteForm';
 
 export const dynamic = 'force-dynamic';
 
@@ -38,10 +41,12 @@ export default async function TeamsPage({ searchParams }: PageProps) {
       </div>
     );
   }
-  const [teams, badges, setupTeams] = await Promise.all([
+  const [teams, badges, setupTeams, hiddenTeams, referents] = await Promise.all([
     listTeamsInTenant(current),
     listTeamBadges(current),
     listTeamsSetup(current),
+    listHiddenTeamIds(current),
+    listReferents(current),
   ]);
   const badgeByTeam = new Map(badges.map((b) => [b.teamId, b]));
   return (
@@ -94,6 +99,8 @@ export default async function TeamsPage({ searchParams }: PageProps) {
                   <h3>{team.name}</h3>
                   {tier ? (
                     <span className={`pill tier-${tier}`}>{t(`quiz.tier.${tier}`)}</span>
+                  ) : hiddenTeams.has(team.id) ? (
+                    <StatusText status="pending">{t('trust.small.pill')}</StatusText>
                   ) : (
                     <StatusText status="pending">{t('admin.teams.noBadgesPill')}</StatusText>
                   )}
@@ -119,7 +126,7 @@ export default async function TeamsPage({ searchParams }: PageProps) {
                       <dd>{formatDate(locale, b.computedAt)}</dd>
                     </dl>
                   </>
-                ) : (
+                ) : hiddenTeams.has(team.id) ? null : (
                   <p className="muted">{t('admin.teams.noBadges')}</p>
                 )}
               </li>
@@ -127,6 +134,46 @@ export default async function TeamsPage({ searchParams }: PageProps) {
           })}
         </ul>
       )}
+      {hiddenTeams.size > 0 ? (
+        <p className="muted" data-testid="small-group-note">
+          {t('trust.small.hidden', { n: MIN_GROUP_SIZE })}
+        </p>
+      ) : null}
+      <Paper variant="outlined" component="section" sx={{ p: 4, borderRadius: 3, my: 5 }}>
+        <Typography variant="sectionTitle" component="h2">
+          {t('trust.referents.title')}
+        </Typography>
+        <Typography color="text.secondary" sx={{ mb: 4 }}>
+          {t('trust.referents.intro')}
+        </Typography>
+        {referents.length === 0 ? (
+          <p className="muted">{t('trust.referents.none')}</p>
+        ) : (
+          <ul className="card-list">
+            {referents.map((r) => (
+              <li key={r.userId} className="card" data-testid="referent-card">
+                <header>
+                  <h3>
+                    {r.name} <span className="muted">({r.teamName})</span>
+                  </h3>
+                  <StatusText status={r.status === 'ready' ? 'success' : 'pending'}>
+                    {t(
+                      r.status === 'ready'
+                        ? 'trust.referents.statusReady'
+                        : r.status === 'disabled'
+                          ? 'trust.referents.statusDisabled'
+                          : 'trust.referents.statusNone',
+                    )}
+                  </StatusText>
+                </header>
+                {r.status === 'disabled' ? null : (
+                  <ReferentInviteForm tenantId={current} userId={r.userId} />
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </Paper>
       <p className="footnote">
         {t('admin.teams.footnote')}
         <HelpTip label={t('admin.teams.footnoteHelpAria')} text={t('admin.teams.footnoteHelp')} />

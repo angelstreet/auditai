@@ -74,17 +74,31 @@ the session picks up the new `platform_owner` membership, then open the account 
 
 ### Give a referent a real login
 
-When the owner has the referent's real address (and their agreement):
+Apply migration 0022 first. In the admin, **Teams**, **Referents**: type the referent's real address (with their
+agreement) and press "Create sign-in link". The address replaces the placeholder (only its hash is stored). The
+page shows a single-use link, valid 3 days: copy it and send it yourself (email goes out as well only when
+`EMAIL_PROVIDER` is configured). The referent opens it, chooses a password of 12 characters or more and lands on
+`/client`; the link works once. To send a fresh link (lost, expired), press the button again: the old one dies.
 
-```bash
-pnpm auditor:set-email --email <placeholder>.invalid --new-email <real address>   # placeholder removed
-pnpm auditor:set-password --email <real address>                                  # hidden prompt
-```
+Forgot password: `/forgot-password` sends a 60-minute link when an email provider is configured, with the same
+answer for every address. Without a provider nothing is delivered: create a new link from the Referents section
+(or `pnpm auditor:set-password` for staff). Rate limit: 3 requests per address and 10 per network address per
+hour.
 
-`set-email` replaces the stored hash, so the placeholder no longer exists afterwards; both steps write an
-`audit_log` row without any address. The referent signs in at `/login` and lands on `/client`. To revoke:
-`pnpm auditor:disable --email <real address>`. To remove a persona entirely, end its membership
-(`UPDATE memberships SET ends_at = now() WHERE user_id = ...`) as the service account.
+Trail: Admin, **Audit trail** shows `referent.invite`, `password.set`, `password.reset_request` and
+`password.reset` (never an address or a token). To revoke: `pnpm auditor:disable --email <real address>`. To
+remove a persona entirely, end its membership (`UPDATE memberships SET ends_at = now() WHERE user_id = ...`) as
+the service account. The older command-line route (`pnpm auditor:set-email` then `auditor:set-password`) still
+works.
+
+### Privacy notice and requests (TASK-U, ADR 0040)
+
+Admin, Engagements, the engagement's settings: fill "Privacy notice" (contact, service providers, AI service if
+AI analysis is on). The warning "Not configured yet" lists what the public page `/privacy?e=<engagement id>` still
+hides; the invitation page links to that address by itself. Retention comes from the organisation's
+`retention_days`. People send withdraw/erase requests from the public page; they appear in Admin, **Data**,
+"Privacy requests" (open first). Check who is asking, run the erase there if it is justified, then "Mark as
+handled" (this also clears the reply address). Set `EMAIL_PROVIDER` to be told by email.
 
 ### View as (owner)
 

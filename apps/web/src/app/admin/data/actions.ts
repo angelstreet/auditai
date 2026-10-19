@@ -2,7 +2,13 @@
 
 import { revalidatePath } from 'next/cache';
 import { exportKindSchema } from '@evolai/contracts';
-import { deletePseudonym, respondentExists } from '@/lib/deletionData';
+import {
+  deletePseudonym,
+  previewErasure,
+  respondentExists,
+  type ErasurePreview,
+} from '@/lib/deletionData';
+import { handlePrivacyRequest } from '@/lib/privacyRequests';
 import type { MessageKey } from '@evolai/i18n';
 import { runExport } from '@/lib/exportData';
 import { resolveActor } from '@/lib/authServer';
@@ -86,4 +92,53 @@ export async function triggerDeletePseudonymAction(
     console.error('pseudonym deletion failed', err);
     return { ok: false, message: t('admin.data.errDelete') };
   }
+}
+
+export interface PreviewState {
+  ok: boolean;
+  message: string;
+  preview?: ErasurePreview;
+}
+
+/** Count what an erasure would remove. Read only; an unknown code is said plainly. */
+export async function previewErasureAction(
+  _prev: PreviewState,
+  formData: FormData,
+): Promise<PreviewState> {
+  const { t } = getT();
+  const tenantId = String(formData.get('tenantId') ?? '');
+  const pseudonym = String(formData.get('respondentPseudonym') ?? '');
+  if (!isUuidV4(tenantId)) return { ok: false, message: t('admin.data.errInvalidTenant') };
+  const who = await resolveActor(tenantId);
+  if (!who.ok) return { ok: false, message: who.message };
+  if (!isPseudonym(pseudonym)) return { ok: false, message: t('admin.data.errInvalidPseudonym') };
+  try {
+    const preview = await previewErasure(who.tenantId, pseudonym);
+    if (preview.links + preview.surveys + preview.answers + preview.mascots === 0) {
+      return { ok: false, message: t('admin.setup.data.errNoSuchRespondent') };
+    }
+    return { ok: true, message: '', preview };
+  } catch (err) {
+    console.error('erasure preview failed', err);
+    return { ok: false, message: t('admin.data.errDelete') };
+  }
+}
+
+/** Mark a privacy request as handled (clears the reply address). */
+export async function handleRequestAction(
+  _prev: DataActionState,
+  formData: FormData,
+): Promise<DataActionState> {
+  const { t } = getT();
+  const tenantId = String(formData.get('tenantId') ?? '');
+  const id = String(formData.get('id') ?? '');
+  if (!isUuidV4(tenantId)) return { ok: false, message: t('admin.data.errInvalidTenant') };
+  const who = await resolveActor(tenantId);
+  if (!who.ok) return { ok: false, message: who.message };
+  if (!/^[0-9a-f-]{36}$/i.test(id)) return { ok: false, message: t('admin.data.errDelete') };
+  const done = await handlePrivacyRequest(who.tenantId, who.actor, id);
+  revalidatePath('/admin/data');
+  return done
+    ? { ok: true, message: t('trust.data.handledOk') }
+    : { ok: false, message: t('admin.data.errDelete') };
 }

@@ -7,6 +7,7 @@ import LinkProblem from '@/components/respondent/LinkProblem';
 import PrivacyNotice from '@/components/respondent/PrivacyNotice';
 import RespondentStatus from '@/components/respondent/RespondentStatus';
 import { estimatedMinutes, firstUnanswered, loadRespondent, teamProgress } from '@/lib/respondent';
+import { getPublicNotice } from '@/lib/privacyNotice';
 import { getCurrentBadgeForPseudonym } from '@/lib/respondentBadgeData';
 import { totalQuestionCount } from '@/lib/syntheticTemplate';
 import { isSubmitted } from '@/lib/surveyState';
@@ -52,6 +53,7 @@ export default async function WelcomePage({
     );
   }
 
+  const notice = (await getPublicNotice(invite.engagementId))?.notice ?? null;
   const answered = Object.keys(state.answers).length;
   const next = Math.min(firstUnanswered(state.answers, total), total - 1);
   return (
@@ -67,6 +69,19 @@ export default async function WelcomePage({
       <Typography variant="lede" component="p" color="text.secondary" sx={{ mt: 3, mb: 0 }}>
         {t('survey.lede')}
       </Typography>
+      {notice?.controller ? (
+        <Typography
+          variant="body2"
+          component="p"
+          color="text.secondary"
+          data-testid="who-is-asking"
+          sx={{ mt: 3, mb: 0 }}
+        >
+          {t('trust.entry.asking', { org: notice.controller })}{' '}
+          {notice.contact ? t('trust.entry.contact', { contact: notice.contact }) : null}{' '}
+          {t('trust.entry.why', { purpose: notice.purpose ?? t('trust.notice.defaultPurpose') })}
+        </Typography>
+      ) : null}
       <Stack direction="row" sx={{ mt: 4, gap: 2, alignItems: 'center', color: 'text.secondary' }}>
         <AppIcon name="time" />
         <Typography variant="body2" component="p" sx={{ m: 0 }}>
@@ -88,7 +103,7 @@ export default async function WelcomePage({
       <Typography variant="body2" component="p" color="text.secondary" sx={{ mt: 4, mb: 4 }}>
         {t('survey.howItWorks')}
       </Typography>
-      <PrivacyNotice t={t} />
+      <PrivacyNotice t={t} engagementId={invite.engagementId} />
     </Paper>
   );
 }

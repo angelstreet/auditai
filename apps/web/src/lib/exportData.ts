@@ -1,6 +1,7 @@
 import type { ExportKind, ExportRequest, TenantId, UserId } from '@evolai/contracts';
 import { exportKindSchema } from '@evolai/contracts';
 import { withTenant } from './db';
+import { MIN_GROUP_SIZE } from './invitationTracking';
 
 /**
  * Export data layer (M15, FR-09, PRD §15, §25.4).
@@ -141,9 +142,9 @@ const materialiseQuery = async (
       const r = await client.query(
         `SELECT id, team_id, dominant_tier, member_count, tortoise_count, fox_count, owl_count, computed_at
            FROM team_badges
-          WHERE tenant_id = $1
+          WHERE tenant_id = $1 AND member_count >= $2
           ORDER BY computed_at DESC`,
-        [tenantId],
+        [tenantId, MIN_GROUP_SIZE],
       );
       return { columns: r.fields.map((f) => f.name), values: r.rows.map(toRow) };
     }

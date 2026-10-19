@@ -7,11 +7,19 @@ import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 import { AppIcon, ConfirmDialog, StatusText } from '@evolai/ui';
 import type { TenantId } from '@evolai/contracts';
 import { useI18n } from '@/components/I18nProvider';
 import { enumLabelOf } from '@/lib/enumLabel';
-import { triggerDeletePseudonymAction, triggerExportAction, type DataActionState } from './actions';
+import type { ErasurePreview } from '@/lib/deletionData';
+import {
+  handleRequestAction,
+  previewErasureAction,
+  triggerDeletePseudonymAction,
+  triggerExportAction,
+  type DataActionState,
+} from './actions';
 
 const INITIAL: DataActionState = { ok: false, message: '' };
 
@@ -114,13 +122,17 @@ export function ExportForm({ tenantId }: Props) {
  * Erase: an outlined danger button that only opens a confirm dialog; the filled danger button lives
  * inside the dialog (UI_RULES §3). Confirming submits the form, so the server action is unchanged.
  */
-export function DeleteForm({ tenantId }: Props) {
+export function DeleteForm({ tenantId, initialCode = '' }: Props & { initialCode?: string }) {
   const { t } = useI18n();
   const [state, formAction] = useFormState(triggerDeletePseudonymAction, INITIAL);
   const formRef = useRef<HTMLFormElement>(null);
-  const [pseudonym, setPseudonym] = useState('');
+  const [pseudonym, setPseudonym] = useState(initialCode);
   const [typed, setTyped] = useState('');
   const [open, setOpen] = useState(false);
+  const [preview, setPreview] = useState<ErasurePreview | null>(null);
+  const [checking, setChecking] = useState(false);
+  // Said before any dialog: an unknown code never reaches the confirmation step (TASK-U).
+  const [notFound, setNotFound] = useState('');
   const valid = PSEUDONYM_PATTERN.test(pseudonym);
   return (
     <Stack component="form" ref={formRef} action={formAction} sx={{ gap: 3 }}>
@@ -131,7 +143,10 @@ export function DeleteForm({ tenantId }: Props) {
           label={t('admin.data.pseudonym')}
           placeholder={t('admin.data.pseudonymPlaceholder')}
           value={pseudonym}
-          onChange={(e) => setPseudonym(e.target.value.trim())}
+          onChange={(e) => {
+            setPseudonym(e.target.value.trim());
+            setNotFound('');
+          }}
           required
           helperText={t('admin.setup.data.codeHelp')}
           inputProps={{ pattern: '[a-z0-9-]{8,64}', autoComplete: 'off', spellCheck: false }}
@@ -141,18 +156,30 @@ export function DeleteForm({ tenantId }: Props) {
         <Button
           variant="outlined"
           color="error"
-          disabled={!valid}
-          onClick={() => {
+          disabled={!valid || checking}
+          onClick={async () => {
+            setChecking(true);
+            setNotFound('');
+            const fd = new FormData();
+            fd.set('tenantId', tenantId);
+            fd.set('respondentPseudonym', pseudonym);
+            const res = await previewErasureAction({ ok: false, message: '' }, fd);
+            setChecking(false);
+            if (!res.ok || !res.preview) {
+              setNotFound(res.message);
+              return;
+            }
+            setPreview(res.preview);
             setTyped('');
             setOpen(true);
           }}
           startIcon={<AppIcon name="delete" size={20} />}
           sx={{ minWidth: 160 }}
         >
-          {t('admin.data.erase')}
+          {checking ? t('trust.data.checking') : t('admin.data.erase')}
         </Button>
       </Stack>
-      <Result state={state} />
+      <Result state={notFound ? { ok: false, message: notFound } : state} />
       <ConfirmDialog
         open={open}
         danger
@@ -167,6 +194,22 @@ export function DeleteForm({ tenantId }: Props) {
           formRef.current?.requestSubmit();
         }}
       >
+        {preview ? (
+          <Box data-testid="erase-preview" sx={{ mb: 3 }}>
+            <Typography variant="subtitle2" component="p">
+              {t('trust.data.previewTitle')}
+            </Typography>
+            <ul>
+              <li>{t('trust.data.previewLinks', { n: preview.links })}</li>
+              <li>{t('trust.data.previewSurveys', { n: preview.surveys })}</li>
+              <li>{t('trust.data.previewAnswers', { n: preview.answers })}</li>
+              <li>{t('trust.data.previewMascots', { n: preview.mascots })}</li>
+            </ul>
+            <Typography variant="body2" color="text.secondary">
+              {t('trust.data.previewIrreversible')}
+            </Typography>
+          </Box>
+        ) : null}
         <TextField
           autoFocus
           fullWidth
@@ -179,5 +222,21 @@ export function DeleteForm({ tenantId }: Props) {
         />
       </ConfirmDialog>
     </Stack>
+  );
+}
+
+/** "Mark as handled" for one privacy request; the list refreshes after the action. */
+export function HandleRequestForm({ tenantId, id }: { tenantId: TenantId; id: string }) {
+  const { t } = useI18n();
+  const [state, formAction] = useFormState(handleRequestAction, INITIAL);
+  return (
+    <form action={formAction}>
+      <input type="hidden" name="tenantId" value={tenantId} />
+      <input type="hidden" name="id" value={id} />
+      <Button type="submit" size="small" variant="outlined">
+        {t('trust.data.handle')}
+      </Button>
+      {state.message && !state.ok ? <StatusText status="error">{state.message}</StatusText> : null}
+    </form>
   );
 }
