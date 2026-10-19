@@ -250,7 +250,12 @@ export default async function DataPage({ searchParams }: PageProps) {
         {exports.length === 0 ? (
           <p className="muted">{t('admin.data.noExports')}</p>
         ) : (
-          <div className="table-scroll">
+          <div
+            className="table-scroll"
+            tabIndex={0}
+            role="region"
+            aria-label={t('admin.data.recentExports', { n: exports.length })}
+          >
             <table className="data-table">
               <thead>
                 <tr>
@@ -282,7 +287,12 @@ export default async function DataPage({ searchParams }: PageProps) {
         {deletions.length === 0 ? (
           <p className="muted">{t('admin.data.noDeletions')}</p>
         ) : (
-          <div className="table-scroll">
+          <div
+            className="table-scroll"
+            tabIndex={0}
+            role="region"
+            aria-label={t('admin.data.recentDeletions', { n: deletions.length })}
+          >
             <table className="data-table">
               <thead>
                 <tr>
