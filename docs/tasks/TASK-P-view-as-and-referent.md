@@ -1,8 +1,8 @@
 # TASK-P — "View as" switcher for the owner, and the client referent view (model: opus)
 
 Owner request: during the dev phase the owner (Joachim, platform owner and auditor) must be able to test both
-experiences: (1) his own auditing view, (2) the client's view. First client: **Stratera**, whose team referent is
-**Zakaria Ayadi**. The owner switches between the views from the app without logging out.
+experiences: (1) his own auditing view, (2) the client's view. First client: a real company (name and referent are NOT written in this public repo: they are
+supplied as flags to the seed script and live only in the database). The owner switches between the views from the app without logging out.
 
 ## Facts
 
@@ -36,9 +36,9 @@ experiences: (1) his own auditing view, (2) the client's view. First client: **S
    the signed session cookie includes `viewAs` so it cannot be edited client-side; exiting restores the owner view;
    view-as expires with the session. No emails sent, no side effects triggered by viewing.
 2. **Visible and reversible UI.** In the header account menu (owner only): a "View as" section listing
-   "Me: auditor" and one entry per client persona (for now "Stratera: Zakaria Ayadi, referent"). While active, a
-   sticky, impossible-to-miss banner under the header (UI_RULES: icon, one line, e.g. "You are viewing Stratera as
-   Zakaria Ayadi (referent). Read only." plus a "Back to my view" button), the avatar shows the persona's initials,
+   "Me: auditor" and one entry per client persona (for now "<client name>: <referent name>, referent"). While active, a
+   sticky, impossible-to-miss banner under the header (UI_RULES: icon, one line, e.g. "You are viewing <client name> as
+   <referent name> (referent). Read only." plus a "Back to my view" button), the avatar shows the persona's initials,
    and the page title area states the tenant. French and English catalogs, tooltips and aria-labels, works in
    light and dark.
 3. **The client referent experience** (new routes, e.g. `/client/...`, plain short words, no jargon, icons,
@@ -51,16 +51,20 @@ experiences: (1) his own auditing view, (2) the client's view. First client: **S
      opportunities with status), no individual answers, no raw quotes that could identify a person; a "nothing
      published yet" empty state.
    - Navigation specific to this role (no auditor/admin links); tenant switcher absent (one organisation).
-   - Tenant isolation proven with tests: referent of Stratera cannot read any other tenant, any other team's
+   - Tenant isolation proven with tests: the referent of one client cannot read any other tenant, any other team's
      detail, answers, or admin routes (403/redirect), including by guessing ids.
 4. **Seed the first client** (idempotent script `pnpm seed:client` or similar, safe to run on the live DB, never
-   in a migration, refuses without an explicit `--tenant-name`/flags): create tenant "Stratera", one engagement
-   "Pilote Stratera" (fr), a team, a membership for the owner as auditor on that tenant, and the referent persona
-   user "Zakaria Ayadi" with the referent role. The referent gets NO password and a non-deliverable placeholder
+   in a migration, refuses without an explicit `--tenant-name`/flags): create a client tenant (name from `--tenant-name`), one engagement
+   a pilot engagement named from `--tenant-name` (fr), a team, a membership for the owner as auditor on that tenant, and the referent persona
+   a referent user (name from `--referent-name`) with the referent role. The referent gets NO password and a non-deliverable placeholder
    email on the reserved `.invalid` domain until the owner supplies a real address; the account is not loginable. Data is
-   synthetic only (no real survey answers). Document in docs/RUNBOOK.md how to later give Zakaria a real login
+   synthetic only (no real survey answers). Document in docs/RUNBOOK.md how to later give the referent a real login
    (set real email and password via the auditor CLI pattern) and how to remove the placeholder.
 5. **Tests and docs**: unit and DB tests for the session/viewAs logic and RLS, Playwright for the owner switching
    to the referent view and back (banner, read-only, nav, isolation) in fr and en at 360 and 1280, axe clean;
    update docs/UI_RULES.md (view-as banner pattern), docs/HANDOVER.md, docs/ROADMAP.md, docs/RUNBOOK.md and add
    an ADR (threat model for impersonation).
+
+## Public repo rule
+
+Never commit the real client or referent name anywhere (code, tests, fixtures, ADRs, docs, commit messages): tests and fixtures use the synthetic names "Demo Client" and "Demo Referent". Real names are only passed at seed time on the command line.
