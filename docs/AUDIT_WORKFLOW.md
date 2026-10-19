@@ -18,36 +18,32 @@ docs/TEST_FEEDBACK_2026-10-19.md.
 | 6   | Deliver                    | Auditor to referent and sponsor | Results page in the referent space (themes raised by at least five people, approved opportunities with status), team literacy aggregate, and the audit report: executive summary, readiness score, ranked opportunities, improvement steps with owners and timing, risks, next 30/60/90 days.                                  | Done (TASK-V, ADRs 0041-0043): audit report built in Admin, Reports from approved findings, with readiness score, improvement steps from a catalogue, ranking, 30/60/90-day plan, preview, publish and versions; Report tab and PDF in the referent space. Separate sponsor account and slide export: not built (the PDF goes to the sponsor). |
 | 7   | Follow up                  | Referent, auditor               | Pilot tracking, measured benefits, training recommendations, a second pulse. Retention purge and erasure requests.                                                                                                                                                                                                             | Retention and erasure done. Pilot tracking, training recommendations, alternatives comparison (FR-11, FR-12, FR-13): Phase 2, not built.                                                                                                                                                                                                       |
 
-## Readiness checklist before real data
+## MVP pilot: what is needed (owner decision 2026-10-19: we are doing an MVP)
 
-Must have (blocking):
+To run the first pilot with the first client the product is ready except for the content:
 
-1. Real login for the referent: owner supplies his email and his agreement; set-own-password link, password reset,
-   strong password rule; MFA or SSO is still open (ROADMAP Gate C).
-2. Completed privacy notice (controller, legal basis, retention, contact, sub-processors, AI disclosure, how to
-   withdraw without going through a manager) and a signed processing agreement with the client.
-3. An approved AI route (EU-hosted or self-hosted, written down in the contract) and the client's names added to
-   the redaction terms. Until then run the rule-based pipeline only.
-4. The questionnaire tailored to the client, French reviewed by a native speaker, mascot names decided.
-5. Referent self-service finished (TASK-S) including the rule that the referent never sees who answered.
-6. Engagement set-up screens (TASK-T): headcount, dates, status, teams, contact person.
-7. A recovery drill run once and recorded (backups exist on Neon; the drill is written, not run).
+1. The questionnaire tailored to the client (the seeded template is generic) and its French read once by a native
+   speaker. Mascot names can wait.
+2. The owner creates the invitation links in the app and sends them (or the referent does, with the share page).
+   The referent does not even need a login for this: the owner can create the links and use "View as" to check
+   what the referent sees.
 
-Needed to deliver the audit result (not blocking the survey itself):
+Everything else below is **later**, before scaling beyond a pilot, and does not block it.
 
-8. A review experience that works on real answers (grouping, source quotes, accept or reject in one tap).
-   Partly done: improvement steps are accepted or rejected in one tap in the report editor (TASK-V); the review of
-   themes on real answers still needs a human read on real data.
-9. The audit report: **done** (TASK-V, ADRs 0041, 0042). Structured document from approved findings, improvement
-   steps and a 30/60/90-day plan, published to the client space with versions, exported as PDF. The report is the
-   engagement-level (sponsor-level) aggregate; a separate sponsor login is not built.
-10. Improvement suggestions: **done** (TASK-V, ADRs 0041, 0043). A catalogue of 29 interventions (simplify,
-    automate, train, AI assistant, data and tools, rules) matched to each approved opportunity, with effort, impact,
-    risk, owner and timing set by the auditor; an optional model draft of the summary, never client-facing until the
-    auditor publishes.
-11. Phase 2 follow-up: pilot tracking and measured benefits, training recommendations.
+## Later (after the pilot, before scaling)
 
-How to run it in the app: [AUDITOR_GUIDE.md](AUDITOR_GUIDE.md).
+- Real login for the referent (the "Create sign-in link" flow in docs/RUNBOOK.md already works when wanted).
+- Filling the privacy fields per engagement (the notice has safe defaults and hides what is not configured).
+- Data processing agreement and controller decision with the client.
+- An approved AI route and the client's names in the redaction list (until then the analysis runs without AI).
+- A recorded recovery drill (backups exist on Neon).
+- MFA or SSO for staff and client logins (ROADMAP Gate C).
+- A review of themes on real answers by a human, a separate sponsor login, pilot tracking and measured
+  benefits, training recommendations, process maps and interview notes (Phase 2).
+
+Done and live (not to redo): items 5, 6, 8, 9 and 10 of the earlier list: referent self-service and the privacy
+rule (the referent never sees who answered), auditor set-up screens, the review and improvement-step flow, the
+audit report with PDF, and the auditor guide ([AUDITOR_GUIDE.md](AUDITOR_GUIDE.md)).
 
 ## Rules that stay true
 
