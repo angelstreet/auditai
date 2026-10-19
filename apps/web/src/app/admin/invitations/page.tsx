@@ -129,6 +129,8 @@ export default async function InvitationsPage({ searchParams }: { searchParams: 
         engagementId={engagementId}
         emailDelivery={settings.emailDelivery}
         reminderDays={settings.reminderDays.join(', ')}
+        closesOn={settings.closesOn ?? ''}
+        contact={settings.contact ?? ''}
         teams={teams}
         progress={prog.teams.map((r) => ({
           teamId: r.teamId,

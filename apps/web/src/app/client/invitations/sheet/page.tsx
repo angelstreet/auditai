@@ -6,12 +6,12 @@ import PrintButton from '@/app/admin/invitations/sheet/PrintButton';
 import { requireClientContext } from '@/lib/clientContext';
 import { loadClientSurvey } from '@/lib/clientData';
 import { getLocale, getT } from '@/lib/i18n';
-import { withAudit } from '@/lib/invitationData';
+import { teamLinksWithAudit } from '@/lib/invitationData';
 import { resolveBaseUrl } from '@/lib/invitationTracking';
 
 export const dynamic = 'force-dynamic';
 
-/** Printable QR sheet of the referent's open links, team name only (same layout as admin). */
+/** Printable QR sheet of every link of the referent's teams, no status (ADR 0039). */
 export default async function ClientQrSheet() {
   const { session, ctx } = await requireClientContext();
   const { t } = getT();
@@ -24,11 +24,10 @@ export default async function ClientQrSheet() {
     h.get('x-forwarded-host') ?? h.get('host'),
     h.get('x-forwarded-proto'),
   );
-  const rows = await withAudit(
+  const rows = await teamLinksWithAudit(
     ctx.tenantId,
     survey.engagementId,
     session.sub,
-    'all',
     baseUrl,
     ctx.teamIds,
   );

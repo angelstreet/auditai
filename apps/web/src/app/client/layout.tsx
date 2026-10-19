@@ -16,7 +16,7 @@ export default async function ClientLayout({ children }: { children: ReactNode }
   return (
     <div className="wide" data-testid="client-space" data-tenant={ctx.tenantId}>
       <Typography
-        variant="body2"
+        variant="body1"
         color="text.secondary"
         data-testid="client-organisation"
         sx={{ mb: 2, displayPrint: 'none' }}

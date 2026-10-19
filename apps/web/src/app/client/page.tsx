@@ -1,18 +1,30 @@
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import LinearProgress from '@mui/material/LinearProgress';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { AppIcon, EmptyState, IconTile, PageTitle, StatTiles, StatusText } from '@evolai/ui';
+import type { Translator } from '@evolai/i18n';
+import { AppIcon, EmptyState, IconTile, PageTitle, StatusText } from '@evolai/ui';
 import { requireClientContext } from '@/lib/clientContext';
 import {
+  firstLinkOn,
   loadClientSurvey,
   loadPublishedResults,
   loadTeamNames,
-  nextStep,
-  teamProgress,
+  referentProgress,
 } from '@/lib/clientData';
 import { getT } from '@/lib/i18n';
 import { MIN_GROUP_SIZE } from '@/lib/invitationTracking';
+import { longDate } from '@/lib/referentMessages';
+import {
+  barValue,
+  daysUntil,
+  nextStep,
+  reminderPlan,
+  type NextStep,
+  type Participation,
+} from '@/lib/referentView';
 
 export const dynamic = 'force-dynamic';
 
@@ -26,95 +38,198 @@ const STATUS_KEYS = new Set([
   'archived',
 ]);
 
-const CTA = {
-  create: { href: '/client/invitations', key: 'create' },
-  remind: { href: '/client/invitations#reminders', key: 'remind' },
+const CTA: Record<NextStep, string | null> = {
+  create: '/client/invitations',
+  share: '/client/invitations#links',
+  remind: '/client/invitations#reminder',
   wait: null,
-  results: { href: '/client/results', key: 'results' },
+  results: '/client/results',
+};
+
+const ICON = {
+  create: 'add',
+  share: 'invite',
+  remind: 'time',
+  wait: 'pending',
+  results: 'results',
 } as const;
 
+/** Words for one team's participation; never a number the minimum group rule hides. */
+const participationText = (t: Translator, p: Participation): { main: string; hint?: string } => {
+  if (p.invited === 0) return { main: t('client.home.noLinks') };
+  if (p.kind === 'hidden') {
+    return {
+      main: t('client.home.hidden', { count: p.invited }),
+      hint: t('client.home.hiddenHint', { n: MIN_GROUP_SIZE }),
+    };
+  }
+  if (p.kind === 'band') {
+    return {
+      main: t(`client.home.band.${p.band}`),
+      hint: t('client.home.bandHint', { n: MIN_GROUP_SIZE }),
+    };
+  }
+  return {
+    main: t('client.home.answered', { done: p.completed, total: p.invited }),
+    hint: t('client.home.startedCount', { count: p.started }),
+  };
+};
+
 /**
- * Team space home (TASK-P): completion counts for the referent's team only (with the fewer than
- * five rule), a plain status line, and the one thing to do next.
+ * Team space home (TASK-P, TASK-S, ADR 0039): the survey and its closing date, answers per team
+ * as a bar ("12 of 24 answered" only when the minimum group rules allow it), and the one thing to
+ * do next. The reminder step appears only on a suggested day while the survey is open.
  */
 export default async function ClientHome() {
   const { ctx } = await requireClientContext();
-  const { t } = getT();
+  const { t, locale } = getT();
   const teams = await loadTeamNames(ctx.tenantId, ctx.teamIds);
   const teamName = teams.join(', ');
+  const header = (
+    <PageTitle
+      id="client-title"
+      title={t('client.home.title')}
+      subtitle={t('client.home.subtitle', { team: teamName })}
+    />
+  );
   const survey = await loadClientSurvey(ctx.tenantId, ctx.teamIds);
   if (!survey) {
     return (
       <section aria-labelledby="client-title">
-        <PageTitle
-          id="client-title"
-          title={t('client.home.title')}
-          subtitle={t('client.home.subtitle', { team: teamName })}
-        />
+        {header}
         <EmptyState icon="pending" title={t('client.home.noSurvey')} />
       </section>
     );
   }
-  const [rows, results] = await Promise.all([
-    teamProgress(ctx.tenantId, survey.engagementId, ctx.teamIds),
+  const [rows, results, firstOn] = await Promise.all([
+    referentProgress(ctx.tenantId, survey, ctx.teamIds),
     loadPublishedResults(ctx.tenantId, survey.engagementId),
+    firstLinkOn(ctx.tenantId, survey.engagementId, ctx.teamIds),
   ]);
+  const today = new Date().toISOString().slice(0, 10);
+  const plan = reminderPlan({
+    closesOn: survey.closesOn,
+    firstLinkOn: firstOn,
+    schedule: survey.reminderDays,
+    today,
+  });
   const hasResults = results.themes.length > 0 || results.opportunities.length > 0;
-  const step = nextStep(survey.status, rows, hasResults);
+  const step = nextStep({ status: survey.status, rows, hasResults, plan });
   const cta = CTA[step];
-  const fewer = t('client.home.fewerThan', { n: MIN_GROUP_SIZE });
-  const invited = rows.reduce((n, r) => n + r.invited, 0);
-  const anySuppressed = rows.some((r) => r.suppressed);
-  const sum = (pick: (r: Extract<(typeof rows)[number], { suppressed: false }>) => number) =>
-    anySuppressed ? fewer : String(rows.reduce((n, r) => (r.suppressed ? n : n + pick(r)), 0));
   const statusKey = STATUS_KEYS.has(survey.status) ? survey.status : 'none';
+  const left = survey.closesOn ? daysUntil(survey.closesOn, today) : null;
+  const nextText =
+    step === 'share' && plan.next
+      ? t('client.home.next.shareUntil', { date: longDate(locale, plan.next) })
+      : t(`client.home.next.${step}`);
+
   return (
     <section aria-labelledby="client-title">
-      <PageTitle
-        id="client-title"
-        title={t('client.home.title')}
-        subtitle={t('client.home.subtitle', { team: teamName })}
-      />
-      <Typography variant="body1" sx={{ mb: 4 }} data-testid="client-status">
-        <StatusText status={statusKey === 'closed' ? 'success' : 'running'}>
-          {t('client.home.statusLabel')}: {survey.name} ·{' '}
-          {t(`client.home.status.${statusKey}` as 'client.home.status.none')}
-        </StatusText>
-      </Typography>
-      <StatTiles
-        items={[
-          { label: t('client.home.tiles.invited'), value: String(invited) },
-          { label: t('client.home.tiles.started'), value: sum((r) => r.started) },
-          {
-            label: t('client.home.tiles.completed'),
-            value: sum((r) => r.completed),
-            hint: anySuppressed ? t('client.home.fewerThanHint', { n: MIN_GROUP_SIZE }) : undefined,
-          },
-        ]}
-      />
-      <Paper variant="outlined" sx={{ p: 4, borderRadius: 3 }} data-testid="client-next">
-        <Stack direction="row" spacing={3} sx={{ alignItems: 'flex-start' }}>
-          <IconTile name={step === 'results' ? 'results' : step === 'wait' ? 'time' : 'forward'} />
-          <div>
-            <Typography variant="cardTitle" component="h2" sx={{ m: 0 }}>
-              {t('client.home.nextTitle')}
-            </Typography>
-            <Typography variant="body1" color="text.secondary" sx={{ m: 0, mt: 1 }}>
-              {t(`client.home.next.${step}`)}
-            </Typography>
-          </div>
-        </Stack>
-        {cta ? (
-          <Button
-            variant="contained"
-            href={cta.href}
-            endIcon={<AppIcon name="forward" size={16} />}
-            sx={{ mt: 6, minHeight: 44 }}
+      {header}
+      <Stack spacing={4}>
+        <Paper variant="outlined" sx={{ p: 4, borderRadius: 3 }} data-testid="client-survey">
+          <Typography variant="sectionTitle" component="h2" sx={{ m: 0, mb: 3 }}>
+            {t('client.home.surveyTitle')}
+          </Typography>
+          <Typography variant="body1" sx={{ m: 0 }} data-testid="client-status">
+            <StatusText
+              status={
+                statusKey === 'in_field'
+                  ? 'running'
+                  : statusKey === 'closed'
+                    ? 'success'
+                    : 'pending'
+              }
+            >
+              {survey.name} · {t(`client.home.status.${statusKey}` as 'client.home.status.none')}
+            </StatusText>
+          </Typography>
+          <Stack
+            direction="row"
+            sx={{ mt: 2, gap: 2, alignItems: 'center', color: 'text.secondary' }}
+            data-testid="client-closing"
           >
-            {t(`client.home.cta.${cta.key}`)}
-          </Button>
-        ) : null}
-      </Paper>
+            <AppIcon name="date" />
+            <Typography variant="body1" sx={{ m: 0 }}>
+              {survey.closesOn === null || left === null
+                ? t('client.home.noClosingDate')
+                : left < 0
+                  ? t('client.home.closed', { date: longDate(locale, survey.closesOn) })
+                  : `${t('client.home.closes', { date: longDate(locale, survey.closesOn) })} · ${t('client.home.daysLeft', { count: left })}`}
+            </Typography>
+          </Stack>
+        </Paper>
+
+        <Paper variant="outlined" sx={{ p: 4, borderRadius: 3 }} data-testid="client-progress">
+          <Typography variant="sectionTitle" component="h2" sx={{ m: 0, mb: 3 }}>
+            {t('client.home.progressTitle')}
+          </Typography>
+          <Stack spacing={4}>
+            {rows.map((p) => {
+              const text = participationText(t, p);
+              const value = p.invited === 0 ? null : barValue(p);
+              return (
+                <Box key={p.teamId} data-testid="client-team-progress" data-kind={p.kind}>
+                  <Stack
+                    direction={{ xs: 'column', sm: 'row' }}
+                    sx={{ justifyContent: 'space-between', gap: 1, mb: 2 }}
+                  >
+                    <Typography variant="cardTitle" component="h3" sx={{ m: 0 }}>
+                      {p.teamName}
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      sx={{ m: 0, fontVariantNumeric: 'tabular-nums' }}
+                      data-testid="client-team-answered"
+                    >
+                      {text.main}
+                    </Typography>
+                  </Stack>
+                  {value !== null ? (
+                    <LinearProgress
+                      variant="determinate"
+                      value={value}
+                      aria-label={t('client.home.progressAria', { team: p.teamName })}
+                      aria-valuetext={text.main}
+                      sx={{ height: 8, borderRadius: 4 }}
+                    />
+                  ) : null}
+                  {text.hint ? (
+                    <Typography variant="body1" color="text.secondary" sx={{ m: 0, mt: 2 }}>
+                      {text.hint}
+                    </Typography>
+                  ) : null}
+                </Box>
+              );
+            })}
+          </Stack>
+        </Paper>
+
+        <Paper variant="outlined" sx={{ p: 4, borderRadius: 3 }} data-testid="client-next">
+          <Stack direction="row" spacing={3} sx={{ alignItems: 'flex-start' }}>
+            <IconTile name={ICON[step]} />
+            <div>
+              <Typography variant="cardTitle" component="h2" sx={{ m: 0 }}>
+                {t('client.home.nextTitle')}
+              </Typography>
+              <Typography variant="body1" color="text.secondary" sx={{ m: 0, mt: 1 }}>
+                {nextText}
+              </Typography>
+            </div>
+          </Stack>
+          {cta ? (
+            <Button
+              variant="contained"
+              href={cta}
+              endIcon={<AppIcon name="forward" size={16} />}
+              data-testid={`client-cta-${step}`}
+              sx={{ mt: 6, minHeight: 44 }}
+            >
+              {t(`client.home.cta.${step as Exclude<NextStep, 'wait'>}`)}
+            </Button>
+          ) : null}
+        </Paper>
+      </Stack>
     </section>
   );
 }

@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { aggregateThemes, nextStep } from './clientData';
+import { aggregateThemes } from './clientData';
 import { parseLinkCount } from './clientActions';
-import type { TeamProgressRow } from './invitationTracking';
 
 const theme = (label: string, axis = 'practice', summary = 'quote that must never leak') => ({
   id: 't',
@@ -36,31 +35,6 @@ describe('aggregateThemes (only approved, at least five people, no summary)', ()
   it('ignores malformed payloads', () => {
     expect(aggregateThemes([{ submissionId: 's', payload: null }])).toEqual([]);
     expect(aggregateThemes([{ submissionId: 's', payload: { themes: 'x' } }])).toEqual([]);
-  });
-});
-
-describe('nextStep', () => {
-  const row = (invited: number, completed: number): TeamProgressRow =>
-    invited < 5
-      ? { suppressed: true, teamId: 't', teamName: 'T', invited }
-      : {
-          suppressed: false,
-          teamId: 't',
-          teamName: 'T',
-          invited,
-          opened: completed,
-          started: completed,
-          completed,
-          completionRate: 0,
-          lastActivityOn: null,
-        };
-  it('create, remind, wait, results', () => {
-    expect(nextStep('draft', [], false)).toBe('create');
-    expect(nextStep('in_field', [row(6, 2)], false)).toBe('remind');
-    expect(nextStep('in_field', [row(3, 3)], false)).toBe('remind');
-    expect(nextStep('in_field', [row(6, 6)], false)).toBe('wait');
-    expect(nextStep('analysis', [row(6, 6)], true)).toBe('results');
-    expect(nextStep('closed', [], false)).toBe('results');
   });
 });
 

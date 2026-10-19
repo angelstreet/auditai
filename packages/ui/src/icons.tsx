@@ -43,6 +43,12 @@ import HomeOutlined from '@mui/icons-material/HomeOutlined';
 import InsightsOutlined from '@mui/icons-material/InsightsOutlined';
 import QrCode2Outlined from '@mui/icons-material/QrCode2Outlined';
 import SendOutlined from '@mui/icons-material/SendOutlined';
+import MailOutlined from '@mui/icons-material/MailOutlined';
+import MoreVertOutlined from '@mui/icons-material/MoreVertOutlined';
+import EventOutlined from '@mui/icons-material/EventOutlined';
+import ExpandLessOutlined from '@mui/icons-material/ExpandLessOutlined';
+// Brand mark: there is no Outlined WhatsApp glyph; the filled logo is what people recognise.
+import WhatsApp from '@mui/icons-material/WhatsApp';
 
 /**
  * Icon registry (docs/UI_RULES.md §9): one Outlined icon per meaning. Pages use
@@ -94,6 +100,11 @@ export const icons = {
   invite: SendOutlined,
   qrCode: QrCode2Outlined,
   results: InsightsOutlined,
+  email: MailOutlined,
+  whatsapp: WhatsApp,
+  more: MoreVertOutlined,
+  date: EventOutlined,
+  collapse: ExpandLessOutlined,
 } as const;
 
 export type IconName = keyof typeof icons;

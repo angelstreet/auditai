@@ -1,7 +1,8 @@
 import type { TenantId } from '@evolai/contracts';
 import { withTenant } from './db';
-import { progress } from './invitationData';
-import { MIN_GROUP_SIZE, type TeamProgressRow } from './invitationTracking';
+import { teamCounts } from './invitationData';
+import { MIN_GROUP_SIZE, parseReminderDays } from './invitationTracking';
+import { parseContact, referentParticipation, type Participation } from './referentView';
 
 /**
  * Data for the client surface (TASK-P, ADR 0035). Every query runs under `withTenant` with the
@@ -9,8 +10,9 @@ import { MIN_GROUP_SIZE, type TeamProgressRow } from './invitationTracking';
  * id from another tenant or team returns nothing (row-level security plus explicit filters).
  *
  * What a team referent may see (PRD §4.3, §15): counts for their own teams (with the minimum
- * group rule), their team's open links, and what the auditor approved. Never an answer, never
- * an individual result, never which link belongs to which answer.
+ * group and minimum answered rules), every link of their team with no status, and what the
+ * auditor approved. Never an answer, never an individual result, never a per-link status: the
+ * referent knows which link went to whom (ADR 0039).
  */
 
 export interface ClientSurvey {
@@ -19,6 +21,12 @@ export interface ClientSurvey {
   readonly name: string;
   readonly status: string;
   readonly teams: readonly { id: string; name: string }[];
+  /** Closing day (ISO), or null when the auditor has not set one. */
+  readonly closesOn: string | null;
+  /** Contact person for the messages, as configured by the auditor, or null. */
+  readonly contact: string | null;
+  /** Reminder schedule (days after the first link), used when there is no closing date. */
+  readonly reminderDays: readonly number[];
 }
 
 /** Most recent non-archived engagement that includes one of the referent's teams. */
@@ -27,8 +35,15 @@ export const loadClientSurvey = async (
   teamIds: readonly string[],
 ): Promise<ClientSurvey | null> =>
   withTenant(tenantId as TenantId, async (client) => {
-    const { rows } = await client.query<{ id: string; name: string; status: string }>(
-      `SELECT e.id, tp.name, e.status
+    const { rows } = await client.query<{
+      id: string;
+      name: string;
+      status: string;
+      closes_on: string | null;
+      privacy_json: Record<string, unknown>;
+    }>(
+      `SELECT e.id, tp.name, e.status, e.privacy_json,
+              to_char(e.closes_at AT TIME ZONE 'UTC', 'YYYY-MM-DD') AS closes_on
          FROM engagements e
          JOIN templates tp ON tp.id = e.template_id
         WHERE e.tenant_id = $1 AND e.status <> 'archived'
@@ -46,7 +61,15 @@ export const loadClientSurvey = async (
         ORDER BY t.name`,
       [tenantId, row.id, teamIds],
     );
-    return { engagementId: row.id, name: row.name, status: row.status, teams: teams.rows };
+    return {
+      engagementId: row.id,
+      name: row.name,
+      status: row.status,
+      teams: teams.rows,
+      closesOn: row.closes_on,
+      contact: parseContact(row.privacy_json['contact']),
+      reminderDays: parseReminderDays(row.privacy_json['reminderDays']),
+    };
   });
 
 /** Names of the referent's teams, for titles, even before any survey exists. */
@@ -62,30 +85,47 @@ export const loadTeamNames = async (
     return rows.map((r) => r.name);
   });
 
-/** Progress rows of the referent's teams only; small teams stay suppressed. */
-export const teamProgress = async (
+/**
+ * Participation of the referent's teams, one row per team of the survey (a team with no link yet
+ * shows 0 invited). Raw counts stay in this function: only what `referentParticipation` allows
+ * leaves it.
+ */
+export const referentProgress = async (
+  tenantId: string,
+  survey: Pick<ClientSurvey, 'engagementId' | 'teams'>,
+  teamIds: readonly string[],
+): Promise<Participation[]> => {
+  const counts = await teamCounts(tenantId as TenantId, survey.engagementId);
+  return survey.teams
+    .filter((team) => teamIds.includes(team.id))
+    .map((team) => {
+      const c = counts.find((r) => r.teamId === team.id);
+      return referentParticipation({
+        teamId: team.id,
+        teamName: team.name,
+        invited: c?.invited ?? 0,
+        started: c?.started ?? 0,
+        completed: c?.completed ?? 0,
+      });
+    });
+};
+
+/** Day the first link of the referent's teams was created (ISO), or null: anchors reminders. */
+export const firstLinkOn = async (
   tenantId: string,
   engagementId: string,
   teamIds: readonly string[],
-): Promise<TeamProgressRow[]> => {
-  const all = await progress(tenantId as TenantId, engagementId);
-  return all.teams.filter((t) => teamIds.includes(t.teamId));
-};
-
-export type NextStep = 'create' | 'remind' | 'wait' | 'results';
-
-/** The one thing to do next, from counts and status alone. */
-export const nextStep = (
-  status: string,
-  rows: readonly TeamProgressRow[],
-  hasResults: boolean,
-): NextStep => {
-  if (hasResults || status === 'closed') return 'results';
-  const invited = rows.reduce((n, r) => n + r.invited, 0);
-  if (invited === 0) return 'create';
-  if (rows.some((r) => r.suppressed || r.completed < r.invited)) return 'remind';
-  return 'wait';
-};
+): Promise<string | null> =>
+  withTenant(tenantId as TenantId, async (client) => {
+    const { rows } = await client.query<{ first_on: string | null }>(
+      `SELECT to_char(MIN(created_at) AT TIME ZONE 'UTC', 'YYYY-MM-DD') AS first_on
+         FROM invitations
+        WHERE tenant_id = $1 AND engagement_id = $2 AND team_id = ANY($3::uuid[])
+          AND status <> 'revoked'`,
+      [tenantId, engagementId, teamIds],
+    );
+    return rows[0]?.first_on ?? null;
+  });
 
 export interface PublishedTheme {
   readonly axis: string;

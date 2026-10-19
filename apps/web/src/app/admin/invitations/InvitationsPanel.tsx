@@ -32,6 +32,8 @@ interface Props {
   engagementId: string;
   emailDelivery: boolean;
   reminderDays: string;
+  closesOn: string;
+  contact: string;
   teams: { id: string; name: string }[];
   progress: {
     teamId: string;
@@ -392,6 +394,23 @@ export default function InvitationsPanel(p: Props) {
               name="reminderDays"
               label={settings['reminderDays']}
               defaultValue={p.reminderDays}
+            />
+            <TextField
+              name="closesOn"
+              type="date"
+              label={settings['closesOn']}
+              helperText={settings['closesOnHint']}
+              defaultValue={p.closesOn}
+              slotProps={{ inputLabel: { shrink: true } }}
+              data-testid="settings-closes-on"
+            />
+            <TextField
+              name="contact"
+              label={settings['contact']}
+              helperText={settings['contactHint']}
+              defaultValue={p.contact}
+              slotProps={{ htmlInput: { maxLength: 120 } }}
+              data-testid="settings-contact"
             />
             <div>
               <Button type="submit" variant="outlined">

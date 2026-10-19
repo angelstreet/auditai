@@ -45,6 +45,10 @@ export const invitationsFr = {
     emailDelivery: 'Autoriser l’envoi par e-mail',
     emailHint: 'Désactivé par défaut. Sans cela, aucune adresse n’est jamais conservée.',
     reminderDays: 'Relances après (jours, séparés par des virgules)',
+    closesOn: 'Date de clôture',
+    closesOnHint: 'Visible par le référent et dans le message d’invitation.',
+    contact: 'Personne à contacter',
+    contactHint: 'Nom et e-mail ou téléphone, repris dans le message d’invitation.',
     save: 'Enregistrer',
   },
   export: {
@@ -115,6 +119,7 @@ export const invitationsFr = {
     duplicate_batch:
       'Le même lot a été créé il y a moins de dix minutes. Cochez la case pour le créer à nouveau.',
     not_open: 'Ce lien est déjà utilisé, révoqué ou expiré.',
+    bad_date: 'Saisissez une date de clôture valide, ou laissez vide.',
     error: 'Une erreur est survenue. Veuillez réessayer.',
   },
 } as const;

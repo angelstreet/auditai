@@ -15,6 +15,7 @@ const SECTIONS = [
 /**
  * Team space navigation (TASK-P): three sections only, no admin or auditor link and no
  * organisation switcher. The current section is marked by colour and underline (UI_RULES §6).
+ * Full width tabs; on phones the icons are dropped and labels may wrap, never clip.
  */
 export default function ClientTabs() {
   const { t } = useI18n();
@@ -28,8 +29,7 @@ export default function ClientTabs() {
       component="nav"
       aria-label={t('client.nav.aria')}
       value={current}
-      variant="scrollable"
-      scrollButtons={false}
+      variant="fullWidth"
       sx={{ mb: 6, borderBottom: 1, borderColor: 'divider', displayPrint: 'none' }}
     >
       {SECTIONS.map((s) => (
@@ -42,7 +42,14 @@ export default function ClientTabs() {
           label={t(`client.nav.${s.key}`)}
           aria-current={current === s.href ? 'page' : undefined}
           data-testid={`client-tab-${s.key}`}
-          sx={{ minHeight: 44 }}
+          sx={{
+            minHeight: 44,
+            minWidth: 0,
+            px: { xs: 1, sm: 3 },
+            whiteSpace: 'normal',
+            // Phones: words only, so no label is ever clipped (TASK-S, feedback item 14).
+            '& .MuiTab-icon': { display: { xs: 'none', sm: 'inline-flex' } },
+          }}
         />
       ))}
     </Tabs>
