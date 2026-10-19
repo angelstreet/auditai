@@ -248,6 +248,15 @@ export const trustFr: Messages['trust'] = {
     viewPublic: 'Voir la page publique',
   },
   data: {
+    status: {
+      pending: 'Non ouvert',
+      opened: 'Ouvert',
+      in_progress: 'En cours',
+      submitted: 'Répondu',
+      declined: 'Refusé',
+      expired: 'Expiré',
+      revoked: 'Annulé',
+    },
     previewTitle: 'Ceci sera effacé',
     previewNone: 'Aucun répondant n’a ce code. Rien à effacer.',
     previewLinks: '{n, plural, one {# lien de questionnaire} other {# liens de questionnaire}}',

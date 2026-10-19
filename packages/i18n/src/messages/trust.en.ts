@@ -244,6 +244,15 @@ export const trustEn = {
     viewPublic: 'See the public page',
   },
   data: {
+    status: {
+      pending: 'Not opened',
+      opened: 'Opened',
+      in_progress: 'In progress',
+      submitted: 'Answered',
+      declined: 'Declined',
+      expired: 'Expired',
+      revoked: 'Cancelled',
+    },
     previewTitle: 'This will be erased',
     previewNone: 'No respondent has this code. Nothing to erase.',
     previewLinks: '{n, plural, one {# survey link} other {# survey links}}',

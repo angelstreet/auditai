@@ -13,6 +13,7 @@ const SECTIONS = [
   { href: '/admin/synergies', key: 'tabSynergies' },
   { href: '/admin/data', key: 'tabData' },
   { href: '/admin/redaction', key: 'tabRedaction' },
+  { href: '/admin/audit', key: 'tabAudit' },
 ] as const;
 
 /**

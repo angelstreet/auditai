@@ -1,6 +1,19 @@
 import { PageTitle } from '@evolai/ui';
 import { sessionTenantIds } from '@/lib/authServer';
-import { listDeletionEvents } from '@/lib/deletionData';
+import {
+  CODE_SEARCH_LIMIT,
+  findRespondentCodes,
+  listDeletionEvents,
+  listLinkBatches,
+} from '@/lib/deletionData';
+import { listPrivacyRequests } from '@/lib/privacyRequests';
+import { parseDay } from '@/lib/auditTrail';
+import { isUuid } from '@/lib/invitationForm';
+import Button from '@mui/material/Button';
+import MenuItem from '@mui/material/MenuItem';
+import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField';
+import { handleRequestAction } from './actions';
 import { listExportRequests } from '@/lib/exportData';
 import { enumLabel, getT } from '@/lib/i18n';
 import { formatDate, type MessageKey } from '@evolai/i18n';
@@ -10,7 +23,7 @@ import type { TenantId } from '@evolai/contracts';
 export const dynamic = 'force-dynamic';
 
 interface PageProps {
-  searchParams: { tenant?: string };
+  searchParams: { tenant?: string; code?: string; batch?: string; from?: string; to?: string };
 }
 
 /**
@@ -46,10 +59,20 @@ export default async function DataPage({ searchParams }: PageProps) {
       </div>
     );
   }
-  const [exports, deletions] = await Promise.all([
+  const batchId = searchParams.batch && isUuid(searchParams.batch) ? searchParams.batch : undefined;
+  const from = parseDay(searchParams.from);
+  const to = parseDay(searchParams.to);
+  const searched = Boolean(batchId || from || to);
+  const [exports, deletions, batches, requests, found] = await Promise.all([
     listExportRequests(current),
     listDeletionEvents(current),
+    listLinkBatches(current),
+    listPrivacyRequests(current),
+    searched ? findRespondentCodes(current, { batchId, from, to }) : null,
   ]);
+  const initialCode = /^[a-z0-9-]{8,64}$/.test(searchParams.code ?? '')
+    ? (searchParams.code ?? '')
+    : '';
   return (
     <div className="wide">
       <PageTitle title={t('admin.data.title')} subtitle={t('admin.data.intro')} />
@@ -60,10 +83,163 @@ export default async function DataPage({ searchParams }: PageProps) {
         <ExportForm tenantId={current} />
       </section>
 
-      <section className="card">
+      <section className="card" id="erase">
         <h2>{t('admin.data.eraseTitle')}</h2>
         <p className="muted">{t('admin.data.eraseBody')}</p>
-        <DeleteForm tenantId={current} />
+        <DeleteForm tenantId={current} initialCode={initialCode} />
+      </section>
+
+      <section className="card" aria-labelledby="find-title">
+        <h2 id="find-title">{t('trust.data.findTitle')}</h2>
+        <p className="muted">{t('trust.data.findIntro')}</p>
+        <Stack
+          component="form"
+          method="get"
+          action="/admin/data"
+          direction={{ xs: 'column', sm: 'row' }}
+          sx={{ gap: 3, alignItems: { sm: 'flex-start' }, mb: 3 }}
+        >
+          <input type="hidden" name="tenant" value={current} />
+          <TextField
+            select
+            name="batch"
+            label={t('trust.data.batch')}
+            defaultValue={batchId ?? ''}
+            sx={{ minWidth: 260 }}
+          >
+            <MenuItem value="">{t('trust.data.allBatches')}</MenuItem>
+            {batches.map((b) => (
+              <MenuItem key={b.id} value={b.id}>
+                {t('trust.data.batchOption', {
+                  when: formatDate(locale, b.createdAt, {
+                    dateStyle: 'medium',
+                    timeStyle: 'short',
+                  }),
+                  n: b.count,
+                })}
+              </MenuItem>
+            ))}
+          </TextField>
+          <TextField
+            type="date"
+            name="from"
+            label={t('trust.data.from')}
+            defaultValue={from ?? ''}
+            InputLabelProps={{ shrink: true }}
+          />
+          <TextField
+            type="date"
+            name="to"
+            label={t('trust.data.to')}
+            defaultValue={to ?? ''}
+            InputLabelProps={{ shrink: true }}
+          />
+          <Button type="submit" variant="outlined" sx={{ minHeight: 56 }}>
+            {t('trust.data.search')}
+          </Button>
+        </Stack>
+        {found ? (
+          found.rows.length === 0 ? (
+            <p>{t('trust.data.noneFound')}</p>
+          ) : (
+            <>
+              <div className="table-scroll">
+                <table className="data-table" data-testid="code-results">
+                  <thead>
+                    <tr>
+                      <th>{t('trust.data.colCode')}</th>
+                      <th>{t('trust.data.colTeam')}</th>
+                      <th>{t('trust.data.colStatus')}</th>
+                      <th>{t('trust.data.colDate')}</th>
+                      <th />
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {found.rows.map((r) => (
+                      <tr key={r.code}>
+                        <td>
+                          <code>{r.code}</code>
+                        </td>
+                        <td>{r.teamName}</td>
+                        <td>{t(`trust.data.status.${r.status}` as MessageKey)}</td>
+                        <td>{when(r.createdAt)}</td>
+                        <td>
+                          <Button
+                            size="small"
+                            variant="text"
+                            href={`/admin/data?tenant=${current}&code=${encodeURIComponent(r.code)}#erase`}
+                            aria-label={t('trust.data.useCodeAria', { code: r.code })}
+                          >
+                            {t('trust.data.use')}
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {found.truncated ? (
+                <p className="muted">{t('trust.data.limit', { n: CODE_SEARCH_LIMIT })}</p>
+              ) : null}
+            </>
+          )
+        ) : null}
+      </section>
+
+      <section className="card" aria-labelledby="requests-title">
+        <h2 id="requests-title">{t('trust.data.requestsTitle')}</h2>
+        <p className="muted">{t('trust.data.requestsIntro')}</p>
+        {requests.length === 0 ? (
+          <p>{t('trust.data.requestsNone')}</p>
+        ) : (
+          <div className="table-scroll">
+            <table className="data-table" data-testid="privacy-requests">
+              <thead>
+                <tr>
+                  <th>{t('admin.data.colWhen')}</th>
+                  <th>{t('trust.data.colKind')}</th>
+                  <th>{t('trust.data.colCode')}</th>
+                  <th>{t('trust.data.colMessage')}</th>
+                  <th>{t('admin.data.colStatus')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {requests.map((r) => (
+                  <tr key={r.id}>
+                    <td>{when(r.createdAt)}</td>
+                    <td>
+                      {t(
+                        r.kind === 'erase'
+                          ? 'trust.data.kindErase'
+                          : r.kind === 'withdraw'
+                            ? 'trust.data.kindWithdraw'
+                            : 'trust.data.kindQuestion',
+                      )}
+                    </td>
+                    <td>{r.code ? <code>{r.code}</code> : t('common.dash')}</td>
+                    <td>
+                      {r.message ?? t('common.dash')}
+                      {r.replyTo ? <div className="muted">{r.replyTo}</div> : null}
+                    </td>
+                    <td>
+                      {r.status === 'open' ? (
+                        <form action={handleRequestAction}>
+                          <input type="hidden" name="tenantId" value={current} />
+                          <input type="hidden" name="id" value={r.id} />
+                          <Button type="submit" size="small" variant="outlined">
+                            {t('trust.data.handle')}
+                          </Button>
+                        </form>
+                      ) : (
+                        t('trust.data.handled')
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </section>
 
       <section className="card">
