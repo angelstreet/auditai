@@ -21,3 +21,5 @@ export * from './respondentBadge.js';
 export * from './export.js';
 export * from './deletion.js';
 export * from './redactionTerm.js';
+export * from './improvementCatalogue.js';
+export * from './report.js';

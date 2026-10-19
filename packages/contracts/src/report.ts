@@ -1,0 +1,146 @@
+import { z } from 'zod';
+import { improvementCategorySchema, levelSchema } from './improvementCatalogue.js';
+
+/**
+ * Audit report (TASK-V, ADR 0041, PRD §28.1): what the client receives at the end of an audit.
+ *
+ * The auditor edits a draft; publishing freezes a snapshot (`reportSnapshotSchema`) that is the
+ * only thing the client surface and the PDF read. The snapshot holds aggregates only: approved
+ * findings raised by at least the minimum group, scores of groups at or above the minimum
+ * group, accepted steps and the plan. No answer, quote, respondent code or per-person value can
+ * be represented in it (the schema is strict, unknown keys are rejected).
+ */
+
+export const reportStatusSchema = z.enum(['draft', 'in_review', 'published']);
+export type ReportStatus = z.infer<typeof reportStatusSchema>;
+
+export const stepStatusSchema = z.enum(['suggested', 'accepted', 'rejected']);
+export type StepStatus = z.infer<typeof stepStatusSchema>;
+
+export const stepSourceSchema = z.enum(['rule', 'ai', 'auditor']);
+export type StepSource = z.infer<typeof stepSourceSchema>;
+
+/** 30/60/90-day horizon of a step or plan item. */
+export const horizonSchema = z.enum(['d30', 'd60', 'd90']);
+export type Horizon = z.infer<typeof horizonSchema>;
+
+export const planItemSchema = z
+  .object({
+    id: z.string().min(1).max(40),
+    horizon: horizonSchema,
+    text: z.string().min(1).max(400),
+    owner: z.string().max(120),
+  })
+  .strict();
+export type PlanItem = z.infer<typeof planItemSchema>;
+
+/** PRD §6 proficiency levels, used as plain-word bands of the readiness score. */
+export const readinessLevelSchema = z.enum(['L0', 'L1', 'L2', 'L3', 'L4', 'L5']);
+export type ReadinessLevel = z.infer<typeof readinessLevelSchema>;
+
+export const readinessAxisSchema = z.enum(['literacy', 'practice', 'readiness']);
+export type ReadinessAxis = z.infer<typeof readinessAxisSchema>;
+
+const scoreSchema = z.number().int().min(0).max(100);
+
+export const readinessGroupSchema = z
+  .object({
+    /** Number of completed answers behind the group; always >= the minimum group size. */
+    people: z.number().int().min(1),
+    overall: scoreSchema.nullable(),
+    level: readinessLevelSchema.nullable(),
+    axes: z.array(
+      z
+        .object({
+          axis: readinessAxisSchema,
+          score: scoreSchema.nullable(),
+          level: readinessLevelSchema.nullable(),
+        })
+        .strict(),
+    ),
+  })
+  .strict();
+export type ReadinessGroup = z.infer<typeof readinessGroupSchema>;
+
+export const readinessReportSchema = z
+  .object({
+    /** Engagement-wide group, or null when fewer than the minimum group answered. */
+    overall: readinessGroupSchema.nullable(),
+    teams: z.array(readinessGroupSchema.extend({ team: z.string().min(1).max(120) }).strict()),
+    /** Teams left out because fewer than the minimum group answered (count only). */
+    hiddenTeams: z.number().int().min(0),
+    weights: z.record(readinessAxisSchema, z.number().min(0).max(1)),
+    minGroupSize: z.number().int().min(1),
+  })
+  .strict();
+export type ReadinessReport = z.infer<typeof readinessReportSchema>;
+
+export const reportFindingSchema = z
+  .object({
+    key: z.string().min(1).max(240),
+    axis: z.string().min(1).max(40),
+    label: z.string().min(1).max(240),
+    people: z.number().int().min(1),
+  })
+  .strict();
+export type ReportFinding = z.infer<typeof reportFindingSchema>;
+
+export const reportStepSchema = z
+  .object({
+    id: z.string().uuid(),
+    opportunityId: z.string().uuid(),
+    title: z.string().min(1).max(200),
+    description: z.string().max(2000),
+    category: improvementCategorySchema,
+    effort: levelSchema,
+    impact: levelSchema,
+    risk: levelSchema,
+    owner: z.string().max(120),
+    horizon: horizonSchema,
+    prerequisites: z.array(z.string().min(1).max(300)).max(8),
+  })
+  .strict();
+export type ReportStep = z.infer<typeof reportStepSchema>;
+
+export const quadrantSchema = z.enum(['quick_win', 'big_bet', 'fill_in', 'reconsider']);
+export type Quadrant = z.infer<typeof quadrantSchema>;
+
+export const reportOpportunitySchema = z
+  .object({
+    id: z.string().uuid(),
+    rank: z.number().int().min(1),
+    title: z.string().min(1).max(200),
+    axis: z.string().max(40).nullable(),
+    impact: levelSchema,
+    effort: levelSchema,
+    quadrant: quadrantSchema,
+  })
+  .strict();
+export type ReportOpportunity = z.infer<typeof reportOpportunitySchema>;
+
+export const reportSnapshotSchema = z
+  .object({
+    version: z.number().int().min(1),
+    /** Language the auditor wrote the content in. */
+    locale: z.enum(['fr', 'en']),
+    title: z.string().min(1).max(200),
+    organisation: z.string().max(200),
+    publishedAt: z.string().min(10),
+    summary: z.string().max(6000),
+    /** Keys of the findings the summary rests on (each one is in `findings`). */
+    summaryCitations: z.array(z.string().min(1).max(240)).max(30),
+    readiness: readinessReportSchema,
+    findings: z.array(reportFindingSchema).max(60),
+    opportunities: z.array(reportOpportunitySchema).max(60),
+    steps: z.array(reportStepSchema).max(200),
+    /** Risks written by the auditor, one per line. */
+    risks: z.array(z.string().min(1).max(400)).max(60),
+    /** What must be true before the accepted steps can start (deduplicated). */
+    prerequisites: z.array(z.string().min(1).max(300)).max(80),
+    plan: z.array(planItemSchema).max(60),
+    methodology: z.string().max(4000),
+    minGroupSize: z.number().int().min(1),
+    catalogueVersion: z.string().min(1).max(40),
+  })
+  .strict();
+export type ReportSnapshot = z.infer<typeof reportSnapshotSchema>;

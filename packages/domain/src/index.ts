@@ -9,3 +9,6 @@ export * from './permissions.js';
 export * from './scoring.js';
 export * from './template-versioning.js';
 export * from './literacyQuiz.js';
+export * from './readiness.js';
+export * from './improvementMatching.js';
+export * from './reportPlan.js';
