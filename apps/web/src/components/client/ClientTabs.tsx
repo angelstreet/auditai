@@ -10,10 +10,11 @@ const SECTIONS = [
   { href: '/client', key: 'home', icon: 'home' },
   { href: '/client/invitations', key: 'invitations', icon: 'invite' },
   { href: '/client/results', key: 'results', icon: 'results' },
+  { href: '/client/report', key: 'report', icon: 'report' },
 ] as const;
 
 /**
- * Team space navigation (TASK-P): three sections only, no admin or auditor link and no
+ * Team space navigation (TASK-P, TASK-V): four sections only, no admin or auditor link and no
  * organisation switcher. The current section is marked by colour and underline (UI_RULES §6).
  * Full width tabs; on phones the icons are dropped and labels may wrap, never clip.
  */

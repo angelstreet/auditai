@@ -62,6 +62,7 @@ export const adminFr: AdminMessages = {
     tabInvitations: 'Invitations',
     tabTeams: 'Équipes',
     tabSynergies: 'Synergies',
+    tabReports: 'Rapports',
     tabData: 'Données',
     tabRedaction: 'Noms à masquer',
     tabAudit: 'Journal d’audit',

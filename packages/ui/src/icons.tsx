@@ -13,6 +13,8 @@ import CloseOutlined from '@mui/icons-material/CloseOutlined';
 import ContentCopyOutlined from '@mui/icons-material/ContentCopyOutlined';
 import DarkModeOutlined from '@mui/icons-material/DarkModeOutlined';
 import DeleteOutlined from '@mui/icons-material/DeleteOutlined';
+import DescriptionOutlined from '@mui/icons-material/DescriptionOutlined';
+import PrintOutlined from '@mui/icons-material/PrintOutlined';
 import DownloadOutlined from '@mui/icons-material/DownloadOutlined';
 import EditOutlined from '@mui/icons-material/EditOutlined';
 import ErrorOutlineOutlined from '@mui/icons-material/ErrorOutlineOutlined';
@@ -105,6 +107,8 @@ export const icons = {
   more: MoreVertOutlined,
   date: EventOutlined,
   collapse: ExpandLessOutlined,
+  report: DescriptionOutlined,
+  print: PrintOutlined,
 } as const;
 
 export type IconName = keyof typeof icons;

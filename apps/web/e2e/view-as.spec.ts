@@ -112,7 +112,7 @@ for (const locale of LOCALES) {
     await expect(banner).toHaveCSS('position', 'sticky');
     await expect(page.getByTestId('account-button')).toContainText('SS');
     await expect(page.getByTestId('client-organisation')).toContainText('Synthetic client C');
-    await expect(page.locator('[data-testid^="client-tab-"]')).toHaveCount(3);
+    await expect(page.locator('[data-testid^="client-tab-"]')).toHaveCount(4);
     await expect(page.locator('main a[href^="/admin"], header a[href^="/admin"]')).toHaveCount(0);
     await expect(page.locator('h1:visible')).toHaveCount(1);
     await axe(page, `${locale} client home (view as)`);
@@ -130,6 +130,11 @@ for (const locale of LOCALES) {
     await page.getByTestId('client-tab-results').click();
     await page.waitForURL(/\/client\/results$/);
     await axe(page, `${locale} client results (view as)`);
+    // The report tab (TASK-V) is read only by nature: no form, nothing unpublished.
+    await page.getByTestId('client-tab-report').click();
+    await page.waitForURL(/\/client\/report$/);
+    await expect(page.locator('main form')).toHaveCount(0);
+    await axe(page, `${locale} client report (view as)`);
 
     // Isolation: the staff surface is closed, other tenants and APIs refuse.
     await page.goto('/admin/engagements');

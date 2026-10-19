@@ -25,6 +25,7 @@ export const clientEn = {
     home: 'Home',
     invitations: 'Invitations',
     results: 'Results',
+    report: 'Report',
   },
   organisation: 'Organisation: {tenant}',
   home: {

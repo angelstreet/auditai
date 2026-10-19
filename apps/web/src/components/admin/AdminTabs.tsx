@@ -11,6 +11,7 @@ const SECTIONS = [
   { href: '/admin/invitations', key: 'tabInvitations' },
   { href: '/admin/teams', key: 'tabTeams' },
   { href: '/admin/synergies', key: 'tabSynergies' },
+  { href: '/admin/reports', key: 'tabReports' },
   { href: '/admin/data', key: 'tabData' },
   { href: '/admin/redaction', key: 'tabRedaction' },
   { href: '/admin/audit', key: 'tabAudit' },

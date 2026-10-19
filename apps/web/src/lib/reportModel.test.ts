@@ -207,12 +207,13 @@ describe('summary draft', () => {
     opportunities: (v: { list: string }) => `First steps: ${v.list}.`,
     closing: 'Details follow.',
     levelName: (l: string) => `level ${l}`,
+    listSep: '; ',
   };
 
   it('cites the findings it names, most raised first', () => {
     const d = draftSummary(readiness, findings, ['Automate the weekly report'], words);
     expect(d.text).toBe(
-      '12 people answered; readiness 48/100 (level L2). Main findings: Weekly report by hand ; Unsure how to check answers. First steps: Automate the weekly report. Details follow.',
+      '12 people answered; readiness 48/100 (level L2). Main findings: Weekly report by hand; Unsure how to check answers. First steps: Automate the weekly report. Details follow.',
     );
     expect(d.citations).toEqual(findings.map((f) => f.key));
   });

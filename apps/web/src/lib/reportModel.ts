@@ -218,6 +218,8 @@ export interface SummaryWords {
   readonly opportunities: (vars: { list: string }) => string;
   readonly closing: string;
   readonly levelName: (level: string) => string;
+  /** List separator, e.g. '; ' (en) or ' ; ' with a no-break space (fr). */
+  readonly listSep: string;
 }
 
 /**
@@ -238,9 +240,9 @@ export const draftSummary = (
       ? w.intro({ people: o.people, score: o.overall, level: w.levelName(o.level) })
       : w.introNoScore,
   );
-  if (top.length > 0) parts.push(w.findings({ list: top.map((f) => f.label).join(' ; ') }));
+  if (top.length > 0) parts.push(w.findings({ list: top.map((f) => f.label).join(w.listSep) }));
   if (rankedTitles.length > 0) {
-    parts.push(w.opportunities({ list: rankedTitles.slice(0, 2).join(' ; ') }));
+    parts.push(w.opportunities({ list: rankedTitles.slice(0, 2).join(w.listSep) }));
   }
   parts.push(w.closing);
   return { text: parts.join(' '), citations: top.map((f) => f.key) };

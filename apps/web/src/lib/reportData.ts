@@ -314,7 +314,7 @@ const loadInputsWith = async (
     name: string | null;
     organisation: string | null;
   }>(
-    `SELECT e.locale, e.name,
+    `SELECT e.locale, COALESCE(e.name, (SELECT tp.name FROM templates tp WHERE tp.id = e.template_id)) AS name,
             (SELECT COALESCE(o.trading_name, o.legal_name) FROM organisations o
               WHERE o.tenant_id = e.tenant_id ORDER BY o.created_at LIMIT 1) AS organisation
        FROM engagements e WHERE e.tenant_id = $1 AND e.id = $2`,
@@ -379,11 +379,12 @@ export const listReports = (tenantId: TenantId): Promise<ReportListRow[]> =>
       visible_version: number | null;
       updated_at: string | null;
     }>(
-      `SELECT e.id AS engagement_id, e.name, e.status AS engagement_status,
+      `SELECT e.id AS engagement_id, COALESCE(e.name, tp.name) AS name, e.status AS engagement_status,
               r.id AS report_id, r.status, r.version, r.updated_at,
               (SELECT max(v.version) FROM audit_report_versions v
                 WHERE v.report_id = r.id AND v.unpublished_at IS NULL) AS visible_version
          FROM engagements e
+         JOIN templates tp ON tp.id = e.template_id
          LEFT JOIN audit_reports r ON r.engagement_id = e.id AND r.tenant_id = e.tenant_id
         WHERE e.tenant_id = $1 AND e.status <> 'archived'
         ORDER BY e.created_at DESC, e.id`,
@@ -461,6 +462,13 @@ export const loadReportForEngagement = (
       visibleVersion: visible.rows[0]?.version ?? null,
     };
   });
+
+/** Language the report is written in, or null when it does not exist in this tenant. */
+export const loadReportLocale = (tenantId: TenantId, reportId: string) =>
+  withTenant(
+    tenantId,
+    async (client) => (await loadReportRow(client, tenantId, reportId))?.locale ?? null,
+  );
 
 /** Insert the rule-based suggestions for every approved opportunity; returns how many were new. */
 const suggestWith = async (
@@ -818,7 +826,7 @@ export const savePlan = (tenantId: TenantId, actor: string, reportId: string, pl
   });
 
 /** Copy the model draft into the summary (still a draft the auditor edits). */
-export const useAiDraft = (tenantId: TenantId, actor: string, reportId: string) =>
+export const applyAiDraft = (tenantId: TenantId, actor: string, reportId: string) =>
   withTenant(tenantId, async (client) => {
     const r = await editable(client, tenantId, reportId);
     if (!r.aiDraft) throw new ReportError('no_draft');

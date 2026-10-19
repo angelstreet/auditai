@@ -2,6 +2,7 @@ import type { Messages } from './index.js';
 import { adminFr } from './admin.fr.js';
 import { clientFr } from './client.fr.js';
 import { trustFr } from './trust.fr.js';
+import { reportFr } from './report.fr.js';
 
 /**
  * Catalogue français (vouvoiement pour tout contenu destiné aux clients et aux employés, ADR 0024).
@@ -287,6 +288,7 @@ export const fr: Messages = {
   admin: adminFr,
   client: clientFr,
   trust: trustFr,
+  report: reportFr,
   auth: {
     notSignedIn: 'Vous n’êtes pas connecté',
     notMember: 'Vous n’appartenez pas à cette organisation',
