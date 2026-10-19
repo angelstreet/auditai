@@ -76,7 +76,8 @@ test.describe('auditor auth (ADR 0023)', () => {
   });
 
   test('a tenant-A user cannot export or erase tenant B (forged tenantId)', async ({ page }) => {
-    await signInAsAuditorA(page, /\/admin\/data/);
+    await signInAsAuditorA(page);
+    await page.goto('/admin/data');
     // ?tenant=B is ignored: the page stays on a tenant the session grants.
     await page.goto(`/admin/data?tenant=${TENANT_B}`);
     await expect(page.locator('input[name=tenantId]').first()).toHaveValue(USER_A.tenant);
@@ -97,19 +98,21 @@ test.describe('auditor auth (ADR 0023)', () => {
         .forEach((i) => (i.value = t));
     }, TENANT_B);
     await page.getByRole('button', { name: 'Run export' }).click();
-    await expect(page.getByText('Not a member of this tenant')).toBeVisible();
+    await expect(page.getByText('You do not belong to this organisation')).toBeVisible();
 
     await page.fill('input[name=respondentPseudonym]', 'synthetic-employee-001');
     await page.getByRole('button', { name: 'Erase respondent' }).click();
     // Erase only runs from the confirm dialog (UI_RULES §3).
+    await page.getByRole('dialog').getByLabel('Respondent code').fill('synthetic-employee-001');
     await page.getByRole('dialog').getByRole('button', { name: 'Erase respondent' }).click();
-    await expect(page.getByText('Not a member of this tenant').nth(1)).toBeVisible();
+    await expect(page.getByText('You do not belong to this organisation').nth(1)).toBeVisible();
 
     expect([await exportsB(), await erasuresB()]).toEqual(before);
   });
 
   test('an export by tenant A records the real user id', async ({ page }) => {
-    await signInAsAuditorA(page, /\/admin\/data/);
+    await signInAsAuditorA(page);
+    await page.goto('/admin/data');
     const mine = () =>
       count(
         'SELECT count(*) AS n FROM export_requests WHERE tenant_id = $1 AND requested_by = $2',

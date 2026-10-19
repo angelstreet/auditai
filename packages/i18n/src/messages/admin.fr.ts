@@ -63,7 +63,7 @@ export const adminFr: AdminMessages = {
     tabTeams: 'Équipes',
     tabSynergies: 'Synergies',
     tabData: 'Données',
-    tabRedaction: 'Rédaction',
+    tabRedaction: 'Noms à masquer',
   },
   engagements: {
     title: 'Missions d’audit',
@@ -110,7 +110,8 @@ export const adminFr: AdminMessages = {
     synergyMeta: '{n} mission(s) · {status}',
     teamFallback: 'équipe',
     teamMeta: '{n} membre(s) · {t}/{f}/{o}',
-    footnote: 'Chaque carte ouvre sa source. Les cartes {delivered} comptent le travail terminé.',
+    footnote:
+      'Chaque carte ouvre sa source. Les cartes « {delivered} » comptent le travail terminé.',
   },
   teams: {
     title: 'Profils d’équipe',

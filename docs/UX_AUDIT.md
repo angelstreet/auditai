@@ -145,3 +145,13 @@ The rules are [UI_RULES.md](UI_RULES.md); the plan and the screenshot sweep are 
    aggregate-by-default rule (managers get aggregate results, never individual answers). The sentences
    now say "a summary for the whole team, without names" (FR: "une synthèse pour toute l’équipe, sans
    noms"); the text lives only in the message catalogs.
+
+### TASK-T (auditor set-up, orientation, wording, language; ADR 0038)
+
+- Auditor screens lose the internal words (tenant, model route, smoke, PRD,
+  pseudonym, raw ids): `jargon.test.ts` now guards both catalogs. The privacy rule reads "Hidden under 5 people to
+  protect privacy" once. The mascot tie-break moved into a help tooltip. The header names the organisation. Sign-in
+  lands on the portfolio, which has a five-step first-run guide. Dates read `Oct 19, 2026` and `19 oct. 2026`; status
+  words are translated; the language switch re-renders on the server; the employee entry page follows the
+  engagement language. Erase asks for the code and names an unknown code; export has plain column names and a
+  download button.

@@ -40,20 +40,21 @@ The Phase 2 milestones are tracked as M10 – M13 above. All four are done: M10 
 
 Work that came out of the Phase 1 and Phase 2 review. Each task has a brief in `docs/tasks/`.
 
-| Task | Scope                                                                                                       | PR                    | State       |
-| ---- | ----------------------------------------------------------------------------------------------------------- | --------------------- | ----------- |
-| A    | Auditor sign-in (ADR 0023), tenant taken from the session, real actor in the audit trail                    | #26                   | done        |
-| B    | Real pseudonym erasure cascade (ADR 0030), scheduled retention, CSV and database hardening                  | #25                   | done        |
-| C    | French and English across the web app (ADR 0024)                                                            | #29                   | done        |
-| D    | CI coverage gate (ADR 0020), manual e2e workflow (ADR 0021), docs hygiene                                   | #24                   | done        |
-| E    | Design tokens, shared components, style guard, UX audit (ADR 0025); respondent flow in one tap per question | #30, #31              | done        |
-| F    | Rename to EvolAI (ADR 0026)                                                                                 | #32                   | done        |
-| G    | One self-hosted font, Playwright in CI, neutral summary wording (ADR 0027)                                  | #33                   | done        |
-| H    | Model-backed synthesis behind an allowlisted provider abstraction, Gate B (ADR 0029)                        | #34                   | done        |
-| I    | Accessibility gate (axe, keyboard), next steps and contact block, French copy pass (ADR 0028)               | direct commit 6c7a69a | done        |
-| J    | Housekeeping: this roadmap and README, ADR number check, CODEOWNERS, smoke actors, name audit (ADR 0031)    | #35                   | done        |
-| K    | Production readiness: credentials, auditor CLI, login hardening, wording, region, health, cron (ADR 0032)   | this PR               | in progress |
-| P    | "View as" for the owner (signed, read only, audited) and the team referent space `/client` (ADR 0035)       | see git log           | done        |
+| Task | Scope                                                                                                                | PR                    | State       |
+| ---- | -------------------------------------------------------------------------------------------------------------------- | --------------------- | ----------- |
+| A    | Auditor sign-in (ADR 0023), tenant taken from the session, real actor in the audit trail                             | #26                   | done        |
+| B    | Real pseudonym erasure cascade (ADR 0030), scheduled retention, CSV and database hardening                           | #25                   | done        |
+| C    | French and English across the web app (ADR 0024)                                                                     | #29                   | done        |
+| D    | CI coverage gate (ADR 0020), manual e2e workflow (ADR 0021), docs hygiene                                            | #24                   | done        |
+| E    | Design tokens, shared components, style guard, UX audit (ADR 0025); respondent flow in one tap per question          | #30, #31              | done        |
+| F    | Rename to EvolAI (ADR 0026)                                                                                          | #32                   | done        |
+| G    | One self-hosted font, Playwright in CI, neutral summary wording (ADR 0027)                                           | #33                   | done        |
+| H    | Model-backed synthesis behind an allowlisted provider abstraction, Gate B (ADR 0029)                                 | #34                   | done        |
+| I    | Accessibility gate (axe, keyboard), next steps and contact block, French copy pass (ADR 0028)                        | direct commit 6c7a69a | done        |
+| J    | Housekeeping: this roadmap and README, ADR number check, CODEOWNERS, smoke actors, name audit (ADR 0031)             | #35                   | done        |
+| K    | Production readiness: credentials, auditor CLI, login hardening, wording, region, health, cron (ADR 0032)            | this PR               | in progress |
+| P    | "View as" for the owner (signed, read only, audited) and the team referent space `/client` (ADR 0035)                | see git log           | done        |
+| T    | Auditor set-up (engagements, teams, launch, preview), organisation in the header, plain wording, language (ADR 0038) | see git log           | done        |
 
 CI fixes that landed alongside: #27 (database URL passed through turbo to the tests) and #28 (smokes and
 mobile-survey e2e made green).

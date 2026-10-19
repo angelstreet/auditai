@@ -60,7 +60,7 @@ export const adminEn = {
     tabTeams: 'Teams',
     tabSynergies: 'Synergies',
     tabData: 'Data',
-    tabRedaction: 'Redaction',
+    tabRedaction: 'Names to hide',
   },
   engagements: {
     title: 'Audit engagements',

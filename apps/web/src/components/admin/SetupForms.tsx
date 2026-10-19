@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -12,36 +12,16 @@ import MenuItem from '@mui/material/MenuItem';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { AppIcon, ConfirmDialog, StatusText } from '@evolai/ui';
-import type { MessageKey } from '@evolai/i18n';
+import { AppIcon } from '@evolai/ui';
 import { useI18n } from '@/components/I18nProvider';
 import {
-  changeStatusAction,
   createEngagementAction,
   createTeamAction,
   updateEngagementAction,
   updateTeamAction,
 } from '@/app/admin/engagements/actions';
-import { setupIdle, type SetupActionState } from '@/app/admin/engagements/state';
-
-/** One line of feedback for a set-up action: icon plus plain words, announced politely. */
-export function SetupResult({ state }: { state: SetupActionState }) {
-  const { t } = useI18n();
-  return (
-    <Box aria-live="polite" sx={{ minHeight: 24 }}>
-      {state.code !== 'idle' ? (
-        <StatusText status={state.ok ? 'success' : 'error'}>
-          {t(`admin.setup.result.${state.code}` as MessageKey)}
-        </StatusText>
-      ) : null}
-    </Box>
-  );
-}
-
-// Memoised so a re-render never rewrites the hidden tenant field (see e2e/auth.spec.ts).
-const TenantField = memo(function TenantField({ tenantId }: { tenantId: string }) {
-  return <input type="hidden" name="tenantId" value={tenantId} />;
-});
+import { setupIdle } from '@/app/admin/engagements/state';
+import { SetupResult, TenantField } from './SetupParts';
 
 function Submit({ label, icon }: { label: string; icon?: 'add' }) {
   const { pending } = useFormStatus();
@@ -178,93 +158,6 @@ export function EngagementForm({
       {values.locked ? null : (
         <Submit label={editing ? t('admin.setup.form.save') : t('admin.setup.form.create')} />
       )}
-    </Stack>
-  );
-}
-
-/** Status section: the launch and close buttons, each behind a plain confirmation. */
-export function StatusPanel({
-  tenantId,
-  engagementId,
-  status,
-  hasTeams,
-}: {
-  tenantId: string;
-  engagementId: string;
-  status: string;
-  hasTeams: boolean;
-}) {
-  const { t } = useI18n();
-  const [state, action] = useFormState(changeStatusAction, setupIdle);
-  const formRef = useRef<HTMLFormElement>(null);
-  const [asking, setAsking] = useState<'launch' | 'close' | null>(null);
-  const canLaunch = status === 'draft' || status === 'scheduled';
-  const canClose = status === 'in_field';
-  const submit = (change: 'launch' | 'close') => {
-    const form = formRef.current;
-    if (!form) return;
-    (form.elements.namedItem('change') as HTMLInputElement).value = change;
-    (form.elements.namedItem('confirm') as HTMLInputElement).value = 'yes';
-    form.requestSubmit();
-  };
-  return (
-    <Stack component="form" ref={formRef} action={action} sx={{ gap: 3 }}>
-      <TenantField tenantId={tenantId} />
-      <input type="hidden" name="engagementId" value={engagementId} />
-      <input type="hidden" name="change" value="" />
-      <input type="hidden" name="confirm" value="" />
-      <Typography>{t(`admin.setup.status.${status}` as MessageKey)}</Typography>
-      {canLaunch ? (
-        <Box>
-          <Button
-            variant="contained"
-            disabled={!hasTeams}
-            onClick={() => setAsking('launch')}
-            startIcon={<AppIcon name="act" size={20} />}
-          >
-            {t('admin.setup.status.launch')}
-          </Button>
-          {hasTeams ? null : (
-            <Typography variant="caption" color="text.secondary" component="p" sx={{ mt: 1 }}>
-              {t('admin.setup.status.needTeams')}
-            </Typography>
-          )}
-        </Box>
-      ) : null}
-      {canClose ? (
-        <Box>
-          <Button variant="outlined" color="error" onClick={() => setAsking('close')}>
-            {t('admin.setup.status.close')}
-          </Button>
-        </Box>
-      ) : null}
-      <SetupResult state={state} />
-      <ConfirmDialog
-        open={asking !== null}
-        danger={asking === 'close'}
-        title={
-          asking === 'close'
-            ? t('admin.setup.status.closeTitle')
-            : t('admin.setup.status.launchTitle')
-        }
-        body={
-          asking === 'close'
-            ? t('admin.setup.status.closeBody')
-            : t('admin.setup.status.launchBody')
-        }
-        confirmLabel={
-          asking === 'close'
-            ? t('admin.setup.status.closeConfirm')
-            : t('admin.setup.status.launchConfirm')
-        }
-        cancelLabel={t('admin.setup.status.cancel')}
-        onClose={() => setAsking(null)}
-        onConfirm={() => {
-          const change = asking;
-          setAsking(null);
-          if (change) submit(change);
-        }}
-      />
     </Stack>
   );
 }

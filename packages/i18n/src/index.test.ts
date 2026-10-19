@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   createTranslator,
+  deName,
   defaultLocale,
   formatCurrency,
   formatDate,
@@ -152,5 +153,14 @@ describe('Intl helpers', () => {
     expect(formatCurrency('fr', 12000).replace(/\s/g, ' ')).toContain('12 000');
     expect(formatDate('fr', '2026-03-05', { dateStyle: 'long' })).toBe('5 mars 2026');
     expect(formatDate('en', '2026-03-05', { dateStyle: 'long' })).toBe('March 5, 2026');
+  });
+});
+
+describe('deName', () => {
+  it('elides "de" before a vowel in French and leaves names as written', () => {
+    expect(deName('fr', 'Équipe pilote')).toBe('d’Équipe pilote');
+    expect(deName('fr', 'Equipe pilote')).toBe('d’Equipe pilote');
+    expect(deName('fr', 'Santé')).toBe('de Santé');
+    expect(deName('en', 'Équipe pilote')).toBe('Équipe pilote');
   });
 });
