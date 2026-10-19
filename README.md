@@ -14,7 +14,9 @@ The milestones cover the auditor review, opportunity register, sponsor onboardin
 cross-team synergies, the gamified literacy quiz with mascot badges, and FR-09 retention, deletion and export.
 The follow-ups add real auditor sign-in with tenant isolation, real pseudonym erasure, French and English in
 the app, the accessibility gate, and the first model-backed AI synthesis behind an allowlisted provider (the
-default route is still the rule-based one). Open work is listed in [docs/ROADMAP.md](docs/ROADMAP.md#what-is-left):
+default route is still the rule-based one). Later tasks add the auditor set-up screens, the client referent
+space, and the audit report the client receives: improvement steps from a catalogue, a readiness score, a
+30/60/90-day plan, publication to the client space and a PDF ([docs/AUDITOR_GUIDE.md](docs/AUDITOR_GUIDE.md)). Open work is listed in [docs/ROADMAP.md](docs/ROADMAP.md#what-is-left):
 Gate B real-model run and EU or self-hosted route, Gate C SSO/MFA and production hosting, invitations and
 reminders (FR-03), real-device and screen-reader tests, and the Phase 3 items. Real survey data needs the Gate B
 and Gate C items closed first. The product requirements are in [docs/PRD.md](docs/PRD.md); the phased

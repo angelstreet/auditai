@@ -8,7 +8,10 @@
 export interface AiLogEvent {
   readonly event: 'ai.call' | 'ai.invalid-output' | 'ai.failed-closed' | 'ai.done';
   readonly tenantId: string;
-  readonly submissionId: string;
+  /** The analysed submission (analysis runs), or absent for a report draft. */
+  readonly submissionId?: string;
+  /** The report being drafted (TASK-V report summary runs). */
+  readonly reportId?: string;
   readonly route: string;
   readonly attempt?: number;
   readonly inputTokens?: number;

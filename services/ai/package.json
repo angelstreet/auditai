@@ -13,11 +13,13 @@
     "team-rollup-smoke": "node --import tsx scripts/team-rollup-smoke.ts",
     "retention-smoke": "node --import tsx scripts/retention-smoke.ts",
     "retention-run": "node --import tsx scripts/retention-run.ts",
-    "eval": "node --import tsx scripts/eval.ts"
+    "eval": "node --import tsx scripts/eval.ts",
+    "report-draft": "node --import tsx scripts/report-draft.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "0.130.0",
     "@evolai/contracts": "workspace:*",
+    "@evolai/domain": "workspace:*",
     "pg": "8.13.1",
     "zod": "3.23.8"
   },

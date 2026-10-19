@@ -117,6 +117,30 @@ with copy, copy all, CSV, QR sheet, email and WhatsApp sharing (nothing is sent 
 reminder message. The referent never sees which link was answered; if a client asks "who has not answered?", the
 answer is no, by design (ADR 0039). Per-link status stays on the auditor page.
 
+## Produce the audit result for a client (TASK-V, ADRs 0041-0043)
+
+Prerequisite: migrations **0023** and **0024** applied (above). The full walk-through in plain words is in
+[AUDITOR_GUIDE.md](AUDITOR_GUIDE.md).
+
+1. Approve the analyses (themes) and the opportunities of the engagement as usual. Only themes raised by at least
+   5 people and opportunities in the approved, in progress or delivered states reach the report.
+2. Admin, **Reports**: "Start the report". The rule-based matcher proposes up to three improvement steps per
+   approved opportunity from the catalogue (`packages/contracts/src/improvementCatalogue.ts`, version stamped on the
+   report). Accept, edit (effort, impact, risk, owner as a role, timing) or reject each one; add steps from the
+   catalogue or write your own. "Suggest again" proposes steps for opportunities approved later.
+3. Summary: "Write a first draft", then rewrite it in your own words and tick the findings it rests on. Optional AI
+   draft (needs an approved real route, never in CI):
+   `DATABASE_URL=... EVOLAI_AI_PROVIDER=... EVOLAI_AI_MODEL=... EVOLAI_AI_REGION=... pnpm --filter @evolai/ai report-draft -- --tenant <id> --engagement <id> --actor <your user id>`;
+   it prints the route and cost, and the draft appears in the editor as "AI draft, not reviewed".
+4. "Build from the accepted steps" for the 30/60/90-day plan, then edit lines; fill risks and the method note.
+5. "Mark ready for review", check "Preview as the client" (or read the reason it is not ready), then "Publish" and
+   confirm. The publish gate refuses: no summary, no cited finding, a cited finding no longer approved, no accepted
+   step, a name from the "names to hide" list, or six words copied from what a respondent wrote.
+6. The referent sees it in the **Report** tab and downloads the PDF; you can download the same PDF from the editor
+   for the sponsor. Each download is in the audit trail.
+7. Changes after publishing: "Start a new version" (the client keeps the published one until you publish again).
+   "Unpublish" withdraws it at once.
+
 ## Rotate secrets
 
 1. **App secrets** (`AUTH_SESSION_SECRET`, `SURVEY_SIGNING_SECRET`, `CRON_SECRET`): generate a value with

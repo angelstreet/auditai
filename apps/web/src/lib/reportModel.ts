@@ -8,16 +8,15 @@ import {
   type ReportSnapshot,
   type ReportStep,
 } from '@evolai/contracts';
-import { rankOpportunities, uniqueLines } from '@evolai/domain';
+import { findingKey, rankOpportunities, uniqueLines } from '@evolai/domain';
 
 /**
  * Pure model of the audit report (TASK-V, ADR 0041): the snapshot the client sees, the publish
  * gate, and the rule-based summary draft. No database here, so every privacy rule is unit-tested.
  */
 
-/** Stable key of an approved finding: its axis and its label, case-insensitive. */
-export const findingKey = (axis: string, label: string): string =>
-  `${axis}|${label.trim().toLowerCase()}`.slice(0, 240);
+/** Stable key of an approved finding (shared with the AI worker). */
+export { findingKey };
 
 export interface StepRow {
   readonly id: string;
