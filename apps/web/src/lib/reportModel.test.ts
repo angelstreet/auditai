@@ -1,0 +1,224 @@
+import { describe, expect, it } from 'vitest';
+import type { ReadinessReport } from '@evolai/contracts';
+import {
+  buildSnapshot,
+  draftSummary,
+  findLeak,
+  findingKey,
+  type SnapshotInput,
+  type StepRow,
+} from './reportModel';
+
+const OPP_A = '0a000000-0000-4000-8000-00000000000a';
+const OPP_B = '0b000000-0000-4000-8000-00000000000b';
+
+const readiness: ReadinessReport = {
+  overall: {
+    people: 12,
+    overall: 48,
+    level: 'L2',
+    axes: [
+      { axis: 'literacy', score: 40, level: 'L2' },
+      { axis: 'practice', score: 50, level: 'L2' },
+      { axis: 'readiness', score: 55, level: 'L3' },
+    ],
+  },
+  teams: [],
+  hiddenTeams: 1,
+  weights: { literacy: 1 / 3, practice: 1 / 3, readiness: 1 / 3 },
+  minGroupSize: 5,
+};
+
+const step = (over: Partial<StepRow> & { id: string; opportunityId: string }): StepRow => ({
+  catalogueId: 'train.ai_basics',
+  source: 'rule',
+  status: 'accepted',
+  category: 'train',
+  title: 'AI basics for the team',
+  description: 'A short session.',
+  effort: 'low',
+  impact: 'medium',
+  risk: 'low',
+  owner: 'Training lead',
+  horizon: 'd30',
+  prerequisites: ['An approved AI tool'],
+  tags: ['literacy_gap'],
+  ...over,
+});
+
+const findings = [
+  {
+    key: findingKey('practice', 'Weekly report by hand'),
+    axis: 'practice',
+    label: 'Weekly report by hand',
+    people: 7,
+  },
+  {
+    key: findingKey('literacy', 'Unsure how to check answers'),
+    axis: 'literacy',
+    label: 'Unsure how to check answers',
+    people: 5,
+  },
+];
+
+const input = (over: Partial<SnapshotInput> = {}): SnapshotInput => ({
+  version: 1,
+  locale: 'en',
+  title: 'Demo Client audit',
+  organisation: 'Demo Client',
+  publishedAt: '2026-10-19T10:00:00.000Z',
+  summary: 'The team is practising. Reporting by hand is the main friction.',
+  summaryCitations: [findings[0]!.key],
+  readiness,
+  findings,
+  opportunities: [
+    { id: OPP_A, title: 'Automate the weekly report', axis: 'practice', impactScore: null },
+    { id: OPP_B, title: 'Train on checking answers', axis: 'literacy', impactScore: null },
+  ],
+  steps: [
+    step({ id: '1a000000-0000-4000-8000-000000000001', opportunityId: OPP_B }),
+    step({
+      id: '1a000000-0000-4000-8000-000000000002',
+      opportunityId: OPP_A,
+      category: 'automate',
+      title: 'A report that builds itself',
+      impact: 'high',
+      effort: 'low',
+      prerequisites: ['Read access to the source data', 'an approved ai tool'],
+    }),
+    step({ id: '1a000000-0000-4000-8000-000000000003', opportunityId: OPP_A, status: 'rejected' }),
+    step({ id: '1a000000-0000-4000-8000-000000000004', opportunityId: OPP_B, status: 'suggested' }),
+  ],
+  risksNote: 'Data access may take time\n\nData access may take time\nPeople need time to learn',
+  methodology: 'Anonymous survey, auditor review.',
+  plan: [{ id: 'p1', horizon: 'd30', text: 'Rules for AI', owner: 'Security' }],
+  minGroupSize: 5,
+  catalogueVersion: '2026-10-19.1',
+  ...over,
+});
+
+const noLeaks = { redactionTerms: [], freeTexts: [] };
+
+describe('report snapshot gate', () => {
+  it('publishes accepted steps only, ranked, with deduplicated risks and prerequisites', () => {
+    const r = buildSnapshot(input(), noLeaks);
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.snapshot.steps.map((s) => s.id)).toEqual([
+      '1a000000-0000-4000-8000-000000000002',
+      '1a000000-0000-4000-8000-000000000001',
+    ]);
+    expect(r.snapshot.opportunities.map((o) => [o.title, o.rank, o.quadrant])).toEqual([
+      ['Automate the weekly report', 1, 'quick_win'],
+      ['Train on checking answers', 2, 'quick_win'],
+    ]);
+    expect(r.snapshot.risks).toEqual(['Data access may take time', 'People need time to learn']);
+    expect(r.snapshot.prerequisites).toEqual([
+      'Read access to the source data',
+      'an approved ai tool',
+    ]);
+  });
+
+  it('leaves out opportunities without an accepted step', () => {
+    const r = buildSnapshot(
+      input({ steps: input().steps.filter((s) => s.opportunityId === OPP_A) }),
+      noLeaks,
+    );
+    expect(r.ok && r.snapshot.opportunities.map((o) => o.id)).toEqual([OPP_A]);
+  });
+
+  it('fails closed on a missing summary, a missing citation or an unknown citation', () => {
+    expect(buildSnapshot(input({ summary: '  ' }), noLeaks)).toEqual({
+      ok: false,
+      code: 'summary_missing',
+    });
+    expect(buildSnapshot(input({ summaryCitations: [] }), noLeaks)).toEqual({
+      ok: false,
+      code: 'citation_missing',
+    });
+    expect(buildSnapshot(input({ summaryCitations: ['practice|gone'] }), noLeaks)).toEqual({
+      ok: false,
+      code: 'citation_unknown',
+    });
+  });
+
+  it('needs at least one accepted step', () => {
+    expect(
+      buildSnapshot(
+        input({ steps: input().steps.map((s) => ({ ...s, status: 'suggested' as const })) }),
+        noLeaks,
+      ),
+    ).toEqual({ ok: false, code: 'nothing_accepted' });
+  });
+
+  it('refuses a name from the names-to-hide list anywhere in the text', () => {
+    const r = buildSnapshot(input({ risksNote: 'Ask Demo Referent about access' }), {
+      redactionTerms: ['Demo Referent'],
+      freeTexts: [],
+    });
+    expect(r).toEqual({ ok: false, code: 'contains_name' });
+  });
+
+  it('refuses six words copied from what a respondent wrote', () => {
+    const freeTexts = ['Honestly I copy the numbers from the old tool every Monday morning'];
+    const copied = input({
+      summary: 'One person said: "copy the numbers from the old tool every Monday".',
+    });
+    expect(buildSnapshot(copied, { redactionTerms: [], freeTexts })).toEqual({
+      ok: false,
+      code: 'contains_quote',
+    });
+    // Five words in common is a coincidence, not a quote.
+    expect(
+      findLeak(['we copy the numbers from them'], { redactionTerms: [], freeTexts }),
+    ).toBeNull();
+  });
+
+  it('carries aggregates only: no answer, quote, respondent code or tag in the snapshot', () => {
+    const r = buildSnapshot(input(), noLeaks);
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    const keys = new Set<string>();
+    const walk = (v: unknown): void => {
+      if (Array.isArray(v)) v.forEach(walk);
+      else if (v && typeof v === 'object')
+        for (const [k, x] of Object.entries(v)) {
+          keys.add(k);
+          walk(x);
+        }
+    };
+    walk(r.snapshot);
+    expect(
+      [...keys].filter((k) =>
+        /quote|answer|respondent|pseudonym|submission|tags|evidence/i.test(k),
+      ),
+    ).toEqual([]);
+    expect(JSON.stringify(r.snapshot)).not.toContain('literacy_gap');
+    expect(r.snapshot.findings.every((f) => f.people >= 5)).toBe(true);
+  });
+});
+
+describe('summary draft', () => {
+  const words = {
+    intro: (v: { people: number; score: number; level: string }) =>
+      `${v.people} people answered; readiness ${v.score}/100 (${v.level}).`,
+    introNoScore: 'Too few answers for a score.',
+    findings: (v: { list: string }) => `Main findings: ${v.list}.`,
+    opportunities: (v: { list: string }) => `First steps: ${v.list}.`,
+    closing: 'Details follow.',
+    levelName: (l: string) => `level ${l}`,
+  };
+
+  it('cites the findings it names, most raised first', () => {
+    const d = draftSummary(readiness, findings, ['Automate the weekly report'], words);
+    expect(d.text).toBe(
+      '12 people answered; readiness 48/100 (level L2). Main findings: Weekly report by hand ; Unsure how to check answers. First steps: Automate the weekly report. Details follow.',
+    );
+    expect(d.citations).toEqual(findings.map((f) => f.key));
+  });
+
+  it('says plainly when there is no score', () => {
+    const d = draftSummary({ ...readiness, overall: null }, [], [], words);
+    expect(d).toEqual({ text: 'Too few answers for a score. Details follow.', citations: [] });
+  });
+});
