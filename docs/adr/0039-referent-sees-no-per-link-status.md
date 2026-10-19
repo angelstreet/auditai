@@ -1,4 +1,4 @@
-# 0038 - The team referent never sees a per-link status
+# 0039 - The team referent never sees a per-link status
 
 - Status: Accepted
 - Date: 2026-10-19

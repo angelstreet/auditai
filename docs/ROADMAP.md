@@ -55,7 +55,7 @@ Work that came out of the Phase 1 and Phase 2 review. Each task has a brief in `
 | K    | Production readiness: credentials, auditor CLI, login hardening, wording, region, health, cron (ADR 0032)            | this PR               | in progress |
 | P    | "View as" for the owner (signed, read only, audited) and the team referent space `/client` (ADR 0035)                | see git log           | done        |
 | T    | Auditor set-up (engagements, teams, launch, preview), organisation in the header, plain wording, language (ADR 0038) | see git log           | done        |
-| S    | Referent self-service: link list, copy and share, message, generic reminder, progress bands (ADR 0039)      | see git log           | done        |
+| S    | Referent self-service: link list, copy and share, message, generic reminder, progress bands (ADR 0039)               | see git log           | done        |
 
 CI fixes that landed alongside: #27 (database URL passed through turbo to the tests) and #28 (smokes and
 mobile-survey e2e made green).
@@ -76,7 +76,7 @@ mobile-survey e2e made green).
   and the owner telling each client about the address window before email mode is switched on.
 - **Client referent space (TASK-P, ADR 0035):** done: the owner can view the app as a client referent (read only,
   audited), real referents can sign in to `/client` (progress, invitations for their team, approved results), and
-  `pnpm seed:client` seeds the first client. TASK-S (ADR 0038): the referent lists, copies and shares every link
+  `pnpm seed:client` seeds the first client. TASK-S (ADR 0039): the referent lists, copies and shares every link
   with a ready-made French or English message, sends one generic reminder on suggested days, and sees per-team
   progress with a minimum of 5 answers before any exact count; no per-link status ever reaches the referent.
   Still open: a client sponsor view (aggregated reports), giving the

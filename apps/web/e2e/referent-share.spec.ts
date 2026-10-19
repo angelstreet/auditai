@@ -5,7 +5,7 @@ import { expect, test, type BrowserContext, type Page } from '@playwright/test';
 import pg from 'pg';
 
 /**
- * TASK-S (ADR 0038): the team referent shares links, sends one generic reminder and follows
+ * TASK-S (ADR 0039): the team referent shares links, sends one generic reminder and follows
  * progress, and never learns who answered. The synthetic client C and its referent come from
  * infra/db/scripts/seed-synthetic-client.mjs. Phone (360) and desktop (1280), fr and en.
  *

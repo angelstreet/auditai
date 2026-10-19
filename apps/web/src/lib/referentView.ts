@@ -1,7 +1,7 @@
 import { MIN_GROUP_SIZE } from './invitationTracking';
 
 /**
- * What a team referent may know about participation (TASK-S, ADR 0038). Pure rules, no I/O.
+ * What a team referent may know about participation (TASK-S, ADR 0039). Pure rules, no I/O.
  *
  * The referent hands each link to a colleague they know, so anything per link (answered, opened,
  * expiry pushed back, due a reminder) tells them who answered. The referent therefore gets counts

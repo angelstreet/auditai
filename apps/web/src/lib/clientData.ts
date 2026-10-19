@@ -12,7 +12,7 @@ import { parseContact, referentParticipation, type Participation } from './refer
  * What a team referent may see (PRD §4.3, §15): counts for their own teams (with the minimum
  * group and minimum answered rules), every link of their team with no status, and what the
  * auditor approved. Never an answer, never an individual result, never a per-link status: the
- * referent knows which link went to whom (ADR 0038).
+ * referent knows which link went to whom (ADR 0039).
  */
 
 export interface ClientSurvey {

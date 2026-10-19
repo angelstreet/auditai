@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
 /**
- * CSV of every link of the referent's teams (`link,team`), whatever its state (ADR 0038): no name,
+ * CSV of every link of the referent's teams (`link,team`), whatever its state (ADR 0039): no name,
  * no address, no status, and no per-status variant, because the referent knows which link went to
  * whom. Any query string is ignored. Tenant and teams come from the signed session.
  */

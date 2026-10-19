@@ -71,7 +71,7 @@ Source: `packages/ui/src/tokens.css` (landing copy: `landing/brand/tokens.css`).
 
 ## Changelog
 
-### TASK-S (referent self-service and the per-link privacy fix, ADR 0038)
+### TASK-S (referent self-service and the per-link privacy fix, ADR 0039)
 
 From the five-persona test (docs/TEST_FEEDBACK_2026-10-19.md, items 1, 2, 3, 6, 14).
 

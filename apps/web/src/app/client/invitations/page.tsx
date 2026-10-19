@@ -20,7 +20,7 @@ import CreateLinksForm from './CreateLinksForm';
 export const dynamic = 'force-dynamic';
 
 /**
- * Team space invitations (TASK-P, TASK-S, ADR 0038): create links, see and share every link of the
+ * Team space invitations (TASK-P, TASK-S, ADR 0039): create links, see and share every link of the
  * team with a ready-made message, and one generic reminder with suggested days. Nothing on this
  * page depends on who answered: the referent knows which link went to whom.
  */

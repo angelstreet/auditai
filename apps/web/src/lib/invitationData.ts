@@ -26,7 +26,7 @@ import { parseContact } from './referentView';
  *  - progress is computed from `invitations` only, never joined to submissions or answers;
  *  - the only per-invitation listing is "not yet completed", with a short opaque code, no status,
  *    and it is for the auditor only; a team referent gets every link with no status at all
- *    (`listTeamLinks`, ADR 0038), because the referent knows which link went to whom.
+ *    (`listTeamLinks`, ADR 0039), because the referent knows which link went to whom.
  */
 
 const SYSTEM_ACTOR = '00000000-0000-4000-8000-000000000000';
@@ -370,7 +370,7 @@ export interface TeamLink {
 
 /**
  * Every link of the given teams that still exists (not revoked), whatever its state, in creation
- * order (TASK-S, ADR 0038). For the team referent: no status, no expiry, no code, and the set and
+ * order (TASK-S, ADR 0039). For the team referent: no status, no expiry, no code, and the set and
  * order do not change when someone opens, starts or finishes the survey, so the list says nothing
  * about who answered.
  */
@@ -472,7 +472,7 @@ const loadDue = async (
   );
 };
 
-/** No-email mode: the auditor's reminder list (never shown to a referent, ADR 0038). */
+/** No-email mode: the auditor's reminder list (never shown to a referent, ADR 0039). */
 export const reminderList = async (
   tenantId: TenantId,
   engagementId: string,
@@ -669,7 +669,7 @@ export const withAudit = async (
   return rows;
 };
 
-/** Referent export (CSV, QR sheet): every team link, no status (ADR 0038); one audit row. */
+/** Referent export (CSV, QR sheet): every team link, no status (ADR 0039); one audit row. */
 export const teamLinksWithAudit = async (
   tenantId: string,
   engagementId: string,

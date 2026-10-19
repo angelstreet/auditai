@@ -76,7 +76,7 @@ const participationText = (t: Translator, p: Participation): { main: string; hin
 };
 
 /**
- * Team space home (TASK-P, TASK-S, ADR 0038): the survey and its closing date, answers per team
+ * Team space home (TASK-P, TASK-S, ADR 0039): the survey and its closing date, answers per team
  * as a bar ("12 of 24 answered" only when the minimum group rules allow it), and the one thing to
  * do next. The reminder step appears only on a suggested day while the survey is open.
  */

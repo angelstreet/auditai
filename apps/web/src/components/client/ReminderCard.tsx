@@ -12,7 +12,7 @@ import { mailtoHref, whatsappHref } from '@/lib/referentView';
 import { copyText, type PreparedMessage } from './ShareLinks';
 
 /**
- * One generic reminder for everybody (TASK-S, ADR 0038). The referent knows which link went to
+ * One generic reminder for everybody (TASK-S, ADR 0039). The referent knows which link went to
  * whom, so we never say who has not answered; the same message goes to the whole team and says
  * "if you have not answered yet". Copy, email and WhatsApp only: nothing is sent from here.
  */

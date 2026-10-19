@@ -94,14 +94,14 @@ view writes a `view_as.request` row with your own user id. "Back to my view" (ba
 or the 8-hour session expiry ends it too. Trail: `SELECT created_at, action, payload_json FROM audit_log WHERE
 action LIKE 'view_as.%' ORDER BY created_at DESC LIMIT 50;` (as the service account).
 
-### Referent self-service (TASK-S, ADR 0038)
+### Referent self-service (TASK-S, ADR 0039)
 
 Before the referent sends links, set the engagement's **closing date** and **contact person** on the auditor
 Invitations page (Options). Both appear in the referent's ready-made message and on their Home page; the reminder
 days are computed from the closing date (7 and 2 days before). The referent's Invitations page lists every link
 with copy, copy all, CSV, QR sheet, email and WhatsApp sharing (nothing is sent by the platform), and one generic
 reminder message. The referent never sees which link was answered; if a client asks "who has not answered?", the
-answer is no, by design (ADR 0038). Per-link status stays on the auditor page.
+answer is no, by design (ADR 0039). Per-link status stays on the auditor page.
 
 ## Rotate secrets
 
@@ -136,7 +136,7 @@ Reminders run from `apps/web/vercel.json`: `GET /api/cron/reminders` daily at 07
 `CRON_SECRET` bearer as the retention route. Default mode: it only counts what is due; use the _Reminder list_
 (`...&view=reminders`, or `/admin/invitations/export?...&kind=reminders`) and press "mark as resent" after the
 client sends it. That list is for the auditor only: never hand it to the team referent, who knows which link went
-to whom (ADR 0038); the referent has their own generic reminder. Email mode (per engagement setting, off by default): it sends and consumes each step, then purges
+to whom (ADR 0039); the referent has their own generic reminder. Email mode (per engagement setting, off by default): it sends and consumes each step, then purges
 stored addresses. Run it by hand: `curl -sS -H "Authorization: Bearer $CRON_SECRET" "$BASE/api/cron/reminders"`;
 the body is `{ok, engagements, sent, failed, listModeDue, purged, emailUnavailable}`.
 

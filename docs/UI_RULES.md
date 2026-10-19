@@ -137,4 +137,4 @@ outlined "Back to my view" button. Page surface with a warning-colour bottom bor
 avatar shows the persona's initials, the organisation is stated above the page title, and actions that would write
 show the read-only message instead. Never hide the banner on phones. On a phone the first page shows the full
 sentence; after that it is one compact line ("Viewing as <name>. Read only.", a details toggle, the back button as
-an icon with its label as accessible name) so it does not eat the screen (ADR 0038).
+an icon with its label as accessible name) so it does not eat the screen (ADR 0039).

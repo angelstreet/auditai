@@ -11,7 +11,7 @@ import { resolveBaseUrl } from '@/lib/invitationTracking';
 
 export const dynamic = 'force-dynamic';
 
-/** Printable QR sheet of every link of the referent's teams, no status (ADR 0038). */
+/** Printable QR sheet of every link of the referent's teams, no status (ADR 0039). */
 export default async function ClientQrSheet() {
   const { session, ctx } = await requireClientContext();
   const { t } = getT();

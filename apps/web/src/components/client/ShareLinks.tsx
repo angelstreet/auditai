@@ -35,7 +35,7 @@ export const copyText = async (text: string): Promise<boolean> => {
 };
 
 /**
- * The referent's links and the ready-made message (TASK-S, ADR 0038). Every link of the team, in
+ * The referent's links and the ready-made message (TASK-S, ADR 0039). Every link of the team, in
  * creation order, with no status: the list looks the same before and after anyone answers. Sharing
  * is copy, `mailto:` and `wa.me` with prepared text: no address or number is asked or stored.
  */
