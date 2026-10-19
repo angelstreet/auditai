@@ -302,7 +302,7 @@ test('view as: the banner collapses to one line on phones after the first page',
   page,
 }, testInfo) => {
   const phone = testInfo.project.name === 'mobile-360';
-  await signIn(page, OWNER, /\/admin\//);
+  await signIn(page, OWNER, /\/(admin\/|board)/);
   await page.getByTestId('account-button').click();
   await page.getByTestId('view-as-persona').click();
   await page.waitForURL(/\/client$/);
