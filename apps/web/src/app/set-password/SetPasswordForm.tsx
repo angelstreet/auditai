@@ -7,7 +7,6 @@ import Stack from '@mui/material/Stack';
 import { AppIcon } from '@evolai/ui';
 import PasswordField from '@/components/auth/PasswordField';
 import { useI18n } from '@/components/I18nProvider';
-import { MIN_PASSWORD_LENGTH } from '@/lib/passwordPolicy';
 import { setPasswordAction, type SetPasswordState } from './actions';
 
 const INITIAL: SetPasswordState = { message: '' };
@@ -54,7 +53,7 @@ export default function SetPasswordForm({ token }: { token: string }) {
         show={show}
         hide={hide}
         slotProps={undefined}
-        inputProps={{ minLength: MIN_PASSWORD_LENGTH, maxLength: 256 }}
+        inputProps={{ maxLength: 256 }}
       />
       <PasswordField
         name="again"
@@ -63,7 +62,7 @@ export default function SetPasswordForm({ token }: { token: string }) {
         required
         show={show}
         hide={hide}
-        inputProps={{ minLength: MIN_PASSWORD_LENGTH, maxLength: 256 }}
+        inputProps={{ maxLength: 256 }}
       />
       <Submit />
     </Stack>

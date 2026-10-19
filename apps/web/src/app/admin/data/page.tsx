@@ -85,7 +85,7 @@ export default async function DataPage({ searchParams }: PageProps) {
       <section className="card" id="erase">
         <h2>{t('admin.data.eraseTitle')}</h2>
         <p className="muted">{t('admin.data.eraseBody')}</p>
-        <DeleteForm tenantId={current} initialCode={initialCode} />
+        <DeleteForm key={initialCode} tenantId={current} initialCode={initialCode} />
       </section>
 
       <section className="card" aria-labelledby="find-title">

@@ -44,7 +44,7 @@ export default function ForgotForm() {
         </Alert>
       ) : null}
       <TextField
-        name="invite"
+        name="email"
         type="email"
         label={t('trust.forgot.email')}
         autoComplete="username"

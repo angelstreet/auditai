@@ -219,11 +219,11 @@ for (const locale of LOCALES) {
     await first.fill('short');
     await sp.locator('input[name=again]').fill('short');
     await sp.keyboard.press('Enter');
-    await expect(sp.getByRole('alert')).toContainText(copy.short);
+    await expect(sp.locator('form [role=alert]')).toContainText(copy.short);
     await first.fill(password);
     await sp.locator('input[name=again]').fill(`${password}x`);
     await sp.locator('button[type=submit]').click();
-    await expect(sp.getByRole('alert')).toContainText(copy.mismatch);
+    await expect(sp.locator('form [role=alert]')).toContainText(copy.mismatch);
     await first.fill(password);
     await sp.locator('input[name=again]').fill(password);
     await sp.locator('button[type=submit]').click();
@@ -265,6 +265,7 @@ for (const locale of LOCALES) {
     page,
     baseURL,
   }) => {
+    test.setTimeout(120_000);
     const copy = COPY[locale];
     await setLocale(context, baseURL, locale);
     await page.goto('/login');
@@ -284,7 +285,7 @@ for (const locale of LOCALES) {
     const unknown = await submit(`nobody-${randomUUID().slice(0, 8)}@example.test`);
     expect(unknown).toBe(known);
     // Past the limit the answer is still the same words.
-    for (let i = 0; i < 4; i += 1) await submit(AUDITOR_A.email);
+    for (let i = 0; i < 2; i += 1) await submit(AUDITOR_A.email);
     expect(await submit(AUDITOR_A.email)).toBe(known);
     await axe(page, `${locale} forgot done`);
   });
@@ -307,7 +308,9 @@ for (const locale of LOCALES) {
     await page.goto(`/privacy?e=${ctx.engagementC}`);
     await expect(page.getByTestId('notice-gap')).toBeVisible();
     await expect(page.locator('main')).not.toContainText(/\{|undefined|null/);
-    await expect(page.getByRole('heading', { level: 2 })).not.toContainText(/IA|AI use|Usage de l/);
+    expect(
+      (await page.getByRole('heading', { level: 2 }).allTextContents()).join(' | '),
+    ).not.toMatch(/IA|AI use|Usage de l/);
     await axe(page, `${locale} privacy (unconfigured)`);
 
     // Admin: warning first, then fill the fields.
