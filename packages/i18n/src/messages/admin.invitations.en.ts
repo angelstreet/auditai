@@ -44,6 +44,10 @@ export const invitationsEn = {
     emailDelivery: 'Allow sending by email',
     emailHint: 'Off by default. Without it, no address is ever stored.',
     reminderDays: 'Reminders after (days, comma separated)',
+    closesOn: 'Closing date',
+    closesOnHint: 'Shown to the team referent and in the invitation message.',
+    contact: 'Contact person',
+    contactHint: 'Name and email or phone, shown in the invitation message.',
     save: 'Save options',
   },
   export: {
@@ -114,6 +118,7 @@ export const invitationsEn = {
     duplicate_batch:
       'The same batch was created less than 10 minutes ago. Tick the box to create it again.',
     not_open: 'This link is already used, revoked or expired.',
+    bad_date: 'Enter a valid closing date, or leave it empty.',
     error: 'Something went wrong. Please try again.',
   },
 } as const;

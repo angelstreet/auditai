@@ -44,7 +44,7 @@ export default async function ClientResults() {
               <Typography variant="sectionTitle" component="h2" sx={{ m: 0 }}>
                 {t('client.results.themesTitle')}
               </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+              <Typography variant="body1" color="text.secondary" sx={{ mt: 1 }}>
                 {t('client.results.themesHint', { n: MIN_GROUP_SIZE })}
               </Typography>
               <List dense>

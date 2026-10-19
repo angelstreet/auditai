@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { getSession } from '@/lib/authServer';
 import { loadClientSurvey } from '@/lib/clientData';
-import { withAudit } from '@/lib/invitationData';
+import { teamLinksWithAudit } from '@/lib/invitationData';
 import { resolveBaseUrl, toCsv } from '@/lib/invitationTracking';
 import { effectiveContext } from '@/lib/tenantAccess';
 import { auditViewAs } from '@/lib/viewAsAudit';
@@ -10,16 +10,16 @@ export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
 /**
- * CSV of the referent's own open links (`link,team`), or of those due a reminder. Same columns as
- * the admin export (FR-03): no name, no address, no completion status. Tenant and teams come from
- * the signed session; there is no id in the URL to guess.
+ * CSV of every link of the referent's teams (`link,team`), whatever its state (ADR 0038): no name,
+ * no address, no status, and no per-status variant, because the referent knows which link went to
+ * whom. Any query string is ignored. Tenant and teams come from the signed session.
  */
 export async function GET(req: NextRequest) {
+  const kind = 'team';
   const session = await getSession();
   if (!session) return new NextResponse(null, { status: 403 });
   const ctx = effectiveContext(session);
   if (ctx.kind !== 'client') return new NextResponse(null, { status: 403 });
-  const kind = req.nextUrl.searchParams.get('kind') === 'reminders' ? 'reminders' : 'all';
   if (ctx.viewAs) {
     await auditViewAs(session, ctx.viewAs, 'view_as.request', {
       path: req.nextUrl.pathname,
@@ -33,11 +33,10 @@ export async function GET(req: NextRequest) {
     req.headers.get('x-forwarded-host') ?? req.headers.get('host'),
     req.headers.get('x-forwarded-proto'),
   );
-  const rows = await withAudit(
+  const rows = await teamLinksWithAudit(
     ctx.tenantId,
     survey.engagementId,
     session.sub,
-    kind,
     baseUrl,
     ctx.teamIds,
   );

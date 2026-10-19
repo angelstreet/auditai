@@ -63,6 +63,8 @@ export default function CreateLinksForm({
             name="teamId"
             label={t('client.invitations.team')}
             defaultValue={teams[0]?.id}
+            fullWidth
+            sx={{ maxWidth: { sm: 280 } }}
             slotProps={{ select: { native: true } }}
           >
             {teams.map((team) => (
@@ -82,7 +84,8 @@ export default function CreateLinksForm({
           }
           defaultValue={5}
           slotProps={{ htmlInput: { min: 1, max: 500, inputMode: 'numeric' } }}
-          sx={{ maxWidth: 220 }}
+          fullWidth
+          sx={{ maxWidth: { sm: 220 } }}
         />
         <Submit readOnly={readOnly} />
       </Stack>

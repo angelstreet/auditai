@@ -249,8 +249,8 @@ test('a real referent lands on the team space, may create links, cannot leave it
   await page.waitForURL(/\/client\/invitations$/);
   await page.getByTestId('client-create-links').click();
   await expect(page.getByTestId('client-create-done')).toBeVisible();
-  await expect(page.getByTestId('client-open-links')).toContainText(/\d+/);
-  const csv = await page.request.get('/client/invitations/export?kind=all');
+  await expect(page.getByTestId('client-links')).toContainText(/\d+/);
+  const csv = await page.request.get('/client/invitations/export');
   expect(csv.status()).toBe(200);
   const lines = (await csv.text()).trim().split(/\r?\n/);
   expect(lines[0]).toBe('link,team');

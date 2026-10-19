@@ -19,6 +19,7 @@ import { EmailNotConfigured, resolveEmailProvider } from '@/lib/emailProvider';
 import { isUuid, parseCreateForm } from '@/lib/invitationForm';
 import type { InviteActionState } from './state';
 import { parseReminderDays, resolveBaseUrl } from '@/lib/invitationTracking';
+import { parseClosingDay, parseContact } from '@/lib/referentView';
 
 /**
  * Admin actions for FR-03. The actor and the tenant always come from the session
@@ -115,12 +116,17 @@ export async function updateInvitationSettingsAction(
     .filter(Boolean)
     .map(Number);
   const reminderDays = parseReminderDays(days);
+  const closesOn = parseClosingDay(fd.get('closesOn'));
+  if (closesOn === 'invalid') return { ok: false, code: 'bad_date' };
   try {
     await updateSettings(g.who.tenantId, g.engagementId, g.who.actor, {
       emailDelivery: fd.get('emailDelivery') === 'on',
       reminderDays,
+      closesOn,
+      contact: parseContact(fd.get('contact')),
     });
     revalidatePath('/admin/invitations');
+    revalidatePath('/client', 'layout');
     return { ok: true, code: 'saved' };
   } catch (err) {
     return { ok: false, code: codeOf(err) };

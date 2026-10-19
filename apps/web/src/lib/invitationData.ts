@@ -15,6 +15,7 @@ import {
   type TeamCounts,
   type TeamProgressRow,
 } from './invitationTracking';
+import { parseContact } from './referentView';
 
 /**
  * Invitation administration (FR-03, ADR 0033). Everything here is tenant-scoped (withTenant, RLS)
@@ -23,7 +24,9 @@ import {
  * Privacy rules enforced in this file:
  *  - default mode stores no email address and no name;
  *  - progress is computed from `invitations` only, never joined to submissions or answers;
- *  - the only per-invitation listing is "not yet completed", with a short opaque code, no status.
+ *  - the only per-invitation listing is "not yet completed", with a short opaque code, no status,
+ *    and it is for the auditor only; a team referent gets every link with no status at all
+ *    (`listTeamLinks`, ADR 0038), because the referent knows which link went to whom.
  */
 
 const SYSTEM_ACTOR = '00000000-0000-4000-8000-000000000000';
@@ -54,6 +57,10 @@ export interface EngagementSettings {
   readonly reminderDays: readonly number[];
   readonly status: string;
   readonly locale: 'fr' | 'en';
+  /** Closing day of the survey (ISO day), or null when not set. */
+  readonly closesOn: string | null;
+  /** Contact person named in the referent's messages (one line), or null. */
+  readonly contact: string | null;
 }
 
 const newReference = (): string => `i${randomBytes(18).toString('base64url')}`;
@@ -92,10 +99,12 @@ const readSettings = async (
     status: string;
     locale: string;
     privacy_json: Record<string, unknown>;
-  }>(`SELECT status, locale, privacy_json FROM engagements WHERE tenant_id = $1 AND id = $2`, [
-    tenantId,
-    engagementId,
-  ]);
+    closes_on: string | null;
+  }>(
+    `SELECT status, locale, privacy_json, to_char(closes_at AT TIME ZONE 'UTC', 'YYYY-MM-DD') AS closes_on
+       FROM engagements WHERE tenant_id = $1 AND id = $2`,
+    [tenantId, engagementId],
+  );
   const row = rows[0];
   if (!row) return null;
   return {
@@ -103,6 +112,8 @@ const readSettings = async (
     reminderDays: parseReminderDays(row.privacy_json['reminderDays']),
     status: row.status,
     locale: row.locale === 'fr' ? 'fr' : 'en',
+    closesOn: row.closes_on,
+    contact: parseContact(row.privacy_json['contact']),
   };
 };
 
@@ -123,23 +134,40 @@ export const updateSettings = async (
   tenantId: TenantId,
   engagementId: string,
   actor: UserId,
-  patch: { emailDelivery: boolean; reminderDays: readonly number[] },
+  patch: {
+    emailDelivery: boolean;
+    reminderDays: readonly number[];
+    closesOn: string | null;
+    contact: string | null;
+  },
 ): Promise<void> =>
   withTenant(tenantId, async (client) => {
+    // Closing date: end of that day, UTC. The contact is one line of free text the auditor types.
     const res = await client.query(
       `UPDATE engagements
-          SET privacy_json = privacy_json || $3::jsonb, updated_at = now()
+          SET privacy_json = privacy_json || $3::jsonb,
+              closes_at = CASE WHEN $4::date IS NULL THEN NULL
+                               ELSE ($4::date + interval '1 day' - interval '1 second') AT TIME ZONE 'UTC' END,
+              updated_at = now()
         WHERE tenant_id = $1 AND id = $2`,
       [
         tenantId,
         engagementId,
-        JSON.stringify({ emailDelivery: patch.emailDelivery, reminderDays: patch.reminderDays }),
+        JSON.stringify({
+          emailDelivery: patch.emailDelivery,
+          reminderDays: patch.reminderDays,
+          contact: patch.contact ?? '',
+        }),
+        patch.closesOn,
       ],
     );
     if (res.rowCount === 0) throw new InvitationError('engagement_not_found');
+    // The contact may name a person: the trail records only whether it is set.
     await audit(client, tenantId, actor, 'invitation.settings', 'engagement', engagementId, {
       emailDelivery: patch.emailDelivery,
       reminderDays: patch.reminderDays,
+      closesOn: patch.closesOn,
+      contactSet: patch.contact !== null,
     });
   });
 
@@ -291,8 +319,12 @@ export interface Progress {
   readonly totals: EngagementTotals | null;
 }
 
-/** Counts per team from `invitations` alone. Revoked invitations are not counted as invited. */
-export const progress = async (tenantId: TenantId, engagementId: string): Promise<Progress> =>
+/**
+ * Raw counts per team from `invitations` alone (revoked invitations are not counted as invited).
+ * Callers apply a minimum group rule before anything is shown: `applyMinGroup` for the auditor,
+ * `referentParticipation` for a team referent.
+ */
+export const teamCounts = async (tenantId: TenantId, engagementId: string): Promise<TeamCounts[]> =>
   withTenant(tenantId, async (client) => {
     const { rows } = await client.query<{
       team_id: string;
@@ -314,7 +346,7 @@ export const progress = async (tenantId: TenantId, engagementId: string): Promis
         GROUP BY i.team_id, t.name ORDER BY t.name`,
       [tenantId, engagementId],
     );
-    const counts: TeamCounts[] = rows.map((r) => ({
+    return rows.map((r) => ({
       teamId: r.team_id,
       teamName: r.team_name,
       invited: r.invited,
@@ -323,7 +355,44 @@ export const progress = async (tenantId: TenantId, engagementId: string): Promis
       completed: r.completed,
       lastActivityOn: r.last_activity_on,
     }));
-    return { teams: applyMinGroup(counts), totals: engagementTotals(counts) };
+  });
+
+/** Auditor progress: counts per team with the minimum group rule, and engagement totals. */
+export const progress = async (tenantId: TenantId, engagementId: string): Promise<Progress> => {
+  const counts = await teamCounts(tenantId, engagementId);
+  return { teams: applyMinGroup(counts), totals: engagementTotals(counts) };
+};
+
+export interface TeamLink {
+  readonly link: string;
+  readonly teamName: string;
+}
+
+/**
+ * Every link of the given teams that still exists (not revoked), whatever its state, in creation
+ * order (TASK-S, ADR 0038). For the team referent: no status, no expiry, no code, and the set and
+ * order do not change when someone opens, starts or finishes the survey, so the list says nothing
+ * about who answered.
+ */
+export const listTeamLinks = async (
+  tenantId: TenantId,
+  engagementId: string,
+  baseUrl: string,
+  teamIds: readonly string[],
+): Promise<TeamLink[]> =>
+  withTenant(tenantId, async (client) => {
+    const { rows } = await client.query<{ token_reference: string; team_name: string }>(
+      `SELECT i.token_reference, t.name AS team_name
+         FROM invitations i JOIN teams t ON t.id = i.team_id
+        WHERE i.tenant_id = $1 AND i.engagement_id = $2 AND i.status <> 'revoked'
+          AND i.team_id = ANY($3::uuid[])
+        ORDER BY t.name, i.created_at, i.id`,
+      [tenantId, engagementId, teamIds],
+    );
+    return rows.map((r) => ({
+      link: surveyLink(baseUrl, tokenFor(r.token_reference)),
+      teamName: r.team_name,
+    }));
   });
 
 export interface OpenInvitation {
@@ -339,7 +408,6 @@ export const listOpen = async (
   tenantId: TenantId,
   engagementId: string,
   baseUrl: string,
-  teamIds: readonly string[] | null = null,
 ): Promise<OpenInvitation[]> =>
   withTenant(tenantId, async (client) => {
     const { rows } = await client.query<{
@@ -351,9 +419,8 @@ export const listOpen = async (
       `SELECT i.id, i.token_reference, t.name AS team_name, to_char(i.expires_at, 'YYYY-MM-DD') AS expires_on
          FROM invitations i JOIN teams t ON t.id = i.team_id
         WHERE i.tenant_id = $1 AND i.engagement_id = $2 AND i.status IN ${OPEN_STATUSES}
-          AND ($3::uuid[] IS NULL OR i.team_id = ANY($3::uuid[]))
         ORDER BY t.name, i.created_at, i.id`,
-      [tenantId, engagementId, teamIds],
+      [tenantId, engagementId],
     );
     return rows.map((r) => ({
       id: r.id,
@@ -380,7 +447,6 @@ const loadDue = async (
   engagementId: string,
   schedule: readonly number[],
   now: Date,
-  teamIds: readonly string[] | null = null,
 ): Promise<DueRow[]> => {
   const { rows } = await client.query<DueRow>(
     `SELECT i.id, i.token_reference, t.name AS team_name, i.status,
@@ -389,9 +455,8 @@ const loadDue = async (
        FROM invitations i JOIN teams t ON t.id = i.team_id
       WHERE i.tenant_id = $1 AND i.engagement_id = $2 AND i.status IN ${OPEN_STATUSES}
         AND i.expires_at > now() AND i.reminder_count < $3
-        AND ($4::uuid[] IS NULL OR i.team_id = ANY($4::uuid[]))
       ORDER BY i.created_at, i.id`,
-    [tenantId, engagementId, schedule.length, teamIds],
+    [tenantId, engagementId, schedule.length],
   );
   return rows.filter((r) =>
     isReminderDue(
@@ -407,18 +472,17 @@ const loadDue = async (
   );
 };
 
-/** No-email mode: the reminder list the client can resend. Links only, no identity. */
+/** No-email mode: the auditor's reminder list (never shown to a referent, ADR 0038). */
 export const reminderList = async (
   tenantId: TenantId,
   engagementId: string,
   baseUrl: string,
   now: Date = new Date(),
-  teamIds: readonly string[] | null = null,
 ): Promise<OpenInvitation[]> =>
   withTenant(tenantId, async (client) => {
     const settings = await readSettings(client, tenantId, engagementId);
     if (!settings) return [];
-    const due = await loadDue(client, tenantId, engagementId, settings.reminderDays, now, teamIds);
+    const due = await loadDue(client, tenantId, engagementId, settings.reminderDays, now);
     return due.map((r) => ({
       id: r.id,
       code: r.token_reference.slice(-6),
@@ -596,18 +660,40 @@ export const withAudit = async (
   actor: string,
   kind: 'all' | 'reminders',
   baseUrl: string,
-  teamIds: readonly string[] | null = null,
 ): Promise<OpenInvitation[]> => {
   const rows =
     kind === 'reminders'
-      ? await reminderList(tenantId as TenantId, engagementId, baseUrl, new Date(), teamIds)
-      : await listOpen(tenantId as TenantId, engagementId, baseUrl, teamIds);
-  await withTenant(tenantId as TenantId, (client) =>
-    audit(client, tenantId, actor, 'invitation.export', 'engagement', engagementId, {
-      kind,
-      count: rows.length,
-      ...(teamIds ? { teams: teamIds.length } : {}),
-    }),
-  );
+      ? await reminderList(tenantId as TenantId, engagementId, baseUrl, new Date())
+      : await listOpen(tenantId as TenantId, engagementId, baseUrl);
+  await auditExport(tenantId, engagementId, actor, kind, rows.length);
   return rows;
 };
+
+/** Referent export (CSV, QR sheet): every team link, no status (ADR 0038); one audit row. */
+export const teamLinksWithAudit = async (
+  tenantId: string,
+  engagementId: string,
+  actor: string,
+  baseUrl: string,
+  teamIds: readonly string[],
+): Promise<TeamLink[]> => {
+  const rows = await listTeamLinks(tenantId as TenantId, engagementId, baseUrl, teamIds);
+  await auditExport(tenantId, engagementId, actor, 'team', rows.length, teamIds.length);
+  return rows;
+};
+
+const auditExport = async (
+  tenantId: string,
+  engagementId: string,
+  actor: string,
+  kind: 'all' | 'reminders' | 'team',
+  count: number,
+  teams?: number,
+): Promise<void> =>
+  withTenant(tenantId as TenantId, (client) =>
+    audit(client, tenantId, actor, 'invitation.export', 'engagement', engagementId, {
+      kind,
+      count,
+      ...(teams !== undefined ? { teams } : {}),
+    }),
+  );
