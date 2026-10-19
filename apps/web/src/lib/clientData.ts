@@ -1,4 +1,5 @@
 import type { TenantId } from '@evolai/contracts';
+import { aggregateFindings } from '@evolai/domain';
 import { withTenant } from './db';
 import { teamCounts } from './invitationData';
 import { MIN_GROUP_SIZE, parseReminderDays } from './invitationTracking';
@@ -147,33 +148,11 @@ export interface PublishedResults {
 
 const PUBLISHED_OPPORTUNITY = ['approved', 'in_progress', 'delivered'];
 
-/**
- * Pure aggregation of approved analyses into themes. A theme is shown only when at least
- * `MIN_GROUP_SIZE` distinct submissions raised it; summaries and quotes are never carried over.
- */
+/** Pure aggregation of approved analyses into themes (shared rule, `@evolai/domain`). */
 export const aggregateThemes = (
   analyses: readonly { submissionId: string; payload: unknown }[],
   minPeople: number = MIN_GROUP_SIZE,
-): PublishedTheme[] => {
-  const groups = new Map<string, { axis: string; label: string; people: Set<string> }>();
-  for (const a of analyses) {
-    const themes = (a.payload as { themes?: unknown } | null)?.themes;
-    if (!Array.isArray(themes)) continue;
-    for (const raw of themes) {
-      const t = raw as { label?: unknown; axis?: unknown };
-      if (typeof t.label !== 'string' || !t.label.trim()) continue;
-      const axis = typeof t.axis === 'string' ? t.axis : 'context';
-      const key = `${axis}|${t.label.trim().toLowerCase()}`;
-      const g = groups.get(key) ?? { axis, label: t.label.trim(), people: new Set<string>() };
-      g.people.add(a.submissionId);
-      groups.set(key, g);
-    }
-  }
-  return [...groups.values()]
-    .filter((g) => g.people.size >= minPeople)
-    .map((g) => ({ axis: g.axis, label: g.label, people: g.people.size }))
-    .sort((x, y) => y.people - x.people || x.label.localeCompare(y.label));
-};
+): PublishedTheme[] => aggregateFindings(analyses, minPeople);
 
 /** Only what the auditor approved: approved analyses (aggregated) and published opportunities. */
 export const loadPublishedResults = async (

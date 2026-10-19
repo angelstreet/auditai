@@ -59,3 +59,10 @@ export {
   type ModelProvider,
 } from './llm/providers.js';
 export { PROMPT_VERSION } from './llm/prompt.js';
+export {
+  draftReportSummary,
+  REPORT_PROMPT_VERSION,
+  type ReportDraft,
+  type ReportDraftInput,
+} from './llm/reportDraft.js';
+export { runReportDraftJob, ReportDraftError } from './reportDraftWorker.js';

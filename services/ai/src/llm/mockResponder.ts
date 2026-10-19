@@ -137,7 +137,48 @@ export const buildFixtureOutput = (
   return { facts, themes, contradictions, interviewQuestions, opportunities };
 };
 
+// ---- Audit report summary (TASK-V, ADR 0043) -------------------------------------------------
+
+/** Pull the data back out of a report prompt (used by the mock provider). */
+export const extractReportData = (
+  user: string,
+): {
+  locale: string;
+  findings: Array<{ id: string; label: string; people: number }>;
+  opportunities: Array<{ rank: number; title: string }>;
+} | null => {
+  const m = /<<<REPORT_DATA ([\w-]+)\n([\s\S]*?)\n>>>REPORT_DATA \1/.exec(user);
+  if (!m?.[2]) return null;
+  const locale = /^locale: (fr|en)$/m.exec(user)?.[1] ?? 'en';
+  return { locale, ...(JSON.parse(m[2]) as { findings: []; opportunities: [] }) };
+};
+
+/** Deterministic stand-in answer for the mock route: grounded, cited, numbers from the data. */
+export const reportFixtureResponder = (user: string): string => {
+  const data = extractReportData(user);
+  if (!data) return '{}';
+  const fr = data.locale === 'fr';
+  const sentences = data.findings.slice(0, 2).map((f) => ({
+    text: fr
+      ? `${f.people} personnes signalent\u00a0: ${f.label}.`
+      : `${f.people} people raise: ${f.label}.`,
+    cites: [f.id],
+  }));
+  const first = data.opportunities[0];
+  const lead = data.findings[0];
+  if (first && lead) {
+    sentences.push({
+      text: fr
+        ? `Première étape conseillée\u00a0: ${first.title}.`
+        : `Recommended first step: ${first.title}.`,
+      cites: [lead.id],
+    });
+  }
+  return JSON.stringify({ sentences });
+};
+
 export const fixtureResponder = (user: string): string => {
+  if (user.includes('<<<REPORT_DATA ')) return reportFixtureResponder(user);
   const { locale, answers } = extractSurveyData(user);
   return JSON.stringify(buildFixtureOutput(locale, answers));
 };

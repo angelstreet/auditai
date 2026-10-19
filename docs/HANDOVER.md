@@ -68,6 +68,7 @@ deploy script only works inside its original environment (ADR 0022).
 | S      | (see git log) | Referent self-service and the privacy fix: every link listed with copy/share and a ready-made fr/en message, one generic reminder, per-team bars with a minimum of 5 answers, no per-link status for the referent; closing date and contact in the auditor options; compact view-as banner on phones (ADR 0039) |
 
 | U | (see git log) | Referent login by link and password reset, privacy notice per engagement with a request form, audit-trail screen, data-page safety, small-group guard (ADR 0040) |
+| V | 51, 53, 54, (this PR) | The audit result the client receives: improvement-step catalogue (29 bilingual entries) matched to approved opportunities, deterministic readiness score with small-group and complementary suppression, report editor (summary with cited findings, accept/edit/reject steps, ranking, 30/60/90 plan), preview, publish/unpublish/versions, read-only Report tab for the referent, PDF, optional AI draft of the summary on the worker (ADRs 0041-0043, `docs/AUDITOR_GUIDE.md`) |
 | L | 38, 39, 41-45 | UI glow-up on MUI: theme with a lifted dark palette, header with identity menu, footer, welcome, login, respondent flow, admin tabs and danger flow, intake; style-guard rules 7-11; header and copy-length Playwright checks (ADR 0034, `docs/UI_RULES.md`, `docs/UI_GLOWUP_PLAN.md`) |
 
 Task briefs are kept in `docs/tasks/` (TASK-A to TASK-K).
@@ -123,6 +124,12 @@ Full detail in ADR 0029 section "Owner steps". Short version:
   (single-use link, no address stored); `/forgot-password` needs an email provider to deliver. Fill the privacy
   notice per engagement (settings page) before the first real survey; the public page hides what is not set. The
   auditor reads privacy requests on the Data page. Teams under 5 completed answers are hidden everywhere.
+  TASK-V (ADRs 0041-0043): apply migrations **0023** (`audit_reports`, `report_steps`, `audit_report_versions`,
+  report audit verbs) and **0024** (re-asserts the audit verb list, so the order 0022/0023 were applied in does not
+  matter) to Neon before the deploy that shows the Reports tab. The auditor builds the deliverable in Admin,
+  Reports; the referent reads the published version in the Report tab and downloads the PDF. The AI draft of the
+  summary is an owner command and needs an approved real route (RUNBOOK). Sponsor accounts are not a separate role
+  yet: send the PDF to the sponsor.
 
 0. Invitations admin screen (TASK-N) lives in new files under `apps/web/src/app/admin/invitations/`. It is reachable by URL; TASK-L should add a header/nav link and fold it into the restyled admin shell (no existing admin file was touched). Migration 0018 only; no new migration in this step.
 

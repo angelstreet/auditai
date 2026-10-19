@@ -16,7 +16,7 @@ its ADRs; every gate names its blocking evidence.
 | ------------ | ----------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
 | Product      | [PRD.md](PRD.md)                                                                                                              | Full product requirements (35 sections). Public, anonymised.                                   |
 | Delivery     | [ROADMAP.md](ROADMAP.md)                                                                                                      | Phase / milestone / gate state. Mirrors PRD §18. Updated in the merge that ships a milestone.  |
-| Operations   | [RUNBOOK.md](RUNBOOK.md)                                                                                                      | Deploy, rollback, migrations, auditor accounts, secrets, health, cron, recovery drill.         |
+| Operations   | [RUNBOOK.md](RUNBOOK.md), [AUDITOR_GUIDE.md](AUDITOR_GUIDE.md), [AUDIT_WORKFLOW.md](AUDIT_WORKFLOW.md)                        | Deploy, rollback, migrations, auditor accounts, secrets, health, cron, recovery drill.         |
 | Architecture | [adr/](adr/)                                                                                                                  | Numbered ADR records. Every significant technical decision lands here. Never amend an old ADR. |
 | Workflow     | [INDEX.md](INDEX.md) (this file), [README.md](../README.md), [AGENTS.md](../AGENTS.md), [CONTRIBUTING.md](../CONTRIBUTING.md) | Working agreements + the public top-level story.                                               |
 
@@ -119,6 +119,7 @@ write a new one that supersedes it.
 | 0039 | [The team referent never sees a per-link status](adr/0039-referent-sees-no-per-link-status.md)                           | TASK-S                           | Accepted |
 | 0041 | [Audit report, improvement catalogue, readiness score](adr/0041-audit-report-improvement-catalogue-readiness.md)         | TASK-V                           | Accepted |
 | 0042 | [Server-side PDF of the audit report](adr/0042-report-pdf-export.md)                                                     | TASK-V                           | Accepted |
+| 0043 | [Optional AI draft of the report summary](adr/0043-ai-draft-of-report-summary.md)                                        | TASK-V                           | Accepted |
 
 ## 4. The gates map (PRD §25.4)
 
@@ -182,7 +183,7 @@ Manual URLs (ports come from the `READY` line):
 - **RLS** — Every tenant-scoped table has a four-policy RLS pattern
   (`SELECT`, `INSERT`, `UPDATE`, `DELETE`) plus a `SET LOCAL
 app.tenant_id` / `app.is_service_account` switch. See ADR 0003.
-- **ADR numbering** — Next free is `0040`. One decision per ADR; never
+- **ADR numbering** — Next free is `0044`. One decision per ADR; never
   amend an old one.
 - **ROADMAP updates** — The State column flips and the README Status
   block updates in the same PR (or the immediately-following commit
@@ -281,7 +282,8 @@ docs/
    ├── 0038-audit-setup-organisation-context-and-language.md
    ├── 0039-referent-sees-no-per-link-status.md
    ├── 0041-audit-report-improvement-catalogue-readiness.md
-   └── 0042-report-pdf-export.md
+   ├── 0042-report-pdf-export.md
+   └── 0043-ai-draft-of-report-summary.md
 ```
 
 The contract map of every Zod schema and TS type in `@evolai/contracts`
