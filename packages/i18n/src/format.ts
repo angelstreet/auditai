@@ -1,6 +1,6 @@
 import type { SupportedLocale } from './index.js';
 
-const intlTag: Record<SupportedLocale, string> = { fr: 'fr-FR', en: 'en-GB' };
+const intlTag: Record<SupportedLocale, string> = { fr: 'fr-FR', en: 'en-US' };
 
 export const formatNumber = (
   locale: SupportedLocale,
@@ -21,3 +21,14 @@ export const formatDate = (
   options: Intl.DateTimeFormatOptions = { dateStyle: 'medium' },
 ): string =>
   new Intl.DateTimeFormat(intlTag[locale], { timeZone: 'UTC', ...options }).format(new Date(value));
+
+/**
+ * "of X" for a name that is data (a team or engagement name), shown as written. French elides
+ * before a vowel or a mute h: "de Santé" but "d’Équipe pilote" (TASK-T, ADR 0038). English has no
+ * such rule, so the caller keeps its own wording there.
+ */
+export const deName = (locale: SupportedLocale, name: string): string => {
+  const n = name.trim();
+  if (locale !== 'fr') return n;
+  return /^[aeiouyhàâäéèêëîïôöùûü]/i.test(n) ? `d’${n}` : `de ${n}`;
+};

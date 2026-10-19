@@ -14,6 +14,10 @@
       "access": "public",
       "reason": "Mascot reveal from the tier in the URL; no tenant, no database read."
     },
+    "/api/locale/init": {
+      "access": "public",
+      "reason": "Stores the engagement language in a cookie for a first visit, then redirects to a /s/<token> path; reads nothing."
+    },
     "/s/[token]": {
       "access": "invitation",
       "reason": "Signed invitation token fixes tenant and pseudonym; respondent sees only their own state."

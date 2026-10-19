@@ -1,4 +1,9 @@
 import Button from '@mui/material/Button';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import { AddTeamForm, TeamRow } from '@/components/admin/SetupForms';
+import HelpTip from '@/components/HelpTip';
+import { listTeamsSetup } from '@/lib/setupData';
 import { EmptyState, Mascot, PageTitle, StatusText } from '@evolai/ui';
 import type { MascotTier, TenantId } from '@evolai/contracts';
 import { sessionTenantIds } from '@/lib/authServer';
@@ -33,7 +38,11 @@ export default async function TeamsPage({ searchParams }: PageProps) {
       </div>
     );
   }
-  const [teams, badges] = await Promise.all([listTeamsInTenant(current), listTeamBadges(current)]);
+  const [teams, badges, setupTeams] = await Promise.all([
+    listTeamsInTenant(current),
+    listTeamBadges(current),
+    listTeamsSetup(current),
+  ]);
   const badgeByTeam = new Map(badges.map((b) => [b.teamId, b]));
   return (
     <div className="wide">
@@ -46,6 +55,32 @@ export default async function TeamsPage({ searchParams }: PageProps) {
           </Button>
         }
       />
+      <Paper variant="outlined" component="section" sx={{ p: 4, borderRadius: 3, mb: 5 }}>
+        <Typography variant="sectionTitle" component="h2">
+          {t('admin.setup.teams.addTitle')}
+        </Typography>
+        <Typography color="text.secondary" sx={{ mb: 3 }}>
+          {t('admin.setup.teams.addIntro')}
+        </Typography>
+        <AddTeamForm tenantId={current} />
+      </Paper>
+      {setupTeams.length > 0 ? (
+        <Paper variant="outlined" component="section" sx={{ p: 4, borderRadius: 3, mb: 5 }}>
+          <Typography variant="sectionTitle" component="h2">
+            {t('admin.setup.teams.manageTitle')}
+          </Typography>
+          <ul style={{ padding: 0, margin: 0 }}>
+            {setupTeams.map((team) => (
+              <TeamRow
+                key={team.id}
+                tenantId={current}
+                team={{ id: team.id, name: team.name, size: team.expectedHeadcount }}
+                usedLabel={t('admin.setup.teams.usedIn', { n: team.engagementCount })}
+              />
+            ))}
+          </ul>
+        </Paper>
+      ) : null}
       {teams.length === 0 ? (
         <EmptyState icon="team" title={t('admin.teams.none')} />
       ) : (
@@ -92,7 +127,10 @@ export default async function TeamsPage({ searchParams }: PageProps) {
           })}
         </ul>
       )}
-      <p className="footnote">{t('admin.teams.footnote')}</p>
+      <p className="footnote">
+        {t('admin.teams.footnote')}
+        <HelpTip label={t('admin.teams.footnoteHelpAria')} text={t('admin.teams.footnoteHelp')} />
+      </p>
     </div>
   );
 }

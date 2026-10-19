@@ -1,8 +1,13 @@
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import type { InvitationId, MascotTier, TenantId } from '@evolai/contracts';
-import type { SupportedLocale, Translator } from '@evolai/i18n';
+import {
+  createTranslator,
+  isSupportedLocale,
+  type SupportedLocale,
+  type Translator,
+} from '@evolai/i18n';
 import { withServiceAccount, withTenant } from './db';
-import { getT } from './i18n';
+import { getLocale, localeIsChosen } from './i18n';
 import { InvalidInviteToken, verifyInviteToken } from './invitationToken';
 import { getOrCreateState, setLocale, type SurveyState } from './surveyState';
 
@@ -78,8 +83,29 @@ export type RespondentContext =
       t: Translator;
     };
 
-/** Resolve the invitation behind a token, or 404. Pages call this first. */
-export const loadRespondent = async (token: string): Promise<RespondentContext> => {
+/** Language of the engagement behind an invitation, or null. */
+const engagementLocale = async (engagementId: string): Promise<SupportedLocale | null> =>
+  withServiceAccount(async (client) => {
+    const { rows } = await client.query<{ locale: string }>(
+      `SELECT locale FROM engagements WHERE id = $1 LIMIT 1`,
+      [engagementId],
+    );
+    const l = rows[0]?.locale;
+    return l && isSupportedLocale(l) ? l : null;
+  });
+
+/**
+ * Resolve the invitation behind a token, or 404. Pages call this first.
+ *
+ * Language (TASK-T, ADR 0038): the person's own choice (cookie) wins; otherwise the engagement
+ * language; otherwise the browser. On the entry page (`rememberLocale`) a first visit without a
+ * choice is sent through `/api/locale/init`, which stores the engagement language in the cookie so
+ * the header and footer match the page; `?l=1` on the way back stops any loop when cookies are off.
+ */
+export const loadRespondent = async (
+  token: string,
+  opts: { rememberLocale?: boolean } = {},
+): Promise<RespondentContext> => {
   try {
     verifyInviteToken(token);
   } catch (err) {
@@ -88,7 +114,14 @@ export const loadRespondent = async (token: string): Promise<RespondentContext> 
   }
   const invite = await findInvitation(token.split('.')[0] as string);
   if (!invite) notFound();
-  const { locale, t } = getT();
+  const chosen = localeIsChosen();
+  const locale = chosen
+    ? getLocale()
+    : ((await engagementLocale(invite.engagementId)) ?? getLocale());
+  const t = createTranslator(locale);
+  if (!chosen && opts.rememberLocale) {
+    redirect(`/api/locale/init?locale=${locale}&to=${encodeURIComponent(`/s/${token}`)}`);
+  }
   const gate = gateFor(invite, new Date());
   if (gate !== 'ok') return { kind: 'blocked', gate, locale, t };
   const state = await getOrCreateState(invite.tenantId, invite.invitationId);

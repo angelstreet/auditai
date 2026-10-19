@@ -249,10 +249,16 @@ export function ConfirmDialog({
   confirmLabel,
   cancelLabel,
   danger = false,
+  confirmDisabled = false,
+  children,
   onConfirm,
   onClose,
 }: {
   open: boolean;
+  /** Disables the confirm button, e.g. until the person has typed a code. */
+  confirmDisabled?: boolean;
+  /** Extra content under the body, such as a type-to-confirm field. */
+  children?: ReactNode;
   title: ReactNode;
   body: ReactNode;
   confirmLabel: ReactNode;
@@ -266,12 +272,18 @@ export function ConfirmDialog({
       <DialogTitle id="confirm-title">{title}</DialogTitle>
       <DialogContent>
         <DialogContentText>{body}</DialogContentText>
+        {children}
       </DialogContent>
       <DialogActions sx={{ px: 6, pb: 5 }}>
         <Button variant="text" onClick={onClose}>
           {cancelLabel}
         </Button>
-        <Button variant="contained" color={danger ? 'error' : 'primary'} onClick={onConfirm}>
+        <Button
+          variant="contained"
+          color={danger ? 'error' : 'primary'}
+          disabled={confirmDisabled}
+          onClick={onConfirm}
+        >
           {confirmLabel}
         </Button>
       </DialogActions>

@@ -30,6 +30,8 @@ export const en = {
       signOut: 'Sign out',
       organisation: 'Organisation',
       switchOrganisation: 'Switch organisation',
+      switchTitle: 'Organisation',
+      portfolio: 'Portfolio',
       workspace: 'Workspace',
       roles: {
         platform_owner: 'Platform owner',
@@ -47,7 +49,7 @@ export const en = {
       about: 'About',
       source: 'Source code',
     },
-    noTenants: 'No tenants configured. Run {command} to seed.',
+    noTenants: 'No organisation set up. Run {command} to load demo data.',
     dash: '—',
     notFoundTitle: 'This page does not exist',
     notFoundBody: 'Check that the link is complete. Or ask your team contact for a new one.',
@@ -57,7 +59,7 @@ export const en = {
   meta: {
     title: 'EvolAI — Understand. Adapt. Evolve.',
     description:
-      'Open-source evidence-based AI adoption audits. Privacy-first, tenant-isolated, AI-open.',
+      'Open-source evidence-based AI adoption audits. Privacy-first, each organisation’s data kept apart, AI-open.',
     ogAlt: 'EvolAI wordmark with adaptive-steps symbol',
     pages: {
       welcome: 'Welcome',
@@ -255,7 +257,7 @@ export const en = {
     leadershipLiteracy: 'Leadership literacy',
     operationalAdoption: 'Operational adoption',
     policyGovernance: 'Policy & governance',
-    errInvalidTenant: 'Invalid tenant id',
+    errInvalidTenant: 'This organisation is not valid',
     errBudget: 'Annual budget must be a non-negative number',
     errInvalidInput: 'Invalid input: {fields}',
     maturityValue: '{value} / 5',
@@ -273,7 +275,7 @@ export const en = {
   client: clientEn,
   auth: {
     notSignedIn: 'Not signed in',
-    notMember: 'Not a member of this tenant',
+    notMember: 'You do not belong to this organisation',
   },
   login: {
     title: 'Sign in',

@@ -3,7 +3,7 @@ import { sessionTenantIds } from '@/lib/authServer';
 import { listDeletionEvents } from '@/lib/deletionData';
 import { listExportRequests } from '@/lib/exportData';
 import { enumLabel, getT } from '@/lib/i18n';
-import { formatDate } from '@evolai/i18n';
+import { formatDate, type MessageKey } from '@evolai/i18n';
 import { DeleteForm, ExportForm } from './DataAdminClient';
 import type { TenantId } from '@evolai/contracts';
 
@@ -27,6 +27,12 @@ interface PageProps {
  */
 export default async function DataPage({ searchParams }: PageProps) {
   const { t, locale } = getT();
+  // Plain words for statuses and kinds; an unknown value shows as it is rather than breaking the page.
+  const label = (group: string, value: string): string => {
+    const key = `admin.setup.${group}.${value}` as MessageKey;
+    const text = t(key);
+    return text === key ? value : text;
+  };
   const when = (iso: string): string =>
     formatDate(locale, iso, { dateStyle: 'medium', timeStyle: 'short' });
   const tenants = await sessionTenantIds();
@@ -81,7 +87,7 @@ export default async function DataPage({ searchParams }: PageProps) {
                   <tr key={e.id}>
                     <td>{when(e.createdAt)}</td>
                     <td>{enumLabel(t, 'exportKind', e.kind)}</td>
-                    <td>{e.status}</td>
+                    <td>{label('exportStatus', e.status)}</td>
                     <td>{e.rowCount}</td>
                     <td className="muted">{e.error ?? t('common.dash')}</td>
                   </tr>
@@ -111,9 +117,9 @@ export default async function DataPage({ searchParams }: PageProps) {
                 {deletions.slice(0, 20).map((d) => (
                   <tr key={d.id}>
                     <td>{when(d.createdAt)}</td>
-                    <td>{d.scope}</td>
+                    <td>{label('scope', d.scope)}</td>
                     <td>{d.respondentPseudonym ?? t('common.dash')}</td>
-                    <td>{d.targetKind}</td>
+                    <td>{label('targetKind', d.targetKind)}</td>
                   </tr>
                 ))}
               </tbody>

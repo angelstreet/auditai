@@ -161,15 +161,18 @@ export const toCsv = (header: readonly string[], rows: readonly (readonly string
 export const surveyLink = (baseUrl: string, token: string): string =>
   `${baseUrl.replace(/\/+$/, '')}/s/${token}`;
 
-/** Admin-only base URL: APP_BASE_URL, else the request host. Never a path or query. */
+/**
+ * Admin-only base URL: APP_BASE_URL, else the site URL setting (NEXT_PUBLIC_SITE_URL), else the
+ * request host (https unless it is localhost). Never a path or query.
+ */
 export const resolveBaseUrl = (
   env: Record<string, string | undefined>,
   host: string | null,
   proto: string | null,
 ): string => {
-  const configured = env['APP_BASE_URL'];
-  if (configured && /^https?:\/\/[^\s/]+$/.test(configured.replace(/\/+$/, ''))) {
-    return configured.replace(/\/+$/, '');
+  for (const key of ['APP_BASE_URL', 'NEXT_PUBLIC_SITE_URL']) {
+    const configured = env[key]?.replace(/\/+$/, '');
+    if (configured && /^https?:\/\/[^\s/]+$/.test(configured)) return configured;
   }
   if (host && /^[A-Za-z0-9.-]+(:\d+)?$/.test(host)) {
     const p = proto === 'http' && /^(localhost|127\.0\.0\.1)(:|$)/.test(host) ? 'http' : 'https';

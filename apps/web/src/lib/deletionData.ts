@@ -55,6 +55,19 @@ export interface PseudonymDeletionResult {
   readonly removedRowCount: number;
 }
 
+/** Does any link, survey or mascot in this organisation carry this respondent code? */
+export const respondentExists = async (tenantId: TenantId, pseudonym: string): Promise<boolean> =>
+  withTenant(tenantId, async (client) => {
+    const { rows } = await client.query(
+      `SELECT 1 FROM invitations WHERE tenant_id = $1 AND respondent_pseudonym = $2
+       UNION ALL
+       SELECT 1 FROM respondent_badges WHERE tenant_id = $1 AND respondent_pseudonym = $2
+       LIMIT 1`,
+      [tenantId, pseudonym],
+    );
+    return rows.length > 0;
+  });
+
 export const deletePseudonym = async (
   tenantId: TenantId,
   pseudonym: string,

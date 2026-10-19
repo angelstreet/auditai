@@ -23,8 +23,14 @@ interface Params {
  * Interrupted visit: the same, with "continue where you left off". After submitting: the
  * respondent's status view (team progress, what happens next).
  */
-export default async function WelcomePage({ params }: { params: Params }) {
-  const ctx = await loadRespondent(params.token);
+export default async function WelcomePage({
+  params,
+  searchParams,
+}: {
+  params: Params;
+  searchParams: { l?: string };
+}) {
+  const ctx = await loadRespondent(params.token, { rememberLocale: searchParams.l !== '1' });
   if (ctx.kind === 'blocked') return <LinkProblem gate={ctx.gate} t={ctx.t} />;
   const { invite, state, locale, t } = ctx;
   const total = totalQuestionCount();

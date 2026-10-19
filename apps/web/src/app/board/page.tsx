@@ -3,6 +3,8 @@ import Link from 'next/link';
 import Button from '@mui/material/Button';
 import { Mascot, PageTitle } from '@evolai/ui';
 import AdminTabs from '@/components/admin/AdminTabs';
+import FirstRunChecklist, { type ChecklistStep } from '@/components/admin/FirstRunChecklist';
+import { listTeamsSetup } from '@/lib/setupData';
 import { listEngagements } from '@/lib/adminData';
 import { sessionTenantIds } from '@/lib/authServer';
 import { listLatestSponsorBriefs } from '@/lib/sponsorBriefData';
@@ -97,13 +99,34 @@ export default async function BoardPage() {
   );
   const briefs = await listLatestSponsorBriefs();
 
+  // First-run guide for the organisation being worked on (the header's organisation, ADR 0038).
+  const working = tenantIds[0];
+  const mine = engagementsPerTenant.find((x) => x.tenantId === working)?.engagements ?? [];
+  const myTeams = working ? await listTeamsSetup(working as TenantId) : [];
+  const q = working ? `tenant=${working}` : '';
+  const firstId = mine[0]?.engagement.id;
+  const inv = firstId ? `/admin/invitations?${q}&engagement=${firstId}` : `/admin/engagements?${q}`;
+  const steps: ChecklistStep[] = [
+    { key: 'Engagement', done: mine.length > 0, href: `/admin/engagements/new?${q}` },
+    { key: 'Teams', done: myTeams.length > 0, href: `/admin/teams?${q}` },
+    { key: 'Links', done: mine.some((e) => e.invitationsTotal > 0), href: inv },
+    { key: 'Progress', done: mine.some((e) => e.invitationsSubmitted > 0), href: inv },
+    {
+      key: 'Results',
+      done: mine.some((e) =>
+        ['analysis', 'review', 'closed', 'archived'].includes(e.engagement.status),
+      ),
+      href: firstId ? `/admin/engagements/${firstId}/analyses?${q}` : `/admin/engagements?${q}`,
+    },
+  ];
+
   const tickets: Ticket[] = [];
   for (const { tenantId, engagements } of engagementsPerTenant) {
     for (const e of engagements) {
       const col = engagementToColumn(e.engagement.status);
       tickets.push({
         column: col,
-        title: `${e.organisation.tradingName ?? e.organisation.legalName}`,
+        title: e.name ?? e.organisation.tradingName ?? e.organisation.legalName,
         meta: t('admin.board.submittedMeta', {
           submitted: e.invitationsSubmitted,
           expected: e.expectedHeadcount,
@@ -222,6 +245,7 @@ export default async function BoardPage() {
           </>
         }
       />
+      {working && steps.some((s) => !s.done) ? <FirstRunChecklist steps={steps} /> : null}
       <div className="kanban">
         {grouped.map(({ col, items }) => (
           <section

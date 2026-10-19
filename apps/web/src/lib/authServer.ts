@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import type { TenantId, UserId } from '@evolai/contracts';
 import { readSessionCookie, verifySession, type SessionPayload } from './session';
 import { getT } from './i18n';
+import { orderTenants, preferredOrg } from './orgContext';
 import { allowedTenantIds, effectiveContext, isTenantAllowed, pickTenant } from './tenantAccess';
 import { auditViewAs, trailPath } from './viewAsAudit';
 
@@ -33,12 +34,13 @@ const requireStaffSession = async (): Promise<SessionPayload> => {
 /** Drop-in replacement for the old cross-tenant `listTenantIds()` on admin pages. */
 export const sessionTenantIds = async (): Promise<readonly TenantId[]> => {
   const session = await requireStaffSession();
-  return allowedTenantIds(session) as TenantId[];
+  // The organisation chosen in the header comes first, so `tenants[0]` is the one being worked on.
+  return orderTenants(allowedTenantIds(session), preferredOrg()) as TenantId[];
 };
 
 export const sessionTenantFor = async (requested: string | undefined): Promise<TenantId | null> => {
   const session = await requireStaffSession();
-  return pickTenant(session, requested) as TenantId | null;
+  return pickTenant(session, requested ?? preferredOrg()) as TenantId | null;
 };
 
 export type ActorResult =

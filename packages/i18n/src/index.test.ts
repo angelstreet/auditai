@@ -151,6 +151,6 @@ describe('Intl helpers', () => {
     expect(formatCurrency('en', 12000)).toContain('12,000');
     expect(formatCurrency('fr', 12000).replace(/\s/g, ' ')).toContain('12 000');
     expect(formatDate('fr', '2026-03-05', { dateStyle: 'long' })).toBe('5 mars 2026');
-    expect(formatDate('en', '2026-03-05', { dateStyle: 'long' })).toBe('5 March 2026');
+    expect(formatDate('en', '2026-03-05', { dateStyle: 'long' })).toBe('March 5, 2026');
   });
 });

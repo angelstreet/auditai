@@ -19,8 +19,9 @@ export const invitationsEn = {
     started: 'Started',
     completed: 'Completed',
     lastActivity: 'Last activity',
-    fewerThan: 'Fewer than {n}',
-    fewerThanHint: 'Teams under {n} people show no figures, to protect anonymity.',
+    fewerThan: 'Hidden under {n} people to protect privacy',
+    hidden: 'Hidden',
+    fewerThanHint: 'Hidden under {n} people to protect privacy.',
     empty: 'No invitation yet. Create the first batch below.',
   },
   create: {
@@ -30,6 +31,8 @@ export const invitationsEn = {
     expiry: 'Valid for (days)',
     submit: 'Create links',
     noTeams: 'This engagement has no team yet.',
+    duplicate: 'You created {n} links a moment ago for the same teams. Tick to create them again.',
+    duplicateConfirm: 'Yes, create them again',
     addressesTitle: 'Send by email',
     addresses: 'Email addresses, one per line',
     addressTeam: 'Team for these addresses',
@@ -70,6 +73,16 @@ export const invitationsEn = {
     regenerated: 'New link (the old one no longer works):',
     empty: 'No open link.',
   },
+  batches: {
+    title: 'Link batches',
+    hint: 'Links created together form a batch. You can withdraw a whole batch at once.',
+    label: '{n, plural, one {# link} other {# links}} created on {date}',
+    stillOpen: '{n} still open',
+    revoke: 'Withdraw the batch',
+    revokeConfirm:
+      'Every link of this batch that is not completed stops working at once. This cannot be undone.',
+    empty: 'No batch yet.',
+  },
   sheet: {
     title: 'QR sheet',
     print: 'Print',
@@ -84,6 +97,7 @@ export const invitationsEn = {
     revoked: 'Link revoked.',
     extended: 'Link extended.',
     regenerated: 'New link created.',
+    batch_revoked: '{n} links withdrawn.',
   },
   errors: {
     forbidden: 'You cannot do this here.',
@@ -97,6 +111,8 @@ export const invitationsEn = {
     email_off: 'Sending by email is off for this engagement. Turn it on in the options.',
     email_not_configured: 'Email sending is not set up on this server.',
     email_key_missing: 'Email sending is not set up on this server.',
+    duplicate_batch:
+      'The same batch was created less than 10 minutes ago. Tick the box to create it again.',
     not_open: 'This link is already used, revoked or expired.',
     error: 'Something went wrong. Please try again.',
   },

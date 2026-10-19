@@ -41,7 +41,8 @@ export class InvitationError extends Error {
       | 'bad_expiry'
       | 'email_off'
       | 'not_found'
-      | 'not_open',
+      | 'not_open'
+      | 'duplicate_batch',
   ) {
     super(code);
     this.name = 'InvitationError';
@@ -161,6 +162,12 @@ export interface BatchInput {
   readonly expiresInDays: number;
   /** Email mode only: one address per invitation, paired positionally with the created rows. */
   readonly addresses?: readonly { teamId: string; address: string }[];
+  /**
+   * Admin only (TASK-T): refuse a batch of the same size created in the last ten minutes unless
+   * `confirmDuplicate` is set. Off by default so the team space keeps its current behaviour.
+   */
+  readonly checkDuplicate?: boolean;
+  readonly confirmDuplicate?: boolean;
 }
 
 /** Bulk-create invitations. No names, no addresses unless the engagement switched email on. */
@@ -200,6 +207,17 @@ export const createBatch = async (
     const names = new Map(teams.rows.map((t) => [t.id, t.name]));
     if (groups.some((g) => !names.has(g.teamId)))
       throw new InvitationError('team_not_in_engagement');
+    if (input.checkDuplicate && !input.confirmDuplicate) {
+      const dup = await client.query(
+        `SELECT 1 FROM invitations
+          WHERE tenant_id = $1 AND engagement_id = $2 AND batch_id IS NOT NULL
+            AND created_at > now() - interval '10 minutes'
+          GROUP BY batch_id HAVING count(*) = $3 LIMIT 1`,
+        [tenantId, engagementId, total],
+      );
+      if ((dup.rowCount ?? 0) > 0) throw new InvitationError('duplicate_batch');
+    }
+    const batchId = randomUUID();
     const expires = new Date(Date.now() + expiresInDays * 86_400_000);
     const out: CreatedInvitation[] = [];
     for (const g of groups) {
@@ -210,8 +228,8 @@ export const createBatch = async (
         await client.query(
           `INSERT INTO invitations (id, tenant_id, engagement_id, team_id, respondent_pseudonym,
                                     status, token_reference, token_signature, opens_at, expires_at,
-                                    created_by)
-           VALUES ($1,$2,$3,$4,$5,'pending',$6,$7, now(), $8, $9)`,
+                                    created_by, batch_id)
+           VALUES ($1,$2,$3,$4,$5,'pending',$6,$7, now(), $8, $9, $10)`,
           [
             id,
             tenantId,
@@ -222,6 +240,7 @@ export const createBatch = async (
             token.split('.')[1],
             expires,
             actor,
+            batchId,
           ],
         );
         out.push({
@@ -237,6 +256,7 @@ export const createBatch = async (
       teams: groups.length,
       expiresInDays,
       withAddresses: addressList.length,
+      batchId,
     });
     return out;
   });
@@ -432,6 +452,65 @@ export const markReminded = async (
     });
     return due.length;
   });
+
+export interface BatchSummary {
+  readonly batchId: string;
+  readonly createdOn: string;
+  readonly total: number;
+  readonly open: number;
+}
+
+/** Link batches of an engagement, newest first (counts only: no per-link status leaves this list). */
+export const listBatches = async (
+  tenantId: TenantId,
+  engagementId: string,
+): Promise<BatchSummary[]> =>
+  withTenant(tenantId, async (client) => {
+    const { rows } = await client.query<{
+      batch_id: string;
+      created_on: string;
+      total: string;
+      open: string;
+    }>(
+      `SELECT batch_id, to_char(min(created_at), 'YYYY-MM-DD') AS created_on, count(*) AS total,
+              count(*) FILTER (WHERE status IN ${OPEN_STATUSES}) AS open
+         FROM invitations
+        WHERE tenant_id = $1 AND engagement_id = $2 AND batch_id IS NOT NULL
+        GROUP BY batch_id ORDER BY min(created_at) DESC LIMIT 50`,
+      [tenantId, engagementId],
+    );
+    return rows.map((r) => ({
+      batchId: r.batch_id,
+      createdOn: r.created_on,
+      total: Number(r.total),
+      open: Number(r.open),
+    }));
+  });
+
+/** Withdraw every open link of one batch. Completed links are untouched. Returns how many stopped. */
+export const revokeBatch = async (
+  tenantId: TenantId,
+  engagementId: string,
+  batchId: string,
+  actor: UserId,
+): Promise<number> => {
+  const ids = await withTenant(tenantId, async (client) => {
+    const res = await client.query<{ id: string }>(
+      `UPDATE invitations SET status = 'revoked', revoked_at = now(), updated_at = now()
+        WHERE tenant_id = $1 AND engagement_id = $2 AND batch_id = $3 AND status IN ${OPEN_STATUSES}
+        RETURNING id`,
+      [tenantId, engagementId, batchId],
+    );
+    if (res.rows.length === 0) throw new InvitationError('not_open');
+    await audit(client, tenantId, actor, 'invitation.revoke_batch', 'engagement', engagementId, {
+      batchId,
+      count: res.rows.length,
+    });
+    return res.rows.map((r) => r.id);
+  });
+  for (const id of ids) await purgeDelivery(tenantId, id);
+  return ids.length;
+};
 
 export const revoke = async (
   tenantId: TenantId,

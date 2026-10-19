@@ -1,11 +1,11 @@
 import { redirect } from 'next/navigation';
 import EngagementRow from '@/components/admin/EngagementRow';
-import TenantSwitcher from '@/components/admin/TenantSwitcher';
 import { listEngagements } from '@/lib/adminData';
 import { sessionTenantIds } from '@/lib/authServer';
 import { getT } from '@/lib/i18n';
 import { formatNumber } from '@evolai/i18n';
-import { PageTitle, StatTiles } from '@evolai/ui';
+import Button from '@mui/material/Button';
+import { AppIcon, PageTitle, StatTiles } from '@evolai/ui';
 
 // Always render at request time so the DB connection is fresh.
 export const dynamic = 'force-dynamic';
@@ -50,8 +50,16 @@ export default async function AdminEngagementsPage({
         id="admin-title"
         title={t('admin.engagements.title')}
         subtitle={t('admin.engagements.dataFrom')}
+        actions={
+          <Button
+            variant="contained"
+            href={`/admin/engagements/new?tenant=${current}`}
+            startIcon={<AppIcon name="add" size={20} />}
+          >
+            {t('admin.setup.list.newEngagement')}
+          </Button>
+        }
       />
-      <TenantSwitcher currentTenantId={current} />
       <StatTiles
         items={[
           {
@@ -81,12 +89,13 @@ export default async function AdminEngagementsPage({
             <th scope="col">{t('admin.engagements.colRevoked')}</th>
             <th scope="col">{t('admin.engagements.colCompletion')}</th>
             <th scope="col">{t('admin.engagements.colCloses')}</th>
+            <th scope="col">{t('admin.engagements.colActions')}</th>
           </tr>
         </thead>
         <tbody>
           {summaries.length === 0 ? (
             <tr>
-              <td colSpan={10}>{t('admin.engagements.none')}</td>
+              <td colSpan={11}>{t('admin.engagements.none')}</td>
             </tr>
           ) : (
             summaries.map((summary) => (

@@ -9,7 +9,7 @@ export const invitationsFr = {
     opened: 'Ouverts',
     started: 'Commencés',
     completed: 'Terminés',
-    rate: 'Taux de réponse',
+    rate: 'Avancement',
   },
   teams: {
     title: 'Avancement par équipe',
@@ -19,9 +19,9 @@ export const invitationsFr = {
     started: 'Commencés',
     completed: 'Terminés',
     lastActivity: 'Dernière activité',
-    fewerThan: 'Moins de {n}',
-    fewerThanHint:
-      'Les équipes de moins de {n} personnes n’affichent aucun chiffre, pour protéger l’anonymat.',
+    fewerThan: 'Masqué sous {n} personnes pour protéger la vie privée',
+    hidden: 'Masqué',
+    fewerThanHint: 'Masqué sous {n} personnes pour protéger la vie privée.',
     empty: 'Aucune invitation pour l’instant. Créez le premier lot ci-dessous.',
   },
   create: {
@@ -31,6 +31,9 @@ export const invitationsFr = {
     expiry: 'Valables (jours)',
     submit: 'Créer les liens',
     noTeams: 'Cette mission n’a pas encore d’équipe.',
+    duplicate:
+      'Vous avez créé {n} liens à l’instant pour les mêmes équipes. Cochez pour les créer à nouveau.',
+    duplicateConfirm: 'Oui, les créer à nouveau',
     addressesTitle: 'Envoyer par e-mail',
     addresses: 'Adresses e-mail, une par ligne',
     addressTeam: 'Équipe de ces adresses',
@@ -71,6 +74,16 @@ export const invitationsFr = {
     regenerated: 'Nouveau lien (l’ancien ne fonctionne plus) :',
     empty: 'Aucun lien ouvert.',
   },
+  batches: {
+    title: 'Lots de liens',
+    hint: 'Les liens créés ensemble forment un lot. Vous pouvez retirer un lot entier d’un coup.',
+    label: '{n, plural, one {# lien créé} other {# liens créés}} le {date}',
+    stillOpen: '{n} encore ouverts',
+    revoke: 'Retirer le lot',
+    revokeConfirm:
+      'Tous les liens de ce lot non terminés cessent de fonctionner aussitôt. Cette action est définitive.',
+    empty: 'Aucun lot pour l’instant.',
+  },
   sheet: {
     title: 'Planche de QR codes',
     print: 'Imprimer',
@@ -85,6 +98,7 @@ export const invitationsFr = {
     revoked: 'Lien révoqué.',
     extended: 'Lien prolongé.',
     regenerated: 'Nouveau lien créé.',
+    batch_revoked: '{n} liens retirés.',
   },
   errors: {
     forbidden: 'Vous ne pouvez pas faire cela ici.',
@@ -98,6 +112,8 @@ export const invitationsFr = {
     email_off: 'L’envoi par e-mail est désactivé pour cette mission. Activez-le dans les options.',
     email_not_configured: 'L’envoi d’e-mails n’est pas configuré sur ce serveur.',
     email_key_missing: 'L’envoi d’e-mails n’est pas configuré sur ce serveur.',
+    duplicate_batch:
+      'Le même lot a été créé il y a moins de dix minutes. Cochez la case pour le créer à nouveau.',
     not_open: 'Ce lien est déjà utilisé, révoqué ou expiré.',
     error: 'Une erreur est survenue. Veuillez réessayer.',
   },

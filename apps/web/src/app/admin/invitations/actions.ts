@@ -10,6 +10,7 @@ import {
   markReminded,
   regenerate,
   revoke,
+  revokeBatch,
   updateSettings,
 } from '@/lib/invitationData';
 import { sendInvitationEmails } from '@/lib/invitationDelivery';
@@ -72,6 +73,8 @@ export async function createInvitationsAction(
       groups: parsed.groups,
       addresses: parsed.addresses,
       expiresInDays: parsed.expiresInDays,
+      checkDuplicate: true,
+      confirmDuplicate: fd.get('confirmDuplicate') === 'on',
     });
     let emailSent = 0;
     let emailFailed = 0;
@@ -127,6 +130,22 @@ export async function markRemindedAction(
     const count = await markReminded(g.who.tenantId, g.engagementId, g.who.actor);
     revalidatePath('/admin/invitations');
     return { ok: true, code: 'reminded', count };
+  } catch (err) {
+    return { ok: false, code: codeOf(err) };
+  }
+}
+
+export async function revokeBatchAction(
+  _prev: InviteActionState,
+  fd: FormData,
+): Promise<InviteActionState> {
+  const g = await guard(fd);
+  const batchId = String(fd.get('batchId') ?? '');
+  if (!g || !isUuid(batchId)) return { ok: false, code: 'forbidden' };
+  try {
+    const count = await revokeBatch(g.who.tenantId, g.engagementId, batchId, g.who.actor);
+    revalidatePath('/admin/invitations');
+    return { ok: true, code: 'batch_revoked', count };
   } catch (err) {
     return { ok: false, code: codeOf(err) };
   }

@@ -44,6 +44,8 @@ export const runExport = async (
   tenantId: TenantId,
   kind: ExportKind,
   actorUserId: UserId,
+  /** Optional plain-language header per column name; unknown columns keep their own name. */
+  columnLabels?: Readonly<Record<string, string>>,
 ): Promise<{ request: ExportRequest; csv: string }> => {
   if (!exportKindSchema.options.includes(kind)) {
     throw new Error(`unknown export kind: ${kind}`);
@@ -59,7 +61,10 @@ export const runExport = async (
     if (!inserted) throw new Error('export_requests insert did not return a row');
     try {
       const rows = await materialiseQuery(client, kind, tenantId);
-      const csv = rowsToCsv(rows.columns, rows.values);
+      const csv = rowsToCsv(
+        columnLabels ? rows.columns.map((c) => columnLabels[c] ?? c) : rows.columns,
+        rows.values,
+      );
       const upd = await client.query<ExportRequestRow>(
         `UPDATE export_requests
             SET status = 'completed', row_count = $2, completed_at = now()
