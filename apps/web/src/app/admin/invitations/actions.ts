@@ -93,7 +93,14 @@ export async function createInvitationsAction(
     revalidatePath('/admin/invitations');
     return { ok: true, code: 'created', count: out.invitations.length, emailSent, emailFailed };
   } catch (err) {
-    return { ok: false, code: codeOf(err) };
+    const code = codeOf(err);
+    if (code !== 'duplicate_batch') return { ok: false, code };
+    // Keep what was typed: the form is reset after the action, and the next step is only a tick.
+    const echo: Record<string, string> = {};
+    for (const [k, v] of fd.entries()) {
+      if (typeof v === 'string' && (k.startsWith('count:') || k === 'expiresInDays')) echo[k] = v;
+    }
+    return { ok: false, code, echo };
   }
 }
 

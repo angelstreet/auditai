@@ -212,6 +212,7 @@ export default function InvitationsPanel(p: Props) {
                   key={team.id}
                   name={`count:${team.id}`}
                   label={fill(create['perTeam'] ?? '', { team: team.name })}
+                  defaultValue={created.echo?.[`count:${team.id}`] ?? ''}
                   type="number"
                   slotProps={{ htmlInput: { min: 0, max: 2000 } }}
                 />
@@ -220,7 +221,7 @@ export default function InvitationsPanel(p: Props) {
                 name="expiresInDays"
                 label={create['expiry']}
                 type="number"
-                defaultValue={14}
+                defaultValue={created.echo?.['expiresInDays'] ?? 14}
                 slotProps={{ htmlInput: { min: 1, max: 90 } }}
               />
               {p.emailDelivery ? (

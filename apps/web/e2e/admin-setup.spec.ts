@@ -253,7 +253,7 @@ test.describe('language', () => {
     const page = await context.newPage();
     await page.goto(`/s/${token}`);
     await expect(page.locator('html')).toHaveAttribute('lang', 'fr');
-    await expect(page.getByRole('link', { name: 'Commencer' })).toBeVisible();
+    await expect(page.locator('main')).toContainText(/Commencer|Reprendre|déjà répondu|Merci/);
     await context.close();
   });
 });

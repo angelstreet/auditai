@@ -100,7 +100,9 @@ export default async function SiteHeader() {
               borderLeft: 1,
               borderColor: 'divider',
               color: 'text.secondary',
-              maxWidth: { xs: 140, sm: 280 },
+              // One header row on a phone: there the organisation sits above the admin tabs instead.
+              display: { xs: 'none', sm: 'block' },
+              maxWidth: 280,
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
