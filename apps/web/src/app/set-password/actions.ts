@@ -22,7 +22,7 @@ export interface SetPasswordState {
 
 /**
  * Spend the link, set the password, sign the person in and send them to their own surface: a
- * referent to /client, staff to /board (TASK-U, ADR 0039).
+ * referent to /client, staff to /board (TASK-U, ADR 0040).
  */
 export async function setPasswordAction(
   _prev: SetPasswordState,

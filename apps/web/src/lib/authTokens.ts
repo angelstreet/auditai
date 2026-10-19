@@ -5,7 +5,7 @@ import { hashPassword } from './password';
 import { passwordProblem, type PasswordProblem } from './passwordPolicy';
 
 /**
- * Single-use set-password and reset tokens (TASK-U, ADR 0039). The link carries 32 random bytes;
+ * Single-use set-password and reset tokens (TASK-U, ADR 0040). The link carries 32 random bytes;
  * only their SHA-256 is stored, so a database read cannot be replayed as a link. Time is passed in
  * (never read inside SQL) so expiry is testable. A token is spent by one atomic UPDATE, so two
  * parallel requests cannot both win.

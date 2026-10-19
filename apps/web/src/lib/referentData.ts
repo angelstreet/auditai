@@ -4,7 +4,7 @@ import { issueToken } from './authTokens';
 import { withServiceAccount, withTenant } from './db';
 
 /**
- * Referents of an organisation and the owner's "invite this referent" step (TASK-U, ADR 0039).
+ * Referents of an organisation and the owner's "invite this referent" step (TASK-U, ADR 0040).
  * The address the owner types is hashed for lookup like every other sign-in address; it is not
  * stored anywhere else, and is only held in memory to send the email when a provider is set up.
  */

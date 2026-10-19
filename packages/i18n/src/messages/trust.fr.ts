@@ -1,6 +1,6 @@
 import type { Messages } from './index.js';
 
-/** Miroir français de `trust.en.ts` (TASK-U, ADR 0039). Mots simples, sans jargon. */
+/** Miroir français de `trust.en.ts` (TASK-U, ADR 0040). Mots simples, sans jargon. */
 export const trustFr: Messages['trust'] = {
   setPassword: {
     titleInvite: 'Choisissez votre mot de passe',

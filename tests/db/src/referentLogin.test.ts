@@ -3,7 +3,7 @@ import pg from 'pg';
 import { applyMigrations, connect, withServiceAccount, withTenant } from './db.js';
 
 /**
- * TASK-U (ADR 0039): tables behind referent login, public rate limits and privacy requests.
+ * TASK-U (ADR 0040): tables behind referent login, public rate limits and privacy requests.
  * Tokens and counters are service-account only; privacy requests are tenant scoped and can only be
  * created by the public form's service account; the trail accepts the new verbs and nothing else.
  */

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-/** TASK-U (ADR 0039): the owner can only invite a referent of the organisation being worked on. */
+/** TASK-U (ADR 0040): the owner can only invite a referent of the organisation being worked on. */
 const s = vi.hoisted(() => ({
   referentOf: new Set<string>(),
   taken: false,

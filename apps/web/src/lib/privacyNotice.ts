@@ -3,7 +3,7 @@ import { withServiceAccount, withTenant } from './db';
 import { isPlausibleEmail } from './invitationCrypto';
 
 /**
- * Privacy notice fields per engagement (TASK-U, ADR 0039). They live in `engagements.privacy_json`
+ * Privacy notice fields per engagement (TASK-U, ADR 0040). They live in `engagements.privacy_json`
  * under `notice`, so no migration is needed. The public page and the first survey page read the
  * same resolved values; a part that is not configured is hidden, never shown empty.
  */

@@ -2,7 +2,7 @@ import type { TenantId } from '@evolai/contracts';
 import { withTenant } from './db';
 
 /**
- * Read side of the audit trail for the admin screen and its CSV (TASK-U, ADR 0039). Only who, when
+ * Read side of the audit trail for the admin screen and its CSV (TASK-U, ADR 0040). Only who, when
  * and which action leave this module: never the payload, so no token, address or text can leak
  * through it. Actions are grouped so the filter speaks in plain words.
  */

@@ -1,4 +1,4 @@
-/** Password rule for self-service sign-in (TASK-U, ADR 0039): length only, no composition tricks. */
+/** Password rule for self-service sign-in (TASK-U, ADR 0040): length only, no composition tricks. */
 export const MIN_PASSWORD_LENGTH = 12;
 export const MAX_PASSWORD_LENGTH = 256;
 

@@ -21,7 +21,7 @@ interface PageProps {
   searchParams: { tenant?: string; group?: string; from?: string; to?: string };
 }
 
-/** /admin/audit: who did what, in plain words, with filters and a CSV (TASK-U, ADR 0039). */
+/** /admin/audit: who did what, in plain words, with filters and a CSV (TASK-U, ADR 0040). */
 export default async function AuditPage({ searchParams }: PageProps) {
   const { t, locale } = getT();
   const tenants = await sessionTenantIds();

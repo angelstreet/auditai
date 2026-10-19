@@ -3,7 +3,7 @@ import { withServiceAccount } from './db';
 export type AuthAuditAction = 'password.set' | 'password.reset' | 'password.reset_request';
 
 /**
- * Trail rows for the self-service password flows (TASK-U, ADR 0039). The actor and the target are
+ * Trail rows for the self-service password flows (TASK-U, ADR 0040). The actor and the target are
  * the person themselves; the row goes to every organisation they belong to, so each auditor sees
  * it. The payload never holds an address, a token or a password.
  */

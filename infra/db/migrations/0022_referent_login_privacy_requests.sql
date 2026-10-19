@@ -1,6 +1,6 @@
 -- 0022_referent_login_privacy_requests.sql
 --
--- TASK-U (ADR 0039): real login for a referent, privacy requests, wider audit trail.
+-- TASK-U (ADR 0040): real login for a referent, privacy requests, wider audit trail.
 --
 -- * auth_tokens: single-use, expiring set-password / reset tokens. Only the SHA-256 of the token is
 --   stored, never the token. Service account only (the public pages run as the service account and

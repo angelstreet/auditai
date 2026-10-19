@@ -1,5 +1,5 @@
 /**
- * Sign-in by link, privacy notice, audit trail and data-page safety (TASK-U, ADR 0039). Plain
+ * Sign-in by link, privacy notice, audit trail and data-page safety (TASK-U, ADR 0040). Plain
  * short words (docs/UI_RULES.md §8). Mirrored by `trust.fr.ts`.
  */
 export const trustEn = {

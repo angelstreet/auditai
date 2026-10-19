@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-/** TASK-U (ADR 0039): no team mascot or per-team count under the minimum group, in every reader. */
+/** TASK-U (ADR 0040): no team mascot or per-team count under the minimum group, in every reader. */
 const log = vi.hoisted(() => ({ calls: [] as { sql: string; params: unknown[] }[] }));
 vi.mock('@/lib/db', () => ({
   withTenant: async (_t: string, fn: (c: unknown) => unknown) =>

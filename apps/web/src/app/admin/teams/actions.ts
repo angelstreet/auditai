@@ -17,7 +17,7 @@ export interface InviteState {
   emailed?: boolean;
 }
 
-/** Owner action: create a sign-in link for one referent (TASK-U, ADR 0039). Actor from the session. */
+/** Owner action: create a sign-in link for one referent (TASK-U, ADR 0040). Actor from the session. */
 export async function inviteReferentAction(
   _prev: InviteState,
   formData: FormData,

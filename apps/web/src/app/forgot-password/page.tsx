@@ -6,7 +6,7 @@ import ForgotForm from './ForgotForm';
 
 export const dynamic = 'force-dynamic';
 
-/** /forgot-password: ask for a reset link by email (TASK-U, ADR 0039). Same answer for every address. */
+/** /forgot-password: ask for a reset link by email (TASK-U, ADR 0040). Same answer for every address. */
 export default function ForgotPasswordPage() {
   const { t } = getT();
   return (

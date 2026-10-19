@@ -3,7 +3,7 @@ import { withServiceAccount, withTenant } from './db';
 import { isPlausibleEmail } from './invitationCrypto';
 
 /**
- * Withdraw / erase / question requests from the public privacy page (TASK-U, ADR 0039). They go to
+ * Withdraw / erase / question requests from the public privacy page (TASK-U, ADR 0040). They go to
  * the auditor's data page, never to a manager. No name is collected; the optional reply address is
  * cleared once the request is handled.
  */

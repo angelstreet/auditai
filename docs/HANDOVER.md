@@ -67,6 +67,7 @@ deploy script only works inside its original environment (ADR 0022).
 | P      | (see git log) | "View as" for the platform owner (signed in the session cookie, read only, every request audited) and the team referent space `/client`; `pnpm seed:client` (ADR 0035)                                                                                                                                          |
 | S      | (see git log) | Referent self-service and the privacy fix: every link listed with copy/share and a ready-made fr/en message, one generic reminder, per-team bars with a minimum of 5 answers, no per-link status for the referent; closing date and contact in the auditor options; compact view-as banner on phones (ADR 0039) |
 
+| U | (see git log) | Referent login by link and password reset, privacy notice per engagement with a request form, audit-trail screen, data-page safety, small-group guard (ADR 0040) |
 | L | 38, 39, 41-45 | UI glow-up on MUI: theme with a lifted dark palette, header with identity menu, footer, welcome, login, respondent flow, admin tabs and danger flow, intake; style-guard rules 7-11; header and copy-length Playwright checks (ADR 0034, `docs/UI_RULES.md`, `docs/UI_GLOWUP_PLAN.md`) |
 
 Task briefs are kept in `docs/tasks/` (TASK-A to TASK-K).
@@ -117,6 +118,11 @@ Full detail in ADR 0029 section "Owner steps". Short version:
   TASK-S (ADR 0039): no migration. Set each engagement's closing date and contact on the auditor Invitations page
   (Options) before the referent sends links. Feedback items 4, 5, 7 to 13 and 15 of
   `docs/TEST_FEEDBACK_2026-10-19.md` remain.
+  TASK-U (ADR 0040): apply migration **0022** to Neon before the deploy (forward only: `auth_tokens`,
+  `public_attempts`, `privacy_requests`, six audit verbs). Referents get a real login from Admin, Teams, Referents
+  (single-use link, no address stored); `/forgot-password` needs an email provider to deliver. Fill the privacy
+  notice per engagement (settings page) before the first real survey; the public page hides what is not set. The
+  auditor reads privacy requests on the Data page. Teams under 5 completed answers are hidden everywhere.
 
 0. Invitations admin screen (TASK-N) lives in new files under `apps/web/src/app/admin/invitations/`. It is reachable by URL; TASK-L should add a header/nav link and fold it into the restyled admin shell (no existing admin file was touched). Migration 0018 only; no new migration in this step.
 

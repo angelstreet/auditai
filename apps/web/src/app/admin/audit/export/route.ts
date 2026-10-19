@@ -12,7 +12,7 @@ export const runtime = 'nodejs';
 
 /**
  * CSV of the audit trail: date, who, what. Never the payload. Session-checked here as well as by
- * the middleware; same filters as the screen (TASK-U, ADR 0039).
+ * the middleware; same filters as the screen (TASK-U, ADR 0040).
  */
 export async function GET(req: NextRequest) {
   const session = await getSession();

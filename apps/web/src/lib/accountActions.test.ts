@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 /**
- * TASK-U (ADR 0039): forgot-password gives the same answer for every address and is rate limited;
+ * TASK-U (ADR 0040): forgot-password gives the same answer for every address and is rate limited;
  * set-password lands a referent on /client and staff on /board; the owner's invite is audited by
  * the data layer and never touches another organisation.
  */

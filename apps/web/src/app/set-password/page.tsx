@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic';
 // The link carries a secret: never pass it on in a Referer header.
 export const metadata = { referrer: 'no-referrer', robots: { index: false } } as const;
 
-/** /set-password?token=…: first password of an invited person, or a reset (TASK-U, ADR 0039). */
+/** /set-password?token=…: first password of an invited person, or a reset (TASK-U, ADR 0040). */
 export default async function SetPasswordPage({
   searchParams,
 }: {

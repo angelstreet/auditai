@@ -15,7 +15,7 @@ export interface RequestState {
 }
 
 /**
- * Public request to withdraw, erase or ask (TASK-U, ADR 0039). It goes to the auditor's data page;
+ * Public request to withdraw, erase or ask (TASK-U, ADR 0040). It goes to the auditor's data page;
  * a manager never sees it. Rate limited per address and per reply email.
  */
 export async function submitPrivacyRequestAction(

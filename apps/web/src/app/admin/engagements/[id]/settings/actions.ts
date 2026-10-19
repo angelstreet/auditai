@@ -11,7 +11,7 @@ export interface NoticeState {
   message: string;
 }
 
-/** Save the privacy notice fields of one engagement (TASK-U, ADR 0039). Actor from the session. */
+/** Save the privacy notice fields of one engagement (TASK-U, ADR 0040). Actor from the session. */
 export async function saveNoticeAction(
   _prev: NoticeState,
   formData: FormData,

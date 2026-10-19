@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 /**
- * TASK-U (ADR 0039): set-password and reset tokens are hashed at rest, single use and expiring.
+ * TASK-U (ADR 0040): set-password and reset tokens are hashed at rest, single use and expiring.
  * The in-memory client below answers the four statements the module issues, with the same
  * conditions as the SQL (unused, not expired, user not disabled), so reuse and expiry are real.
  */

@@ -38,7 +38,7 @@ const fromRow = (r: TeamBadgeRow): TeamBadge => ({
   updatedAt: r.updated_at,
 });
 
-/** Small-group guard (TASK-U, ADR 0039): a team result needs at least MIN_GROUP_SIZE completed answers. */
+/** Small-group guard (TASK-U, ADR 0040): a team result needs at least MIN_GROUP_SIZE completed answers. */
 export const isGroupHidden = (memberCount: number): boolean => memberCount < MIN_GROUP_SIZE;
 
 /**

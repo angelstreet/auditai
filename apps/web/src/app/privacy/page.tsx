@@ -14,7 +14,7 @@ export function generateMetadata() {
 }
 
 /**
- * Public privacy notice (TASK-U, ADR 0039). Fixed parts are the same for everyone; the parts that
+ * Public privacy notice (TASK-U, ADR 0040). Fixed parts are the same for everyone; the parts that
  * depend on the organisation come from the engagement the visitor arrived from (`?e=`) and are
  * left out until configured, with a line saying who to ask. Holds no tenant data beyond what the
  * organisation chose to publish.

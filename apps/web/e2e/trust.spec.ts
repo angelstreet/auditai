@@ -6,7 +6,7 @@ import { expect, test, type BrowserContext, type Page } from '@playwright/test';
 import pg from 'pg';
 
 /**
- * TASK-U (ADR 0039): real referent login by link, forgot password, the complete privacy notice,
+ * TASK-U (ADR 0040): real referent login by link, forgot password, the complete privacy notice,
  * the audit trail screen, data-page safety and the small-group guard. Synthetic client C and
  * tenant A come from the seeds; every person here is a "Demo" one. fr and en, 360 and 1280, axe.
  * The tablet project is skipped (phone and desktop only).

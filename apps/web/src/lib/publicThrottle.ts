@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto';
 import { withServiceAccount } from './db';
 
 /**
- * Rate limit for public forms that must not reveal anything (TASK-U, ADR 0039): forgot-password and
+ * Rate limit for public forms that must not reveal anything (TASK-U, ADR 0040): forgot-password and
  * the privacy request. Same idea as loginThrottle: SHA-256 keys, counted in Postgres, so it holds
  * across serverless instances. Every call is counted, whether or not the address exists, so the
  * limit cannot be used to tell accounts apart.
