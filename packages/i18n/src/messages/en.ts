@@ -1,6 +1,7 @@
 import { adminEn } from './admin.en.js';
 import { clientEn } from './client.en.js';
 import { trustEn } from './trust.en.js';
+import { reportEn } from './report.en.js';
 
 /**
  * English catalog: the source of truth for the key set. `fr.ts` must mirror it exactly
@@ -275,6 +276,7 @@ export const en = {
   admin: adminEn,
   client: clientEn,
   trust: trustEn,
+  report: reportEn,
   auth: {
     notSignedIn: 'Not signed in',
     notMember: 'You do not belong to this organisation',

@@ -138,7 +138,8 @@ export function StatTiles({
             {item.value}
           </Typography>
           {item.hint ? (
-            <Typography variant="caption" color="text.secondary">
+            // Inside a dd: a dl group may hold only dt and dd (axe definition-list).
+            <Typography component="dd" variant="caption" color="text.secondary" sx={{ m: 0 }}>
               {item.hint}
             </Typography>
           ) : null}

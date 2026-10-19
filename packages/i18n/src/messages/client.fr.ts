@@ -24,6 +24,7 @@ export const clientFr: ClientMessages = {
     home: 'Accueil',
     invitations: 'Invitations',
     results: 'Résultats',
+    report: 'Rapport',
   },
   organisation: 'Organisation : {tenant}',
   home: {

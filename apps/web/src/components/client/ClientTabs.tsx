@@ -10,12 +10,13 @@ const SECTIONS = [
   { href: '/client', key: 'home', icon: 'home' },
   { href: '/client/invitations', key: 'invitations', icon: 'invite' },
   { href: '/client/results', key: 'results', icon: 'results' },
+  { href: '/client/report', key: 'report', icon: 'report' },
 ] as const;
 
 /**
- * Team space navigation (TASK-P): three sections only, no admin or auditor link and no
+ * Team space navigation (TASK-P, TASK-V): four sections only, no admin or auditor link and no
  * organisation switcher. The current section is marked by colour and underline (UI_RULES §6).
- * Full width tabs; on phones the icons are dropped and labels may wrap, never clip.
+ * Full width tabs from `sm` up; on phones the icons are dropped and the strip scrolls, so no label clips.
  */
 export default function ClientTabs() {
   const { t } = useI18n();
@@ -29,8 +30,17 @@ export default function ClientTabs() {
       component="nav"
       aria-label={t('client.nav.aria')}
       value={current}
-      variant="fullWidth"
-      sx={{ mb: 6, borderBottom: 1, borderColor: 'divider', displayPrint: 'none' }}
+      // Four sections do not fit a 360 px phone without clipping a word: the strip scrolls there
+      // (like the admin tabs) and stretches to the full width from `sm` up (TASK-V).
+      variant="scrollable"
+      scrollButtons={false}
+      sx={{
+        mb: 6,
+        borderBottom: 1,
+        borderColor: 'divider',
+        displayPrint: 'none',
+        '& .MuiTab-root': { flex: { sm: 1 } },
+      }}
     >
       {SECTIONS.map((s) => (
         <Tab
@@ -46,7 +56,7 @@ export default function ClientTabs() {
             minHeight: 44,
             minWidth: 0,
             px: { xs: 1, sm: 3 },
-            whiteSpace: 'normal',
+            whiteSpace: 'nowrap',
             // Phones: words only, so no label is ever clipped (TASK-S, feedback item 14).
             '& .MuiTab-icon': { display: { xs: 'none', sm: 'inline-flex' } },
           }}

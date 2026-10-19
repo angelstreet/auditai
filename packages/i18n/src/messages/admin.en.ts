@@ -59,6 +59,7 @@ export const adminEn = {
     tabInvitations: 'Invitations',
     tabTeams: 'Teams',
     tabSynergies: 'Synergies',
+    tabReports: 'Reports',
     tabData: 'Data',
     tabRedaction: 'Names to hide',
     tabAudit: 'Audit trail',

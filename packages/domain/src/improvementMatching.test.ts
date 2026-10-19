@@ -14,6 +14,10 @@ describe('improvement matching', () => {
     expect(tagsInText('Double saisie dans deux outils, chaque jour')).toEqual(
       expect.arrayContaining(['manual_reentry', 'repetitive_task']),
     );
+    expect(tagsInText('Les chiffres sont copiés et collés dans le rapport chaque semaine')).toEqual(
+      expect.arrayContaining(['manual_reentry', 'repetitive_task', 'reporting']),
+    );
+    expect(tagsInText('Mes collègues m’aident')).not.toContain('manual_reentry');
     expect(tagsInText('Nothing relevant here')).toEqual([]);
   });
 
