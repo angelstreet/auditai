@@ -38,6 +38,9 @@ export const trustEn = {
     resetSubject: 'Choose a new password',
     resetBody:
       'Open this link to choose a new password. It works once and for 60 minutes:\n\n{link}\n\nIf you did not ask for this, ignore it. Your password has not changed.',
+    requestSubject: 'A privacy request was received',
+    requestBody:
+      'Someone sent a request from the privacy page. Open the Data page of the admin area to read and handle it.',
   },
   referents: {
     title: 'Referents',

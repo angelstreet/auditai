@@ -5,10 +5,12 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { AppIcon, PageTitle, StatusText } from '@evolai/ui';
 import { EngagementForm } from '@/components/admin/SetupForms';
+import NoticeForm from '@/components/admin/NoticeForm';
 import StatusPanel from '@/components/admin/StatusPanel';
 import { sessionTenantIds } from '@/lib/authServer';
 import { enumLabel, getT } from '@/lib/i18n';
 import { isUuid } from '@/lib/invitationForm';
+import { getNoticeForAdmin } from '@/lib/privacyNotice';
 import { getEngagementSetup, listTeamsSetup } from '@/lib/setupData';
 
 export const dynamic = 'force-dynamic';
@@ -25,9 +27,10 @@ export default async function EngagementSettingsPage({ params, searchParams }: P
   const tenants = await sessionTenantIds();
   const current = tenants.find((x) => x === searchParams.tenant) ?? tenants[0];
   if (!current) notFound();
-  const [setup, teams] = await Promise.all([
+  const [setup, teams, notice] = await Promise.all([
     getEngagementSetup(current, params.id),
     listTeamsSetup(current),
+    getNoticeForAdmin(current, params.id),
   ]);
   if (!setup) notFound();
   const q = `tenant=${current}`;
@@ -77,6 +80,19 @@ export default async function EngagementSettingsPage({ params, searchParams }: P
           }}
         />
       </Paper>
+      {notice ? (
+        <Paper variant="outlined" component="section" sx={{ p: 4, borderRadius: 3, mb: 5 }}>
+          <NoticeForm
+            tenantId={current}
+            engagementId={setup.id}
+            organisation={notice.organisation}
+            stored={notice.stored}
+            gaps={notice.resolved.gaps}
+            retentionDays={notice.resolved.retentionDays}
+            publicHref={`/privacy?e=${setup.id}`}
+          />
+        </Paper>
+      ) : null}
       <Button
         variant="text"
         href={`/admin/invitations?${q}&engagement=${setup.id}`}

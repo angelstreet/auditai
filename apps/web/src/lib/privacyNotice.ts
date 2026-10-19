@@ -26,6 +26,8 @@ export type NoticeGap = 'contact' | 'providers' | 'retention' | 'ai';
 export interface ResolvedNotice {
   readonly controller: string;
   readonly contact: string | null;
+  /** The bare contact address, for the notification email only. */
+  readonly contactEmail: string | null;
   readonly purpose: string | null;
   readonly basis: LegalBasis;
   readonly providers: readonly string[];
@@ -80,6 +82,7 @@ export const resolveNotice = (privacyJson: unknown, ctx: NoticeContext): Resolve
   return {
     controller: str(n['controller'], LIMITS.short) || ctx.organisation,
     contact,
+    contactEmail: contactEmail && isPlausibleEmail(contactEmail) ? contactEmail : null,
     purpose: str(n['purpose'], LIMITS.long) || null,
     basis: n['basis'] === 'legitimate_interest' ? 'legitimate_interest' : 'consent',
     providers,

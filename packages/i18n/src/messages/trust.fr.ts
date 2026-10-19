@@ -37,6 +37,9 @@ export const trustFr: Messages['trust'] = {
     resetSubject: 'Choisissez un nouveau mot de passe',
     resetBody:
       'Ouvrez ce lien pour choisir un nouveau mot de passe. Il ne sert qu’une fois, pendant 60 minutes :\n\n{link}\n\nSi vous n’avez rien demandé, ignorez ce message. Votre mot de passe n’a pas changé.',
+    requestSubject: 'Une demande vie privée a été reçue',
+    requestBody:
+      'Une personne a envoyé une demande depuis la page de confidentialité. Ouvrez la page Données de l’espace d’administration pour la lire et la traiter.',
   },
   referents: {
     title: 'Référents',
@@ -139,7 +142,7 @@ export const trustFr: Messages['trust'] = {
     },
   },
   notice: {
-    title: 'Notice de confidentialité',
+    title: 'Politique de confidentialité',
     intro:
       'Cette page explique ce que deviennent vos réponses. Elle s’adresse aux personnes invitées à répondre.',
     whoTitle: 'Qui pose les questions',
