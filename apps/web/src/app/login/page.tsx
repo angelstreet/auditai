@@ -49,6 +49,9 @@ export default function LoginPage({ searchParams }: PageProps) {
         />
       </Paper>
       <Typography variant="body2" sx={{ mt: 5 }}>
+        <Link href="/forgot-password">{t('login.forgot')}</Link>
+      </Typography>
+      <Typography variant="body2" sx={{ mt: 3 }}>
         <Link href="/privacy">{t('common.nav.privacy')}</Link>
       </Typography>
     </Box>

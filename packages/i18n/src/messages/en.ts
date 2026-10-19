@@ -1,5 +1,6 @@
 import { adminEn } from './admin.en.js';
 import { clientEn } from './client.en.js';
+import { trustEn } from './trust.en.js';
 
 /**
  * English catalog: the source of truth for the key set. `fr.ts` must mirror it exactly
@@ -273,6 +274,7 @@ export const en = {
   },
   admin: adminEn,
   client: clientEn,
+  trust: trustEn,
   auth: {
     notSignedIn: 'Not signed in',
     notMember: 'You do not belong to this organisation',
@@ -289,5 +291,6 @@ export const en = {
     invalid: 'Email or password is incorrect.',
     locked: 'Too many attempts. Try again in a few minutes.',
     failed: 'Sign-in failed.',
+    forgot: 'Forgot password?',
   },
 } as const;

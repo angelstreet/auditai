@@ -1,6 +1,7 @@
 import type { Messages } from './index.js';
 import { adminFr } from './admin.fr.js';
 import { clientFr } from './client.fr.js';
+import { trustFr } from './trust.fr.js';
 
 /**
  * Catalogue français (vouvoiement pour tout contenu destiné aux clients et aux employés, ADR 0024).
@@ -285,6 +286,7 @@ export const fr: Messages = {
   },
   admin: adminFr,
   client: clientFr,
+  trust: trustFr,
   auth: {
     notSignedIn: 'Vous n’êtes pas connecté',
     notMember: 'Vous n’appartenez pas à cette organisation',
@@ -301,5 +303,6 @@ export const fr: Messages = {
     invalid: 'L’adresse e-mail ou le mot de passe est incorrect.',
     locked: 'Trop de tentatives. Réessayez dans quelques minutes.',
     failed: 'La connexion a échoué.',
+    forgot: 'Mot de passe oublié ?',
   },
 };

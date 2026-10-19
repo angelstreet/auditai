@@ -61,6 +61,7 @@ export const adminEn = {
     tabSynergies: 'Synergies',
     tabData: 'Data',
     tabRedaction: 'Names to hide',
+    tabAudit: 'Audit trail',
   },
   engagements: {
     title: 'Audit engagements',

@@ -64,6 +64,7 @@ export const adminFr: AdminMessages = {
     tabSynergies: 'Synergies',
     tabData: 'Données',
     tabRedaction: 'Noms à masquer',
+    tabAudit: 'Journal d’audit',
   },
   engagements: {
     title: 'Missions d’audit',

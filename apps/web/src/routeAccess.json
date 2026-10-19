@@ -1,15 +1,30 @@
 {
   "_doc": "Every page and API route that the middleware matcher does NOT gate, with the reason it may be reached without a session. A new route outside the matcher fails src/routeInventory.test.ts until it is listed here (ADR 0037). Public pages must hold no tenant data.",
   "routes": {
-    "/": { "access": "public", "reason": "Redirect to /welcome; no data." },
+    "/": {
+      "access": "public",
+      "reason": "Redirect to /welcome; no data."
+    },
     "/welcome": {
       "access": "public",
       "reason": "Static product page; links to /intake, reads nothing from the database."
     },
-    "/about": { "access": "public", "reason": "Static text." },
-    "/privacy": { "access": "public", "reason": "Static text." },
-    "/login": { "access": "public", "reason": "Sign-in form; throttled, no tenant data." },
-    "/quiz": { "access": "public", "reason": "Demo quiz. No tenant, nothing stored." },
+    "/about": {
+      "access": "public",
+      "reason": "Static text."
+    },
+    "/privacy": {
+      "access": "public",
+      "reason": "Notice text and the organisation's published notice fields only; the request form writes one row for the engagement's organisation and reads nothing."
+    },
+    "/login": {
+      "access": "public",
+      "reason": "Sign-in form; throttled, no tenant data."
+    },
+    "/quiz": {
+      "access": "public",
+      "reason": "Demo quiz. No tenant, nothing stored."
+    },
     "/quiz/result": {
       "access": "public",
       "reason": "Mascot reveal from the tier in the URL; no tenant, no database read."
@@ -46,8 +61,14 @@
       "access": "public",
       "reason": "Credential check, throttled; returns no tenant data."
     },
-    "/api/auth/logout": { "access": "public", "reason": "Clears the caller's own cookie." },
-    "/api/health": { "access": "public", "reason": "SELECT 1; returns two booleans." },
+    "/api/auth/logout": {
+      "access": "public",
+      "reason": "Clears the caller's own cookie."
+    },
+    "/api/health": {
+      "access": "public",
+      "reason": "SELECT 1; returns two booleans."
+    },
     "/api/cron/reminders": {
       "access": "secret",
       "reason": "CRON_SECRET bearer; bare 401 otherwise."
@@ -63,6 +84,14 @@
     "/api/view-as": {
       "access": "session",
       "reason": "Route handler checks the session (platform owner only) itself."
+    },
+    "/set-password": {
+      "access": "public",
+      "reason": "Single-use link token checked on the server; shows no tenant data, never says which account."
+    },
+    "/forgot-password": {
+      "access": "public",
+      "reason": "Asks for an email address; same answer for every address, rate limited, no tenant data."
     }
   }
 }
