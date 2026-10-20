@@ -6,27 +6,13 @@
  *
  * Creates, inside one transaction:
  *   tenant (by slug) -> organisation -> department -> team -> template (named after the
- *   engagement) -> six survey items -> questionnaire version 1 -> engagement (draft) -> link to
+ *   engagement) -> the pilot questionnaire's items -> its questionnaire version -> engagement (draft) -> link to
  *   the team; the owner (an existing user) as auditor AND platform owner of that tenant; the
  *   referent persona with a non-deliverable `.invalid` address and NO password (cannot sign in).
  */
 import { randomUUID } from 'node:crypto';
 import { CLI_ACTOR_ID, emailHash } from './auditor-lib.mjs';
-
-/** Survey items of the mobile flow (apps/web/src/lib/syntheticTemplate.ts), by code. */
-const ITEMS = [
-  ['literacy', 'synthetic_source_checking', 'Vérifier la source', ['use_as_is', 'verify_source']],
-  ['literacy', 'synthetic_data_safety', 'Sécurité des données', ['paste_anyway', 'check_policy']],
-  ['literacy', 'synthetic_prompting', 'Qualité du brief', ['short_vague', 'specific_brief']],
-  ['context', 'synthetic_workflow', 'Cartographie du flux', ['jump_to_ai', 'map_first']],
-  [
-    'literacy',
-    'synthetic_automation_choice',
-    'Automatisation vs IA',
-    ['always_ai', 'deterministic_first'],
-  ],
-  ['practice', 'synthetic_context_time', 'Temps hebdomadaire', ['lt_1h', '1_3h', '3_6h', 'gt_6h']],
-];
+import { ensureQuestionItems, ensureVersion, loadDefinition } from './questionnaire-lib.mjs';
 
 const PRIVACY = {
   minResponsesForGroupBreakdown: 5,
@@ -186,41 +172,13 @@ export const seedClient = async (client, raw) => {
           ),
       ),
     );
-    const itemIds = [];
-    for (const [axis, code, prompt, values] of ITEMS) {
-      const options = values.map((value, i) => ({
-        value,
-        label: i < values.length / 2 ? 'low' : 'high',
-      }));
-      itemIds.push(
-        await ensure(
-          client,
-          'SELECT id FROM question_items WHERE tenant_id = $1 AND code = $2',
-          [tenantId, code],
-          (id) =>
-            client.query(
-              `INSERT INTO question_items (id, tenant_id, axis, code, kind, locale, prompt, options_json,
-                                           scoring_json, sensitivity, retestable)
-               VALUES ($1, $2, $3, $4, 'scenario_choice', $5, $6, $7, '{"weight":1,"reverse":false}', 'internal', true)`,
-              [id, tenantId, axis, code, o.locale, prompt, JSON.stringify(options)],
-            ),
-        ).then((r) => r.id),
-      );
-    }
+    // The pilot questionnaire (packages/contracts/src/questionnaires/pilot-v1.json): its items,
+    // then the version that holds them, found by its change-note marker so a rerun adds nothing.
+    const def = loadDefinition();
+    const { ids: itemIds } = await ensureQuestionItems(client, tenantId, def);
     const versionId = note(
       'questionnaire',
-      await ensure(
-        client,
-        'SELECT id FROM questionnaire_versions WHERE template_id = $1 AND version_number = 1',
-        [templateId],
-        (id) =>
-          client.query(
-            `INSERT INTO questionnaire_versions (id, tenant_id, template_id, version_number, item_ids,
-                                                 source_locale, frozen_at)
-             VALUES ($1, $2, $3, 1, $4::uuid[], $5, now())`,
-            [id, tenantId, templateId, itemIds, o.locale],
-          ),
-      ),
+      await ensureVersion(client, tenantId, templateId, itemIds, def, o.locale),
     );
     const engagementId = note(
       'engagement',

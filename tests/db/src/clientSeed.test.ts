@@ -122,12 +122,67 @@ describe('seed:client', () => {
       `SELECT count(*)::int AS n FROM question_items WHERE tenant_id = $1`,
       [out.tenantId],
     );
-    expect(items.rows[0].n).toBe(6);
+    expect(items.rows[0].n).toBe(10);
+    const kinds = await asService(
+      `SELECT kind, count(*)::int AS n FROM question_items WHERE tenant_id = $1 GROUP BY kind ORDER BY kind`,
+      [out.tenantId],
+    );
+    expect(kinds.rows).toEqual([
+      { kind: 'scenario_choice', n: 6 },
+      { kind: 'short_text', n: 3 },
+      { kind: 'single_choice', n: 1 },
+    ]);
+    const version = (
+      await asService(
+        `SELECT version_number, cardinality(item_ids) AS n, change_note FROM questionnaire_versions
+          WHERE tenant_id = $1`,
+        [out.tenantId],
+      )
+    ).rows;
+    expect(version).toEqual([
+      { version_number: 1, n: 10, change_note: 'questionnaire:pilot-v1@1' },
+    ]);
     const owner = await asService(
       `SELECT role FROM memberships WHERE user_id = $1 AND tenant_id = $2 ORDER BY role`,
       [SYNTHETIC_A, out.tenantId],
     );
     expect(owner.rows.map((r) => r.role)).toEqual(['auditor', 'platform_owner']);
+  });
+
+  it('applies the questionnaire idempotently, and refuses an engagement that already has answers', async () => {
+    const lib = await load('questionnaire-lib.mjs');
+    // The seed already attached the pilot questionnaire: a second apply changes nothing.
+    const again = await lib.applyQuestionnaire(db, { engagementId: seeded.engagementId });
+    expect(again.versionCreated).toBe(false);
+    expect(again.repointed).toBe(false);
+    expect(again.itemsCreated).toEqual([]);
+    // Engagement with an old version and no answers: a new version is created and attached.
+    const old = (
+      await asService(
+        `INSERT INTO questionnaire_versions (id, tenant_id, template_id, version_number, item_ids,
+                                             source_locale, frozen_at)
+         SELECT gen_random_uuid(), tenant_id, template_id, 2, item_ids[1:2], 'fr', now()
+           FROM questionnaire_versions WHERE tenant_id = $1 RETURNING id`,
+        [seeded.tenantId],
+      )
+    ).rows[0];
+    await asService(`UPDATE engagements SET questionnaire_version_id = $2 WHERE id = $1`, [
+      seeded.engagementId,
+      old.id,
+    ]);
+    const moved = await lib.applyQuestionnaire(db, { engagementId: seeded.engagementId });
+    expect(moved.repointed).toBe(true);
+    expect(moved.versionCreated).toBe(false);
+    expect(moved.versionNumber).toBe(1);
+    // An engagement with submissions is never repointed.
+    await asService(`UPDATE engagements SET questionnaire_version_id = $2 WHERE id = $1`, [
+      ENGAGEMENT_A,
+      (await asService(`SELECT id FROM questionnaire_versions WHERE tenant_id = $1`, [TENANT_A]))
+        .rows[0].id,
+    ]);
+    await expect(lib.applyQuestionnaire(db, { engagementId: ENGAGEMENT_A })).rejects.toThrow(
+      /submission/,
+    );
   });
 
   it('gives the referent a placeholder .invalid address and no password', async () => {

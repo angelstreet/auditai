@@ -82,3 +82,17 @@ export const parseQuestionnaireDefinition = (raw: unknown): QuestionnaireDefinit
 
 /** The questionnaire the pilot survey uses. Validated once at import time. */
 export const PILOT_QUESTIONNAIRE: QuestionnaireDefinition = parseQuestionnaireDefinition(pilotV1);
+
+/** The `question_items` columns a definition question is stored as (French source text). */
+export const toItemRow = (q: DefinitionQuestion) => ({
+  axis: q.axis,
+  code: q.code,
+  kind: q.kind,
+  locale: 'fr' as const,
+  prompt: q.prompt.fr,
+  helper: q.helper.fr,
+  options: q.options.map((o) => ({ value: o.value, label: o.label.fr })),
+  scoring: { weight: q.weight, reverse: false },
+  sensitivity: q.sensitivity,
+  retestable: false,
+});

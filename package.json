@@ -38,6 +38,7 @@
     "auditor:disable": "node infra/db/scripts/auditor.mjs disable",
     "auditor:set-email": "node infra/db/scripts/auditor.mjs set-email",
     "seed:client": "node infra/db/scripts/client-seed.mjs",
+    "questionnaire:apply": "node infra/db/scripts/questionnaire.mjs",
     "retention:run": "pnpm --filter @evolai/ai run retention-run",
     "anonymise:backfill": "pnpm --filter @evolai/ai run anonymise-backfill",
     "ai:eval": "pnpm --filter @evolai/ai run eval",

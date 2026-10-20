@@ -1,8 +1,11 @@
+import { dirname, join } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import {
   PILOT_QUESTIONNAIRE,
   UNSURE_VALUE,
   parseQuestionnaireDefinition,
+  toItemRow,
   questionnaireDefinitionSchema,
 } from './questionnaire.js';
 
@@ -82,5 +85,26 @@ describe('pilot questionnaire v1', () => {
     if (oneOption.questions[0])
       oneOption.questions[0].options = oneOption.questions[0].options.slice(0, 1);
     expect(() => parseQuestionnaireDefinition(oneOption)).toThrow();
+  });
+});
+
+describe('database script and web app read the same definition', () => {
+  it('stores the same rows from the script as the app does on first use', async () => {
+    const lib = (await import(
+      pathToFileURL(
+        join(
+          dirname(fileURLToPath(import.meta.url)),
+          '../../../infra/db/scripts/questionnaire-lib.mjs',
+        ),
+      ).href
+    )) as {
+      loadDefinition: () => { questions: unknown[] };
+      itemRowFor: (q: unknown) => unknown;
+    };
+    const def = lib.loadDefinition();
+    expect(def.questions).toHaveLength(PILOT_QUESTIONNAIRE.questions.length);
+    PILOT_QUESTIONNAIRE.questions.forEach((q, i) => {
+      expect(lib.itemRowFor(def.questions[i])).toEqual(toItemRow(q));
+    });
   });
 });
