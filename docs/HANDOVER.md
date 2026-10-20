@@ -1,4 +1,4 @@
-# EvolAI — handover (2026-10-18)
+# EvolAI — handover (updated 2026-10-20)
 
 Read this first, then [README](../README.md), [ROADMAP](ROADMAP.md), [PRD](PRD.md), the [ADR index](adr/) and
 [AGENTS.md](../AGENTS.md) (rules for AI agents: public repo, no secrets, tests with every change).
