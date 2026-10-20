@@ -127,6 +127,7 @@ export const clientFr: ClientMessages = {
     remindNext: 'Prochain jour conseillé : {date}.',
     remindNoDate: 'Les jours conseillés apparaissent une fois les liens créés.',
     remindDone: 'Plus de rappel prévu.',
+    contactRole: 'votre référent d’équipe',
     remindCopy: 'Copier le rappel',
     remindLabel: 'Message de rappel',
     reminder: {

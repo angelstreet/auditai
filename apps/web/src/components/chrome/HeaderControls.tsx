@@ -18,6 +18,7 @@ import { supportedLocales, type SupportedLocale } from '@evolai/i18n';
 import { setLocaleAction } from '@/lib/localeAction';
 import { AppIcon } from '@evolai/ui';
 import { THEME_COOKIE } from '@/lib/themeChoice';
+import { initialsOf } from '@/lib/identityLabel';
 import { useI18n } from '../I18nProvider';
 import { ViewAsForm, viewAsMenuItems, type ViewAsMenu } from './ViewAsMenuSection';
 
@@ -119,14 +120,6 @@ export interface Identity {
   /** Owner only: the "View as" section (TASK-P). */
   readonly viewAs?: ViewAsMenu | null;
 }
-
-const initialsOf = (name: string): string =>
-  name
-    .split(/[\s@._-]+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((p) => p[0]?.toUpperCase() ?? '')
-    .join('') || '?';
 
 /**
  * Account control (docs/UI_RULES.md §11). Signed out: a sign-in icon button. Signed in: the

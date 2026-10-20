@@ -208,9 +208,9 @@ describe('messages and share links', () => {
     expect(decodeURIComponent(wa.split('text=')[1] ?? '')).toBe(text);
   });
 
-  it('contact: configured, else the referent, one line', () => {
-    expect(contactFor('Demo Contact', 'Demo Referent')).toBe('Demo Contact');
-    expect(contactFor(null, 'Demo Referent')).toBe('Demo Referent');
+  it('contact: configured, else a role label, one line', () => {
+    expect(contactFor('contact@example.test', 'Referent')).toBe('contact@example.test');
+    expect(contactFor(null, 'Referent')).toBe('Referent');
     expect(contactFor('  ', null)).toBeNull();
     expect(parseContact('Demo\nContact')).toBe('Demo Contact');
     expect(parseContact('x'.repeat(200))).toHaveLength(120);

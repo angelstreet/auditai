@@ -20,7 +20,6 @@ export const SYNTHETIC_CLIENT = {
   slug: 'synthetic-client-c',
   engagementName: 'Synthetic pilot C',
   teamName: 'Synthetic pilot team',
-  referentName: 'Sam Synthetic',
   referentEmail: 'synthetic-referent@synthetic.invalid',
   ownerEmail: 'synthetic-owner@synthetic.invalid',
   locale: 'fr',
@@ -39,9 +38,14 @@ export const seedSyntheticClient = async (client, env = process.env) => {
   try {
     await client.query(`SELECT set_config('app.is_service_account', 'on', true)`);
     await client.query(
-      `INSERT INTO users (id, email_hash, display_name, password_hash) VALUES ($1, $2, $3, $4)
-       ON CONFLICT (email_hash) DO UPDATE SET password_hash = EXCLUDED.password_hash`,
-      [randomUUID(), emailHash(SYNTHETIC_CLIENT.ownerEmail), 'Synthetic Owner', ownerHash],
+      `INSERT INTO users (id, email_hash, email, password_hash) VALUES ($1, $2, $3, $4)
+       ON CONFLICT (email_hash) DO UPDATE SET password_hash = EXCLUDED.password_hash, email = EXCLUDED.email`,
+      [
+        randomUUID(),
+        emailHash(SYNTHETIC_CLIENT.ownerEmail),
+        SYNTHETIC_CLIENT.ownerEmail,
+        ownerHash,
+      ],
     );
     await client.query('COMMIT');
   } catch (err) {

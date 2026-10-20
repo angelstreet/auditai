@@ -49,7 +49,7 @@ vi.mock('@/lib/db', () => {
       if (/UPDATE users SET password_hash/.test(sql)) {
         const u = db.users.get(p[0] as string);
         if (u) u.password_hash = p[1] as string;
-        return { rows: [{ display_name: u?.name ?? '' }], rowCount: 1 };
+        return { rows: [{ email: null }], rowCount: 1 };
       }
       if (/FROM auth_tokens t JOIN users u/.test(sql)) {
         const t = db.tokens.find(

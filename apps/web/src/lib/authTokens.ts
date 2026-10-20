@@ -67,7 +67,7 @@ export const peekToken = async (
 };
 
 export type SetPasswordResult =
-  | { ok: true; userId: string; kind: TokenKind; displayName: string }
+  | { ok: true; userId: string; kind: TokenKind; email: string | null }
   | { ok: false; reason: 'invalid' | PasswordProblem };
 
 /**
@@ -94,8 +94,8 @@ export const setPasswordWithToken = async (
     );
     const row = spent.rows[0];
     if (!row) return { ok: false as const, reason: 'invalid' as const };
-    const user = await client.query<{ display_name: string }>(
-      `UPDATE users SET password_hash = $2 WHERE id = $1 RETURNING display_name`,
+    const user = await client.query<{ email: string | null }>(
+      `UPDATE users SET password_hash = $2 WHERE id = $1 RETURNING email`,
       [row.user_id, hash],
     );
     // Any other open link of this person dies with the new password.
@@ -107,7 +107,7 @@ export const setPasswordWithToken = async (
       ok: true as const,
       userId: row.user_id,
       kind: row.kind,
-      displayName: user.rows[0]?.display_name ?? '',
+      email: user.rows[0]?.email ?? null,
     };
   });
 };

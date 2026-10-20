@@ -3,6 +3,7 @@ import type { Translator } from '@evolai/i18n';
 import type { Identity } from '@/components/chrome/HeaderControls';
 import type { ViewAsMenu } from '@/components/chrome/ViewAsMenuSection';
 import { tenantLabel } from './adminData';
+import { emailLabel } from './identityLabel';
 import { listPersonas } from './clientContext';
 import type { SessionPayload } from './session';
 import { effectiveContext, ownedTenantIds } from './tenantAccess';
@@ -68,7 +69,7 @@ export const clientIdentity = async (
     }
   }
   return {
-    name: v ? v.label : session.name || session.email || t('common.account.roles.other'),
+    name: v ? v.label : emailLabel(session.email) || t('common.account.roles.other'),
     email: v ? null : (session.email ?? null),
     role: viewAsRoleLabel(t, ctx.role),
     organisation,

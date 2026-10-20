@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { emailLabel } from '@/lib/identityLabel';
 import type { TenantId } from '@evolai/contracts';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -41,7 +42,9 @@ const loadIdentity = async (): Promise<Identity | null> => {
   );
   const organisation = organisations.find((o) => o.id === currentId)?.label ?? null;
   return {
-    name: session.name || session.email || t('common.account.roles.other'),
+    name:
+      emailLabel(session.email) ||
+      t(`common.account.roles.${roleKey}` as 'common.account.roles.other'),
     email: session.email ?? null,
     role: t(`common.account.roles.${roleKey}` as 'common.account.roles.other'),
     organisation,

@@ -2,6 +2,7 @@ import type { TenantId, UserId } from '@evolai/contracts';
 import { emailHash } from './authProvider';
 import { issueToken } from './authTokens';
 import { withServiceAccount, withTenant } from './db';
+import { userLabel } from './identityLabel';
 
 /**
  * Referents of an organisation and the owner's "invite this referent" step (TASK-U, ADR 0040).
@@ -21,23 +22,23 @@ export const listReferents = async (tenantId: TenantId): Promise<ReferentRow[]> 
   withTenant(tenantId, async (client) => {
     const { rows } = await client.query<{
       user_id: string;
-      display_name: string;
+      email: string | null;
       team_name: string;
       has_password: boolean;
       disabled: boolean;
     }>(
-      `SELECT u.id AS user_id, u.display_name, t.name AS team_name,
+      `SELECT u.id AS user_id, u.email, t.name AS team_name,
               (u.password_hash IS NOT NULL) AS has_password, (u.disabled_at IS NOT NULL) AS disabled
          FROM memberships m
          JOIN users u ON u.id = m.user_id
          JOIN teams t ON t.id = m.team_id
         WHERE m.tenant_id = $1 AND m.role = 'team_referent'
-        ORDER BY t.name, u.display_name, u.id`,
+        ORDER BY t.name, u.email NULLS LAST, u.id`,
       [tenantId],
     );
     return rows.map((r) => ({
       userId: r.user_id,
-      name: r.display_name,
+      name: userLabel(r.email),
       teamName: r.team_name,
       status: r.disabled ? 'disabled' : r.has_password ? 'ready' : 'none',
     }));
@@ -75,9 +76,10 @@ export const inviteReferent = async (
         userId,
       ]);
       if (taken.rows.length > 0) return { ok: false, reason: 'taken' };
-      await client.query(`UPDATE users SET email_hash = $2 WHERE id = $1`, [
+      await client.query(`UPDATE users SET email_hash = $2, email = $3 WHERE id = $1`, [
         userId,
         emailHash(email),
+        email.trim().toLowerCase(),
       ]);
     }
     const { token, expiresAt } = await issueToken(client, userId, 'invite', now);

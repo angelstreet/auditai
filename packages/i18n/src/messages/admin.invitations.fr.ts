@@ -48,7 +48,8 @@ export const invitationsFr = {
     closesOn: 'Date de clôture',
     closesOnHint: 'Visible par le référent et dans le message d’invitation.',
     contact: 'Personne à contacter',
-    contactHint: 'Nom et e-mail ou téléphone, repris dans le message d’invitation.',
+    contactHint:
+      'Une adresse e-mail ou une fonction (par exemple « votre référent d’équipe »), reprise dans le message d’invitation. Pas de nom de personne.',
     save: 'Enregistrer',
   },
   export: {

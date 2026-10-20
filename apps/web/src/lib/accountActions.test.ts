@@ -54,7 +54,7 @@ vi.mock('@/lib/authTokens', () => ({
     ok: true,
     userId: 'u1',
     kind: 'invite',
-    displayName: 'Demo Referent',
+    email: null,
   }),
 }));
 vi.mock('@/lib/authAudit', () => ({

@@ -127,6 +127,7 @@ export const clientEn = {
     remindNext: 'Next suggested day: {date}.',
     remindNoDate: 'Suggested days appear once links exist.',
     remindDone: 'No more reminder planned.',
+    contactRole: 'your team referent',
     remindCopy: 'Copy the reminder',
     remindLabel: 'Reminder message',
     reminder: {

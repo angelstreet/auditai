@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import type { TenantId } from '@evolai/contracts';
 import { tenantLabel } from './adminData';
 import { withServiceAccount } from './db';
+import { userLabel } from './identityLabel';
 import { getSession, requestPath } from './authServer';
 import { VIEW_AS_ROLES, type SessionPayload, type ViewAs } from './session';
 import { effectiveContext, ownedTenantIds, type EffectiveContext } from './tenantAccess';
@@ -54,7 +55,7 @@ export interface Persona {
 
 const personaQuery = `
   SELECT m.id, m.role, m.tenant_id, m.team_id, m.user_id,
-         u.display_name, t.display_name AS tenant_label, tm.name AS team_label
+         u.email, t.display_name AS tenant_label, tm.name AS team_label
     FROM memberships m
     JOIN users u ON u.id = m.user_id
     JOIN tenants t ON t.id = m.tenant_id
@@ -82,12 +83,12 @@ export const listPersonas = async (
       tenant_id: string;
       team_id: string;
       user_id: string;
-      display_name: string;
+      email: string | null;
       tenant_label: string;
       team_label: string;
     }>(
       `${personaQuery} ${membershipId ? 'AND m.id = $3' : ''}
-        ORDER BY t.display_name, u.display_name, m.id`,
+        ORDER BY t.display_name, u.email NULLS LAST, m.id`,
       membershipId ? [[...VIEW_AS_ROLES], owned, membershipId] : [[...VIEW_AS_ROLES], owned],
     );
     return rows.map((r) => ({
@@ -97,7 +98,7 @@ export const listPersonas = async (
         tenantId: r.tenant_id,
         teamId: r.team_id,
         personaId: r.user_id,
-        label: r.display_name.slice(0, 200),
+        label: userLabel(r.email, r.role),
         tenantLabel: r.tenant_label.slice(0, 200),
         teamLabel: r.team_label.slice(0, 200),
       },

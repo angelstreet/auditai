@@ -26,9 +26,17 @@ describe('prepareMessages (fr and en)', () => {
     }
   });
 
-  it('leaves out the closing and contact lines when they are not set', () => {
+  it('leaves out the closing line when it is not set', () => {
     const { invite, reminder } = prepareMessages('en', { ...facts, closesOn: null, contact: null });
-    expect(invite.text).not.toMatch(/before|Contact/);
-    expect(reminder.text).not.toMatch(/closes on|Lost your link/);
+    expect(invite.text).not.toMatch(/before/);
+    expect(reminder.text).not.toMatch(/closes on/);
+  });
+
+  it('names a role, never a person, when no engagement contact is set', () => {
+    const en = prepareMessages('en', { ...facts, contact: null });
+    expect(en.invite.text).toContain('Contact your team referent.');
+    expect(en.reminder.text).toContain('Contact your team referent.');
+    const fr = prepareMessages('fr', { ...facts, contact: null });
+    expect(fr.invite.text).toContain('Contactez votre référent d’équipe.');
   });
 });

@@ -4,10 +4,10 @@
  * migration. Every name comes from flags, so no client name lives in this public repository.
  *
  *   pnpm seed:client --tenant-name "<Client>" --engagement-name "Pilote <Client>" \
- *     --team-name "<Team>" --referent-name "<First Last>" --owner-email <owner sign-in> \
+ *     --team-name "<Team>" --owner-email <owner sign-in> \
  *     [--slug <slug>] [--locale fr|en] [--referent-email <address>] [--expect-host <db host>]
  *
- * Without --referent-email the referent gets firstname-lastname@<slug>.invalid and no password:
+ * Without --referent-email the referent gets referent-1@<slug>.invalid and no password:
  * the account exists for "view as" but cannot sign in (RUNBOOK: "Give a referent a real login").
  */
 import pg from 'pg';
@@ -18,7 +18,6 @@ const FLAGS = {
   'tenant-name': 'tenantName',
   'engagement-name': 'engagementName',
   'team-name': 'teamName',
-  'referent-name': 'referentName',
   'referent-email': 'referentEmail',
   'owner-email': 'ownerEmail',
   slug: 'slug',

@@ -195,9 +195,9 @@ export const mailtoHref = (subject: string, body: string): string =>
 export const whatsappHref = (text: string): string =>
   `https://wa.me/?text=${encodeURIComponent(text)}`;
 
-/** Contact person shown in messages: the engagement contact, else the referent's own name. */
-export const contactFor = (configured: string | null, referentName: string | null): string | null =>
-  configured?.trim() || referentName?.trim() || null;
+/** Contact shown in messages: the engagement contact (an e-mail or a role), else a generic role. */
+export const contactFor = (configured: string | null, fallbackRole: string | null): string | null =>
+  configured?.trim() || fallbackRole?.trim() || null;
 
 /** Validate the engagement contact from settings: one line, at most 120 characters. */
 export const parseContact = (raw: unknown): string | null => {

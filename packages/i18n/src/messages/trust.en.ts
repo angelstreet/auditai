@@ -180,7 +180,7 @@ export const trustEn = {
       'If your link was sent by email, the address is kept for a short time only to send the link and reminders, then deleted.',
     notCollectedTitle: 'What is not collected',
     notCollected:
-      'Your name. Please do not type names in free text: names are hidden before anyone reads the answers.',
+      'Your name. Please do not type names in free text: names are hidden before anyone reads the answers. The people who run the audit sign in with an email address only; no name is kept for them either.',
     seesTitle: 'Who sees what',
     seesAuditor: 'The auditor sees the answers linked to your code, never your name.',
     seesReferent: 'The referent of your team sees how many people answered. Never who, never what.',
@@ -231,7 +231,7 @@ export const trustEn = {
       'Shown on the public privacy page and on the first page of the survey. Leave a field empty to use the default, or to hide that part.',
     controller: 'Organisation responsible',
     controllerHelp: 'Default: {org}',
-    contactName: 'Contact for privacy questions: name or role',
+    contactName: 'Contact for privacy questions: role (no personal name)',
     contactEmail: 'Contact email',
     purpose: 'Why you ask',
     purposeHelp: 'One or two plain sentences. Empty uses the standard wording.',

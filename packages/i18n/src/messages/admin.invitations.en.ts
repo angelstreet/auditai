@@ -47,7 +47,8 @@ export const invitationsEn = {
     closesOn: 'Closing date',
     closesOnHint: 'Shown to the team referent and in the invitation message.',
     contact: 'Contact person',
-    contactHint: 'Name and email or phone, shown in the invitation message.',
+    contactHint:
+      'An email address or a role (for example “your team referent”), shown in the invitation message. No personal name.',
     save: 'Save options',
   },
   export: {

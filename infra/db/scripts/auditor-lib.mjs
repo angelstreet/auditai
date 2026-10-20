@@ -13,6 +13,8 @@ const SCRYPT = { N: 16384, r: 8, p: 1 };
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+export const normaliseEmail = (email) => email.trim().toLowerCase();
+
 export const emailHash = (email) =>
   createHash('sha256').update(email.trim().toLowerCase()).digest('hex');
 
@@ -63,7 +65,7 @@ export const resolveTargetUrl = (env, expectedHost) => {
   return url;
 };
 
-const inServiceTx = async (client, fn) => {
+export const inServiceTx = async (client, fn) => {
   await client.query('BEGIN');
   try {
     await client.query(`SELECT set_config('app.is_service_account', 'on', true)`);
@@ -76,7 +78,7 @@ const inServiceTx = async (client, fn) => {
   }
 };
 
-const audit = (client, tenantId, action, userId, payload) =>
+export const audit = (client, tenantId, action, userId, payload) =>
   client.query(
     `INSERT INTO audit_log (tenant_id, actor_user_id, action, target_kind, target_id, payload_json)
      VALUES ($1, $2, $3, 'user', $4, $5)`,
@@ -95,9 +97,8 @@ const requireUser = async (client, email) => {
   return { id: rows[0].id, tenants: m.rows.map((r) => r.tenant_id) };
 };
 
-export const createAuditor = async (client, { email, displayName, tenantIds, password }) => {
+export const createAuditor = async (client, { email, tenantIds, password }) => {
   if (!EMAIL_RE.test(email ?? '')) throw new Error('a valid --email is required');
-  if (!displayName?.trim()) throw new Error('--name is required');
   if (!tenantIds?.length || !tenantIds.every((t) => UUID_RE.test(t))) {
     throw new Error('at least one --tenant <uuid> is required');
   }
@@ -111,9 +112,9 @@ export const createAuditor = async (client, { email, displayName, tenantIds, pas
       if (found.rows[0].n !== tenantIds.length) throw new Error('unknown tenant id');
       const id = randomUUID();
       const ins = await client.query(
-        `INSERT INTO users (id, email_hash, display_name, password_hash) VALUES ($1, $2, $3, $4)
+        `INSERT INTO users (id, email_hash, email, password_hash) VALUES ($1, $2, $3, $4)
          ON CONFLICT (email_hash) DO NOTHING RETURNING id`,
-        [id, emailHash(email), displayName.trim(), hash],
+        [id, emailHash(email), normaliseEmail(email), hash],
       );
       if (!ins.rows[0]) throw new Error('a user with this e-mail already exists');
       for (const tenantId of tenantIds) {
@@ -166,9 +167,10 @@ export const setUserEmail = async (client, { email, newEmail }) => {
       user.id,
     ]);
     if (clash.rows[0]) throw new Error('a user with this e-mail already exists');
-    await client.query('UPDATE users SET email_hash = $2 WHERE id = $1', [
+    await client.query('UPDATE users SET email_hash = $2, email = $3 WHERE id = $1', [
       user.id,
       emailHash(newEmail),
+      normaliseEmail(newEmail),
     ]);
     for (const t of user.tenants) await audit(client, t, 'user.set_email', user.id, {});
     return { id: user.id };

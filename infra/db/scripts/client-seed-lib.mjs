@@ -45,9 +45,8 @@ export const slugify = (s) =>
     .replace(/^-+|-+$/g, '')
     .slice(0, 60);
 
-/** Non-deliverable placeholder (RFC 2606 `.invalid`): firstname-lastname@<tenant-slug>.invalid */
-export const placeholderEmail = (referentName, tenantSlug) =>
-  `${slugify(referentName) || 'referent'}@${tenantSlug}.invalid`;
+/** Non-deliverable placeholder (RFC 2606 `.invalid`), no name in it: referent-1@<tenant-slug>.invalid */
+export const placeholderEmail = (tenantSlug) => `referent-1@${tenantSlug}.invalid`;
 
 /** Throws on missing or unsafe flags. Returns normalised options. */
 export const validateSeedOptions = (o) => {
@@ -63,8 +62,7 @@ export const validateSeedOptions = (o) => {
   const locale = o.locale ?? 'fr';
   if (!['fr', 'en'].includes(locale)) throw new Error('--locale must be fr or en');
   const ownerEmail = need('ownerEmail', 'owner-email').toLowerCase();
-  const referentName = need('referentName', 'referent-name');
-  const referentEmail = (o.referentEmail ?? placeholderEmail(referentName, slug)).toLowerCase();
+  const referentEmail = (o.referentEmail ?? placeholderEmail(slug)).toLowerCase();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(referentEmail)) throw new Error('bad --referent-email');
   return {
     tenantName,
@@ -72,7 +70,6 @@ export const validateSeedOptions = (o) => {
     locale,
     engagementName: need('engagementName', 'engagement-name'),
     teamName: need('teamName', 'team-name'),
-    referentName,
     referentEmail,
     ownerEmail,
     country: (o.country ?? 'FR').toUpperCase(),
@@ -252,8 +249,8 @@ export const seedClient = async (client, raw) => {
         [emailHash(o.referentEmail)],
         (id) =>
           client.query(
-            `INSERT INTO users (id, email_hash, display_name, password_hash) VALUES ($1, $2, $3, NULL)`,
-            [id, emailHash(o.referentEmail), o.referentName],
+            `INSERT INTO users (id, email_hash, email, password_hash) VALUES ($1, $2, $3, NULL)`,
+            [id, emailHash(o.referentEmail), o.referentEmail],
           ),
       ),
     );

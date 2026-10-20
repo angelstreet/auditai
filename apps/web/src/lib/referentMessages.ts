@@ -4,7 +4,7 @@ import { composeMessage } from './referentView';
 export interface MessageFacts {
   /** Closing day (ISO) or null. */
   readonly closesOn: string | null;
-  /** Contact person (engagement contact, else the referent), or null. */
+  /** Engagement contact (an e-mail address or a role), or null for "your team referent". */
   readonly contact: string | null;
   /** Estimated minutes to answer. */
   readonly minutes: number;
@@ -29,7 +29,9 @@ export const prepareMessages = (
 ): { invite: Prepared; reminder: Prepared } => {
   const t = createTranslator(locale);
   const date = facts.closesOn ? longDate(locale, facts.closesOn) : '';
-  const vars = { minutes: facts.minutes, date, contact: facts.contact ?? '' };
+  // No engagement contact: a role, never a person's name (ADR 0044).
+  const contact = facts.contact ?? t('client.invitations.contactRole');
+  const vars = { minutes: facts.minutes, date, contact };
   const subject = t('client.invitations.subject');
   const invite = composeMessage(
     {
@@ -41,7 +43,7 @@ export const prepareMessages = (
       contact: t('client.invitations.message.contact', vars),
       thanks: t('client.invitations.message.thanks'),
     },
-    facts,
+    { ...facts, contact },
   );
   const reminder = [
     t('client.invitations.reminder.greeting'),
@@ -49,7 +51,7 @@ export const prepareMessages = (
     t('client.invitations.reminder.body', vars),
     facts.closesOn ? t('client.invitations.reminder.closes', vars) : null,
     t('client.invitations.reminder.link'),
-    facts.contact ? t('client.invitations.reminder.contact', vars) : null,
+    t('client.invitations.reminder.contact', vars),
     '',
     t('client.invitations.reminder.thanks'),
   ]

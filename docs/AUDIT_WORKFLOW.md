@@ -47,6 +47,9 @@ audit report with PDF, and the auditor guide ([AUDITOR_GUIDE.md](AUDITOR_GUIDE.m
 
 ## Rules that stay true
 
+Accounts (auditor, referent) are identified by an email address only; no first name, surname or display name is asked,
+stored or shown (ADR 0044). The engagement contact in the invitation message is an email address or a role.
+
 The auditor and the client never see who gave which answer; the referent sees counts only, never per-person
 status; groups under five people are hidden; AI output is a draft until the auditor approves it; every claim keeps
 its source; real names of clients and people live in the database only.

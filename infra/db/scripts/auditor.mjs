@@ -2,7 +2,7 @@
 /**
  * Auditor account CLI (TASK-K, ADR 0032).
  *
- *   pnpm auditor:create       --email a@b.c --name "Full Name" --tenant <uuid> [--tenant <uuid>]
+ *   pnpm auditor:create       --email a@b.c --tenant <uuid> [--tenant <uuid>]
  *   pnpm auditor:set-password --email a@b.c
  *   pnpm auditor:disable      --email a@b.c
  *   pnpm auditor:set-email    --email <placeholder address> --new-email <real address>
@@ -92,7 +92,6 @@ const main = async () => {
     if (command === 'create') {
       const r = await createAuditor(client, {
         email: args.email,
-        displayName: args.name,
         tenantIds: args.tenant,
         password,
       });

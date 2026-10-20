@@ -3,6 +3,7 @@ import { withServiceAccount } from '@/lib/db';
 import { sessionTenantIds } from '@/lib/authServer';
 import { listRedactionTerms } from '@/lib/redactionTermData';
 import { getT } from '@/lib/i18n';
+import { userLabel } from '@/lib/identityLabel';
 import type { TenantId } from '@evolai/contracts';
 import { RedactionListClient } from './RedactionListClient';
 
@@ -78,7 +79,7 @@ const readAuditTrail = async (
       payload_json: { term?: string };
       created_at: string;
     }>(
-      `SELECT al.id, al.action, u.display_name AS actor_name, al.payload_json, al.created_at
+      `SELECT al.id, al.action, u.email AS actor_name, al.payload_json, al.created_at
          FROM audit_log al
          LEFT JOIN users u ON u.id = al.actor_user_id
         WHERE al.tenant_id = $1
@@ -90,7 +91,7 @@ const readAuditTrail = async (
     return rows.map((r) => ({
       id: r.id,
       action: r.action as 'redaction_term.add' | 'redaction_term.remove',
-      actorName: r.actor_name ?? '—',
+      actorName: userLabel(r.actor_name),
       term: r.payload_json.term ?? '',
       createdAt: r.created_at,
     }));

@@ -30,7 +30,6 @@ const OPTS = {
   tenantName: 'Synthétique Client D',
   engagementName: 'Pilote Synthétique D',
   teamName: 'Équipe pilote D',
-  referentName: 'Camille Synthétique',
   ownerEmail: OWNER_EMAIL,
 };
 
@@ -132,10 +131,11 @@ describe('seed:client', () => {
 
   it('gives the referent a placeholder .invalid address and no password', async () => {
     const u = (await asService(`SELECT * FROM users WHERE id = $1`, [seeded.referentId])).rows[0];
-    expect(u.display_name).toBe(OPTS.referentName);
+    expect(u.display_name).toBeNull();
+    expect(u.email).toBe('referent-1@synthetique-client-d.invalid');
     expect(u.password_hash).toBeNull();
     expect(u.email_hash).toBe(
-      createHash('sha256').update('camille-synthetique@synthetique-client-d.invalid').digest('hex'),
+      createHash('sha256').update('referent-1@synthetique-client-d.invalid').digest('hex'),
     );
     const m = await asService(`SELECT role, team_id FROM memberships WHERE user_id = $1`, [
       seeded.referentId,
@@ -154,9 +154,9 @@ describe('seed:client', () => {
   });
 
   it('auditor:set-email moves the referent to a real address later', async () => {
-    const real = 'camille@example.test';
+    const real = 'demo-referent@example.test';
     await auditorLib.setUserEmail(db, {
-      email: 'camille-synthetique@synthetique-client-d.invalid',
+      email: 'referent-1@synthetique-client-d.invalid',
       newEmail: real,
     });
     const u = (await asService(`SELECT email_hash FROM users WHERE id = $1`, [seeded.referentId]))

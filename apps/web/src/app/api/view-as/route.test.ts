@@ -19,7 +19,7 @@ const PERSONA_ROW = {
   tenant_id: T,
   team_id: '55555555-5555-4555-8555-555555555555',
   user_id: '66666666-6666-4666-8666-666666666666',
-  display_name: 'Sam Synthetic',
+  email: 'synthetic-referent@synthetic.invalid',
   tenant_label: 'Synthetic client C',
   team_label: 'Synthetic pilot team',
 };
@@ -123,7 +123,7 @@ describe('POST /api/view-as', () => {
     expect(res.status).toBe(303);
     expect(res.headers.get('location')).toBe('/client');
     const verified = await verifySession(setCookie(res));
-    expect(verified?.viewAs).toMatchObject({ tenantId: T, label: 'Sam Synthetic' });
+    expect(verified?.viewAs).toMatchObject({ tenantId: T, label: 'synthetic-referent' });
     expect(verified?.exp).toBe(s.exp);
     const trail = state.sql.find((q) => /INSERT INTO audit_log/.test(q.sql));
     expect(trail?.params).toEqual(

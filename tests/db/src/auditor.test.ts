@@ -95,7 +95,6 @@ describe('auditor:create', () => {
   it('creates a user with memberships, a scrypt hash and one audit row per tenant', async () => {
     const { id } = await lib.createAuditor(db, {
       email: 'New.Auditor@example.test',
-      displayName: 'New Auditor',
       tenantIds: [TENANT_A, TENANT_B],
       password: STRONG,
     });
@@ -103,6 +102,8 @@ describe('auditor:create', () => {
     expect(u.email_hash).toBe(
       createHash('sha256').update('new.auditor@example.test').digest('hex'),
     );
+    expect(u.display_name).toBeNull();
+    expect(u.email).toBe('new.auditor@example.test');
     expect(u.password_hash).toMatch(/^scrypt\$16384\$8\$1\$/);
     expect(u.password_hash).not.toContain(STRONG);
     const m = await asService(
@@ -123,7 +124,7 @@ describe('auditor:create', () => {
   });
 
   it('refuses weak passwords, bad input and duplicates', async () => {
-    const base = { email: 'weak@example.test', displayName: 'W', tenantIds: [TENANT_A] };
+    const base = { email: 'weak@example.test', tenantIds: [TENANT_A] };
     await expect(lib.createAuditor(db, { ...base, password: 'short' })).rejects.toThrow(/12/);
     await expect(lib.createAuditor(db, { ...base, password: 'aaaaaaaaaaaaaaaa' })).rejects.toThrow(
       /repetitive/,

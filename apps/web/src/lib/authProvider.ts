@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
 import { withServiceAccount } from './db';
+import { emailLabel } from './identityLabel';
 import { verifyPassword } from './password';
 import type { SessionTenant } from './session';
 
@@ -34,18 +35,23 @@ export const passwordProvider: AuthProvider = {
     const row = await withServiceAccount(async (client) => {
       const { rows } = await client.query<{
         id: string;
-        display_name: string;
         password_hash: string | null;
         disabled_at: string | null;
-      }>(
-        `SELECT id, display_name, password_hash, disabled_at FROM users WHERE email_hash = $1 LIMIT 1`,
-        [emailHash(email)],
-      );
+      }>(`SELECT id, password_hash, disabled_at FROM users WHERE email_hash = $1 LIMIT 1`, [
+        emailHash(email),
+      ]);
       return rows[0] ?? null;
     });
     const ok = await verifyPassword(password, row?.password_hash ?? DUMMY_HASH);
     if (!row || !row.password_hash || row.disabled_at || !ok) return null;
-    return { id: row.id, name: row.display_name };
+    // The sign-in address is the only identity (ADR 0044); keep a readable copy for labels.
+    await withServiceAccount((client) =>
+      client.query(`UPDATE users SET email = $2 WHERE id = $1 AND email IS DISTINCT FROM $2`, [
+        row.id,
+        email.trim().toLowerCase(),
+      ]),
+    ).catch(() => undefined);
+    return { id: row.id, name: emailLabel(email) };
   },
 };
 

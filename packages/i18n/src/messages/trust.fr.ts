@@ -179,7 +179,7 @@ export const trustFr: Messages['trust'] = {
       'Si votre lien a été envoyé par e-mail, l’adresse n’est gardée que le temps d’envoyer le lien et les rappels, puis supprimée.',
     notCollectedTitle: 'Ce qui n’est pas recueilli',
     notCollected:
-      'Votre nom. Merci de ne pas écrire de noms dans les textes libres : les noms sont masqués avant que quiconque lise les réponses.',
+      'Votre nom. Merci de ne pas écrire de noms dans les textes libres : les noms sont masqués avant que quiconque lise les réponses. Les personnes qui conduisent l’audit se connectent avec une adresse e-mail seulement ; aucun nom n’est conservé pour elles non plus.',
     seesTitle: 'Qui voit quoi',
     seesAuditor: 'L’auditeur voit les réponses liées à votre code, jamais votre nom.',
     seesReferent:
@@ -233,7 +233,7 @@ export const trustFr: Messages['trust'] = {
       'Affichée sur la page publique de confidentialité et sur la première page du questionnaire. Laissez un champ vide pour garder le texte par défaut, ou pour masquer cette partie.',
     controller: 'Organisation responsable',
     controllerHelp: 'Par défaut : {org}',
-    contactName: 'Contact pour les questions de vie privée : nom ou fonction',
+    contactName: 'Contact pour les questions de vie privée : fonction (pas de nom de personne)',
     contactEmail: 'E-mail du contact',
     purpose: 'Pourquoi vous demandez',
     purposeHelp: 'Une ou deux phrases simples. Vide : texte standard.',

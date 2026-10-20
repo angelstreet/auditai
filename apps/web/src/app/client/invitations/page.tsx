@@ -25,7 +25,7 @@ export const dynamic = 'force-dynamic';
  * page depends on who answered: the referent knows which link went to whom.
  */
 export default async function ClientInvitations() {
-  const { session, ctx } = await requireClientContext();
+  const { ctx } = await requireClientContext();
   const { t, locale } = getT();
   const teamName = (await loadTeamNames(ctx.tenantId, ctx.teamIds)).join(', ');
   const survey = await loadClientSurvey(ctx.tenantId, ctx.teamIds);
@@ -56,7 +56,7 @@ export default async function ClientInvitations() {
   ]);
   const facts = {
     closesOn: survey.closesOn,
-    contact: contactFor(survey.contact, ctx.viewAs?.label ?? session.name),
+    contact: contactFor(survey.contact, null),
     minutes: estimatedMinutes(totalQuestionCount()),
   };
   const fr = prepareMessages('fr', facts);

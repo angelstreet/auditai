@@ -6,6 +6,8 @@ For the owner and auditors. Plain steps in the app, in the order you do them. Th
 The app's tabs: **Portfolio, Engagements, Invitations, Teams, Synergies, Reports, Data, Names to hide, Audit
 trail**. The organisation you work on is chosen in the header and stays chosen.
 
+Accounts need only an email address: no name is asked or shown anywhere; people are labelled by their address and role.
+
 ## Before the survey
 
 1. **Agree the basics with the client** (outside the app): who is controller, retention, the approved AI route,

@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import AxeBuilder from '@axe-core/playwright';
@@ -25,12 +26,12 @@ const ENGAGEMENT_A = 'a5555555-4555-4555-8555-555555555555';
 const LOCALES = ['fr', 'en'] as const;
 const COPY = {
   fr: {
-    banner: /Vous voyez Synthetic client C en tant que Sam Synthetic \(référent\)/,
+    banner: /Vous voyez Synthetic client C en tant que synthetic-referent \(référent\)/,
     back: 'Revenir à ma vue',
     readOnly: /Lecture seule/,
   },
   en: {
-    banner: /You are viewing Synthetic client C as Sam Synthetic \(referent\)/,
+    banner: /You are viewing Synthetic client C as synthetic-referent \(referent\)/,
     back: 'Back to my view',
     readOnly: /Read only/,
   },
@@ -89,7 +90,8 @@ for (const locale of LOCALES) {
     await signIn(page, OWNER, /\/(admin\/|board)/);
     const [owner] = await query<{ id: string }>(
       `SELECT u.id FROM users u JOIN memberships m ON m.user_id = u.id
-        WHERE m.role = 'platform_owner' AND u.display_name = 'Synthetic Owner' LIMIT 1`,
+        WHERE m.role = 'platform_owner' AND u.email_hash = $1 LIMIT 1`,
+      [createHash('sha256').update('synthetic-owner@synthetic.invalid').digest('hex')],
     );
     const since = new Date(Date.now() - 1000).toISOString();
 
@@ -98,7 +100,7 @@ for (const locale of LOCALES) {
     await expect(page.getByTestId('view-as-self')).toBeVisible();
     const persona = page.getByTestId('view-as-persona');
     await expect(persona).toHaveCount(1);
-    await expect(persona).toContainText('Sam Synthetic');
+    await expect(persona).toContainText('synthetic-referent');
     // Let the menu finish its fade-in: axe reads half-transparent text as low contrast.
     await expect(page.locator('.MuiPopover-paper').first()).toHaveCSS('opacity', '1');
     await axe(page, `${locale} account menu`);
@@ -110,11 +112,13 @@ for (const locale of LOCALES) {
     await expect(banner).toBeVisible();
     await expect(banner).toContainText(copy.banner);
     await expect(banner).toHaveCSS('position', 'sticky');
-    await expect(page.getByTestId('account-button')).toContainText('SS');
+    await expect(page.getByTestId('account-button')).toContainText('SR');
     await expect(page.getByTestId('client-organisation')).toContainText('Synthetic client C');
     await expect(page.locator('[data-testid^="client-tab-"]')).toHaveCount(4);
     await expect(page.locator('main a[href^="/admin"], header a[href^="/admin"]')).toHaveCount(0);
     await expect(page.locator('h1:visible')).toHaveCount(1);
+    // No person name anywhere: the persona is its address and role only (ADR 0044).
+    await expect(page.locator('body')).not.toContainText(/Sam Synthetic/);
     await axe(page, `${locale} client home (view as)`);
 
     // The banner stays on screen when the page scrolls.
@@ -251,7 +255,7 @@ test('a real referent lands on the team space, may create links, cannot leave it
 }) => {
   await signIn(page, REFERENT, /\/client$/);
   await expect(page.getByTestId('view-as-banner')).toHaveCount(0);
-  await expect(page.getByTestId('account-button')).toContainText('SS');
+  await expect(page.getByTestId('account-button')).toContainText('SR');
   await page.getByTestId('client-tab-invitations').click();
   await page.waitForURL(/\/client\/invitations$/);
   await page.getByTestId('client-create-links').click();

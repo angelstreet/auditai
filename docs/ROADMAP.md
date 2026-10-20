@@ -57,6 +57,7 @@ Work that came out of the Phase 1 and Phase 2 review. Each task has a brief in `
 | T    | Auditor set-up (engagements, teams, launch, preview), organisation in the header, plain wording, language (ADR 0038)                             | see git log                | done        |
 | U    | Referent login by link and password reset, privacy notice and request form, audit-trail screen, data-page safety, small-group guard (ADR 0040)   | see git log                |
 | S    | Referent self-service: link list, copy and share, message, generic reminder, progress bands (ADR 0039)                                           | see git log                | done        |
+| X    | Email only: accounts have no first name, surname or display name, anywhere (ADR 0044)                                                            | see git log                | done        |
 | V    | Audit report: improvement catalogue and matching, readiness score, report editor and workflow, client Report tab, PDF, AI draft (ADRs 0041-0043) | #51, #53, #54, see git log | done        |
 
 CI fixes that landed alongside: #27 (database URL passed through turbo to the tests) and #28 (smokes and

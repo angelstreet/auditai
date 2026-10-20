@@ -1,5 +1,6 @@
 import type { TenantId } from '@evolai/contracts';
 import { withTenant } from './db';
+import { userLabel } from './identityLabel';
 
 /**
  * Read side of the audit trail for the admin screen and its CSV (TASK-U, ADR 0040). Only who, when
@@ -121,10 +122,10 @@ export const listAuditTrail = async (
     const { rows } = await client.query<{
       id: string;
       created_at: Date | string;
-      display_name: string;
+      email: string | null;
       action: string;
     }>(
-      `SELECT a.id, a.created_at, u.display_name, a.action
+      `SELECT a.id, a.created_at, u.email, a.action
          FROM audit_log a JOIN users u ON u.id = a.actor_user_id
         WHERE ${where.join(' AND ')}
         ORDER BY a.created_at DESC, a.id
@@ -135,7 +136,7 @@ export const listAuditTrail = async (
       entries: rows.slice(0, AUDIT_LIMIT).map((r) => ({
         id: r.id,
         at: new Date(r.created_at).toISOString(),
-        who: r.display_name,
+        who: userLabel(r.email),
         action: r.action,
       })),
       truncated: rows.length > AUDIT_LIMIT,

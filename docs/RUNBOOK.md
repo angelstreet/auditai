@@ -39,11 +39,12 @@ deployed database (it refuses under `NODE_ENV=production`; do not work around th
 ## Auditor accounts
 
 Run from the repo root with `$ENV_FILE` loaded. The password is typed at a hidden prompt (or piped on stdin), never
-on the command line. Minimum 12 characters. Tenant ids are the `tenants.id` values of the live database.
+on the command line. Minimum 12 characters. An account needs only an email address: no first name, surname
+or display name is asked, stored or shown (ADR 0044). Tenant ids are the `tenants.id` values of the live database.
 
 ```bash
 set -a; . "$ENV_FILE"; set +a
-pnpm auditor:create --email <address> --name "<Full Name>" --tenant <tenant-uuid> [--tenant <tenant-uuid>]
+pnpm auditor:create --email <address> --tenant <tenant-uuid> [--tenant <tenant-uuid>]
 pnpm auditor:set-password --email <address>
 pnpm auditor:disable --email <address>
 ```
@@ -64,18 +65,34 @@ Names come from the command line only, never from the repository. Apply migratio
 ```bash
 set -a; . "$ENV_FILE"; set +a
 pnpm seed:client --tenant-name "<Client>" --engagement-name "Pilote <Client>" --team-name "<Team>" \
-  --referent-name "<First Last>" --owner-email <owner sign-in address> --locale fr \
+  --owner-email <owner sign-in address> --locale fr \
   [--expect-host <direct Neon host>]
 ```
 
-The output lists the ids and the referent's placeholder address, `firstname-lastname@<client-slug>.invalid`. The
+The output lists the ids and the referent's placeholder address, `referent-1@<client-slug>.invalid` (no name in it;
+pass `--referent-email` to use a real address from the start). The
 referent has **no password**: the account cannot sign in, it exists for "View as" only. Sign out and in again so
 the session picks up the new `platform_owner` membership, then open the account menu: "View as".
+
+### Remove names from existing accounts (TASK-X, ADR 0044)
+
+Apply migration 0025 first, then, after the merge, on the live database:
+
+```bash
+set -a; . "$ENV_FILE"; set +a
+pnpm identity:strip-names            # dry run: counts only, nothing changes
+pnpm identity:strip-names --apply    # sets users.display_name to null; placeholder referent addresses become referent-<n>@<slug>.invalid
+```
+
+It prints counts only, never a name or an address, writes `user.set_email` audit rows (no address in them) and is
+safe to run again. Real referent addresses are left as they are (the referent chose them). The sign-in address is
+also kept in clear in `users.email` (filled at sign-in or when an address is set) so the app can label an account by
+the part before the "@"; `email_hash` stays the lookup key.
 
 ### Give a referent a real login
 
 Apply migration 0022 first. In the admin, **Teams**, **Referents**: type the referent's real address (with their
-agreement) and press "Create sign-in link". The address replaces the placeholder (only its hash is stored). The
+agreement; the address is the only thing asked, no name) and press "Create sign-in link". The address replaces the placeholder (only its hash is stored). The
 page shows a single-use link, valid 3 days: copy it and send it yourself (email goes out as well only when
 `EMAIL_PROVIDER` is configured). The referent opens it, chooses a password of 12 characters or more and lands on
 `/client`; the link works once. To send a fresh link (lost, expired), press the button again: the old one dies.

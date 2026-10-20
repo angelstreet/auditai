@@ -37,6 +37,7 @@
     "auditor:set-password": "node infra/db/scripts/auditor.mjs set-password",
     "auditor:disable": "node infra/db/scripts/auditor.mjs disable",
     "auditor:set-email": "node infra/db/scripts/auditor.mjs set-email",
+    "identity:strip-names": "node infra/db/scripts/identity.mjs",
     "seed:client": "node infra/db/scripts/client-seed.mjs",
     "retention:run": "pnpm --filter @evolai/ai run retention-run",
     "ai:eval": "pnpm --filter @evolai/ai run eval",

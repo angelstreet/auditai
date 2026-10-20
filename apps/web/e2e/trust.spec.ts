@@ -120,7 +120,8 @@ interface Ctx {
 const clientC = async (): Promise<Ctx> => {
   const [row] = await run<{ tenant_id: string; team_id: string }>(
     `SELECT m.tenant_id, m.team_id FROM memberships m JOIN users u ON u.id = m.user_id
-      WHERE m.role = 'team_referent' AND u.display_name = 'Sam Synthetic' LIMIT 1`,
+      WHERE m.role = 'team_referent' AND u.email_hash = $1 LIMIT 1`,
+    [emailHash('synthetic-referent@synthetic.invalid')],
   );
   const [eng] = await run<{ id: string }>(
     `SELECT id FROM engagements WHERE tenant_id = $1 ORDER BY created_at LIMIT 1`,
@@ -136,11 +137,12 @@ const clientC = async (): Promise<Ctx> => {
 /** A referent of client C who has no password yet, made fresh for this test. */
 const newReferent = async (ctx: Ctx, label: string) => {
   const id = randomUUID();
-  const name = `Demo Referent ${label}`;
-  await run(`INSERT INTO users (id, email_hash, display_name) VALUES ($1, $2, $3)`, [
+  // Accounts carry an address and no name (ADR 0044); the card is labelled by its local part.
+  const name = `ref-${id.slice(0, 8)}`;
+  await run(`INSERT INTO users (id, email_hash, email) VALUES ($1, $2, $3)`, [
     id,
-    emailHash(`placeholder-${id}@demo.invalid`),
-    name,
+    emailHash(`${name}@demo.invalid`),
+    `${name}@demo.invalid`,
   ]);
   await run(
     `INSERT INTO memberships (id, tenant_id, user_id, team_id, role)
@@ -379,13 +381,13 @@ for (const locale of LOCALES) {
       [TENANT_A],
     );
     await run(
-      `UPDATE engagements SET privacy_json = privacy_json || jsonb_build_object('notice', jsonb_build_object('contactName', 'Demo Referent', 'purpose', 'Demo purpose sentence.')) WHERE id = $1`,
+      `UPDATE engagements SET privacy_json = privacy_json || jsonb_build_object('notice', jsonb_build_object('contactName', 'Team referent role', 'purpose', 'Demo purpose sentence.')) WHERE id = $1`,
       [eng?.id],
     );
     try {
       await page.goto(inviteUrl);
       const who = page.getByTestId('who-is-asking');
-      await expect(who).toContainText('Demo Referent');
+      await expect(who).toContainText('Team referent role');
       await expect(who).toContainText('Demo purpose sentence.');
       await axe(page, `${locale} survey entry`);
       await noOverflow(page, `${locale} survey entry`);

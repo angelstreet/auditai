@@ -4,6 +4,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { loadMemberships } from '@/lib/authProvider';
 import { auditSelf } from '@/lib/authAudit';
+import { emailLabel } from '@/lib/identityLabel';
 import { setPasswordWithToken } from '@/lib/authTokens';
 import { getT } from '@/lib/i18n';
 import {
@@ -51,7 +52,14 @@ export async function setPasswordAction(
   if (!staff && !referent) return { message: t('trust.setPassword.errInvalid'), dead: true };
   await auditSelf(result.userId, result.kind === 'invite' ? 'password.set' : 'password.reset');
   const token = await signSession(
-    newSessionPayload({ id: result.userId, name: result.displayName }, memberships),
+    newSessionPayload(
+      {
+        id: result.userId,
+        name: emailLabel(result.email),
+        ...(result.email ? { email: result.email } : {}),
+      },
+      memberships,
+    ),
   );
   cookies().set(SESSION_COOKIE, token, sessionCookieOptions());
   redirect(staff ? '/board' : '/client');
