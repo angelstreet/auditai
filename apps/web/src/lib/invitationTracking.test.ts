@@ -98,11 +98,12 @@ describe('export helpers', () => {
     );
     expect(resolveBaseUrl({}, 'app.invalid', null)).toBe('https://app.invalid');
     expect(resolveBaseUrl({}, 'app.invalid', 'https')).toBe('https://app.invalid');
-    // A local http copy, on a LAN address or a bare host name, gives http links.
-    expect(resolveBaseUrl({}, '192.168.1.20:3000', 'http')).toBe('http://192.168.1.20:3000');
+    // A local http copy, on a .local name or a bare host name, gives http links.
+    expect(resolveBaseUrl({}, 'evolai.local:3000', 'http')).toBe('http://evolai.local:3000');
     expect(resolveBaseUrl({}, 'codebox:3000', null)).toBe('http://codebox:3000');
-    expect(resolveBaseUrl({}, 'app.invalid', 'http')).toBe('http://app.invalid');
-    expect(resolveBaseUrl({}, 'app.invalid', 'https, http')).toBe('https://app.invalid');
+    // A public host is always https, even if a header says http.
+    expect(resolveBaseUrl({}, 'app.invalid', 'http')).toBe('https://app.invalid');
+    expect(resolveBaseUrl({}, 'codebox:3000', 'https')).toBe('https://codebox:3000');
     expect(resolveBaseUrl({}, 'localhost:3101', 'http')).toBe('http://localhost:3101');
     expect(() => resolveBaseUrl({}, 'a b/<x>', null)).toThrow();
   });

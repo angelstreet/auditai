@@ -81,9 +81,9 @@ export const clientFr: ClientMessages = {
       ask: 'Votre équipe répond à un court questionnaire sur son travail et son usage de l’IA. Cela prend environ {minutes} minutes.',
       who: 'Personne au travail ne voit les réponses d’une personne. Vous voyez combien de personnes ont répondu, jamais lesquelles. L’auditeur lit des groupes d’au moins {n} personnes.',
       stepsLabel: 'Trois étapes',
-      send: 'Envoyer : donnez un lien à chaque personne.',
-      remind: 'Rappel : envoyez un seul message à tout le monde, le jour que nous suggérons.',
-      report: 'Rapport : à la fin, l’auditeur publie un rapport ici.',
+      send: 'Envoyer : donnez un lien à chaque personne.',
+      remind: 'Rappel : envoyez un seul message à tout le monde, le jour que nous suggérons.',
+      report: 'Rapport : à la fin, l’auditeur publie un rapport ici.',
     },
     reminder: {
       title: 'Rappel',

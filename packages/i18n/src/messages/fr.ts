@@ -22,7 +22,7 @@ export const fr: Messages = {
       share: 'Partager',
       fallbackTitle: 'Copiez le lien vous-même',
       fallbackHelp:
-        'Votre navigateur n’a pas permis la copie. Le texte complet est ci-dessous, déjà sélectionné : copiez-le d’ici.',
+        'Votre navigateur n’a pas permis la copie. Le texte complet est ci-dessous, déjà sélectionné : copiez-le d’ici.',
       fullText: 'Texte complet',
       close: 'Fermer',
     },
@@ -123,7 +123,7 @@ export const fr: Messages = {
     lede: 'Aidez votre équipe à repérer où l’IA peut faire gagner du temps.',
     duration: '{n, plural, one {# question} other {# questions}} · environ {m} min',
     privacyShort:
-      'Votre nom n’est pas enregistré. Votre entreprise voit seulement des totaux d’équipe, jamais vos réponses. Pour retirer ou supprimer vos réponses, utilisez le formulaire de confidentialité : il ne passe pas par votre responsable.',
+      'Votre nom n’est pas enregistré. Votre entreprise voit seulement des totaux d’équipe, jamais vos réponses. Pour retirer ou supprimer vos réponses, utilisez le formulaire : il ne passe pas par votre responsable.',
     privacyRequest: 'Retirer ou supprimer mes réponses',
     privacyMore: 'Comment vos réponses sont protégées',
     privacy1: 'Nous utilisons un code à la place de votre nom.',

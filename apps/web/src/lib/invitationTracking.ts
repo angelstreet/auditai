@@ -202,7 +202,7 @@ export const surveyLink = (baseUrl: string, token: string): string =>
 
 /**
  * Admin-only base URL: APP_BASE_URL, else the site URL setting (NEXT_PUBLIC_SITE_URL), else the
- * request host and protocol (the proxy's `x-forwarded-proto`, else http only for a local host).
+ * request host (https, except http for a local or private-network host).
  * Never a path or query.
  */
 export const resolveBaseUrl = (
@@ -215,14 +215,14 @@ export const resolveBaseUrl = (
     if (configured && /^https?:\/\/[^\s/]+$/.test(configured)) return configured;
   }
   if (host && /^[A-Za-z0-9.-]+(:\d+)?$/.test(host)) {
-    // The proxy's own word wins (production is https, a plain local copy says http). With no
-    // header, a local or private-network host is http and anything else is https.
+    // Production is https: a public host always gets https, whatever a header says. A local or
+    // private-network host (a plain local copy) gets http unless the proxy says it is https.
     const said = proto?.split(',')[0]?.trim().toLowerCase();
     const local =
       /^(localhost|127\.\d+\.\d+\.\d+|10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|[^.]+)(:|$)/.test(
         host,
       ) || host.endsWith('.local');
-    const p = said === 'http' || said === 'https' ? said : local ? 'http' : 'https';
+    const p = local && said !== 'https' ? 'http' : 'https';
     return `${p}://${host}`;
   }
   throw new Error('APP_BASE_URL is not set and the request has no usable host.');

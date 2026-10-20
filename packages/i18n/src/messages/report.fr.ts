@@ -109,7 +109,7 @@ export const reportFr: Shape<typeof reportEn> = {
     methodology: 'Méthode et confidentialité',
     save: 'Enregistrer',
     methodBase:
-      'Questionnaire anonyme auprès des équipes : {people, plural, one {# personne a répondu} other {# personnes ont répondu}}. Les scores sont des moyennes de groupes d’au moins {n} personnes.',
+      'Questionnaire anonyme auprès des équipes : {people, plural, one {# personne a répondu} other {# personnes ont répondu}}. Les scores sont des moyennes de groupes d’au moins {n} personnes.',
     methodThemes:
       '{count, plural, one {L’auditeur a vérifié et approuvé # thème.} other {L’auditeur a vérifié et approuvé # thèmes.}}',
     methodOpportunities:
@@ -322,7 +322,7 @@ export const reportFr: Shape<typeof reportEn> = {
       'Votre rapport d’audit n’est pas encore publié. Vous le trouverez ici dès que l’auditeur l’aura publié.',
     receiveTitle: 'Ce que vous recevrez',
     receiveWhat:
-      'Un seul rapport pour tout l’audit : le score, les constats principaux, les actions à mener et un plan à 30, 60 et 90 jours. Aucune réponse individuelle.',
+      'Un seul rapport pour tout l’audit : le score, les constats principaux, les actions à mener et un plan à 30, 60 et 90 jours. Aucune réponse individuelle.',
     receiveWhenDate:
       'Le questionnaire ferme le {date}. Le rapport apparaît ici quand l’auditeur a lu les réponses et l’a publié.',
     receiveWhen:
