@@ -218,10 +218,11 @@ export const resolveBaseUrl = (
     // Production is https: a public host always gets https, whatever a header says. A local or
     // private-network host (a plain local copy) gets http unless the proxy says it is https.
     const said = proto?.split(',')[0]?.trim().toLowerCase();
+    const hostname = host.replace(/:\d+$/, '');
     const local =
-      /^(localhost|127\.\d+\.\d+\.\d+|10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|[^.]+)(:|$)/.test(
-        host,
-      ) || host.endsWith('.local');
+      /^(localhost|127\.\d+\.\d+\.\d+|10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|[^.]+)$/.test(
+        hostname,
+      ) || hostname.endsWith('.local');
     const p = local && said !== 'https' ? 'http' : 'https';
     return `${p}://${host}`;
   }
