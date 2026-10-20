@@ -119,10 +119,20 @@ test.describe('respondent path, keyboard only, with axe on every page', () => {
         await expect.poll(() => focusedIs(page, 'main h1')).toBe(true);
         await expect(page.getByRole('progressbar')).toHaveAttribute('aria-valuetext', /\d/);
         await scan(page, `${locale} question ${i + 1}`);
-        await tabTo(page, 'button.option-button');
-        await expectFocusRing(page, `question ${i + 1} option`);
         const before = page.url();
-        await page.keyboard.press(i % 2 === 0 ? 'Enter' : 'Space');
+        if ((await page.locator('textarea.text-answer-input').count()) > 0) {
+          // Free text: reach the box, type, reach Next, press Enter.
+          await tabTo(page, 'textarea.text-answer-input');
+          await expectFocusRing(page, `question ${i + 1} text box`);
+          await page.keyboard.type('Copier les mêmes lignes à la main.');
+          await tabTo(page, 'button.text-next');
+          await expectFocusRing(page, `question ${i + 1} next`);
+          await page.keyboard.press('Enter');
+        } else {
+          await tabTo(page, 'button.option-button');
+          await expectFocusRing(page, `question ${i + 1} option`);
+          await page.keyboard.press(i % 2 === 0 ? 'Enter' : 'Space');
+        }
         await page.waitForURL((u) => u.toString() !== before);
         if (page.url().endsWith('/done')) break;
       }

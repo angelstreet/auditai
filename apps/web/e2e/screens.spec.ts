@@ -2,7 +2,7 @@ import { createHmac } from 'node:crypto';
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { test, type Page } from '@playwright/test';
-import { signInAsAuditorA } from './helpers';
+import { answerCurrent, signInAsAuditorA } from './helpers';
 
 /**
  * Screenshot sweep (TASK-L, docs/UI_GLOWUP_PLAN.md): every page in light and dark, 360 and 1280,
@@ -33,7 +33,7 @@ const answerAll = async (page: Page, token: string) => {
   await page.goto(`/s/${token}/q/0`);
   for (let i = 0; i < 20 && !page.url().endsWith('/done'); i += 1) {
     const before = page.url();
-    await page.locator('main button.option-button').last().click({ timeout: 10_000 });
+    await answerCurrent(page);
     await page.waitForURL((u) => u.toString() !== before);
   }
 };
@@ -79,7 +79,7 @@ test.describe('screenshot sweep', () => {
             await shoot(page, dir, name);
           }
           // One screen per question (each question type in the seeded template).
-          for (let i = 0; i < 6; i += 1) {
+          for (let i = 0; i < 10; i += 1) {
             const res = await page.goto(`/s/${fresh}/q/${i}`);
             if (!res || res.status() >= 400 || page.url().endsWith('/done')) break;
             await shoot(page, dir, `08-question-${i + 1}`);

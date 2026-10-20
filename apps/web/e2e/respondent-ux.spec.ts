@@ -1,5 +1,6 @@
 import { createHmac } from 'node:crypto';
 import { expect, test, type Page } from '@playwright/test';
+import { answerCurrent } from './helpers';
 
 /**
  * Respondent UX gate (TASK-E, docs/UX_AUDIT.md). Walks the whole employee path in fr and en:
@@ -98,13 +99,13 @@ test.describe('respondent path is short, plain and in one language', () => {
         await expectPlainScreen(page, `${locale} question ${i + 1}`);
         expect(await mainText(page), `question ${i + 1} language`).not.toMatch(otherLang);
         const before = page.url();
-        await page.locator('button.option-button').last().click();
+        await answerCurrent(page);
         taps += 1;
         await page.waitForURL((u) => u.toString() !== before);
         if (page.url().endsWith('/done')) break;
       }
-      // One tap to start plus one per question.
-      expect(taps).toBeLessThanOrEqual(7);
+      // One tap to start plus one per question (a text answer is typed, then one tap on Next).
+      expect(taps).toBeLessThanOrEqual(11);
 
       // Done: team progress at a glance, what happens next, one primary action (optional quiz).
       await expect(page.getByRole('heading', { level: 1 })).toBeVisible();

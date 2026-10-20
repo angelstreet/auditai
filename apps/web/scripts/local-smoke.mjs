@@ -14,6 +14,7 @@
  * Exits 0 when all checks pass, non-zero on the first failure.
  */
 
+import { readFileSync } from 'node:fs';
 import { createHmac } from 'node:crypto';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { default as pg } from 'pg';
@@ -119,12 +120,23 @@ const main = async () => {
   );
   const beforeCount = before.rows[0].n;
 
-  // 4. Answer all six questions.
-  for (let i = 0; i < 6; i += 1) {
+  // 4. Answer every question of the pilot questionnaire: the first option of each choice, a short
+  //    sentence for each free-text question.
+  const definition = JSON.parse(
+    readFileSync(
+      new URL('../../../packages/contracts/src/questionnaires/pilot-v1.json', import.meta.url),
+      'utf8',
+    ),
+  );
+  for (const [i, q] of definition.questions.entries()) {
     const res = await fetchJson('/api/answer', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ token, index: i, choice: 'verify_source' }),
+      body: JSON.stringify(
+        q.kind === 'short_text'
+          ? { token, index: i, text: 'Smoke test: copier les mêmes lignes à la main.' }
+          : { token, index: i, choice: q.options[0].value },
+      ),
     });
     const json = await res.json();
     assertEqual(json.ok, true, `answer recorded for question ${i}`);
