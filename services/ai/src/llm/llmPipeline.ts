@@ -126,7 +126,8 @@ export const runLlmPipeline = async (
   const answered: Array<{ answer: AnswerRow; item: QuestionItemRow }> = input.answers.flatMap(
     (a) => {
       const item = input.questionItems.get(a.question_item_id);
-      return item ? [{ answer: a, item }] : [];
+      // Skipped questions have no words: they are not sent to the model.
+      return item && answerText(item, a.value_json) !== '' ? [{ answer: a, item }] : [];
     },
   );
 

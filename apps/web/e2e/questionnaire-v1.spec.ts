@@ -1,22 +1,24 @@
-import { createHmac } from 'node:crypto';
 import { expect, test } from '@playwright/test';
+import { dbQuery, freshInvitation } from './helpers';
 
 /**
- * Questionnaire v1 end to end (TASK-Z2, ADR 0044): the neutral choice questions with an honest
+ * Questionnaire v1 end to end (TASK-Z2, ADR 0046): the neutral choice questions with an honest
  * "I don't know / It depends", the three optional free-text questions (counter, hint, 400
  * characters, skip) and the coarse role question, answered and read back on a phone.
  *
- * Uses the seeded in-progress invitation of tenant B (…0006), which no other spec touches.
+ * Each test mints its own synthetic invitation (tenant B), so nothing is shared with other specs.
  */
-const SECRET = process.env['SURVEY_SIGNING_SECRET'] ?? 'dev-only-survey-signing-secret-change-me';
-const REFERENCE = 'inv-synthetic-bbbb-bbbb-bbbb-bbbbbbbb0006';
-const token = `${REFERENCE}.${createHmac('sha256', SECRET).update(REFERENCE).digest('base64url')}`;
-
 const FIRST_TEXT = 6;
 const TEXT = 'Chaque lundi je recopie les commandes du mail vers le tableur, à la main.';
 
 test.describe('questionnaire v1 on a phone', () => {
   test.skip(({ isMobile }) => !isMobile, 'phone-first flow; runs in the mobile-360 project');
+
+  let token = '';
+  let reference = '';
+  test.beforeEach(async () => {
+    ({ token, reference } = await freshInvitation('z2'));
+  });
 
   test('English copy matches', async ({ page, context, baseURL }) => {
     await context.addCookies([{ name: 'evolai_locale', value: 'en', url: baseURL as string }]);
@@ -94,7 +96,7 @@ test.describe('questionnaire v1 on a phone', () => {
 
     // Free text 2: skipped with the Skip link, nothing is saved.
     await expect(page).toHaveURL(new RegExp(`/q/${FIRST_TEXT + 1}$`));
-    await page.getByRole('link', { name: /Passer/ }).click();
+    await page.getByRole('button', { name: /Passer/ }).click();
 
     // Free text 3: empty box + Next is also a skip.
     await expect(page).toHaveURL(new RegExp(`/q/${FIRST_TEXT + 2}$`));
@@ -113,5 +115,28 @@ test.describe('questionnaire v1 on a phone', () => {
     expect(await page.locator('button.option-button').count()).toBeLessThanOrEqual(8);
     await page.locator('button.option-button').last().click();
     await page.waitForURL(/\/done$/);
+
+    // What was stored: the typed words, two saved skips, a coarse role; no text for skips.
+    const rows = await dbQuery<{
+      sequence: number;
+      code: string;
+      kind: string;
+      text: string | null;
+    }>(
+      `SELECT a.sequence, qi.code, a.value_json->>'kind' AS kind, a.value_json->>'text' AS text
+         FROM answers a
+         JOIN question_items qi ON qi.id = a.question_item_id
+         JOIN submissions s ON s.id = a.submission_id
+         JOIN invitations i ON i.id = s.invitation_id
+        WHERE i.token_reference = $1 ORDER BY a.sequence`,
+      [reference],
+    );
+    expect(rows).toHaveLength(10);
+    expect(rows.slice(0, 6).every((r) => r.kind === 'scenario_choice')).toBe(true);
+    expect(rows[FIRST_TEXT]).toMatchObject({ code: 'v1_repeat_task', kind: 'short_text' });
+    expect(rows[FIRST_TEXT]?.text).toContain('recopie les commandes');
+    expect(rows[FIRST_TEXT + 1]).toMatchObject({ code: 'v1_missing_tool', kind: 'skipped' });
+    expect(rows[FIRST_TEXT + 2]).toMatchObject({ code: 'v1_assistant_wish', kind: 'skipped' });
+    expect(rows[FIRST_TEXT + 3]).toMatchObject({ code: 'v1_job_family', kind: 'single_choice' });
   });
 });

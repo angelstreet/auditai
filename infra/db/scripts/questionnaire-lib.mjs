@@ -1,5 +1,5 @@
 /**
- * Questionnaire v1 on the database (TASK-Z2, ADR 0044). Pure functions over a connected pg client,
+ * Questionnaire v1 on the database (TASK-Z2, ADR 0046). Pure functions over a connected pg client,
  * shared by the CLI (questionnaire.mjs), the first-client seed (client-seed-lib.mjs) and the tests.
  *
  * The questions live in packages/contracts/src/questionnaires/pilot-v1.json (the one file the

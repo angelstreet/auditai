@@ -134,6 +134,24 @@ describe('analysis of questionnaire v1 answers', () => {
     expect(sent).not.toMatch(/"kind"|short_text|scenario_choice/);
   });
 
+  it('leaves skipped questions out: nothing is cited or sent for them', async () => {
+    const skipped: AnswerRow = {
+      id: 'ans-skipped',
+      tenant_id: TENANT_A,
+      submission_id: SUBMISSION,
+      question_item_id: 'item-v1_job_family',
+      value_json: { kind: 'skipped' },
+      sequence: 99,
+    };
+    const withSkip: PipelineInput = { ...input, answers: [...answerRows, skipped] };
+    const provider = new MockProvider(testConfig());
+    const res = await runLlmPipeline(withSkip, { provider, config: testConfig(), now });
+    expect(res.payload.evidence.some((c) => c.sourceId === 'ans-skipped')).toBe(false);
+    expect(provider.requests.map((r) => r.user).join('\n')).not.toContain('skipped');
+    const rule = runPipeline(withSkip);
+    expect(JSON.stringify(rule)).not.toContain('ans-skipped');
+  });
+
   it('rule-based path: free text becomes themes with a verbatim citation, choices stay choices', () => {
     const p = runPipeline(input);
     const practice = p.themes.find((t) => t.axis === 'practice');

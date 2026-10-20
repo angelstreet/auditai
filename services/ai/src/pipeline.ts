@@ -178,6 +178,8 @@ export const answerPlainText = (item: QuestionItemRow, value: unknown): string =
   if (Array.isArray(value)) return value.map((v) => labelFor(item, v)).join(', ');
   const rec = asRecord(value);
   if (rec) {
+    // A skipped question has no words: it is never shown to a model or cited.
+    if (rec['kind'] === 'skipped') return '';
     if (typeof rec['text'] === 'string') return rec['text'];
     if (Array.isArray(rec['choices'])) return labelFor(item, rec['choices']);
     const choice = choiceValue(value);
@@ -208,6 +210,7 @@ export const extractThemes = (input: PipelineInput): ReadonlyArray<AnalysisTheme
     const g = groups.get(item.axis) ?? { axis: item.axis, claims: [], items: [] };
     const isText = item.kind === 'short_text';
     const plain = answerPlainText(item, a.value_json);
+    if (plain === '') continue;
     const claim: AnalysisClaim = {
       claim: `${item.prompt} \u2192 ${plain}`,
       sourceKind: 'answer',
@@ -313,6 +316,10 @@ const dedupeClaims = (claims: ReadonlyArray<AnalysisClaim>): ReadonlyArray<Analy
 
 export const runPipeline = (input: PipelineInput): AnalysisPayload => {
   const items = input.answers
+    .filter((a) => {
+      const item = input.questionItems.get(a.question_item_id);
+      return item ? answerPlainText(item, a.value_json) !== '' : false;
+    })
     .map((a) => input.questionItems.get(a.question_item_id))
     .filter((q): q is QuestionItemRow => Boolean(q));
   const sensitivity = classifySensitivity(items);

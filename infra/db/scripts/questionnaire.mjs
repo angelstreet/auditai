@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Apply the questionnaire definition to an engagement (TASK-Z2, ADR 0044). Idempotent, safe on the
+ * Apply the questionnaire definition to an engagement (TASK-Z2, ADR 0046). Idempotent, safe on the
  * live database, never a migration:
  *
  *   pnpm questionnaire:apply --engagement-id <uuid> [--expect-host <db host>]

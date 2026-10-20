@@ -19,7 +19,15 @@ const render = (locale: 'fr' | 'en', index: number, saved = '') => {
       initialChoice={null}
       nextHref="/next"
       ariaQuestionLabel={t('survey.answerOptions')}
-      messages={{ saving: t('survey.saving'), saveFailed: t('survey.saveFailed') }}
+      isLast={false}
+      skipLabel={t('survey.skip')}
+      messages={{
+        saving: t('survey.saving'),
+        saveFailed: t('survey.saveFailed'),
+        alreadyFinished: t('survey.alreadyFinished'),
+        incomplete: t('survey.incomplete'),
+        finishFailed: t('survey.finishFailed'),
+      }}
       text={
         q.kind === 'short_text'
           ? {
@@ -48,6 +56,7 @@ describe('QuestionClient, free-text question', () => {
     expect(html).toContain('nous les masquons automatiquement.');
     expect(html).toContain('Facultatif');
     expect(html).toContain('Suivant');
+    expect(html).toContain('Passer');
     expect(html).not.toContain('option-button');
   });
 
@@ -57,6 +66,7 @@ describe('QuestionClient, free-text question', () => {
     expect(html).toContain('we mask them automatically');
     expect(html).toContain('Optional');
     expect(html).toContain('Next');
+    expect(html).toContain('Skip');
   });
 
   it('shows a saved answer and its length when the person comes back', () => {

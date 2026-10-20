@@ -45,16 +45,12 @@ describe('parseAnswerValue', () => {
     });
   });
 
-  it('stores trimmed free text and refuses empty or over-long text', () => {
+  it('stores trimmed free text and refuses empty text', () => {
     expect(parseAnswerValue('short_text', '  à la main  ')).toEqual({
       kind: 'short_text',
       text: 'à la main',
     });
     expect(() => parseAnswerValue('short_text', '   ')).toThrow();
-    expect(() => parseAnswerValue('short_text', 'x'.repeat(FREE_TEXT_MAX_LENGTH + 1))).toThrow();
-    expect(parseAnswerValue('short_text', 'x'.repeat(FREE_TEXT_MAX_LENGTH))).toMatchObject({
-      kind: 'short_text',
-    });
   });
 });
 
@@ -64,7 +60,11 @@ describe('isAllowedInput', () => {
     expect(isAllowedInput(questionByIndex(0), 'verify_source')).toBe(false);
     expect(isAllowedInput(questionByIndex(9), 'operations')).toBe(true);
   });
-  it('accepts any text for a free-text question', () => {
-    expect(isAllowedInput(questionByIndex(6), 'anything')).toBe(true);
+  it('accepts text of 1 to 400 characters for a free-text question, and nothing else', () => {
+    const q = questionByIndex(6);
+    expect(isAllowedInput(q, 'anything')).toBe(true);
+    expect(isAllowedInput(q, 'x'.repeat(FREE_TEXT_MAX_LENGTH))).toBe(true);
+    expect(isAllowedInput(q, 'x'.repeat(FREE_TEXT_MAX_LENGTH + 1))).toBe(false);
+    expect(isAllowedInput(q, '   ')).toBe(false);
   });
 });

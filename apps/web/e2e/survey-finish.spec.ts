@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
 import pg from 'pg';
+import { answerCurrent } from './helpers';
 
 /**
  * TASK-Y: the survey is submitted by an explicit finish (POST /api/submit), never by loading the
@@ -93,7 +94,7 @@ test.describe('the survey is submitted by an explicit finish', () => {
             await page.locator('button.link-button').click();
             skipped = true;
           } else {
-            await page.locator('button.option-button').last().click();
+            await answerCurrent(page);
           }
           await page.waitForURL((u) => u.toString() !== before);
           if (page.url().endsWith('/done')) break;

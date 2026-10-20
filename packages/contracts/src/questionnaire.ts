@@ -4,7 +4,7 @@ import { competencyAxisSchema, sensitivitySchema } from './template.js';
 
 /**
  * Questionnaire definition: the versioned, in-repository source of the questions a respondent
- * sees (TASK-Z2, ADR 0044). One JSON file per version under `questionnaires/`; the survey pages,
+ * sees (TASK-Z2, ADR 0046). One JSON file per version under `questionnaires/`; the survey pages,
  * the apply script (`infra/db/scripts/questionnaire.mjs`) and the AI eval all read it, so editing
  * the file is how the owner changes the questions.
  */
