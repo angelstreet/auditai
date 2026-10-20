@@ -103,45 +103,62 @@ Full detail in ADR 0029 section "Owner steps". Short version:
    label, base URL), a timestamped price entry and spend caps.
 3. Run with `EVOLAI_AI_CONFIG`, `EVOLAI_AI_PROVIDER`, `EVOLAI_AI_MODEL`, `EVOLAI_AI_REGION`.
 4. Use real survey data only after a contract-approved route (EU-hosted or self-hosted if the client requires it).
-   Redaction terms per tenant go in the table `ai_redaction_terms` (no admin screen yet).
+   Redaction terms per tenant live in the table `ai_redaction_terms` and are editable from Admin, **Names to hide**
+   (`/admin/redaction`, ADR 0036).
 
 ## Open and deferred
 
-- TASK-P (ADR 0035): apply migration **0019** to Neon (forward only, audit verbs only), then run `pnpm seed:client`
-  once for the first client with the names given in the brief (RUNBOOK "First client"), then sign out and in.
-  The referent has a `.invalid` placeholder and no password until the owner supplies a real address.
+**Pilot readiness first.** [PILOT_RUNBOOK.md](PILOT_RUNBOOK.md) records the verified state of the live site
+(all 24 migrations applied, every screen healthy, invitation signing proven working, all four gates holding) and the
+set-up steps the owner still has to do before a client can be invited: name the engagement, set the team headcount,
+set the dates, fill the privacy notice, issue the referent a login link, then launch and invite.
+
+Two production settings are open; neither blocks a pilot:
+
+- `APP_BASE_URL` is not set in Vercel, so generated invitation links read `https://evolai.vercel.app/s/...`. They
+  work (that host redirects to `www.evolai.io`) but the client sees a Vercel hostname in their inbox. Set it to
+  `https://www.evolai.io` and redeploy.
+- **Secret desync.** On 2026-10-18 `CRON_SECRET` and `SURVEY_SIGNING_SECRET` were rotated into the owner's local env
+  file only; the same values never reached Vercel, so local and production differ. Links are unaffected (the server
+  signs them and production's value is proven working), but the RUNBOOK command that triggers a cron by hand with
+  `Authorization: Bearer $CRON_SECRET` taken from the local file is rejected. Push the local values to Vercel and
+  redeploy, or read the bearer from Vercel for that one command.
+
+- TASK-P (ADR 0035): migration **0019** is applied and `pnpm seed:client` has been run once (client tenant, one
+  team, one engagement in _draft_, a referent with no password and no login link issued). Migrations **0021**,
+  **0022**, **0023** and **0024** are all applied to the live database as of 2026-10-20.
   TASK-R (ADR 0037): `/intake` requires a staff session and uses the session's tenant; `/quiz` is a tenant-free demo.
   No migration. Route inventory: `apps/web/src/routeAccess.json`.
-  TASK-T (ADR 0038): apply migration **0021** to Neon before the deploy (forward only: `engagements.name`,
-  `invitations.batch_id`, audit verbs). The auditor now sets an audit up in the admin (new engagement, teams and
+  TASK-T (ADR 0038): migration **0021** applied. The auditor now sets an audit up in the admin (new engagement, teams and
   sizes, launch, preview, first-run guide on the portfolio). The chosen organisation lives in the `evolai_org`
   cookie. Catalog words are guarded by `packages/i18n/src/jargon.test.ts`.
   TASK-S (ADR 0039): no migration. Set each engagement's closing date and contact on the auditor Invitations page
   (Options) before the referent sends links. Feedback items 4, 5, 7 to 13 and 15 of
   `docs/TEST_FEEDBACK_2026-10-19.md` remain.
-  TASK-U (ADR 0040): apply migration **0022** to Neon before the deploy (forward only: `auth_tokens`,
-  `public_attempts`, `privacy_requests`, six audit verbs). Referents get a real login from Admin, Teams, Referents
-  (single-use link, no address stored); `/forgot-password` needs an email provider to deliver. Fill the privacy
-  notice per engagement (settings page) before the first real survey; the public page hides what is not set. The
+  TASK-U (ADR 0040): migration **0022** applied. Referents get a real login from Admin, Teams, Referents
+  (single-use link, no address stored); `/forgot-password` needs an email provider to deliver. **Fill the privacy
+  notice per engagement** (engagement Settings) before the first real survey: it is still empty on the live client
+  engagement and the public page hides whatever is not set. The
   auditor reads privacy requests on the Data page. Teams under 5 completed answers are hidden everywhere.
-  TASK-V (ADRs 0041-0043): apply migrations **0023** (`audit_reports`, `report_steps`, `audit_report_versions`,
-  report audit verbs) and **0024** (re-asserts the audit verb list, so the order 0022/0023 were applied in does not
-  matter) to Neon before the deploy that shows the Reports tab. The auditor builds the deliverable in Admin,
+  TASK-V (ADRs 0041-0043): migrations **0023** and **0024** are applied. The auditor builds the deliverable in Admin,
   Reports; the referent reads the published version in the Report tab and downloads the PDF. The AI draft of the
   summary is an owner command and needs an approved real route (RUNBOOK). Sponsor accounts are not a separate role
   yet: send the PDF to the sponsor.
 
-0. Invitations admin screen (TASK-N) lives in new files under `apps/web/src/app/admin/invitations/`. It is reachable by URL; TASK-L should add a header/nav link and fold it into the restyled admin shell (no existing admin file was touched). Migration 0018 only; no new migration in this step.
+0. Invitations admin screen (TASK-N) is reachable and folded into the restyled admin shell.
+   0b. TASK-Q (ADR 0036): migration **0020** applied. The per-tenant redaction list (the names the redactor scrubs
+   before any model call) is editable from Admin, **Names to hide** (`/admin/redaction`); every add and remove is
+   written to the audit trail.
 
-1. Gate C: run the recovery drill once and record the result, SSO/MFA, pen test, SLA. One-time owner commands after
-   TASK-K merges: apply migration 0017 to Neon, set `CRON_SECRET` and a real `SURVEY_SIGNING_SECRET` in Vercel,
-   create the first auditor (RUNBOOK). Until `SURVEY_SIGNING_SECRET` is set, invitation links fail closed.
-   The seeded synthetic tenants and users still exist in the live database.
-2. FR-03 (TASK-N, ADR 0033) is built: apply migration 0018 to Neon before the deploy that reads it, set `APP_BASE_URL`
-   (optional), and for email mode `INVITE_EMAIL_KEY`, `EMAIL_PROVIDER=brevo`, `BREVO_API_KEY`, `EMAIL_FROM`. The Brevo
-   adapter has only been tested against a stub.
+1. Gate C: run the recovery drill once and record the result, SSO/MFA, pen test, SLA. Migrations 0017 and 0018 are
+   applied, the first auditor exists, and `SURVEY_SIGNING_SECRET` is set in Vercel: a real invitation link was
+   created and opened against production on 2026-10-20, so links no longer fail closed. The synthetic tenants and
+   users still exist in the live database.
+2. FR-03 (TASK-N, ADR 0033) is built and migration 0018 is applied. Still to set: `APP_BASE_URL` (see above) and,
+   for email mode, `INVITE_EMAIL_KEY`, `EMAIL_PROVIDER=brevo`, `BREVO_API_KEY`, `EMAIL_FROM`. The Brevo adapter has
+   only been tested against a stub.
 3. Real-device test (low-end Android, iPhone, slow network) and a human screen-reader pass.
-4. Human review of real-model theme quality; admin screen for redaction terms.
+4. Human review of real-model theme quality. The redaction-terms admin screen shipped in TASK-Q.
 5. Phase 2 and 3 items (FR-10 to FR-17) and Gate D.
 6. Deferred cosmetics: mascot names, final French wording read by a native speaker.
 7. Cleanups: remove the old-cookie fallback after 8 hours (session) / 1 year (language cookie); optionally rename

@@ -12,13 +12,13 @@ its ADRs; every gate names its blocking evidence.
 
 ## 1. The four buckets
 
-| Bucket       | Files                                                                                                                         | Purpose                                                                                        |
-| ------------ | ----------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| Product      | [PRD.md](PRD.md)                                                                                                              | Full product requirements (35 sections). Public, anonymised.                                   |
-| Delivery     | [ROADMAP.md](ROADMAP.md)                                                                                                      | Phase / milestone / gate state. Mirrors PRD §18. Updated in the merge that ships a milestone.  |
-| Operations   | [RUNBOOK.md](RUNBOOK.md), [AUDITOR_GUIDE.md](AUDITOR_GUIDE.md), [AUDIT_WORKFLOW.md](AUDIT_WORKFLOW.md)                        | Deploy, rollback, migrations, auditor accounts, secrets, health, cron, recovery drill.         |
-| Architecture | [adr/](adr/)                                                                                                                  | Numbered ADR records. Every significant technical decision lands here. Never amend an old ADR. |
-| Workflow     | [INDEX.md](INDEX.md) (this file), [README.md](../README.md), [AGENTS.md](../AGENTS.md), [CONTRIBUTING.md](../CONTRIBUTING.md) | Working agreements + the public top-level story.                                               |
+| Bucket       | Files                                                                                                                                        | Purpose                                                                                                                            |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Product      | [PRD.md](PRD.md)                                                                                                                             | Full product requirements (35 sections). Public, anonymised.                                                                       |
+| Delivery     | [ROADMAP.md](ROADMAP.md)                                                                                                                     | Phase / milestone / gate state. Mirrors PRD §18. Updated in the merge that ships a milestone.                                      |
+| Operations   | [RUNBOOK.md](RUNBOOK.md), [AUDITOR_GUIDE.md](AUDITOR_GUIDE.md), [AUDIT_WORKFLOW.md](AUDIT_WORKFLOW.md), [PILOT_RUNBOOK.md](PILOT_RUNBOOK.md) | Deploy, rollback, migrations, auditor accounts, secrets, health, cron, recovery drill; how to run a real pilot with a real client. |
+| Architecture | [adr/](adr/)                                                                                                                                 | Numbered ADR records. Every significant technical decision lands here. Never amend an old ADR.                                     |
+| Workflow     | [INDEX.md](INDEX.md) (this file), [README.md](../README.md), [AGENTS.md](../AGENTS.md), [CONTRIBUTING.md](../CONTRIBUTING.md)                | Working agreements + the public top-level story.                                                                                   |
 
 ## 2. The PRD section map
 
@@ -242,6 +242,9 @@ docs/
 ├── PRD.md            ← product requirements (35 sections)
 ├── ROADMAP.md       ← milestone / phase / gate state
 ├── RUNBOOK.md       ← production operations
+├── AUDITOR_GUIDE.md ← run an audit, step by step
+├── AUDIT_WORKFLOW.md← why each rule exists
+├── PILOT_RUNBOOK.md ← run a real pilot with a real client (auditor + referent)
 └── adr/
    ├── 0001-license-and-stack.md
    ├── 0002-monorepo-tooling.md
