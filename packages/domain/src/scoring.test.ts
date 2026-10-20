@@ -130,6 +130,39 @@ describe('scoreSubmission', () => {
     expect(result.byAxis.get('literacy')?.normalised).toBe(1); // 1 - 0
   });
 
+  it('does not score "I don\u2019t know" as the top option and leaves it out of the average', () => {
+    const withUnsure: QuestionItem = {
+      ...itemLiteracyA,
+      options: [
+        ...itemLiteracyA.options,
+        { value: 'unsure', label: 'I don\u2019t know / It depends' },
+      ],
+    };
+    const map = new Map<string, QuestionItem>([
+      [ITEM_A as unknown as string, withUnsure],
+      [ITEM_B as unknown as string, itemLiteracyB],
+    ]);
+    const unsure = scoreSubmission(
+      [makeAnswer(ITEM_A, { kind: 'scenario_choice', choice: 'unsure', rationale: null }, '0500')],
+      map,
+    );
+    expect(unsure.byAxis.get('literacy')?.scoredItems).toBe(0);
+    expect(unsure.byAxis.get('literacy')?.skippedItems).toBe(1);
+    // One scored answer (lowest option) and one "unsure": the score is the scored one alone.
+    const mixed = scoreSubmission(
+      [
+        makeAnswer(ITEM_A, { kind: 'scenario_choice', choice: 'unsure', rationale: null }, '0501'),
+        makeAnswer(
+          ITEM_B,
+          { kind: 'scenario_choice', choice: 'check_policy', rationale: null },
+          '0502',
+        ),
+      ],
+      map,
+    );
+    expect(mixed.byAxis.get('literacy')?.normalised).toBe(1);
+  });
+
   it('treats multi_choice as the mean of the chosen option indices', () => {
     const items3 = new Map<string, QuestionItem>([[ITEM_A as unknown as string, itemLiteracyA]]);
     const answers = [

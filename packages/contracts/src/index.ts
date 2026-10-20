@@ -11,6 +11,7 @@ export * from './organisation.js';
 export * from './team.js';
 export * from './engagement.js';
 export * from './template.js';
+export * from './questionnaire.js';
 export * from './invitation.js';
 export * from './submission.js';
 export * from './auditLog.js';
