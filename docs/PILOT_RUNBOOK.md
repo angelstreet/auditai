@@ -75,6 +75,11 @@ default is not French.
 
 ## 3. Launch and invite (5 minutes, after steps 1-6)
 
+0. **Attach questionnaire v1** (once, before launch; ADR 0046): with the live `DATABASE_URL` set, run
+   `pnpm questionnaire:apply --engagement-id <the engagement id>`. It records the pilot questions (six choices, three
+   free-text questions, one role question) as the engagement's questionnaire version. The survey itself already
+   shows them; this step keeps the version recorded on each answer correct. It refuses an engagement that already
+   has answers.
 1. Admin → Engagements → the audit → **Settings** → **Launch**. Status goes
    from _Draft_ to _Open_. Links cannot be created before this.
 2. **Names to hide** is already checked in step 6 — do this again if the client
