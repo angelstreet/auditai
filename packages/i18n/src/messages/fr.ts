@@ -121,7 +121,7 @@ export const fr: Messages = {
       'Un texte libre est anonymisé automatiquement avant l’enregistrement : noms, e-mails et numéros de téléphone sont masqués.',
     privacyFull: 'Notice de confidentialité complète',
     howItWorks:
-      'Un appui par question. Vos réponses sont enregistrées au fur et à mesure. Vous pouvez passer une question.',
+      'Touchez une réponse ou écrivez quelques mots. Vos réponses sont enregistrées au fur et à mesure. Vous pouvez passer une question.',
     start: 'Commencer',
     resume: 'Reprendre là où vous en étiez',
     resumeProgress: '{done} sur {n} répondues',
@@ -130,6 +130,9 @@ export const fr: Messages = {
     answerOptions: 'Choix de réponse',
     back: 'Retour',
     skip: 'Passer',
+    next: 'Suivant',
+    optional: 'Facultatif',
+    textCounter: '{n} sur {max} caractères',
     saving: 'Enregistrement…',
     saveFailed:
       'Votre réponse n’a pas été enregistrée. Vérifiez votre connexion, puis touchez à nouveau.',

@@ -13,8 +13,7 @@ import { listTeamLinks } from '@/lib/invitationData';
 import { resolveBaseUrl } from '@/lib/invitationTracking';
 import { longDate, prepareMessages } from '@/lib/referentMessages';
 import { contactFor, reminderPlan } from '@/lib/referentView';
-import { estimatedMinutes } from '@/lib/respondent';
-import { totalQuestionCount } from '@/lib/syntheticTemplate';
+import { surveyEstimatedMinutes } from '@/lib/syntheticTemplate';
 import CreateLinksForm from './CreateLinksForm';
 
 export const dynamic = 'force-dynamic';
@@ -57,7 +56,7 @@ export default async function ClientInvitations() {
   const facts = {
     closesOn: survey.closesOn,
     contact: contactFor(survey.contact, ctx.viewAs?.label ?? session.name),
-    minutes: estimatedMinutes(totalQuestionCount()),
+    minutes: surveyEstimatedMinutes(),
   };
   const fr = prepareMessages('fr', facts);
   const en = prepareMessages('en', facts);

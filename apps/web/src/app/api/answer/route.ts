@@ -1,17 +1,20 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { InvalidInviteToken, verifyInviteToken } from '@/lib/invitationToken';
-import { withServiceAccount } from '@/lib/db';
+import { ensureQuestionItemId } from '@/lib/questionItems';
 import { findInvitation, gateFor } from '@/lib/respondent';
 import { getOrCreateState, isSubmitted, recordAnswer } from '@/lib/surveyState';
 import { SYNTHETIC_QUESTIONS } from '@/lib/syntheticTemplate';
-import { parseAnswerValue } from '@/lib/answerParser';
+import { isAllowedInput, parseAnswerValue } from '@/lib/answerParser';
 import { MAX_COMMENT_LENGTH, anonymiseForStorage } from '@/lib/answerAnonymiser';
 import { viewAsRefusal } from '@/lib/viewAsGuard';
 
 interface Body {
   token: string;
   index: number;
-  choice: string;
+  /** The option value for a choice question. */
+  choice?: string;
+  /** The person's words for a free-text question. Anonymised before it is stored. */
+  text?: string;
   /** Optional free text. Anonymised before it is stored; the original is never kept. */
   comment?: unknown;
 }
@@ -40,7 +43,7 @@ export async function POST(req: NextRequest) {
   if (
     typeof body.token !== 'string' ||
     typeof body.index !== 'number' ||
-    typeof body.choice !== 'string' ||
+    (typeof body.choice !== 'string' && typeof body.text !== 'string') ||
     body.index < 0 ||
     body.index >= SYNTHETIC_QUESTIONS.length ||
     (body.comment !== undefined &&
@@ -75,28 +78,29 @@ export async function POST(req: NextRequest) {
   }
   // Synthetic ids mirror the deterministic uuids the M4 seed inserts. Resolve the actual id by
   // (tenant, code) so renumbering questions does not break answer persistence.
-  const questionRow = await lookupQuestionId(resolved.tenantId, question.code);
+  const questionRow = await ensureQuestionItemId(resolved.tenantId, question.code);
   if (!questionRow) {
     return NextResponse.json({ ok: false, error: 'question_not_seeded' }, { status: 500 });
   }
+  const input = question.kind === 'short_text' ? body.text : body.choice;
+  if (typeof input !== 'string' || !isAllowedInput(question, input)) {
+    return NextResponse.json({ ok: false, error: 'bad_payload' }, { status: 400 });
+  }
+  // Free text (and the optional comment on a choice) is anonymised before it is written.
   const comment =
     typeof body.comment === 'string'
       ? await anonymiseForStorage(resolved.tenantId, body.comment, state.locale)
       : null;
-  const value = parseAnswerValue(question.kind, body.choice, comment);
+  const value = parseAnswerValue(
+    question.kind,
+    question.kind === 'short_text'
+      ? ((await anonymiseForStorage(resolved.tenantId, input, state.locale)) ?? input)
+      : input,
+    comment,
+  );
   await recordAnswer(resolved.tenantId, state.submissionId, questionRow, body.index, value);
   return NextResponse.json({ ok: true });
 }
-
-const lookupQuestionId = async (tenantId: string, code: string): Promise<string | null> => {
-  return withServiceAccount(async (client) => {
-    const { rows } = await client.query<{ id: string }>(
-      `SELECT id FROM question_items WHERE tenant_id = $1 AND code = $2 LIMIT 1`,
-      [tenantId, code],
-    );
-    return rows[0]?.id ?? null;
-  });
-};
 
 // Silence the lint that the file does not use InvalidInviteToken; keep the symbol exported for
 // the next handler.

@@ -117,7 +117,8 @@ export const en = {
     privacy4:
       'Free text is anonymised automatically before it is saved: names, emails and phone numbers are hidden.',
     privacyFull: 'Full privacy notice',
-    howItWorks: 'One tap per question. Answers save as you go. You can skip any question.',
+    howItWorks:
+      'Tap an answer or type a few words. Answers save as you go. You can skip any question.',
     start: 'Start',
     resume: 'Continue where you left off',
     resumeProgress: '{done} of {n} answered',
@@ -126,6 +127,9 @@ export const en = {
     answerOptions: 'Answer options',
     back: 'Back',
     skip: 'Skip',
+    next: 'Next',
+    optional: 'Optional',
+    textCounter: '{n} of {max} characters',
     saving: 'Saving…',
     saveFailed: 'Your answer was not saved. Check your connection and tap again.',
     alreadyFinished: 'You already finished this survey.',

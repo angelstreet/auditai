@@ -6,10 +6,10 @@ import { AppIcon } from '@evolai/ui';
 import LinkProblem from '@/components/respondent/LinkProblem';
 import PrivacyNotice from '@/components/respondent/PrivacyNotice';
 import RespondentStatus from '@/components/respondent/RespondentStatus';
-import { estimatedMinutes, firstUnanswered, loadRespondent, teamProgress } from '@/lib/respondent';
+import { firstUnanswered, loadRespondent, teamProgress } from '@/lib/respondent';
 import { getPublicNotice } from '@/lib/privacyNotice';
 import { getCurrentBadgeForPseudonym } from '@/lib/respondentBadgeData';
-import { totalQuestionCount } from '@/lib/syntheticTemplate';
+import { surveyEstimatedMinutes, totalQuestionCount } from '@/lib/syntheticTemplate';
 import { isSubmitted } from '@/lib/surveyState';
 
 // Always render at request time so the DB connection is fresh.
@@ -87,7 +87,7 @@ export default async function WelcomePage({
         <Typography variant="body2" component="p" sx={{ m: 0 }}>
           {answered > 0
             ? t('survey.resumeProgress', { done: answered, n: total })
-            : t('survey.duration', { n: total, m: estimatedMinutes(total) })}
+            : t('survey.duration', { n: total, m: surveyEstimatedMinutes() })}
         </Typography>
       </Stack>
       <Button
