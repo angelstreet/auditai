@@ -14,7 +14,7 @@
  *
  * The result is always a draft (`approved_at` NULL); the auditor approves it in the UI.
  */
-import { classifySensitivity, labelFor } from '../pipeline.js';
+import { answerPlainText, classifySensitivity } from '../pipeline.js';
 import type {
   AnalysisClaim,
   AnalysisPayload,
@@ -81,13 +81,9 @@ export interface LlmPipelineResult {
   readonly proposed: number;
 }
 
-/** Text of one answer as the respondent saw it: option labels for choices, raw text otherwise. */
-export const answerText = (item: QuestionItemRow, value: unknown): string => {
-  if (Array.isArray(value)) return value.map((v) => labelFor(item, v)).join(', ');
-  if (value === null || value === undefined) return '';
-  if (typeof value === 'object') return JSON.stringify(value);
-  return labelFor(item, value);
-};
+/** Text of one answer as the respondent saw it: option labels for choices, their words for text. */
+export const answerText = (item: QuestionItemRow, value: unknown): string =>
+  answerPlainText(item, value);
 
 /** Refuse input that mixes tenants or submissions, or lacks the ids to prove it does not. */
 export const assertSingleTenant = (input: PipelineInput): void => {
