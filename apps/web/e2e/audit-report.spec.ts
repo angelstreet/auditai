@@ -386,7 +386,8 @@ for (const locale of ['fr', 'en'] as const) {
     await expect(page.getByTestId('report-summary')).not.toHaveValue('');
     const method = await page.getByTestId('report-methodology').inputValue();
     expect(method).toMatch(/6/);
-    expect(method).toMatch(locale === 'fr' ? /2 thèmes/ : /2 themes/);
+    // The note is written in the report language (the engagement's), whatever the screen language.
+    expect(method).toMatch(/2 (themes|thèmes)/);
     expect(method).not.toMatch(/opportunit/i);
 
     // Nothing accepted, no opportunity: the report is still publishable with its findings alone.

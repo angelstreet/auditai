@@ -130,7 +130,8 @@ test.describe('audit set-up', () => {
       await page.goto('/admin/teams');
       await page.getByLabel(c.teamName).first().fill(team);
       await page.getByRole('button', { name: c.addTeam }).click();
-      await expect(page.getByText(c.teamAdded)).toBeVisible();
+      // The line under the form and the snackbar say the same words: check the page one.
+      await expect(page.locator('#main').getByText(c.teamAdded)).toBeVisible();
       // The new team is listed with its size and can be resized in place.
       const row = page.locator('li', { has: page.locator(`input[value="${team}"]`) });
       await expect(row).toHaveCount(1);

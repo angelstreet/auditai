@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import MuiLink from '@mui/material/Link';
 import { AppIcon } from '@evolai/ui';
 import type { Translator } from '@evolai/i18n';
 
@@ -19,9 +20,14 @@ export default function PrivacyNotice({
       </p>
       {engagementId ? (
         <p>
-          <Link href={`/privacy?e=${engagementId}#request`} data-testid="privacy-request-link">
+          <MuiLink
+            component={Link}
+            href={`/privacy?e=${engagementId}#request`}
+            data-testid="privacy-request-link"
+            sx={{ display: 'inline-flex', alignItems: 'center', minHeight: 44 }}
+          >
             {t('survey.privacyRequest')}
-          </Link>
+          </MuiLink>
         </p>
       ) : null}
       <details>
