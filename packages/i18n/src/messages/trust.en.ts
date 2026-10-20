@@ -155,6 +155,7 @@ export const trustEn = {
       report_step_accept: 'Accepted an improvement step',
       report_step_reject: 'Rejected an improvement step',
       privacy_request_handle: 'Marked a privacy request as handled',
+      answers_anonymise: 'Anonymised stored free-text answers',
     },
   },
   notice: {

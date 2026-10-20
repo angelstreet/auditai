@@ -5,7 +5,7 @@
 import { runAnonymiseBackfill } from '../src/anonymiseBackfill.js';
 
 const main = async (): Promise<void> => {
-  const url = process.env['DATABASE_URL_UNPOOLED'] ?? process.env['DATABASE_URL'];
+  const url = process.env['DATABASE_URL_UNPOOLED'] || process.env['DATABASE_URL'];
   if (!url) {
     process.stderr.write('DATABASE_URL (or DATABASE_URL_UNPOOLED) is required\n');
     process.exit(2);

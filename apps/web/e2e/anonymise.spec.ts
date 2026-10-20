@@ -122,6 +122,7 @@ test.describe('free text is anonymised when saved', () => {
       [REFERENCE],
     );
     expect(target).toBeDefined();
+    await query(`UPDATE submissions SET locale = 'fr' WHERE id = $1`, [target?.submission_id]);
     // A legacy row written before TASK-W: raw text in the value and in the rationale column.
     const legacy = `Legacy note from ${TYPED.person}, ${TYPED.email}, ${TYPED.phone}`;
     await query(`UPDATE answers SET value_json = $2, rationale = $3 WHERE id = $1`, [
