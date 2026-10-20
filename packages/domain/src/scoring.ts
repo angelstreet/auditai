@@ -62,6 +62,7 @@ const scoreOption = (value: AnswerValue, item: QuestionItem): number | null => {
       const normalised = (value.value - 1) / 4;
       return item.scoring.reverse ? 1 - normalised : normalised;
     }
+    case 'skipped':
     case 'short_text': {
       return null; // AI scoring lives in Phase 2.
     }

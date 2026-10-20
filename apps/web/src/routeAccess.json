@@ -53,6 +53,14 @@
       "access": "invitation",
       "reason": "Verifies the invitation token before any write."
     },
+    "/api/skip": {
+      "access": "invitation",
+      "reason": "Verifies the invitation token before any write."
+    },
+    "/api/submit": {
+      "access": "invitation",
+      "reason": "Verifies the invitation token before submitting; idempotent."
+    },
     "/api/locale": {
       "access": "invitation",
       "reason": "Verifies the invitation token; changes only that respondent's locale."
