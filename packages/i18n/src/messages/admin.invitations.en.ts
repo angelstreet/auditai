@@ -68,6 +68,7 @@ export const invitationsEn = {
     hintList: 'Send these links again through your own channel, then mark them as resent.',
   },
   manage: {
+    copyAll: 'Copy all links',
     title: 'Open links',
     code: 'Code',
     team: 'Team',

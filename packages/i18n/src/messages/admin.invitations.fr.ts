@@ -69,6 +69,7 @@ export const invitationsFr = {
     hintList: 'Renvoyez ces liens par votre propre canal, puis marquez-les comme renvoyés.',
   },
   manage: {
+    copyAll: 'Copier tous les liens',
     title: 'Liens ouverts',
     code: 'Code',
     team: 'Équipe',

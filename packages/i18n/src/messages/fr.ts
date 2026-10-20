@@ -15,6 +15,17 @@ export const fr: Messages = {
     skipToContent: 'Aller au contenu',
     navPrimaryAria: 'principale',
     nav: { about: 'À propos', privacy: 'Confidentialité' },
+    copy: {
+      copy: 'Copier',
+      copied: 'Copié',
+      copiedAll: '{count, plural, one {# lien copié} other {# liens copiés}}',
+      share: 'Partager',
+      fallbackTitle: 'Copiez le lien vous-même',
+      fallbackHelp:
+        'Votre navigateur n’a pas permis la copie. Le texte complet est ci-dessous, déjà sélectionné : copiez-le d’ici.',
+      fullText: 'Texte complet',
+      close: 'Fermer',
+    },
     language: {
       menuAria: 'Changer de langue',
       label: 'Langue',

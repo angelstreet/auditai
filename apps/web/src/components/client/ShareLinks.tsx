@@ -13,8 +13,9 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
-import { AppIcon, EmptyState, SegmentedToggle, useNotify } from '@evolai/ui';
+import { AppIcon, EmptyState, SegmentedToggle } from '@evolai/ui';
 import { useI18n } from '@/components/I18nProvider';
+import { useLinkActions } from '@/components/LinkActions';
 import { mailtoHref, whatsappHref, withLink } from '@/lib/referentView';
 
 type Lang = 'fr' | 'en';
@@ -23,16 +24,6 @@ export interface PreparedMessage {
   readonly subject: string;
   readonly text: string;
 }
-
-/** Copy to the clipboard; false when the browser refuses (old browser, no permission). */
-export const copyText = async (text: string): Promise<boolean> => {
-  try {
-    await navigator.clipboard.writeText(text);
-    return true;
-  } catch {
-    return false;
-  }
-};
 
 /**
  * The referent's links and the ready-made message (TASK-S, ADR 0039). Every link of the team, in
@@ -49,7 +40,7 @@ export default function ShareLinks({
   defaultLang: Lang;
 }) {
   const { t } = useI18n();
-  const notify = useNotify();
+  const actions = useLinkActions();
   const [lang, setLang] = useState<Lang>(defaultLang);
   const [text, setText] = useState<Record<Lang, string>>({
     fr: messages.fr.text,
@@ -59,9 +50,7 @@ export default function ShareLinks({
   const subject = messages[lang].subject;
   const message = text[lang];
 
-  const copy = async (value: string, done: string) => {
-    notify((await copyText(value)) ? done : t('client.invitations.copyFailed'));
-  };
+  const copy = actions.copy;
   const openMenu = (e: MouseEvent<HTMLElement>, index: number) =>
     setMenu({ anchor: e.currentTarget, index });
   const current = menu ? links[menu.index] : undefined;
@@ -147,6 +136,7 @@ export default function ShareLinks({
                     gap: 2,
                     px: 3,
                     py: 1,
+                    minHeight: 52,
                     borderTop: i === 0 ? 0 : 1,
                     borderColor: 'divider',
                     '&:hover': { bgcolor: 'action.hover' },
@@ -163,14 +153,7 @@ export default function ShareLinks({
                     variant="body1"
                     title={link}
                     data-testid="client-link"
-                    sx={{
-                      m: 0,
-                      flex: '1 1 auto',
-                      minWidth: 0,
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap',
-                    }}
+                    sx={{ m: 0, flex: '1 1 auto', minWidth: 0, overflowWrap: 'anywhere' }}
                   >
                     {link}
                   </Typography>
@@ -184,6 +167,18 @@ export default function ShareLinks({
                       <AppIcon name="copy" />
                     </IconButton>
                   </Tooltip>
+                  {actions.canShare ? (
+                    <Tooltip title={t('client.invitations.share', { n: i + 1 })}>
+                      <IconButton
+                        aria-label={t('client.invitations.share', { n: i + 1 })}
+                        onClick={() => void actions.share(withLink(message, link))}
+                        data-testid="client-share-link"
+                        sx={{ width: 44, height: 44 }}
+                      >
+                        <AppIcon name="share" />
+                      </IconButton>
+                    </Tooltip>
+                  ) : null}
                   <Tooltip title={t('client.invitations.more', { n: i + 1 })}>
                     <IconButton
                       aria-label={t('client.invitations.more', { n: i + 1 })}
@@ -240,6 +235,7 @@ export default function ShareLinks({
                 <ListItemText>{t('client.invitations.whatsapp')}</ListItemText>
               </MenuItem>
             </Menu>
+            {actions.dialog}
           </>
         )}
       </Paper>

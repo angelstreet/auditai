@@ -16,6 +16,17 @@ export const en = {
     skipToContent: 'Skip to content',
     navPrimaryAria: 'primary',
     nav: { about: 'About', privacy: 'Privacy' },
+    copy: {
+      copy: 'Copy',
+      copied: 'Copied',
+      copiedAll: '{count, plural, one {# link copied} other {# links copied}}',
+      share: 'Share',
+      fallbackTitle: 'Copy the link yourself',
+      fallbackHelp:
+        'Your browser did not let us copy. The full text is below and already selected: copy it from here.',
+      fullText: 'Full text',
+      close: 'Close',
+    },
     language: {
       menuAria: 'Change language',
       label: 'Language',

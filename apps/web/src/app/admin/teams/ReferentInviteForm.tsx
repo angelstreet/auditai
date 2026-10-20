@@ -6,6 +6,7 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import { AppIcon, StatusText } from '@evolai/ui';
+import { copyText } from '@/lib/clipboard';
 import { useI18n } from '@/components/I18nProvider';
 import { inviteReferentAction, type InviteState } from './actions';
 
@@ -80,8 +81,8 @@ export default function ReferentInviteForm({
             variant="outlined"
             startIcon={<AppIcon name="copy" size={20} />}
             onClick={async () => {
-              await navigator.clipboard?.writeText(state.link ?? '').catch(() => undefined);
-              setCopied(true);
+              // The full link stays in the selectable field above if the copy is refused.
+              setCopied(await copyText(state.link ?? ''));
             }}
           >
             {copied ? t('trust.referents.copied') : t('trust.referents.copy')}

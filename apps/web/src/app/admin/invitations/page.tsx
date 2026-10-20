@@ -158,6 +158,7 @@ export default async function InvitationsPage({ searchParams }: { searchParams: 
           code: o.code,
           teamName: o.teamName,
           expiresOn: formatDate(locale, o.expiresOn),
+          link: o.link,
         }))}
         dueCount={due.length}
         batches={batchList.map((b) => ({
