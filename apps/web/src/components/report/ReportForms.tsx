@@ -158,7 +158,7 @@ export function SectionsForm({
   const [state, action] = useFormState(saveSectionsAction, reportIdle);
   const [draftState, draftAction] = useFormState(draftSummaryAction, reportIdle);
   // The server re-renders with new values after a draft; the key resets the uncontrolled fields.
-  const formKey = `${summary}|${citations.join(',')}`;
+  const formKey = `${summary}|${citations.join(',')}|${methodology}`;
   return (
     <Stack spacing={3}>
       <Box component="form" action={draftAction}>
@@ -242,7 +242,7 @@ export function SectionsForm({
           multiline
           minRows={3}
           disabled={disabled}
-          inputProps={{ maxLength: 4000 }}
+          inputProps={{ maxLength: 4000, 'data-testid': 'report-methodology' }}
         />
         <Box>
           <Submit disabled={disabled} testId="report-save-sections">
@@ -587,7 +587,7 @@ export function AddStepForm({
   const [mode, setMode] = useState<'catalogue' | 'custom' | null>(customOnly ? 'custom' : null);
   const options = IMPROVEMENT_CATALOGUE.filter((e) => !taken.includes(e.id));
   return (
-    <Box sx={{ mt: 2 }}>
+    <Box sx={{ mt: 2 }} data-testid={customOnly ? 'report-add-own' : undefined}>
       {customOnly ? null : (
         <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>
           <Button
@@ -649,7 +649,9 @@ export function AddStepForm({
             </>
           )}
           <Box>
-            <Submit disabled={disabled}>{t('report.steps.add')}</Submit>
+            <Submit disabled={disabled} testId="report-add-step">
+              {t('report.steps.add')}
+            </Submit>
           </Box>
         </Stack>
       ) : null}

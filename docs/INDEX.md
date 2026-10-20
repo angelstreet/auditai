@@ -123,6 +123,7 @@ write a new one that supersedes it.
 | 0044 | [Anonymise free text before it is stored](adr/0044-anonymise-free-text-on-ingestion.md)                                  | TASK-W                           | Accepted |
 | 0045 | [Submit on an explicit finish](adr/0045-submit-on-explicit-finish.md)                                                    | TASK-Y                           | Accepted |
 | 0046 | [Questionnaire v1: free-text questions and neutral wording](adr/0046-questionnaire-v1-free-text-and-neutral-wording.md)  | TASK-Z2                          | Accepted |
+| 0047 | [Pilot polish: publish path, one count, links that copy](adr/0047-pilot-polish-publish-path-links-and-counts.md)         | TASK-Z1                          | Accepted |
 
 ## 4. The gates map (PRD §25.4)
 
@@ -186,7 +187,7 @@ Manual URLs (ports come from the `READY` line):
 - **RLS** — Every tenant-scoped table has a four-policy RLS pattern
   (`SELECT`, `INSERT`, `UPDATE`, `DELETE`) plus a `SET LOCAL
 app.tenant_id` / `app.is_service_account` switch. See ADR 0003.
-- **ADR numbering** — Next free is `0047`. One decision per ADR; never
+- **ADR numbering** — Next free is `0048`. One decision per ADR; never
   amend an old one.
 - **ROADMAP updates** — The State column flips and the README Status
   block updates in the same PR (or the immediately-following commit
@@ -292,7 +293,8 @@ docs/
    ├── 0043-ai-draft-of-report-summary.md
    ├── 0044-anonymise-free-text-on-ingestion.md
    ├── 0045-submit-on-explicit-finish.md
-   └── 0046-questionnaire-v1-free-text-and-neutral-wording.md
+   ├── 0046-questionnaire-v1-free-text-and-neutral-wording.md
+   └── 0047-pilot-polish-publish-path-links-and-counts.md
 ```
 
 The contract map of every Zod schema and TS type in `@evolai/contracts`
