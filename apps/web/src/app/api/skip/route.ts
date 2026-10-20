@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { withServiceAccount } from '@/lib/db';
+import { ensureQuestionItemId } from '@/lib/questionItems';
 import { resolveRespondent } from '@/lib/respondentRequest';
 import { getOrCreateState, isSubmitted, recordSkip } from '@/lib/surveyState';
 import { SYNTHETIC_QUESTIONS } from '@/lib/syntheticTemplate';
@@ -22,13 +22,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, error: 'already_submitted' }, { status: 409 });
   }
   const code = SYNTHETIC_QUESTIONS[index]?.code as string;
-  const questionId = await withServiceAccount(async (client) => {
-    const { rows } = await client.query<{ id: string }>(
-      `SELECT id FROM question_items WHERE tenant_id = $1 AND code = $2 LIMIT 1`,
-      [invite.tenantId, code],
-    );
-    return rows[0]?.id ?? null;
-  });
+  const questionId = await ensureQuestionItemId(invite.tenantId, code);
   if (!questionId)
     return NextResponse.json({ ok: false, error: 'question_not_seeded' }, { status: 500 });
   await recordSkip(invite.tenantId, state.submissionId, questionId, index);

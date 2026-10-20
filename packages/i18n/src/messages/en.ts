@@ -117,7 +117,8 @@ export const en = {
     privacy4:
       'Free text is anonymised automatically before it is saved: names, emails and phone numbers are hidden.',
     privacyFull: 'Full privacy notice',
-    howItWorks: 'One tap per question. Answers save as you go. You can skip any question.',
+    howItWorks:
+      'Tap an answer or type a few words. Answers save as you go. You can skip any question.',
     start: 'Start',
     resume: 'Continue where you left off',
     resumeProgress: '{done} of {n} answered',
@@ -126,6 +127,9 @@ export const en = {
     answerOptions: 'Answer options',
     back: 'Back',
     skip: 'Skip',
+    next: 'Next',
+    optional: 'Optional',
+    textCounter: '{n} of {max} characters',
     saving: 'Saving…',
     saveFailed: 'Your answer was not saved. Check your connection and tap again.',
     alreadyFinished: 'You already finished this survey.',
@@ -164,7 +168,7 @@ export const en = {
   },
   quiz: {
     title: 'Find your AI mascot',
-    intro: 'Five quick questions. There is no wrong answer.',
+    intro: 'Five quick questions about what you already do with AI. You get a mascot, not a mark.',
     privacyShort: 'Only your team’s most common mascot is shared, never your answers.',
     questionOf: 'Question {i} of {n}',
     progress: 'Quiz progress',
@@ -187,14 +191,14 @@ export const en = {
     threeTiers: 'The three mascots',
     tier: { tortoise: 'Tortoise', fox: 'Fox', owl: 'Owl' },
     mascotAlt: {
-      tortoise: 'Tortoise mascot — cautious, learning the basics',
+      tortoise: 'Tortoise mascot — goes at its own pace, step by step',
       fox: 'Fox mascot — pragmatic, regular AI explorer',
-      owl: 'Owl mascot — engaged, confident AI practitioner',
+      owl: 'Owl mascot — AI is already part of its work',
     },
     tierDescriptor: {
-      tortoise: 'You are starting out. Small, regular tries help a lot.',
+      tortoise: 'You explore AI at your own pace. Small, regular tries can help.',
       fox: 'You try AI regularly and learn as you go.',
-      owl: 'You use AI with confidence. Share what works with your team.',
+      owl: 'AI is already part of your work. Share what works with your team.',
     },
   },
   intake: {

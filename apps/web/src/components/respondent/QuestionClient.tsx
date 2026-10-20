@@ -30,6 +30,16 @@ interface Props {
     incomplete: string;
     finishFailed: string;
   };
+  /** Free-text question: a text box instead of options (TASK-Z2). */
+  text?: {
+    initial: string;
+    maxLength: number;
+    hint: string;
+    optionalLabel: string;
+    nextLabel: string;
+    /** Counter text with a `{n}` placeholder for the current length. */
+    counterTemplate: string;
+  };
 }
 
 /**
@@ -42,6 +52,7 @@ export default function QuestionClient(props: Props) {
   const [saving, setSaving] = useState(false);
   const [navigating, startTransition] = useTransition();
   const [failed, setFailed] = useState<string | null>(null);
+  const [typed, setTyped] = useState(props.text?.initial ?? '');
   const router = useRouter();
   const busy = saving || navigating;
 
@@ -96,28 +107,61 @@ export default function QuestionClient(props: Props) {
     void saveAndContinue('/api/answer', { choice });
   };
 
+  // An empty box is a skip: nothing is saved as an answer, the question is marked passed.
+  const submitText = () => {
+    if (busy) return;
+    const text = typed.trim();
+    void (text.length === 0
+      ? saveAndContinue('/api/skip', {})
+      : saveAndContinue('/api/answer', { text }));
+  };
+
   return (
     <section aria-labelledby="question-prompt" aria-busy={busy}>
       <h1 id="question-prompt" className="prompt">
         {props.prompt}
       </h1>
       {props.helper ? <p className="muted">{props.helper}</p> : null}
-      <ul className="option-list" aria-label={props.ariaQuestionLabel}>
-        {props.options.map((option) => (
-          <li key={option.value}>
-            <button
-              type="button"
-              className="option-button"
-              aria-pressed={selected === option.value}
-              disabled={busy}
-              onClick={() => choose(option.value)}
-            >
-              <span>{option.label}</span>
-              <AppIcon name="success" className="option-check" />
-            </button>
-          </li>
-        ))}
-      </ul>
+      {props.text ? (
+        <div className="text-answer">
+          <textarea
+            className="text-answer-input"
+            aria-labelledby="question-prompt"
+            aria-describedby="text-hint text-counter"
+            rows={5}
+            maxLength={props.text.maxLength}
+            value={typed}
+            disabled={busy}
+            onChange={(e) => setTyped(e.target.value)}
+          />
+          <p id="text-hint" className="muted">
+            {props.text.optionalLabel} · {props.text.hint}
+          </p>
+          <p id="text-counter" className="muted text-counter">
+            {props.text.counterTemplate.replace('{n}', String(typed.length))}
+          </p>
+          <button type="button" className="text-next" disabled={busy} onClick={submitText}>
+            {props.text.nextLabel}
+          </button>
+        </div>
+      ) : (
+        <ul className="option-list" aria-label={props.ariaQuestionLabel}>
+          {props.options.map((option) => (
+            <li key={option.value}>
+              <button
+                type="button"
+                className="option-button"
+                aria-pressed={selected === option.value}
+                disabled={busy}
+                onClick={() => choose(option.value)}
+              >
+                <span>{option.label}</span>
+                <AppIcon name="success" className="option-check" />
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
       <p className="muted" aria-live="polite">
         {busy ? props.messages.saving : ''}
       </p>

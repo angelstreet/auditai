@@ -69,9 +69,9 @@ describe('literacy quiz (M14)', () => {
   });
 
   it('produces a non-empty tier descriptor per mascot', () => {
-    expect(tierDescriptor('tortoise')).toMatch(/curve|learning|start/i);
+    expect(tierDescriptor('tortoise')).toMatch(/own pace|small/i);
     expect(tierDescriptor('fox')).toMatch(/explorer|pragmatic|curious/i);
-    expect(tierDescriptor('owl')).toMatch(/practitioner|engaged/i);
+    expect(tierDescriptor('owl')).toMatch(/already part|sharing/i);
   });
 
   it('generates pseudonyms of the expected shape', () => {

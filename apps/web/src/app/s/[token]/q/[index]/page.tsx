@@ -4,7 +4,12 @@ import ProgressBar from '@/components/ProgressBar';
 import LinkProblem from '@/components/respondent/LinkProblem';
 import QuestionClient from '@/components/respondent/QuestionClient';
 import { loadRespondent } from '@/lib/respondent';
-import { questionByIndex, totalQuestionCount } from '@/lib/syntheticTemplate';
+import {
+  FREE_TEXT_MAX_LENGTH,
+  freeTextHint,
+  questionByIndex,
+  totalQuestionCount,
+} from '@/lib/syntheticTemplate';
 import { isSubmitted } from '@/lib/surveyState';
 
 // Always render at request time so the DB connection is fresh.
@@ -31,10 +36,10 @@ export default async function QuestionPage({ params }: { params: Params }) {
   const isLast = index === total - 1;
   const nextHref = isLast ? `/s/${params.token}/done` : `/s/${params.token}/q/${index + 1}`;
   const backHref = index === 0 ? `/s/${params.token}` : `/s/${params.token}/q/${index - 1}`;
+  const saved = state.answers[index]?.value;
   const initialChoice =
-    state.answers[index]?.value.kind === 'scenario_choice'
-      ? (state.answers[index]?.value.choice ?? null)
-      : null;
+    saved?.kind === 'scenario_choice' || saved?.kind === 'single_choice' ? saved.choice : null;
+  const isText = question.kind === 'short_text';
 
   return (
     <div className="stack">
@@ -68,6 +73,18 @@ export default async function QuestionPage({ params }: { params: Params }) {
           incomplete: t('survey.incomplete'),
           finishFailed: t('survey.finishFailed'),
         }}
+        text={
+          isText
+            ? {
+                initial: saved?.kind === 'short_text' ? saved.text : '',
+                maxLength: FREE_TEXT_MAX_LENGTH,
+                hint: freeTextHint(locale),
+                optionalLabel: t('survey.optional'),
+                nextLabel: t('survey.next'),
+                counterTemplate: t('survey.textCounter', { n: '{n}', max: FREE_TEXT_MAX_LENGTH }),
+              }
+            : undefined
+        }
       />
     </div>
   );

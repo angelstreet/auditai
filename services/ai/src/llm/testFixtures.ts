@@ -39,6 +39,8 @@ export interface FixtureAnswer {
   readonly axis: string;
   readonly question: string;
   readonly text: string;
+  /** Questionnaire question code, when the answer belongs to a definition (TASK-Z2). */
+  readonly code?: string;
 }
 
 /** A submission whose answers are all free text, as a `PipelineInput`. */

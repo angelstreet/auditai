@@ -45,6 +45,20 @@ export const MOCK_THEMES: ReadonlyArray<Lexeme> = [
     automatable: false,
   },
   {
+    id: 'missing-tool',
+    re: /manqu|missing|\black(?:ed|ing)?\b|pas (?:d[’']|de )?acc[èe]s|no access|licen[cs]e|logiciel|software|outil|\btool/i,
+    fr: 'Outil ou information manquants',
+    en: 'Missing tool or information',
+    automatable: false,
+  },
+  {
+    id: 'assistant-wish',
+    re: /assistant|brouillon|compte[- ]rendu|r[ée]sum|r[ée]dig|draft|summar|minutes|\bwrite|\bfind\b|retrouv|pr[ée]-?remplir|pre-?fill|fill in/i,
+    fr: 'Souhait d’un assistant',
+    en: 'Wish for an assistant',
+    automatable: true,
+  },
+  {
     id: 'training-need',
     re: /formation|training|apprendre|learn|tutoriel|tutorial|aide|help/i,
     fr: 'Besoin de formation',

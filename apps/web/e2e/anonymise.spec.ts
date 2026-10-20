@@ -75,7 +75,7 @@ test.describe('free text is anonymised when saved', () => {
     test(`stores only the anonymised text (${locale})`, async ({ request }) => {
       const post = (comment: string) =>
         request.post('/api/answer', {
-          data: { token, index: 5, choice: 'verify_source', comment },
+          data: { token, index: 5, choice: '1_3h', comment },
         });
       // The first call creates the submission; then set its language like the engagement's.
       expect((await post('hello')).ok()).toBe(true);
@@ -177,7 +177,7 @@ test.describe('free text is anonymised when saved', () => {
 
   test('rejects an over-long comment without echoing it', async ({ request }) => {
     const res = await request.post('/api/answer', {
-      data: { token, index: 5, choice: 'verify_source', comment: 'x'.repeat(2001) },
+      data: { token, index: 5, choice: '1_3h', comment: 'x'.repeat(2001) },
     });
     expect(res.status()).toBe(400);
     expect(await res.text()).not.toContain('xxxx');

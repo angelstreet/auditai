@@ -10,7 +10,12 @@ import { sessionTenantIds } from '@/lib/authServer';
 import { getT } from '@/lib/i18n';
 import { isUuid } from '@/lib/invitationForm';
 import { getEngagementSetup } from '@/lib/setupData';
-import { SYNTHETIC_QUESTIONS, totalQuestionCount } from '@/lib/syntheticTemplate';
+import {
+  SYNTHETIC_QUESTIONS,
+  freeTextHint,
+  surveyEstimatedMinutes,
+  totalQuestionCount,
+} from '@/lib/syntheticTemplate';
 
 export const dynamic = 'force-dynamic';
 
@@ -58,7 +63,7 @@ export default async function PreviewPage({
             {r('survey.lede')}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {r('survey.duration', { n: total, m: Math.max(1, Math.ceil((total * 20) / 60)) })}
+            {r('survey.duration', { n: total, m: surveyEstimatedMinutes() })}
           </Typography>
           <Typography variant="body2" sx={{ mt: 3 }}>
             {r('survey.privacyShort')}
@@ -77,6 +82,11 @@ export default async function PreviewPage({
             </Typography>
             {q.helper[setup.locale] ? (
               <Typography color="text.secondary">{q.helper[setup.locale]}</Typography>
+            ) : null}
+            {q.kind === 'short_text' ? (
+              <Typography color="text.secondary" sx={{ mt: 2 }}>
+                {r('survey.optional')} · {freeTextHint(setup.locale)}
+              </Typography>
             ) : null}
             <Stack component="ul" sx={{ p: 0, m: 0, mt: 2, gap: 1, listStyle: 'none' }}>
               {q.options.map((o) => (

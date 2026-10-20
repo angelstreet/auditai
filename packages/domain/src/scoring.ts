@@ -1,4 +1,4 @@
-import { type Answer, type QuestionItem, type AnswerValue } from '@evolai/contracts';
+import { UNSURE_VALUE, type Answer, type QuestionItem, type AnswerValue } from '@evolai/contracts';
 
 /**
  * Deterministic literacy scoring (PRD \u00a76).
@@ -35,23 +35,26 @@ export interface ScoringResult {
  * overcounting.
  */
 const scoreOption = (value: AnswerValue, item: QuestionItem): number | null => {
-  if (item.options.length === 0) return null;
+  // "I don't know / It depends" is an honest answer, not a low one: it is left out of the
+  // ordering and of the score (TASK-Z2).
+  const options = item.options.filter((o) => o.value !== UNSURE_VALUE);
+  if (options.length === 0) return null;
 
   switch (value.kind) {
     case 'single_choice':
     case 'scenario_choice': {
-      const idx = item.options.findIndex((o) => o.value === value.choice);
+      const idx = options.findIndex((o) => o.value === value.choice);
       if (idx < 0) return null;
       // Options are scored in order: index 0 \u2192 lowest contribution, last index \u2192 highest.
-      const score = idx / (item.options.length - 1 || 1);
+      const score = idx / (options.length - 1 || 1);
       return item.scoring.reverse ? 1 - score : score;
     }
     case 'multi_choice': {
       const indices = value.choices
-        .map((c) => item.options.findIndex((o) => o.value === c))
+        .map((c) => options.findIndex((o) => o.value === c))
         .filter((i) => i >= 0);
       if (indices.length === 0) return null;
-      const sum = indices.reduce((acc, i) => acc + i / (item.options.length - 1 || 1), 0);
+      const sum = indices.reduce((acc, i) => acc + i / (options.length - 1 || 1), 0);
       const mean = sum / indices.length;
       return item.scoring.reverse ? 1 - mean : mean;
     }
@@ -79,7 +82,7 @@ export const scoreSubmission = (
 ): ScoringResult => {
   const accumulator = new Map<
     QuestionItem['axis'],
-    { sum: number; count: number; skipped: number }
+    { sum: number; count: number; skipped: number; weight: number }
   >();
 
   for (const answer of answers) {
@@ -88,26 +91,21 @@ export const scoreSubmission = (
     const optionScore = scoreOption(answer.value, item);
     const weighted = optionScore === null ? null : optionScore * item.scoring.weight;
 
-    const entry = accumulator.get(item.axis) ?? { sum: 0, count: 0, skipped: 0 };
+    const entry = accumulator.get(item.axis) ?? { sum: 0, count: 0, skipped: 0, weight: 0 };
     if (weighted === null) {
       entry.skipped += 1;
     } else {
       entry.sum += weighted;
       entry.count += 1;
+      entry.weight += item.scoring.weight;
     }
     accumulator.set(item.axis, entry);
   }
 
   const byAxis = new Map<QuestionItem['axis'], AxisScore>();
   for (const [axis, entry] of accumulator) {
-    const totalWeight = (() => {
-      let total = 0;
-      for (const answer of answers) {
-        const item = itemsById.get(answer.questionItemId);
-        if (item && item.axis === axis) total += item.scoring.weight;
-      }
-      return total;
-    })();
+    // Only scored answers count: "I don't know" and free text neither raise nor lower the score.
+    const totalWeight = entry.weight;
     const normalised = totalWeight === 0 ? 0 : Math.min(1, entry.sum / totalWeight);
     byAxis.set(axis, { axis, normalised, scoredItems: entry.count, skippedItems: entry.skipped });
   }

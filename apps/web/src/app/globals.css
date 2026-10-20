@@ -293,6 +293,49 @@ a {
   outline-offset: 2px;
 }
 
+.text-answer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.text-answer-input {
+  width: 100%;
+  min-height: 140px;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font: inherit;
+  resize: vertical;
+}
+
+.text-answer-input:focus-visible,
+.text-next:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.text-counter {
+  text-align: right;
+}
+
+.text-next {
+  min-height: 56px;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius);
+  border: 1px solid var(--color-accent);
+  background: var(--color-raised);
+  color: var(--color-fg);
+  font: inherit;
+  cursor: pointer;
+}
+
+.text-next[disabled] {
+  cursor: progress;
+}
+
 .privacy p {
   margin-bottom: var(--space-2);
 }

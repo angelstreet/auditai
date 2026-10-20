@@ -174,9 +174,7 @@ test.describe('audit set-up', () => {
         .click();
       await expect(page.getByRole('heading', { level: 1, name: c.previewHeading })).toBeVisible();
       const question =
-        locale === 'fr'
-          ? /A colleague wants to paste|An AI tool gives you/
-          : /Une IA vous donne|Un collègue veut/;
+        locale === 'fr' ? /An AI tool gives you an answer/ : /Un outil d’IA vous donne une réponse/;
       await expect(page.getByText(question).first()).toBeVisible();
     });
   }

@@ -53,6 +53,8 @@ export interface AnalysisClaim {
   readonly sourceKind: 'answer' | 'question_item';
   readonly sourceId: string;
   readonly quote: string;
+  /** `text` for a free-text answer cited word for word; absent for a choice. */
+  readonly kind?: 'text';
 }
 
 export interface AnalysisTheme {
@@ -133,6 +135,12 @@ const HIGH_VALUE_LABELS = new Set([
   'deterministic_first',
   '3_6h',
   'gt_6h',
+  // Questionnaire v1 (TASK-Z2): the established practice of each scored choice.
+  'check_source',
+  'check_rules',
+  'full_brief',
+  'list_steps',
+  'simple_automation',
 ]);
 
 /** The first pipeline step: classify the overall sensitivity (PRD \u00a710, FR-08). */
@@ -142,14 +150,48 @@ export const classifySensitivity = (items: ReadonlyArray<QuestionItemRow>): Sens
   return 'public';
 };
 
+/** The stored shape of a survey answer: `{kind, choice}`, `{kind, choices}` or `{kind, text}`. */
+const asRecord = (value: unknown): Record<string, unknown> | null =>
+  value !== null && typeof value === 'object' && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : null;
+
+/** The option value a choice answer holds, whether stored bare or as `{kind, choice}`. */
+export const choiceValue = (value: unknown): string | null => {
+  if (typeof value === 'string') return value;
+  const rec = asRecord(value);
+  return typeof rec?.['choice'] === 'string' ? rec['choice'] : null;
+};
+
 export const labelFor = (item: QuestionItemRow, value: unknown): string => {
-  if (typeof value !== 'string') return String(value);
+  if (typeof value !== 'string') return answerPlainText(item, value);
   const opt = item.options_json.find((o) => o.value === value);
   return opt?.label ?? value;
 };
 
-const valueIsHigh = (item: QuestionItemRow, value: unknown): boolean => {
-  if (typeof value !== 'string') return false;
+/**
+ * The words a respondent gave, as they saw them: the text itself for free text, the option label
+ * for a choice. Never the stored JSON, so a model and a citation check see only the answer.
+ */
+export const answerPlainText = (item: QuestionItemRow, value: unknown): string => {
+  if (value === null || value === undefined) return '';
+  if (Array.isArray(value)) return value.map((v) => labelFor(item, v)).join(', ');
+  const rec = asRecord(value);
+  if (rec) {
+    // A skipped question has no words: it is never shown to a model or cited.
+    if (rec['kind'] === 'skipped') return '';
+    if (typeof rec['text'] === 'string') return rec['text'];
+    if (Array.isArray(rec['choices'])) return labelFor(item, rec['choices']);
+    const choice = choiceValue(value);
+    if (choice !== null) return labelFor(item, choice);
+    return JSON.stringify(value);
+  }
+  return typeof value === 'string' ? labelFor(item, value) : String(value);
+};
+
+const valueIsHigh = (item: QuestionItemRow, rawValue: unknown): boolean => {
+  const value = choiceValue(rawValue);
+  if (value === null) return false;
   if (HIGH_VALUE_LABELS.has(value)) return true;
   const opt = item.options_json.find((o) => o.value === value);
   if (!opt) return false;
@@ -166,11 +208,16 @@ export const extractThemes = (input: PipelineInput): ReadonlyArray<AnalysisTheme
     const item = input.questionItems.get(a.question_item_id);
     if (!item) continue;
     const g = groups.get(item.axis) ?? { axis: item.axis, claims: [], items: [] };
+    const isText = item.kind === 'short_text';
+    const plain = answerPlainText(item, a.value_json);
+    if (plain === '') continue;
     const claim: AnalysisClaim = {
-      claim: `${item.prompt} \u2192 ${labelFor(item, a.value_json)}`,
+      claim: `${item.prompt} \u2192 ${plain}`,
       sourceKind: 'answer',
       sourceId: a.id,
-      quote: `answer.value_json=${JSON.stringify(a.value_json)}`,
+      // A free-text answer is cited word for word; a choice keeps its stored value.
+      quote: isText ? plain : `answer.value_json=${JSON.stringify(a.value_json)}`,
+      ...(isText ? { kind: 'text' as const } : {}),
     };
     g.claims.push(claim);
     g.items.push(item);
@@ -183,15 +230,22 @@ export const extractThemes = (input: PipelineInput): ReadonlyArray<AnalysisTheme
       const item = input.questionItems.get(a.question_item_id);
       return item ? valueIsHigh(item, a.value_json) : false;
     });
-    const low = g.claims.length - high.length;
+    const texts = g.claims.filter((c) => c.kind === 'text').length;
+    const choices = g.claims.length - texts;
+    const low = choices - high.length;
+    const signals = `${high.length} high-maturity signal(s), ${low} low-maturity signal(s) across ${choices} answer(s)`;
     return {
       id: `theme-${axisId}-${idx}`,
-      label: `${g.axis} maturity`,
+      label: choices === 0 ? `${g.axis} (free text)` : `${g.axis} maturity`,
       axis: g.axis,
       summary:
         g.claims.length === 0
           ? 'no answers'
-          : `${high.length} high-maturity signal(s), ${low} low-maturity signal(s) across ${g.claims.length} answer(s)`,
+          : choices === 0
+            ? `${texts} free-text answer(s)`
+            : texts === 0
+              ? signals
+              : `${signals}; ${texts} free-text answer(s)`,
       evidence: g.claims,
     } as const;
   });
@@ -203,11 +257,17 @@ export const findContradictions = (
 ): ReadonlyArray<{ themeA: string; themeB: string; explanation: string }> => {
   const out: { themeA: string; themeB: string; explanation: string }[] = [];
   for (const t of themes) {
-    const hasHigh = t.evidence.some((c) =>
-      /high|verify|check|map|deterministic|always/i.test(c.claim),
+    // Choices only: the stored value is matched, never a free-text answer's words.
+    const choices = t.evidence.filter((c) => c.kind !== 'text');
+    const hasHigh = choices.some((c) =>
+      /high|verify|check|map|deterministic|always|full_brief|list_steps|simple_automation/i.test(
+        c.quote,
+      ),
     );
-    const hasLow = t.evidence.some((c) =>
-      /low|use_as_is|paste_anyway|short_vague|jump_to_ai|lt_1h/i.test(c.claim),
+    const hasLow = choices.some((c) =>
+      /low|use_as_is|paste_anyway|paste_directly|short_vague|one_line|jump_to_ai|look_for_tool|lt_1h/i.test(
+        c.quote,
+      ),
     );
     if (hasHigh && hasLow) {
       out.push({
@@ -256,6 +316,10 @@ const dedupeClaims = (claims: ReadonlyArray<AnalysisClaim>): ReadonlyArray<Analy
 
 export const runPipeline = (input: PipelineInput): AnalysisPayload => {
   const items = input.answers
+    .filter((a) => {
+      const item = input.questionItems.get(a.question_item_id);
+      return item ? answerPlainText(item, a.value_json) !== '' : false;
+    })
     .map((a) => input.questionItems.get(a.question_item_id))
     .filter((q): q is QuestionItemRow => Boolean(q));
   const sensitivity = classifySensitivity(items);
