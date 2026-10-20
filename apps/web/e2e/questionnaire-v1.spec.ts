@@ -96,7 +96,7 @@ test.describe('questionnaire v1 on a phone', () => {
 
     // Free text 2: skipped with the Skip link, nothing is saved.
     await expect(page).toHaveURL(new RegExp(`/q/${FIRST_TEXT + 1}$`));
-    await page.getByRole('button', { name: /Passer/ }).click();
+    await page.locator('button.link-button').click();
 
     // Free text 3: empty box + Next is also a skip.
     await expect(page).toHaveURL(new RegExp(`/q/${FIRST_TEXT + 2}$`));

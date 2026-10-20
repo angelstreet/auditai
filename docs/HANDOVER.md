@@ -71,6 +71,8 @@ deploy script only works inside its original environment (ADR 0022).
 | V | 51, 53, 54, (this PR) | The audit result the client receives: improvement-step catalogue (29 bilingual entries) matched to approved opportunities, deterministic readiness score with small-group and complementary suppression, report editor (summary with cited findings, accept/edit/reject steps, ranking, 30/60/90 plan), preview, publish/unpublish/versions, read-only Report tab for the referent, PDF, optional AI draft of the summary on the worker (ADRs 0041-0043, `docs/AUDITOR_GUIDE.md`) |
 | L | 38, 39, 41-45 | UI glow-up on MUI: theme with a lifted dark palette, header with identity menu, footer, welcome, login, respondent flow, admin tabs and danger flow, intake; style-guard rules 7-11; header and copy-length Playwright checks (ADR 0034, `docs/UI_RULES.md`, `docs/UI_GLOWUP_PLAN.md`) |
 
+| Z2 | (see git log) | Questionnaire v1 for the pilot: ten questions in one versioned file (six neutral choices with "I don't know / It depends", three optional free-text questions, one coarse role question), free-text answering in the survey, analysis reads the person's own words and cites them, 13 gold respondents in `pnpm ai:eval`, neutral quiz copy, `pnpm questionnaire:apply`; no migration (ADR 0046) |
+
 Task briefs are kept in `docs/tasks/` (TASK-A to TASK-K).
 
 ## Gates (PRD section 25.4)

@@ -158,6 +158,32 @@ title, pairs of capitalised words and the names on the client's list become `[em
 - A name that is wrongly masked (a tool or company) goes in `NAME_STOP_LIST` in
   `packages/domain/src/anonymise.ts`, with a test case.
 
+## Change the questions (TASK-Z2, ADR 0046)
+
+The whole questionnaire is one file: `packages/contracts/src/questionnaires/pilot-v1.json` (French and English side
+by side). No migration is involved.
+
+1. Edit the file: wording (`prompt`, `helper`, option `label`), option order (for scored choices, from the least to
+   the most established practice; keep `unsure` last, it is never scored), the free-text limit
+   (`freeTextMaxLength`) and hint (`freeTextHint`), `estimatedMinutes` (shown on the welcome page: keep it honest,
+   about 20 seconds per choice and a minute per text question).
+2. Check it: `pnpm --filter @evolai/contracts test` (the file is validated: unique codes, both languages, no options
+   on a text question, no hint words such as "a good request", about 6 to 8 minutes) and
+   `pnpm --filter @evolai/ai test` (the gold respondents must still use the real question texts).
+3. **Fixing a typo or rewording without changing the meaning**: edit the file, merge, deploy. Rows already created
+   in the database keep the old French text for the analysis, which is fine for a typo.
+4. **Changing what a question means, adding or removing one**: give it a **new `code`** (never reuse one) and change
+   the file. Deploy. The new rows are created the first time someone answers. For an engagement that has no answers
+   yet, also run, with the live `DATABASE_URL` (or `DATABASE_URL_UNPOOLED`) set, once per engagement:
+   `pnpm questionnaire:apply --engagement-id <uuid> [--expect-host <db host>]`.
+   It prints the version it created or reused and whether the engagement was pointed at it. It refuses an engagement
+   that already has answers: create a new engagement for the new questions rather than mixing two versions.
+5. Keep the order of the file: the survey shows the questions in that order and stores each answer by its position.
+   Do not reorder or delete questions once people have answered.
+
+Questions are kept in the order: choices, free text, role. Free text and the role question stay optional (a skip is
+saved so the survey can be finished). After editing French, ask a native speaker to read it.
+
 ## Rotate secrets
 
 1. **App secrets** (`AUTH_SESSION_SECRET`, `SURVEY_SIGNING_SECRET`, `CRON_SECRET`): generate a value with

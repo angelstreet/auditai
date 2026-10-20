@@ -19,6 +19,30 @@ trail**. The organisation you work on is chosen in the header and stays chosen.
 5. **Invitations**: set the closing date and the contact person, then create the links (or let the referent do it
    from their space). Launch the engagement when ready.
 
+## What the survey asks (questionnaire v1)
+
+About 7 minutes, 10 questions, in French or English, on a phone. Every question can be skipped. The wording is the
+same for everyone and never hints at a right answer.
+
+- **Six short choice questions** about what the person usually does in a situation: an AI answer with no source,
+  client data and a public assistant, how they word a request, where they would start to simplify a report made by
+  hand, copying the same data every day, and the weekly time spent on tasks that come back the same way. Each has an
+  honest "I don't know / It depends" option, which is not scored and does not lower the readiness score.
+- **Three optional free-text questions** (400 characters, a live counter, "No names, emails or numbers: we mask them
+  automatically"): the repetitive task that took the most time last week, the tool or information that was missing
+  this week, and the one thing an assistant could help with. These are what the analysis turns into themes and draft
+  opportunities, each with the person's own words as the citation. Names, emails, phone numbers and the words on
+  your "Names to hide" list are masked before the text is saved.
+- **One optional role question**: the area the person works in, in seven broad categories. There is no seniority
+  question and no free text: in a team of fewer than 5, area plus seniority could point to one person. Results by
+  area only appear for groups of 5 or more.
+
+The optional mascot quiz after the survey does not grade anyone. It gives a mascot that describes a pace or a
+habit, never a level.
+
+To change the questions, see [RUNBOOK.md](RUNBOOK.md), "Change the questions". The French wording needs one read
+by a native speaker before the pilot (ADR 0046).
+
 ## While people answer
 
 6. Follow progress on **Invitations** (per team, groups under 5 people are not shown as exact numbers). The
@@ -27,7 +51,7 @@ trail**. The organisation you work on is chosen in the header and stays chosen.
 ## Review
 
 7. **Engagements, Analyses**: read each analysis (themes, contradictions, interview questions, with the source of
-   every claim). Approve what is right, leave the rest. An "AI draft" stays a draft until you approve it.
+   every claim; for the free-text questions the source is the person's own sentence). Approve what is right, leave the rest. An "AI draft" stays a draft until you approve it.
 8. **Engagements, Opportunities**: turn approved analyses into opportunities, set an impact score if you know it,
    and move the good ones to Approved. Only approved opportunities reach the report.
 

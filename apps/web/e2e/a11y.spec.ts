@@ -90,6 +90,8 @@ test.describe('respondent path, keyboard only, with axe on every page', () => {
 
   for (const locale of LOCALES) {
     test(`full path in ${locale}`, async ({ page, context, baseURL }) => {
+      // Ten questions, each scanned by axe and walked by keyboard (TASK-Z2 added four).
+      test.setTimeout(120_000);
       await setLocale(context, baseURL, locale);
       const token = tokenFor(INVITES[locale]);
 
