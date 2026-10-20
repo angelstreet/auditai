@@ -13,3 +13,4 @@ export * from './readiness.js';
 export * from './improvementMatching.js';
 export * from './reportPlan.js';
 export * from './findings.js';
+export * from './anonymise.js';
