@@ -3,6 +3,84 @@
 Read this first, then [README](../README.md), [ROADMAP](ROADMAP.md), [PRD](PRD.md), the [ADR index](adr/) and
 [AGENTS.md](../AGENTS.md) (rules for AI agents: public repo, no secrets, tests with every change).
 
+## Where things stand (2026-10-20) and how to test both sides now
+
+Live at `https://www.evolai.io` (Vercel project `evolai`, Neon Postgres in Frankfurt, pushes to `main` deploy to
+production). All 25 migrations are applied to the live database. CI is green. It is an MVP for a first pilot: anything
+enterprise-grade (DPA, MFA/SSO, recovery drill, approved AI route) is deliberately parked, see
+[AUDIT_WORKFLOW.md](AUDIT_WORKFLOW.md).
+
+**Two clients exist in the live database.** The real pilot client (name only in the database, never in this repo) and a
+**safe sandbox called "Demo Client"** with a referent "Demo Referent" and the engagement "Pilote Demo Client", created for
+testing. Test on the sandbox; leave the real client untouched until the pilot starts.
+
+### Test both sides in about 15 minutes (sandbox)
+
+Sign in at `https://www.evolai.io/login` with the owner address. The password is in a private file on codebox: run
+`ssh codebox cat ~/.evolai-admin-login` (never paste it into chat or the repo). You land on the Portfolio.
+
+**Side A, the auditor (you).**
+
+1. Top bar, organisation chips or account menu: choose **Demo Client**.
+2. Engagements, the audit, **Settings**: check headcount, dates, language, then **Launch** (links cannot be created before).
+3. **Invitations**: create 5 links. Open one in a private window: that is what an employee sees. Answer the six questions
+   and the three free-text ones (type a name, an email and a phone number in a free-text answer to see them masked),
+   finish, then reopen the link.
+4. Back in the admin: Teams for progress, Engagements then Analyses and Opportunities for what the analysis found
+   (with only a few answers many things stay hidden below 5 people), then **Reports**: start the report, accept or write
+   an improvement step, preview as the client, publish, download the PDF.
+5. **Audit trail** and **Data** show what was done and let you test an export and an erase request.
+
+**Side B, the referent (client contact).** There is no real referent login yet, so use "View as":
+
+1. Account menu (your initials, top right) then **View as** then the Demo Client referent. A banner says read only.
+2. You now see `/client`: home with progress and the "how it works" box, **Invitations** (links, the message to copy or share
+   by email and WhatsApp, the single generic reminder), **Results**, **Report** (what is published and when).
+3. Everything is read only in this mode; use "Back to my view" in the banner to return.
+4. To test a real referent login: Teams then Referents, give the Demo Referent a throw-away address and press "Create
+   sign-in link", open the link in a private window, choose a password. See RUNBOOK "Give a referent a real login".
+
+What to write down: anything you hesitated on, any word you did not understand, anything you would not show a client.
+
+### What was built since the 18 October handover (all merged, PR numbers on GitHub)
+
+| PR           | What                                                                                                                                                  |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| #49          | Auditor set-up screens, organisation in the header, landing on the portfolio, plain wording, French fixes                                             |
+| #50          | Referent self-service (share links, one generic reminder). The referent never sees who answered                                                       |
+| #51, #53-#55 | Audit report: improvement-step catalogue, readiness score, report workflow, auditor and client screens, PDF, optional AI summary draft, AUDITOR_GUIDE |
+| #52          | Referent login by link and password reset, complete privacy notice, audit-trail screen, safer erase and export                                        |
+| #56          | PILOT_RUNBOOK (two-sided test script, set-up steps)                                                                                                   |
+| #57          | Free-text answers are anonymised when saved (names, emails, phone numbers); backfill script                                                           |
+| #58          | Bug fix: the survey is submitted when the person finishes, not when the done page loads                                                               |
+| #59          | Questionnaire v1: six neutral choices, three optional free-text questions, one role question (`packages/contracts/src/questionnaires/pilot-v1.json`)  |
+| #60          | Pilot polish: publish with a manual step, wide Reports layout, links and counts, copy and share on phones, referent "how it works"                    |
+
+### Known limits and open items
+
+- **Not verified by a human yet:** the whole journey end to end on a phone with a real person; a published report's PDF
+  on paper; the French wording (needs one native read); the analysis quality on real answers (only made-up data so far).
+- **Test-agent verdicts before the last fixes:** auditor 3/10 (no free text, no publish path), referent 6/10, employee 6/10.
+  The fixes above target exactly those findings; a re-test is the real check (three testers on a fresh local copy, see
+  docs/TEST_FEEDBACK_2026-10-19.md for the method).
+- **Parked on purpose (MVP):** DPA and controller decision, real referent login for the real client, approved AI route,
+  MFA/SSO, recovery drill, email-only accounts (a task brief exists, not started: docs/tasks/TASK-X-email-only-identity.md),
+  personal tips per employee (decision pending: on-page tips, or an email-to-code mapping).
+- **Housekeeping:** `/tmp/.env` on codebox still holds the database password and is readable by every user: delete it.
+  Real client and referent names remain in the history of one old commit of this public repo (rewriting history was
+  declined); the secret `BANNED_TERMS` blocks them from reappearing.
+
+### Infrastructure notes (codebox and workers)
+
+- Secrets live outside the repo: `~/.evolai.env` (database URLs and app secrets, mode 600) and `~/.evolai-admin-login`
+  on codebox; Vercel sensitive environment variables for production. The repo is public: no secrets, no real names.
+- On codebox the checkout `~/evolai` may be on someone else's branch: use `git -C ~/evolai fetch origin` and worktrees,
+  never pull or commit there. The box has `earlyoom` (kills big processes below 15% free memory); cap vitest memory and
+  run Playwright with one worker.
+- Headless workers: `tmux new-session -d -s <name> "claude -p --dangerously-skip-permissions --model <m> \"$(cat brief.md)\"
+| tee log"`. A headless run exits as soon as the worker stops calling tools: every brief says "never end the turn while
+  something is pending; wait with blocking commands". Briefs are in `docs/tasks/` (TASK-A to TASK-Z2).
+
 ## What it is
 
 An open-source platform for evidence-based AI-adoption audits and change enablement. A company team answers a
