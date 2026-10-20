@@ -114,6 +114,8 @@ export const en = {
     privacy1: 'We keep a code instead of your name.',
     privacy2: 'Your team contact sees how many people answered, not who said what.',
     privacy3: 'EvolAI uses your answers only to find ways to make your work easier.',
+    privacy4:
+      'Free text is anonymised automatically before it is saved: names, emails and phone numbers are hidden.',
     privacyFull: 'Full privacy notice',
     howItWorks: 'One tap per question. Answers save as you go. You can skip any question.',
     start: 'Start',

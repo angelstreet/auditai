@@ -117,6 +117,8 @@ export const fr: Messages = {
     privacy1: 'Nous utilisons un code à la place de votre nom.',
     privacy2: 'Votre contact d’équipe voit combien de personnes ont répondu, pas qui a dit quoi.',
     privacy3: 'EvolAI utilise vos réponses uniquement pour simplifier votre travail.',
+    privacy4:
+      'Un texte libre est anonymisé automatiquement avant l’enregistrement : noms, e-mails et numéros de téléphone sont masqués.',
     privacyFull: 'Notice de confidentialité complète',
     howItWorks:
       'Un appui par question. Vos réponses sont enregistrées au fur et à mesure. Vous pouvez passer une question.',

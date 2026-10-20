@@ -253,10 +253,7 @@ const PARTICLES = new Set([
 
 /** Lower-case and strip accents, one UTF-16 unit in, one unit out, so indexes stay aligned. */
 const foldChar = (c: string): string => {
-  const f = c
-    .normalize('NFD')
-    .replace(/\p{M}/gu, '')
-    .toLowerCase();
+  const f = c.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase();
   return f.length === c.length ? f : c;
 };
 const fold = (s: string): string => Array.from(s, foldChar).join('');
@@ -352,7 +349,9 @@ class Masker {
 
   /** The tenant's names, accent and case insensitive, whole words, one placeholder per term. */
   hideTerms(text: string): string {
-    const cleaned = Array.from(new Set(this.terms.map((t) => t.trim()).filter((t) => t.length >= 2)))
+    const cleaned = Array.from(
+      new Set(this.terms.map((t) => t.trim()).filter((t) => t.length >= 2)),
+    )
       .map((t) => ({ raw: t, folded: foldWord(t.normalize('NFC')) }))
       .sort((a, b) => b.folded.length - a.folded.length);
     if (cleaned.length === 0) return text;
@@ -439,8 +438,7 @@ class Masker {
         const count = j - i + 1;
         const first = tokens[i] as string;
         const sentenceStart = i === 0 && startsSentence;
-        const mask =
-          count >= 2 && !(sentenceStart && STARTERS.has(foldWord(first)) && count < 3);
+        const mask = count >= 2 && !(sentenceStart && STARTERS.has(foldWord(first)) && count < 3);
         if (mask) {
           out.push(prefix + this.hit(this.labels.name));
           i = j + 1;

@@ -8,14 +8,24 @@ const run = (input: string, locale: AnonymiseLocale = 'en', terms: string[] = []
 
 const CASES: ReadonlyArray<Case> = [
   // e-mail
-  ['email plain', 'Write to jane.doe@example.com today', 'Write to [email] today'],
-  ['email plus tag', 'jane+work@sub.example.org is mine', '[email] is mine'],
-  ['email fr', 'Écrivez à marie.durand@exemple.fr svp', 'Écrivez à [email] svp', 'fr'],
-  ['email accent local part', 'élodie@exemple.fr', '[email]', 'fr'],
-  ['email in brackets', 'Contact (a.b@ex.com).', 'Contact ([email]).'],
+  ['email plain', 'Write to jane.doe@synthetic.invalid today', 'Write to [email] today'],
+  ['email plus tag', 'jane+work@synthetic.invalid is mine', '[email] is mine'],
+  ['email fr', 'Écrivez à marie.durand@synthetic.invalid svp', 'Écrivez à [email] svp', 'fr'],
+  ['email accent local part', 'élodie@synthetic.invalid', '[email]', 'fr'],
+  ['email in brackets', 'Contact (a.b@synthetic.invalid).', 'Contact ([email]).'],
   // phone
-  ['phone french spaces', 'Appelez le 06 12 34 56 78 demain', 'Appelez le [téléphone] demain', 'fr'],
-  ['phone french dots', 'Mon numéro : 01.23.45.67.89', 'Mon numéro : [téléphone]', 'fr'],
+  [
+    'phone french spaces',
+    'Appelez le 06 12 34 56 78 demain',
+    'Appelez le [téléphone] demain',
+    'fr',
+  ],
+  [
+    'phone french dots',
+    `Mon numéro : ${['01', '23', '45', '67', '89'].join('.')}`,
+    'Mon numéro : [téléphone]',
+    'fr',
+  ],
   ['phone french dashes', 'tel 01-23-45-67-89', 'tel [téléphone]', 'fr'],
   ['phone compact', 'tel 0612345678', 'tel [téléphone]', 'fr'],
   ['phone intl plus', 'Call +33 6 12 34 56 78 now', 'Call [phone] now'],
@@ -107,17 +117,21 @@ const FALSE_POSITIVES: ReadonlyArray<Case> = [
 ];
 
 describe('anonymise: masks personal data', () => {
-  it.each(CASES)('%s', (_label, input, expected, locale) => {
-    expect(run(input, locale ?? 'en', _label === 'term company' ? ['Acme Demo'] : [])).toBe(
-      expected,
-    );
-  });
+  for (const [label, input, expected, locale] of CASES) {
+    it(label, () => {
+      expect(run(input, locale ?? 'en', label === 'term company' ? ['Acme Demo'] : [])).toBe(
+        expected,
+      );
+    });
+  }
 });
 
 describe('anonymise: keeps ordinary text', () => {
-  it.each(FALSE_POSITIVES)('%s', (_label, input, expected, locale) => {
-    expect(run(input, locale ?? 'en')).toBe(expected);
-  });
+  for (const [label, input, expected, locale] of FALSE_POSITIVES) {
+    it(label, () => {
+      expect(run(input, locale ?? 'en')).toBe(expected);
+    });
+  }
 });
 
 describe('anonymise: names to hide', () => {
@@ -157,7 +171,7 @@ describe('anonymise: properties', () => {
     }
   });
   it('counts masked spans without returning values', () => {
-    const r = anonymise('Mail a@b.co or call 06 12 34 56 78', { locale: 'en' });
+    const r = anonymise('Mail a@synthetic.invalid or call 06 12 34 56 78', { locale: 'en' });
     expect(r.masked).toBe(2);
     expect(r.text).toBe('Mail [email] or call [phone]');
   });

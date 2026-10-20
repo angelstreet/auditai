@@ -5,12 +5,15 @@ import { findInvitation, gateFor } from '@/lib/respondent';
 import { getOrCreateState, isSubmitted, recordAnswer } from '@/lib/surveyState';
 import { SYNTHETIC_QUESTIONS } from '@/lib/syntheticTemplate';
 import { parseAnswerValue } from '@/lib/answerParser';
+import { MAX_COMMENT_LENGTH, anonymiseForStorage } from '@/lib/answerAnonymiser';
 import { viewAsRefusal } from '@/lib/viewAsGuard';
 
 interface Body {
   token: string;
   index: number;
   choice: string;
+  /** Optional free text. Anonymised before it is stored; the original is never kept. */
+  comment?: unknown;
 }
 
 /**
@@ -39,7 +42,9 @@ export async function POST(req: NextRequest) {
     typeof body.index !== 'number' ||
     typeof body.choice !== 'string' ||
     body.index < 0 ||
-    body.index >= SYNTHETIC_QUESTIONS.length
+    body.index >= SYNTHETIC_QUESTIONS.length ||
+    (body.comment !== undefined &&
+      (typeof body.comment !== 'string' || body.comment.length > MAX_COMMENT_LENGTH))
   ) {
     return NextResponse.json({ ok: false, error: 'bad_payload' }, { status: 400 });
   }
@@ -74,7 +79,11 @@ export async function POST(req: NextRequest) {
   if (!questionRow) {
     return NextResponse.json({ ok: false, error: 'question_not_seeded' }, { status: 500 });
   }
-  const value = parseAnswerValue(question.kind, body.choice);
+  const comment =
+    typeof body.comment === 'string'
+      ? await anonymiseForStorage(resolved.tenantId, body.comment, state.locale)
+      : null;
+  const value = parseAnswerValue(question.kind, body.choice, comment);
   await recordAnswer(resolved.tenantId, state.submissionId, questionRow, body.index, value);
   return NextResponse.json({ ok: true });
 }
