@@ -1,3 +1,4 @@
+import { execFileSync } from 'node:child_process';
 import { createHmac } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -111,6 +112,67 @@ test.describe('free text is anonymised when saved', () => {
       }
     });
   }
+
+  test('the backfill anonymises stored text: dry run first, then apply, then nothing left to do', async () => {
+    const [target] = await query<{ id: string; submission_id: string; question_item_id: string }>(
+      `SELECT a.id, a.submission_id, a.question_item_id FROM answers a
+         JOIN invitations i ON i.token_reference = $1
+         JOIN submissions s ON s.invitation_id = i.id AND s.id = a.submission_id
+        WHERE a.sequence = 5`,
+      [REFERENCE],
+    );
+    expect(target).toBeDefined();
+    // A legacy row written before TASK-W: raw text in the value and in the rationale column.
+    const legacy = `Legacy note from ${TYPED.person}, ${TYPED.email}, ${TYPED.phone}`;
+    await query(`UPDATE answers SET value_json = $2, rationale = $3 WHERE id = $1`, [
+      target?.id,
+      JSON.stringify({ kind: 'scenario_choice', choice: 'verify_source', rationale: legacy }),
+      legacy,
+    ]);
+    const run = (...args: string[]): string =>
+      execFileSync('node', ['--import', 'tsx', 'scripts/anonymise-backfill.ts', ...args], {
+        cwd: join(process.cwd(), '..', '..', 'services', 'ai'),
+        env: { ...process.env, DATABASE_URL: databaseUrl(), DATABASE_URL_UNPOOLED: '' },
+        encoding: 'utf8',
+      });
+    const changed = (out: string): number => Number(/total changed=(\d+)/.exec(out)?.[1] ?? -1);
+
+    const dry = run();
+    expect(dry).toContain('dry run');
+    expect(changed(dry)).toBeGreaterThanOrEqual(1);
+    for (const secret of Object.values(TYPED)) expect(dry).not.toContain(secret);
+    const [before] = await query<{ rationale: string }>(
+      `SELECT rationale FROM answers WHERE id = $1`,
+      [target?.id],
+    );
+    expect(before?.rationale).toBe(legacy);
+
+    const applied = run('--apply');
+    expect(applied).toContain('APPLIED');
+    expect(changed(applied)).toBeGreaterThanOrEqual(1);
+    const [after] = await query<{ rationale: string; value_json: { rationale: string } }>(
+      `SELECT rationale, value_json FROM answers WHERE id = $1`,
+      [target?.id],
+    );
+    expect(after?.rationale).toBe('Legacy note from [nom], [email], [téléphone]');
+    expect(after?.value_json.rationale).toBe(after?.rationale);
+    const audit = await query<{ payload_json: Record<string, number> }>(
+      `SELECT payload_json FROM audit_log WHERE action = 'answers.anonymise' AND tenant_id = $1`,
+      [tenantId],
+    );
+    expect(audit.length).toBeGreaterThanOrEqual(1);
+
+    expect(changed(run('--apply'))).toBe(0);
+    for (const table of SCANNED_TABLES) {
+      for (const secret of Object.values(TYPED)) {
+        const hits = await query<{ n: string }>(
+          `SELECT count(*)::text AS n FROM ${table} t WHERE t::text ILIKE $1`,
+          [`%${secret}%`],
+        );
+        expect(hits[0]?.n, `${table} still holds typed text`).toBe('0');
+      }
+    }
+  });
 
   test('rejects an over-long comment without echoing it', async ({ request }) => {
     const res = await request.post('/api/answer', {

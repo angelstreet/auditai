@@ -141,6 +141,23 @@ Prerequisite: migrations **0023** and **0024** applied (above). The full walk-th
 7. Changes after publishing: "Start a new version" (the client keeps the published one until you publish again).
    "Unpublish" withdraws it at once.
 
+## Anonymised free text (TASK-W, ADR 0044)
+
+Free text is anonymised before it is saved: emails, phone numbers, links, handles, ids, addresses, names after a
+title, pairs of capitalised words and the names on the client's list become `[email]`, `[phone]`, `[name]`,
+`[organisation]` and so on. The original is not kept anywhere.
+
+- **Before a pilot, add the client's names** (company, products, teams, people) in Admin, Redaction (as the auditor
+  of that client, or "view as"). One name per line item; case and accents do not matter; whole words only.
+  A single first name with no title is not detected by the rules, so list the people who matter.
+- **Backfill existing answers** (migration **0025** applied first): with `DATABASE_URL` (or
+  `DATABASE_URL_UNPOOLED`) set, run `pnpm anonymise:backfill` for a dry run. It prints, per tenant, how many answers
+  it scanned and would change, never the text. Then `pnpm anonymise:backfill -- --apply` writes the change and adds
+  one audit row per tenant. It is safe to run again: the second run changes nothing. It cannot be undone, so run the
+  dry run first and add the names to hide before applying.
+- A name that is wrongly masked (a tool or company) goes in `NAME_STOP_LIST` in
+  `packages/domain/src/anonymise.ts`, with a test case.
+
 ## Rotate secrets
 
 1. **App secrets** (`AUTH_SESSION_SECRET`, `SURVEY_SIGNING_SECRET`, `CRON_SECRET`): generate a value with

@@ -34,8 +34,12 @@ Everything else below is **later**, before scaling beyond a pilot, and does not 
 
 - Real login for the referent (the "Create sign-in link" flow in docs/RUNBOOK.md already works when wanted).
 - Filling the privacy fields per engagement (the notice has safe defaults and hides what is not configured).
-- Data processing agreement and controller decision with the client.
-- An approved AI route and the client's names in the redaction list (until then the analysis runs without AI).
+- Data processing agreement and controller decision with the client. The data question for free text is settled
+  by anonymisation (TASK-W, ADR 0044): names, emails, phone numbers and the client's names-to-hide list are masked
+  before an answer is saved, and nothing of the original is kept. Add the client's names to the list before the
+  pilot (docs/RUNBOOK.md).
+- An approved AI route (until then the analysis runs without AI). The client's names go in the names-to-hide list
+  before the pilot, so they are masked in stored answers.
 - A recorded recovery drill (backups exist on Neon).
 - MFA or SSO for staff and client logins (ROADMAP Gate C).
 - A review of themes on real answers by a human, a separate sponsor login, pilot tracking and measured

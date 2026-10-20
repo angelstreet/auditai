@@ -144,6 +144,10 @@ Two production settings are open; neither blocks a pilot:
   Reports; the referent reads the published version in the Report tab and downloads the PDF. The AI draft of the
   summary is an owner command and needs an approved real route (RUNBOOK). Sponsor accounts are not a separate role
   yet: send the PDF to the sponsor.
+  TASK-W (ADR 0044): apply migration **0025** to Neon (forward only: audit verb `answers.anonymise`, target kind
+  `tenant`). Free text is anonymised before it is saved (`anonymise()` in `@evolai/domain`, used by
+  `POST /api/answer`). The survey has no free-text field yet, so today the route only receives a `comment` if one is
+  added later. Run `pnpm anonymise:backfill` (dry run), then with `--apply`, on the live database once.
 
 0. Invitations admin screen (TASK-N) is reachable and folded into the restyled admin shell.
    0b. TASK-Q (ADR 0036): migration **0020** applied. The per-tenant redaction list (the names the redactor scrubs
