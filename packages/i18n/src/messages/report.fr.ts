@@ -35,6 +35,9 @@ export const reportFr: Shape<typeof reportEn> = {
     locked:
       'Cette version est publiée et verrouillée. Commencez une nouvelle version pour la modifier.',
     language: 'Rédigé en {language}.',
+    fewPeople:
+      '{count, plural, one {Seule # personne a répondu} other {Seules # personnes ont répondu}}. Le score et les thèmes sont masqués sous {n}. Vous pouvez quand même publier un rapport avec des constats ou vos propres actions.',
+    pdfLater: 'Le PDF sera disponible dès que le rapport sera publié.',
     readOnlyViewAs: 'Lecture seule pendant que vous voyez l’application comme une autre personne.',
   },
   workflow: {
@@ -81,7 +84,8 @@ export const reportFr: Shape<typeof reportEn> = {
     citation_missing: 'Cochez au moins un constat sur lequel repose la synthèse.',
     citation_unknown:
       'La synthèse cite un constat qui n’est plus approuvé. Mettez les cases à jour.',
-    nothing_accepted: 'Retenez au moins une action d’amélioration avant de publier.',
+    nothing_accepted:
+      'Rien à publier pour l’instant. Approuvez un thème dans Analyses, ou ajoutez une étape avec « Rédiger la mienne » sous Actions d’amélioration.',
     contains_name:
       'Le rapport contient un nom de la liste « noms à masquer ». Retirez-le avant de publier.',
     contains_quote:
@@ -99,13 +103,19 @@ export const reportFr: Shape<typeof reportEn> = {
       'Aucun constat n’est encore approuvé, ou aucun n’a été cité par au moins {n} personnes.',
     draft: 'Rédiger un premier jet',
     draftHelp:
-      'Remplit la synthèse à partir du score, des constats et des actions. Relisez-la avant de publier.',
+      'Remplit la synthèse et la note de méthode à partir du score, des constats et des actions. Relisez-les avant de publier.',
     risks: 'Risques',
     risksHelp: 'Un risque par ligne.',
     methodology: 'Méthode et confidentialité',
     save: 'Enregistrer',
-    methodologyDefault:
-      'Questionnaire anonyme auprès des équipes. Les réponses ont été regroupées en thèmes ; l’auditeur a vérifié et approuvé chaque thème et chaque opportunité. Les scores sont des moyennes de groupes d’au moins {n} personnes.',
+    methodBase:
+      'Questionnaire anonyme auprès des équipes : {people, plural, one {# personne a répondu} other {# personnes ont répondu}}. Les scores sont des moyennes de groupes d’au moins {n} personnes.',
+    methodThemes:
+      '{count, plural, one {L’auditeur a vérifié et approuvé # thème.} other {L’auditeur a vérifié et approuvé # thèmes.}}',
+    methodOpportunities:
+      '{count, plural, one {L’auditeur a approuvé # opportunité d’amélioration.} other {L’auditeur a approuvé # opportunités d’amélioration.}}',
+    methodUnreviewed: 'Aucun thème ni aucune opportunité n’a encore été approuvé par l’auditeur.',
+    methodRefreshed: 'La note de méthode a été réécrite à partir des chiffres actuels.',
   },
   draft: {
     listSep: ' ; ',
@@ -115,6 +125,7 @@ export const reportFr: Shape<typeof reportEn> = {
     findings: 'Ce qui ressort le plus : {list}.',
     opportunities: 'Les premières actions que nous recommandons : {list}.',
     closing: 'Le plan ci-dessous indique qui fait quoi dans les 30, 60 et 90 prochains jours.',
+    closingNoSteps: 'Aucune étape d’amélioration n’est encore recommandée.',
   },
   ai: {
     title: 'Brouillon IA',
@@ -178,7 +189,8 @@ export const reportFr: Shape<typeof reportEn> = {
     title: 'Actions d’amélioration',
     subtitle:
       'Proposées à partir du catalogue pour chaque opportunité approuvée. Retenez, modifiez ou écartez chacune.',
-    noOpportunity: 'Aucune opportunité approuvée. Approuvez d’abord des opportunités.',
+    noOpportunity:
+      'Aucune opportunité approuvée. Approuvez des opportunités, ou rédigez votre propre action ici.',
     suggestAgain: 'Proposer à nouveau',
     why: 'Pourquoi : {tags}',
     whyPicked: 'Choisie dans le catalogue.',

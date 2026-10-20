@@ -570,41 +570,47 @@ export function AddStepForm({
   opportunityId,
   disabled,
   taken,
+  customOnly = false,
 }: {
   ids: Ids;
+  /** Empty when the audit has no approved opportunity: the step then gets one of its own. */
   opportunityId: string;
   disabled: boolean;
   /** Catalogue ids already attached to this opportunity. */
   taken: readonly string[];
+  /** Only "Write my own" (nothing to pick from without an opportunity). */
+  customOnly?: boolean;
 }) {
   const { t, locale } = useI18n();
   const [state, action] = useFormState(addStepAction, reportIdle);
-  const [mode, setMode] = useState<'catalogue' | 'custom' | null>(null);
+  const [mode, setMode] = useState<'catalogue' | 'custom' | null>(customOnly ? 'custom' : null);
   const options = IMPROVEMENT_CATALOGUE.filter((e) => !taken.includes(e.id));
   return (
     <Box sx={{ mt: 2 }}>
-      <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>
-        <Button
-          variant="text"
-          disabled={disabled}
-          onClick={() => setMode(mode === 'catalogue' ? null : 'catalogue')}
-          startIcon={<AppIcon name="add" size={20} />}
-          aria-expanded={mode === 'catalogue'}
-          sx={{ minHeight: 44 }}
-        >
-          {t('report.steps.addFromCatalogue')}
-        </Button>
-        <Button
-          variant="text"
-          disabled={disabled}
-          onClick={() => setMode(mode === 'custom' ? null : 'custom')}
-          startIcon={<AppIcon name="edit" size={20} />}
-          aria-expanded={mode === 'custom'}
-          sx={{ minHeight: 44 }}
-        >
-          {t('report.steps.addCustom')}
-        </Button>
-      </Stack>
+      {customOnly ? null : (
+        <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>
+          <Button
+            variant="text"
+            disabled={disabled}
+            onClick={() => setMode(mode === 'catalogue' ? null : 'catalogue')}
+            startIcon={<AppIcon name="add" size={20} />}
+            aria-expanded={mode === 'catalogue'}
+            sx={{ minHeight: 44 }}
+          >
+            {t('report.steps.addFromCatalogue')}
+          </Button>
+          <Button
+            variant="text"
+            disabled={disabled}
+            onClick={() => setMode(mode === 'custom' ? null : 'custom')}
+            startIcon={<AppIcon name="edit" size={20} />}
+            aria-expanded={mode === 'custom'}
+            sx={{ minHeight: 44 }}
+          >
+            {t('report.steps.addCustom')}
+          </Button>
+        </Stack>
+      )}
       {mode ? (
         <Stack component="form" action={action} spacing={3} sx={{ mt: 2, maxWidth: 640 }}>
           <Hidden ids={ids} />

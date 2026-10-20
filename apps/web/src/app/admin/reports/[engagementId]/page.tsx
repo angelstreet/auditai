@@ -4,6 +4,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
+import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import type { ReactNode } from 'react';
 import { formatDate } from '@evolai/i18n';
@@ -87,7 +88,7 @@ export default async function ReportEditorPage({
   );
   if (!tenantId || !isUuid(params.engagementId)) {
     return (
-      <section>
+      <section className="wide admin">
         {back}
         <EmptyState title={t('report.result.not_found')} />
       </section>
@@ -97,7 +98,7 @@ export default async function ReportEditorPage({
   if (!bundle) {
     const inputs = await loadReportInputs(tenantId, params.engagementId);
     return (
-      <section aria-labelledby="report-title">
+      <section className="wide admin" aria-labelledby="report-title">
         {back}
         <PageTitle
           id="report-title"
@@ -123,7 +124,7 @@ export default async function ReportEditorPage({
   const lvl = (l: 'low' | 'medium' | 'high') => t(`report.steps.level.${l}`).toLowerCase();
 
   return (
-    <section aria-labelledby="report-title" data-testid="report-editor">
+    <section className="wide admin" aria-labelledby="report-title" data-testid="report-editor">
       {back}
       <PageTitle
         id="report-title"
@@ -141,7 +142,21 @@ export default async function ReportEditorPage({
               >
                 {t('report.view.download')}
               </Button>
-            ) : null}
+            ) : (
+              <Tooltip title={t('report.editor.pdfLater')}>
+                <span>
+                  <Button
+                    variant="outlined"
+                    disabled
+                    startIcon={<AppIcon name="download" size={20} />}
+                    sx={{ minHeight: 44 }}
+                    data-testid="report-admin-download-later"
+                  >
+                    {t('report.view.download')}
+                  </Button>
+                </span>
+              </Tooltip>
+            )}
             <Button
               component={Link}
               href={`/admin/reports/${params.engagementId}/preview?tenant=${tenantId}`}
@@ -177,6 +192,11 @@ export default async function ReportEditorPage({
           </Stack>
         </Paper>
         {locked ? <Alert severity="info">{t('report.editor.locked')}</Alert> : null}
+        {inputs.answered < MIN_GROUP_SIZE ? (
+          <Alert severity="warning" data-testid="report-few-people">
+            {t('report.editor.fewPeople', { count: inputs.answered, n: MIN_GROUP_SIZE })}
+          </Alert>
+        ) : null}
 
         <Card
           id="report-readiness"
@@ -262,7 +282,10 @@ export default async function ReportEditorPage({
           subtitle={t('report.steps.subtitle')}
         >
           {inputs.opportunities.length === 0 ? (
-            <EmptyState title={t('report.steps.noOpportunity')} />
+            <Stack spacing={3}>
+              <Typography variant="body1">{t('report.steps.noOpportunity')}</Typography>
+              <AddStepForm ids={ids} opportunityId="" disabled={locked} taken={[]} customOnly />
+            </Stack>
           ) : (
             <Stack spacing={4}>
               <SuggestForm ids={ids} disabled={locked} />

@@ -12,7 +12,7 @@ import { createTranslator } from '@evolai/i18n';
 import { resolveActor } from '@/lib/authServer';
 import { isUuid } from '@/lib/invitationForm';
 import { MIN_GROUP_SIZE } from '@/lib/invitationTracking';
-import { draftSummary } from '@/lib/reportModel';
+import { draftSummary, methodologyNote, type MethodWords } from '@/lib/reportModel';
 import {
   ReportError,
   addStep,
@@ -47,6 +47,14 @@ const codeOf = (err: unknown): string => {
   console.error('report action failed', err instanceof Error ? err.name : 'unknown');
   return 'error';
 };
+
+/** Words of the generated method note, in the report language. */
+const methodWords = (t: ReturnType<typeof createTranslator>): MethodWords => ({
+  base: (v) => t('report.sections.methodBase', v),
+  themes: (v) => t('report.sections.methodThemes', v),
+  opportunities: (v) => t('report.sections.methodOpportunities', v),
+  unreviewed: t('report.sections.methodUnreviewed'),
+});
 
 const str = (fd: FormData, k: string, max: number): string =>
   String(fd.get(k) ?? '')
@@ -96,7 +104,15 @@ export async function startReportAction(
     const t = createTranslator(inputs.locale);
     await createReport(g.tenantId, g.actor, engagementId, {
       title: (audit) => t('report.list.startedTitle', { audit }),
-      methodology: t('report.sections.methodologyDefault', { n: MIN_GROUP_SIZE }),
+      methodology: methodologyNote(
+        {
+          answered: inputs.answered,
+          themes: inputs.findings.length,
+          opportunities: inputs.opportunities.length,
+        },
+        MIN_GROUP_SIZE,
+        methodWords(t),
+      ),
     });
   } catch (err) {
     return { ok: false, code: codeOf(err) };
@@ -152,6 +168,7 @@ export async function draftSummaryAction(
         findings: (v) => t('report.draft.findings', v),
         opportunities: (v) => t('report.draft.opportunities', v),
         closing: t('report.draft.closing'),
+        closingNoSteps: t('report.draft.closingNoSteps'),
         listSep: t('report.draft.listSep'),
         levelName: (l) => t(`report.readiness.level.${l as 'L0'}`).toLowerCase(),
       },
@@ -162,7 +179,15 @@ export async function draftSummaryAction(
       summary: d.text,
       summaryCitations: d.citations,
       risksNote: r.risksNote,
-      methodology: r.methodology,
+      methodology: methodologyNote(
+        {
+          answered: bundle.inputs.answered,
+          themes: bundle.inputs.findings.length,
+          opportunities: bundle.inputs.opportunities.length,
+        },
+        MIN_GROUP_SIZE,
+        methodWords(t),
+      ),
     });
     return { ok: true, code: 'saved' };
   });
@@ -238,15 +263,18 @@ export async function addStepAction(
 ): Promise<ReportActionState> {
   return run(fd, async (g) => {
     const opportunityId = String(fd.get('opportunityId') ?? '');
-    if (!g.reportId || !isUuid(opportunityId)) return { ok: false, code: 'bad_input' };
     const catalogueId = str(fd, 'catalogueId', 80);
+    // A written step may come without an opportunity: the audit may have none approved.
+    if (!g.reportId || (opportunityId ? !isUuid(opportunityId) : catalogueId !== '')) {
+      return { ok: false, code: 'bad_input' };
+    }
     if (catalogueId) {
       await addStep(g.tenantId, g.actor, g.reportId, opportunityId, { catalogueId });
     } else {
       const step = parseStep(fd);
       const category = improvementCategorySchema.safeParse(fd.get('category'));
       if (!step || !category.success) return { ok: false, code: 'bad_input' };
-      await addStep(g.tenantId, g.actor, g.reportId, opportunityId, {
+      await addStep(g.tenantId, g.actor, g.reportId, opportunityId || null, {
         custom: { ...step, category: category.data },
       });
     }
