@@ -357,6 +357,8 @@ for (const locale of LOCALES) {
     const fallback = page.getByTestId('copy-fallback-text');
     await expect(fallback).toBeVisible();
     await expect(fallback).toHaveValue(link);
+    // Let the dialog's fade-in finish: axe reads a half-transparent label as low contrast.
+    await page.waitForTimeout(600);
     await axe(page, `${locale} copy fallback dialog`);
     await page.keyboard.press('Escape');
     await expect(fallback).toBeHidden();
