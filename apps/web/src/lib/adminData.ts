@@ -1,5 +1,6 @@
 import type { Engagement, Organisation, TenantId } from '@evolai/contracts';
 import { withServiceAccount } from './db';
+import { invitationNumbers, type InvitationNumbers } from './invitationTracking';
 
 /**
  * Admin queries backed by the M4 schema (PRD FR-01, FR-09, \u00a714).
@@ -16,6 +17,8 @@ export interface AdminEngagementSummary {
   readonly name: string | null;
   readonly organisation: Organisation;
   readonly expectedHeadcount: number;
+  readonly invitations: InvitationNumbers;
+  /** Links invited: created minus revoked (the same number as the Invitations page). */
   readonly invitationsTotal: number;
   readonly invitationsSubmitted: number;
   readonly invitationsOpened: number;
@@ -46,11 +49,7 @@ interface EngagementRow {
   org_created_at: string;
   org_updated_at: string | null;
   expected_headcount: number;
-  invitations_total: string;
-  invitations_submitted: string;
-  invitations_opened: string;
-  invitations_pending: string;
-  invitations_revoked_or_expired: string;
+  invitation_status: Record<string, number>;
 }
 
 export const listTenantIds = async (): Promise<readonly TenantId[]> => {
@@ -119,16 +118,16 @@ export const listEngagements = async (tenantId: TenantId): Promise<AdminEngageme
                  WHERE et.engagement_id = e.id),
                 0
               )::int AS expected_headcount,
-              COALESCE(SUM(CASE WHEN i.id IS NOT NULL THEN 1 ELSE 0 END), 0) AS invitations_total,
-              COALESCE(SUM(CASE WHEN i.status = 'submitted' THEN 1 ELSE 0 END), 0) AS invitations_submitted,
-              COALESCE(SUM(CASE WHEN i.status IN ('opened','in_progress') THEN 1 ELSE 0 END), 0) AS invitations_opened,
-              COALESCE(SUM(CASE WHEN i.status = 'pending' THEN 1 ELSE 0 END), 0) AS invitations_pending,
-              COALESCE(SUM(CASE WHEN i.status IN ('revoked','expired','declined') THEN 1 ELSE 0 END), 0) AS invitations_revoked_or_expired
+              COALESCE(
+                (SELECT jsonb_object_agg(s.status, s.n)
+                   FROM (SELECT i.status, COUNT(*)::int AS n FROM invitations i
+                          WHERE i.tenant_id = e.tenant_id AND i.engagement_id = e.id
+                          GROUP BY i.status) s),
+                '{}'::jsonb
+              ) AS invitation_status
          FROM engagements e
          JOIN organisations o ON o.tenant_id = e.tenant_id
-         LEFT JOIN invitations i ON i.tenant_id = e.tenant_id AND i.engagement_id = e.id
         WHERE e.tenant_id = $1
-        GROUP BY e.id, o.id
         ORDER BY e.created_at DESC`,
       [tenantId],
     );
@@ -137,19 +136,20 @@ export const listEngagements = async (tenantId: TenantId): Promise<AdminEngageme
 };
 
 const summarise = (row: EngagementRow): AdminEngagementSummary => {
-  const total = Number(row.invitations_total);
-  const submitted = Number(row.invitations_submitted);
+  const inv = invitationNumbers(row.invitation_status);
+  const submitted = inv.completed;
   const expected = Math.max(row.expected_headcount, 1);
   return {
     engagement: toEngagement(row),
     name: row.name,
     organisation: toOrganisation(row),
     expectedHeadcount: expected,
-    invitationsTotal: total,
+    invitations: inv,
+    invitationsTotal: inv.invited,
     invitationsSubmitted: submitted,
-    invitationsOpened: Number(row.invitations_opened),
-    invitationsPending: Number(row.invitations_pending),
-    invitationsRevokedOrExpired: Number(row.invitations_revoked_or_expired),
+    invitationsOpened: inv.opened,
+    invitationsPending: inv.waiting,
+    invitationsRevokedOrExpired: inv.revoked + inv.lapsed,
     completionRatio: Math.min(1, submitted / expected),
   };
 };

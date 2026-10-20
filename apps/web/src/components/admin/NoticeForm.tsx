@@ -118,6 +118,7 @@ export default function NoticeForm(p: Props) {
         name="basis"
         label={t('trust.noticeForm.basis')}
         defaultValue={p.stored.basis ?? 'consent'}
+        slotProps={{ inputLabel: { shrink: true } }}
         sx={{ maxWidth: 420 }}
       >
         <MenuItem value="consent">{t('trust.noticeForm.basisConsent')}</MenuItem>

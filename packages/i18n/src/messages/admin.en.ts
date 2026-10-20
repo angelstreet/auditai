@@ -6,7 +6,7 @@ export const adminEn = {
     engagementStatus: {
       draft: 'Draft',
       scheduled: 'Scheduled',
-      in_field: 'Live',
+      in_field: 'Open',
       analysis: 'Analysis',
       review: 'Review',
       closed: 'Closed',

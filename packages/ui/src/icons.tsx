@@ -11,6 +11,7 @@ import ChecklistOutlined from '@mui/icons-material/ChecklistOutlined';
 import CodeOutlined from '@mui/icons-material/CodeOutlined';
 import CloseOutlined from '@mui/icons-material/CloseOutlined';
 import ContentCopyOutlined from '@mui/icons-material/ContentCopyOutlined';
+import ShareOutlined from '@mui/icons-material/ShareOutlined';
 import DarkModeOutlined from '@mui/icons-material/DarkModeOutlined';
 import DeleteOutlined from '@mui/icons-material/DeleteOutlined';
 import DescriptionOutlined from '@mui/icons-material/DescriptionOutlined';
@@ -89,6 +90,7 @@ export const icons = {
   menu: MenuOutlined,
   download: DownloadOutlined,
   copy: ContentCopyOutlined,
+  share: ShareOutlined,
   linkBroken: LinkOffOutlined,
   time: ScheduleOutlined,
   team: GroupsOutlined,

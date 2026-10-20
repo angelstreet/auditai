@@ -9,7 +9,11 @@ import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
 import { AppIcon, ConfirmDialog, EmptyState, StatusText } from '@evolai/ui';
+import { useI18n } from '@/components/I18nProvider';
+import { useLinkActions } from '@/components/LinkActions';
 import {
   createInvitationsAction,
   invitationOperationAction,
@@ -44,7 +48,7 @@ interface Props {
     completed: number;
     lastActivityOn: string | null;
   }[];
-  open: { id: string; code: string; teamName: string; expiresOn: string }[];
+  open: { id: string; code: string; teamName: string; expiresOn: string; link: string }[];
   dueCount: number;
   /** Link batches with their words already built by the page (locale dates and plurals). */
   batches: { batchId: string; label: string; stillOpen: string; canRevoke: boolean }[];
@@ -85,7 +89,16 @@ function Hidden({ p }: { p: Props }) {
   );
 }
 
-function OpenRow({ p, row }: { p: Props; row: Props['open'][number] }) {
+function OpenRow({
+  p,
+  row,
+  actions,
+}: {
+  p: Props;
+  row: Props['open'][number];
+  actions: ReturnType<typeof useLinkActions>;
+}) {
+  const { t } = useI18n();
   const manage = sub(p.copy, 'manage');
   const [state, run] = useFormState(invitationOperationAction, idleState);
   const [confirm, setConfirm] = useState(false);
@@ -108,6 +121,27 @@ function OpenRow({ p, row }: { p: Props; row: Props['open'][number] }) {
             {row.teamName} · {manage['expires']} {row.expiresOn}
           </Typography>
           <Box sx={{ flex: 1 }} />
+          <Tooltip title={t('common.copy.copy')}>
+            <IconButton
+              aria-label={`${t('common.copy.copy')} ${row.code}`}
+              onClick={() => void actions.copy(row.link, t('common.copy.copied'))}
+              data-testid="invite-copy-link"
+              sx={{ width: 44, height: 44 }}
+            >
+              <AppIcon name="copy" />
+            </IconButton>
+          </Tooltip>
+          {actions.canShare ? (
+            <Tooltip title={t('common.copy.share')}>
+              <IconButton
+                aria-label={`${t('common.copy.share')} ${row.code}`}
+                onClick={() => void actions.share(row.link)}
+                sx={{ width: 44, height: 44 }}
+              >
+                <AppIcon name="share" />
+              </IconButton>
+            </Tooltip>
+          ) : null}
           <Button variant="text" onClick={() => submit('extend', formRef.current)}>
             {manage['extend']}
           </Button>
@@ -118,6 +152,14 @@ function OpenRow({ p, row }: { p: Props; row: Props['open'][number] }) {
             {manage['revoke']}
           </Button>
         </Stack>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          data-testid="invite-link-full"
+          sx={{ mt: 1, overflowWrap: 'anywhere' }}
+        >
+          {row.link}
+        </Typography>
         {state.link ? (
           <Typography sx={{ mt: 1, wordBreak: 'break-all' }}>
             {manage['regenerated']} <code>{state.link}</code>
@@ -189,6 +231,8 @@ export default function InvitationsPanel(p: Props) {
   const exp = sub(p.copy, 'export');
   const rem = sub(p.copy, 'reminders');
   const manage = sub(p.copy, 'manage');
+  const { t: tt } = useI18n();
+  const linkActions = useLinkActions();
   const [created, doCreate] = useFormState(createInvitationsAction, idleState);
   const [saved, doSave] = useFormState(updateInvitationSettingsAction, idleState);
   const [reminded, doRemind] = useFormState(markRemindedAction, idleState);
@@ -350,11 +394,40 @@ export default function InvitationsPanel(p: Props) {
         {p.open.length === 0 ? (
           <EmptyState title={manage['empty'] ?? ''} />
         ) : (
-          <Box component="ul" sx={{ p: 0, m: 0 }}>
-            {p.open.map((row) => (
-              <OpenRow key={row.id} p={p} row={row} />
-            ))}
-          </Box>
+          <>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ my: 3 }}>
+              <Button
+                variant="outlined"
+                startIcon={<AppIcon name="copy" size={20} />}
+                onClick={() =>
+                  void linkActions.copy(
+                    p.open.map((r) => r.link).join('\n'),
+                    tt('common.copy.copiedAll', { count: p.open.length }),
+                  )
+                }
+                data-testid="invite-copy-all"
+                sx={{ minHeight: 44 }}
+              >
+                {manage['copyAll']}
+              </Button>
+              {linkActions.canShare ? (
+                <Button
+                  variant="outlined"
+                  startIcon={<AppIcon name="share" size={20} />}
+                  onClick={() => void linkActions.share(p.open.map((r) => r.link).join('\n'))}
+                  sx={{ minHeight: 44 }}
+                >
+                  {tt('common.copy.share')}
+                </Button>
+              ) : null}
+            </Stack>
+            <Box component="ul" sx={{ p: 0, m: 0 }}>
+              {p.open.map((row) => (
+                <OpenRow key={row.id} p={p} row={row} actions={linkActions} />
+              ))}
+            </Box>
+            {linkActions.dialog}
+          </>
         )}
       </Paper>
 

@@ -29,6 +29,9 @@ export const reportEn = {
     preview: 'Preview as the client',
     locked: 'This version is published and locked. Start a new version to make changes.',
     language: 'Written in {language}.',
+    fewPeople:
+      '{count, plural, one {Only # person has answered} other {Only # people have answered}}. The score and themes are hidden below {n}. You can still publish a report with findings or your own steps.',
+    pdfLater: 'The PDF will be available once the report is published.',
     readOnlyViewAs: 'Read only while viewing as someone else.',
   },
   workflow: {
@@ -73,7 +76,8 @@ export const reportEn = {
     summary_missing: 'Write the executive summary before publishing.',
     citation_missing: 'Tick at least one finding the summary is based on.',
     citation_unknown: 'The summary cites a finding that is no longer approved. Update the ticks.',
-    nothing_accepted: 'Accept at least one improvement step before publishing.',
+    nothing_accepted:
+      'Nothing to publish yet. Approve a theme in Analyses, or add a step with “Write my own” under Improvement steps.',
     contains_name:
       'The report contains a name from the "names to hide" list. Remove it before publishing.',
     contains_quote:
@@ -89,13 +93,20 @@ export const reportEn = {
     citationsHelp: 'Every claim keeps its source: tick the findings you rely on.',
     noFindings: 'No finding is approved yet, or none was raised by at least {n} people.',
     draft: 'Write a first draft',
-    draftHelp: 'Fills the summary from the score, findings and steps. Edit it before publishing.',
+    draftHelp:
+      'Fills the summary and the method note from the score, findings and steps. Edit them before publishing.',
     risks: 'Risks',
     risksHelp: 'One risk per line.',
     methodology: 'Method and privacy note',
     save: 'Save',
-    methodologyDefault:
-      'Anonymous survey of the teams. Answers were grouped into themes; the auditor checked and approved each theme and opportunity. Scores are averages of groups of at least {n} people.',
+    methodBase:
+      'Anonymous survey of the teams: {people, plural, one {# person answered} other {# people answered}}. Scores are averages of groups of at least {n} people.',
+    methodThemes:
+      '{count, plural, one {The auditor checked and approved # theme.} other {The auditor checked and approved # themes.}}',
+    methodOpportunities:
+      '{count, plural, one {The auditor approved # improvement opportunity.} other {The auditor approved # improvement opportunities.}}',
+    methodUnreviewed: 'No theme or opportunity was approved by the auditor yet.',
+    methodRefreshed: 'The method note was rewritten from the current counts.',
   },
   draft: {
     listSep: '; ',
@@ -104,6 +115,7 @@ export const reportEn = {
     findings: 'What came up most: {list}.',
     opportunities: 'The first steps we recommend: {list}.',
     closing: 'The plan below says who does what in the next 30, 60 and 90 days.',
+    closingNoSteps: 'No improvement step is recommended yet.',
   },
   ai: {
     title: 'AI draft',
@@ -165,7 +177,8 @@ export const reportEn = {
     title: 'Improvement steps',
     subtitle:
       'Suggested from the catalogue for each approved opportunity. Accept, edit or reject each one.',
-    noOpportunity: 'No approved opportunity yet. Approve opportunities first.',
+    noOpportunity:
+      'No approved opportunity yet. Approve opportunities, or write your own step here.',
     suggestAgain: 'Suggest again',
     why: 'Why: {tags}',
     whyPicked: 'Picked from the catalogue.',
@@ -295,6 +308,14 @@ export const reportEn = {
     stepsFor: 'Steps',
     empty:
       'Your audit report is not published yet. You will find it here once the auditor publishes it.',
+    receiveTitle: 'What you will receive',
+    receiveWhat:
+      'One report for the whole audit: the score, the main findings, the steps to take and a plan for 30, 60 and 90 days. No individual answer.',
+    receiveWhenDate:
+      'The survey closes on {date}. The report appears here after the auditor has read the answers and published it.',
+    receiveWhen:
+      'The report appears here once the survey is over and the auditor has read the answers and published it.',
+    receiveForward: 'To forward it, download the PDF or print this page, then send it by email.',
     clientTitle: 'Audit report',
     clientSubtitle: 'What the audit found and what to do next. Read only.',
     aggregateNote: 'One report for the whole audit, all teams together.',

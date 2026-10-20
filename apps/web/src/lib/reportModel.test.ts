@@ -3,6 +3,7 @@ import type { ReadinessReport } from '@evolai/contracts';
 import {
   buildSnapshot,
   draftSummary,
+  methodologyNote,
   findLeak,
   findingKey,
   type SnapshotInput,
@@ -142,13 +143,18 @@ describe('report snapshot gate', () => {
     });
   });
 
-  it('needs at least one accepted step', () => {
+  it('needs at least one accepted step or one finding', () => {
+    const none = input().steps.map((s) => ({ ...s, status: 'suggested' as const }));
     expect(
-      buildSnapshot(
-        input({ steps: input().steps.map((s) => ({ ...s, status: 'suggested' as const })) }),
-        noLeaks,
-      ),
+      buildSnapshot(input({ steps: none, findings: [], summaryCitations: [] }), noLeaks),
     ).toEqual({ ok: false, code: 'nothing_accepted' });
+  });
+
+  it('publishes a report with findings only', () => {
+    const none = input().steps.map((s) => ({ ...s, status: 'suggested' as const }));
+    const r = buildSnapshot(input({ steps: none }), noLeaks);
+    expect(r.ok && r.snapshot.steps).toEqual([]);
+    expect(r.ok && r.snapshot.findings.length).toBeGreaterThan(0);
   });
 
   it('refuses a name from the names-to-hide list anywhere in the text', () => {
@@ -206,6 +212,7 @@ describe('summary draft', () => {
     findings: (v: { list: string }) => `Main findings: ${v.list}.`,
     opportunities: (v: { list: string }) => `First steps: ${v.list}.`,
     closing: 'Details follow.',
+    closingNoSteps: 'No step yet.',
     levelName: (l: string) => `level ${l}`,
     listSep: '; ',
   };
@@ -220,6 +227,30 @@ describe('summary draft', () => {
 
   it('says plainly when there is no score', () => {
     const d = draftSummary({ ...readiness, overall: null }, [], [], words);
-    expect(d).toEqual({ text: 'Too few answers for a score. Details follow.', citations: [] });
+    expect(d).toEqual({ text: 'Too few answers for a score. No step yet.', citations: [] });
+  });
+});
+
+describe('methodologyNote', () => {
+  const w = {
+    base: (v: { people: number; n: number }) => `${v.people} answered, groups of ${v.n}.`,
+    themes: (v: { count: number }) => `${v.count} themes approved.`,
+    opportunities: (v: { count: number }) => `${v.count} opportunities approved.`,
+    unreviewed: 'Nothing approved yet.',
+  };
+
+  it('never claims approvals that did not happen', () => {
+    expect(methodologyNote({ answered: 3, themes: 0, opportunities: 0 }, 5, w)).toBe(
+      '3 answered, groups of 5. Nothing approved yet.',
+    );
+  });
+
+  it('states the real counts', () => {
+    expect(methodologyNote({ answered: 12, themes: 2, opportunities: 1 }, 5, w)).toBe(
+      '12 answered, groups of 5. 2 themes approved. 1 opportunities approved.',
+    );
+    expect(methodologyNote({ answered: 12, themes: 2, opportunities: 0 }, 5, w)).not.toContain(
+      'opportunities approved',
+    );
   });
 });

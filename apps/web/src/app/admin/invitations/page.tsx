@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { headers } from 'next/headers';
+import Typography from '@mui/material/Typography';
 import { EmptyState, PageTitle, StatTiles } from '@evolai/ui';
 import { formatDate, formatNumber, messages } from '@evolai/i18n';
 import { listEngagements } from '@/lib/adminData';
@@ -9,6 +10,7 @@ import {
   getSettings,
   listBatches,
   listEngagementTeams,
+  linkTotals,
   listOpen,
   progress,
   reminderList,
@@ -74,13 +76,14 @@ export default async function InvitationsPage({ searchParams }: { searchParams: 
     h.get('x-forwarded-host') ?? h.get('host'),
     h.get('x-forwarded-proto'),
   );
-  const [settings, teams, prog, open, due, batchList] = await Promise.all([
+  const [settings, teams, prog, open, due, batchList, totalsOfLinks] = await Promise.all([
     getSettings(tenantId, engagementId),
     listEngagementTeams(tenantId, engagementId),
     progress(tenantId, engagementId),
     listOpen(tenantId, engagementId, baseUrl),
     reminderList(tenantId, engagementId, baseUrl),
     listBatches(tenantId, engagementId),
+    linkTotals(tenantId, engagementId),
   ]);
   if (!settings) {
     return (
@@ -121,6 +124,19 @@ export default async function InvitationsPage({ searchParams }: { searchParams: 
         subtitle={t('admin.invitations.subtitle')}
       />
       <StatTiles items={tiles} />
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        data-testid="invitation-counts"
+        sx={{ mb: 4 }}
+      >
+        {t('admin.invitations.counts', {
+          expected: totalsOfLinks.expected,
+          created: totalsOfLinks.created,
+          revoked: totalsOfLinks.revoked,
+          invited: totalsOfLinks.created - totalsOfLinks.revoked,
+        })}
+      </Typography>
       <InvitationsPanel
         copy={copy}
         fewer={fewer}
@@ -147,6 +163,7 @@ export default async function InvitationsPage({ searchParams }: { searchParams: 
           code: o.code,
           teamName: o.teamName,
           expiresOn: formatDate(locale, o.expiresOn),
+          link: o.link,
         }))}
         dueCount={due.length}
         batches={batchList.map((b) => ({

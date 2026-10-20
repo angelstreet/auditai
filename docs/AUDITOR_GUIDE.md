@@ -47,6 +47,9 @@ by a native speaker before the pilot (ADR 0046).
 
 6. Follow progress on **Invitations** (per team, groups under 5 people are not shown as exact numbers). The
    referent sends one generic reminder; nobody is chased by name.
+   The numbers mean the same everywhere: **invited** is links created minus cancelled ones, **opened** counts
+   everyone who opened their link (including those who answered). Every open link is shown in full, with Copy
+   (one by one or all) and Share on a phone. If the browser refuses to copy, the full link is shown to select.
 
 ## Review
 
@@ -80,6 +83,10 @@ by a native speaker before the pilot (ADR 0046).
     reason it is not ready (for example: no finding ticked, a name from the list, words copied from an answer).
 16. **Publish** and confirm. The referent now sees it in the **Report** tab of their space and can download the
     PDF. Download it yourself from the editor to send it to the sponsor.
+    You can publish with findings alone (no improvement step). If the audit has no approved opportunity, use
+    **Write my own** under Improvement steps: give a title, effort, impact, owner and timing. A warning shows when
+    fewer than 5 people answered: the score and themes are hidden below 5. The **Method and privacy** note is
+    written from the real counts and never says something was approved when it was not.
 17. To change a published report, "Start a new version": the client keeps the published version until you
     publish the new one. "Unpublish" removes it from the client at once.
 

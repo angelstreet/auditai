@@ -209,6 +209,8 @@ export interface ReportInputs {
   readonly findings: ReportFinding[];
   readonly opportunities: OpportunityInput[];
   readonly readiness: ReadinessReport;
+  /** People who finished the survey (a count only; the score still needs the minimum group). */
+  readonly answered: number;
 }
 
 const loadFindings = async (
@@ -345,6 +347,15 @@ const loadInputsWith = async (
       impactScore: o.impact_score === null ? null : Number(o.impact_score),
     })),
     readiness: await loadReadiness(client, tenantId, engagementId),
+    answered: Number(
+      (
+        await client.query<{ n: string }>(
+          `SELECT count(*) AS n FROM submissions
+            WHERE tenant_id = $1 AND engagement_id = $2 AND status = 'submitted'`,
+          [tenantId, engagementId],
+        )
+      ).rows[0]?.n ?? 0,
+    ),
   };
 };
 
@@ -708,16 +719,41 @@ export const setStepStatus = (
     await audit(client, tenantId, actor, action, 'report_step', stepId, { reportId, decision });
   });
 
-/** Add a step to an approved opportunity: from the catalogue, or written by the auditor. */
+/**
+ * Add a step to an approved opportunity: from the catalogue, or written by the auditor. A step the
+ * auditor writes may come without an opportunity (`null`): the audit may have none approved, so
+ * the step gets an approved opportunity of its own, titled like the step.
+ */
 export const addStep = (
   tenantId: TenantId,
   actor: string,
   reportId: string,
-  opportunityId: string,
+  givenOpportunityId: string | null,
   from: { catalogueId: string } | { custom: StepInput & { category: StepRow['category'] } },
 ) =>
   withTenant(tenantId, async (client) => {
     const r = await editable(client, tenantId, reportId);
+    let opportunityId = givenOpportunityId;
+    if (opportunityId === null) {
+      if (!('custom' in from)) throw new ReportError('not_found');
+      const made = await client.query<{ id: string }>(
+        `INSERT INTO opportunities (tenant_id, engagement_id, status, title, description, created_by)
+         VALUES ($1, $2, 'approved', $3, $4, $5) RETURNING id`,
+        [
+          tenantId,
+          r.engagementId,
+          from.custom.title.padEnd(3, '.'),
+          from.custom.description,
+          actor,
+        ],
+      );
+      opportunityId = (made.rows[0] as { id: string }).id;
+      await client.query(
+        `INSERT INTO audit_log (tenant_id, actor_user_id, action, target_kind, target_id, payload_json)
+         VALUES ($1, $2, 'opportunity.create', 'opportunity', $3, $4)`,
+        [tenantId, actor, opportunityId, JSON.stringify({ reportId, source: 'report_step' })],
+      );
+    }
     const opp = await client.query(
       `SELECT 1 FROM opportunities WHERE tenant_id = $1 AND id = $2 AND engagement_id = $3
           AND status = ANY($4::text[])`,

@@ -21,6 +21,7 @@ const REFERENT = {
 const OWNER = { email: 'synthetic-owner@synthetic.invalid', password: 'synthetic-password-owner' };
 const PEOPLE = 6;
 const OPP_TITLE = 'Automatiser le rapport hebdomadaire';
+const OWN_STEP = 'Synthetic own step';
 const THEMES = [
   { axis: 'practice', label: 'Rapport hebdomadaire saisi à la main' },
   { axis: 'literacy', label: 'Vérification des réponses de l’IA' },
@@ -64,9 +65,9 @@ const cleanupFixture = async (): Promise<void> => {
   if (!eng) return;
   await query('DELETE FROM audit_report_versions WHERE engagement_id = $1', [eng.id]);
   await query('DELETE FROM audit_reports WHERE engagement_id = $1', [eng.id]);
-  await query('DELETE FROM opportunities WHERE engagement_id = $1 AND title = $2', [
+  await query('DELETE FROM opportunities WHERE engagement_id = $1 AND title = ANY($2)', [
     eng.id,
-    OPP_TITLE,
+    [OPP_TITLE, OWN_STEP],
   ]);
   await query(
     `DELETE FROM invitations WHERE engagement_id = $1 AND respondent_pseudonym LIKE 'rpt-%'`,
@@ -80,7 +81,7 @@ const cleanupFixture = async (): Promise<void> => {
 test.afterAll(cleanupFixture);
 
 /** Remove any report and fixture rows from an earlier run, then insert fresh ones. */
-const resetFixture = async (): Promise<Fixture> => {
+const resetFixture = async (withOpportunity = true): Promise<Fixture> => {
   const [eng] = await query<{ id: string; tenant_id: string; qv: string }>(
     `SELECT e.id, e.tenant_id, e.questionnaire_version_id AS qv
        FROM engagements e JOIN tenants t ON t.id = e.tenant_id
@@ -95,9 +96,9 @@ const resetFixture = async (): Promise<Fixture> => {
   const ownerId = owner?.id as string;
   await query('DELETE FROM audit_report_versions WHERE engagement_id = $1', [eng.id]);
   await query('DELETE FROM audit_reports WHERE engagement_id = $1', [eng.id]);
-  await query('DELETE FROM opportunities WHERE engagement_id = $1 AND title = $2', [
+  await query('DELETE FROM opportunities WHERE engagement_id = $1 AND title = ANY($2)', [
     eng.id,
-    OPP_TITLE,
+    [OPP_TITLE, OWN_STEP],
   ]);
   await query(
     `DELETE FROM invitations WHERE engagement_id = $1 AND respondent_pseudonym LIKE 'rpt-%'`,
@@ -176,19 +177,21 @@ const resetFixture = async (): Promise<Fixture> => {
     );
     if (i === 0) firstAnalysis = analysis?.id as string;
   }
-  await query(
-    `INSERT INTO opportunities (tenant_id, engagement_id, analysis_id, status, title, description,
-                                axis, created_by)
-     VALUES ($1, $2, $3, 'approved', $4, $5, 'practice', $6)`,
-    [
-      eng.tenant_id,
-      eng.id,
-      firstAnalysis,
-      OPP_TITLE,
-      'Les chiffres sont copiés et collés dans le rapport chaque semaine.',
-      ownerId,
-    ],
-  );
+  if (withOpportunity) {
+    await query(
+      `INSERT INTO opportunities (tenant_id, engagement_id, analysis_id, status, title, description,
+                                  axis, created_by)
+       VALUES ($1, $2, $3, 'approved', $4, $5, 'practice', $6)`,
+      [
+        eng.tenant_id,
+        eng.id,
+        firstAnalysis,
+        OPP_TITLE,
+        'Les chiffres sont copiés et collés dans le rapport chaque semaine.',
+        ownerId,
+      ],
+    );
+  }
   return { tenant: eng.tenant_id, engagement: eng.id };
 };
 
@@ -342,6 +345,79 @@ for (const locale of ['fr', 'en'] as const) {
     expect((await ref.request.get('/client/report/pdf')).status()).toBe(404);
 
     await refCtx.close();
+  });
+}
+
+for (const locale of ['fr', 'en'] as const) {
+  test(`publish with findings only, then write my own step; wide layout (${locale})`, async ({
+    context,
+    page,
+    baseURL,
+  }, testInfo) => {
+    test.setTimeout(240_000);
+    const fx = await resetFixture(false);
+    const copy = COPY[locale];
+    const phone = testInfo.project.name === 'mobile-360';
+    await setLocale(context, baseURL, locale);
+    await signIn(page, OWNER, /\/(admin|board)/);
+
+    // Reports pages use the wide admin container, not the 480 px column.
+    await page.goto(`/admin/reports?tenant=${fx.tenant}`);
+    const listWidth = (await page.locator('section.wide').boundingBox())?.width ?? 0;
+    if (!phone) expect(listWidth).toBeGreaterThan(900);
+    await noHorizontalScroll(page, `${locale} report list`);
+    await page
+      .getByTestId('report-row')
+      .filter({ has: page.getByTestId('report-start') })
+      .first()
+      .getByTestId('report-start')
+      .click();
+    await page.waitForURL(new RegExp(`/admin/reports/${fx.engagement}`));
+    const editor = page.getByTestId('report-editor');
+    await expect(editor).toBeVisible();
+    if (!phone) expect((await editor.boundingBox())?.width ?? 0).toBeGreaterThan(900);
+
+    // The PDF control is there before publishing, disabled and saying why; no few-people warning.
+    await expect(page.getByTestId('report-admin-download-later')).toBeDisabled();
+    await expect(page.getByTestId('report-few-people')).toHaveCount(0);
+
+    // The method note rests on the real counts: themes approved, no opportunity claimed.
+    await page.getByTestId('report-draft-summary').click();
+    await expect(page.getByTestId('report-summary')).not.toHaveValue('');
+    const method = await page.getByTestId('report-methodology').inputValue();
+    expect(method).toMatch(/6/);
+    // The note is written in the report language (the engagement's), whatever the screen language.
+    expect(method).toMatch(/2 (themes|thèmes)/);
+    expect(method).not.toMatch(/opportunit/i);
+
+    // Nothing accepted, no opportunity: the report is still publishable with its findings alone.
+    await expect(page.getByTestId('report-add-own')).toBeVisible();
+    await page.getByTestId('report-to-review').click();
+    await expect(page.getByTestId('report-state')).toHaveText(copy.inReview);
+    await page.getByTestId('report-publish').click();
+    await page
+      .getByRole('dialog')
+      .getByRole('button', { name: locale === 'fr' ? 'Publier' : 'Publish' })
+      .click();
+    await expect(page.getByTestId('report-state')).toHaveText(copy.published);
+    await expect(page.getByTestId('report-admin-download')).toBeVisible();
+    const pdf = await page.request.get(`/admin/reports/${fx.engagement}/pdf?tenant=${fx.tenant}`);
+    expect(pdf.status()).toBe(200);
+    await axe(page, `${locale} published findings-only editor`);
+
+    // Back to draft, then write my own step: it gets an approved opportunity of its own.
+    await page.getByTestId('report-unpublish').click();
+    await page.getByRole('dialog').getByRole('button').last().click();
+    await expect(page.getByTestId('report-state')).toHaveText(
+      locale === 'fr' ? 'Brouillon' : 'Draft',
+    );
+    const own = page.getByTestId('report-add-own');
+    await own.locator('input[name=title]').fill(OWN_STEP);
+    await own.locator('input[name=owner]').fill('Team lead');
+    await page.getByTestId('report-add-step').click();
+    await expect(page.locator('[data-testid=report-step][data-status=accepted]')).toHaveCount(1);
+    await expect(page.getByTestId('report-opportunity')).toContainText(OWN_STEP);
+    await noHorizontalScroll(page, `${locale} editor with own step`);
   });
 }
 

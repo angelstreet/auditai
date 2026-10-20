@@ -357,6 +357,24 @@ export const teamCounts = async (tenantId: TenantId, engagementId: string): Prom
     }));
   });
 
+/** Headcount the auditor expects and the links made, so the page can set them side by side. */
+export const linkTotals = async (
+  tenantId: TenantId,
+  engagementId: string,
+): Promise<{ expected: number; created: number; revoked: number }> =>
+  withTenant(tenantId, async (client) => {
+    const { rows } = await client.query<{ expected: number; created: number; revoked: number }>(
+      `SELECT COALESCE((SELECT SUM(t.expected_headcount) FROM engagement_teams et
+                          JOIN teams t ON t.id = et.team_id
+                         WHERE et.tenant_id = $1 AND et.engagement_id = $2), 0)::int AS expected,
+              COUNT(*)::int AS created,
+              COUNT(*) FILTER (WHERE i.status = 'revoked')::int AS revoked
+         FROM invitations i WHERE i.tenant_id = $1 AND i.engagement_id = $2`,
+      [tenantId, engagementId],
+    );
+    return rows[0] ?? { expected: 0, created: 0, revoked: 0 };
+  });
+
 /** Auditor progress: counts per team with the minimum group rule, and engagement totals. */
 export const progress = async (tenantId: TenantId, engagementId: string): Promise<Progress> => {
   const counts = await teamCounts(tenantId, engagementId);

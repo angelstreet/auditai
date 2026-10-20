@@ -151,6 +151,7 @@ export default function QuestionClient(props: Props) {
               <button
                 type="button"
                 className="option-button"
+                aria-label={option.label}
                 aria-pressed={selected === option.value}
                 disabled={busy}
                 onClick={() => choose(option.value)}
@@ -175,9 +176,10 @@ export default function QuestionClient(props: Props) {
           type="button"
           className="link-button"
           disabled={busy}
+          aria-label={props.skipLabel}
           onClick={() => void saveAndContinue('/api/skip', {})}
         >
-          {props.skipLabel} →
+          {props.skipLabel} <span aria-hidden="true">→</span>
         </button>
       </div>
     </section>

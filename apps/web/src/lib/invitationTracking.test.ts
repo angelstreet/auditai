@@ -4,6 +4,7 @@ import {
   applyMinGroup,
   csvCell,
   engagementTotals,
+  invitationNumbers,
   isReminderDue,
   parseReminderDays,
   resolveBaseUrl,
@@ -96,7 +97,51 @@ describe('export helpers', () => {
       'https://app.invalid',
     );
     expect(resolveBaseUrl({}, 'app.invalid', null)).toBe('https://app.invalid');
+    expect(resolveBaseUrl({}, 'app.invalid', 'https')).toBe('https://app.invalid');
+    // A local http copy, on a .local name or a bare host name, gives http links.
+    expect(resolveBaseUrl({}, 'evolai.local:3000', 'http')).toBe('http://evolai.local:3000');
+    expect(resolveBaseUrl({}, 'codebox:3000', null)).toBe('http://codebox:3000');
+    // A public host is always https, even if a header says http.
+    expect(resolveBaseUrl({}, 'app.invalid', 'http')).toBe('https://app.invalid');
+    expect(resolveBaseUrl({}, 'codebox:3000', 'https')).toBe('https://codebox:3000');
     expect(resolveBaseUrl({}, 'localhost:3101', 'http')).toBe('http://localhost:3101');
     expect(() => resolveBaseUrl({}, 'a b/<x>', null)).toThrow();
+  });
+});
+
+describe('invitationNumbers', () => {
+  const byStatus = { pending: 4, opened: 2, in_progress: 1, submitted: 3, expired: 1, revoked: 2 };
+
+  it('counts invited without revoked links and opened as ever opened', () => {
+    expect(invitationNumbers(byStatus)).toEqual({
+      created: 13,
+      revoked: 2,
+      invited: 11,
+      opened: 6,
+      started: 4,
+      completed: 3,
+      waiting: 4,
+      lapsed: 1,
+    });
+  });
+
+  it('a single opened link is one opened, never two', () => {
+    expect(invitationNumbers({ opened: 1 })).toMatchObject({ invited: 1, opened: 1, started: 0 });
+  });
+
+  it('agrees with the per-team totals of the Invitations page', () => {
+    // The same 11 non-revoked links split in two teams of 5 and 6.
+    const rows = [
+      team({ teamId: 'a', invited: 5, opened: 3, started: 2, completed: 1 }),
+      team({ teamId: 'b', invited: 6, opened: 3, started: 2, completed: 2 }),
+    ];
+    const totals = engagementTotals(rows);
+    const n = invitationNumbers(byStatus);
+    expect(totals).toMatchObject({
+      invited: n.invited,
+      opened: n.opened,
+      started: n.started,
+      completed: n.completed,
+    });
   });
 });

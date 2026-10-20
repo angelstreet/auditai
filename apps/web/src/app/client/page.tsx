@@ -16,15 +16,19 @@ import {
 } from '@/lib/clientData';
 import { getT } from '@/lib/i18n';
 import { MIN_GROUP_SIZE } from '@/lib/invitationTracking';
-import { longDate } from '@/lib/referentMessages';
+import { longDate, prepareMessages } from '@/lib/referentMessages';
 import {
   barValue,
+  contactFor,
   daysUntil,
   nextStep,
   reminderPlan,
   type NextStep,
   type Participation,
 } from '@/lib/referentView';
+import { estimatedMinutes } from '@/lib/respondent';
+import { totalQuestionCount } from '@/lib/syntheticTemplate';
+import HomeReminder from '@/components/client/HomeReminder';
 
 export const dynamic = 'force-dynamic';
 
@@ -81,8 +85,9 @@ const participationText = (t: Translator, p: Participation): { main: string; hin
  * do next. The reminder step appears only on a suggested day while the survey is open.
  */
 export default async function ClientHome() {
-  const { ctx } = await requireClientContext();
+  const { session, ctx } = await requireClientContext();
   const { t, locale } = getT();
+  const minutes = estimatedMinutes(totalQuestionCount());
   const teams = await loadTeamNames(ctx.tenantId, ctx.teamIds);
   const teamName = teams.join(', ');
   const header = (
@@ -92,12 +97,37 @@ export default async function ClientHome() {
       subtitle={t('client.home.subtitle', { team: teamName })}
     />
   );
+  const how = (
+    <Paper variant="outlined" sx={{ p: 4, borderRadius: 3 }} data-testid="client-how">
+      <Typography variant="sectionTitle" component="h2" sx={{ m: 0, mb: 2 }}>
+        {t('client.home.how.title')}
+      </Typography>
+      <Typography variant="body1" sx={{ m: 0, mb: 2 }}>
+        {t('client.home.how.ask', { minutes })}
+      </Typography>
+      <Typography variant="body1" sx={{ m: 0, mb: 3 }}>
+        {t('client.home.how.who', { n: MIN_GROUP_SIZE })}
+      </Typography>
+      <Box
+        component="ol"
+        aria-label={t('client.home.how.stepsLabel')}
+        sx={{ m: 0, pl: 5, '& li': { py: 0.5 } }}
+      >
+        <li>{t('client.home.how.send')}</li>
+        <li>{t('client.home.how.remind')}</li>
+        <li>{t('client.home.how.report')}</li>
+      </Box>
+    </Paper>
+  );
   const survey = await loadClientSurvey(ctx.tenantId, ctx.teamIds);
   if (!survey) {
     return (
       <section aria-labelledby="client-title">
         {header}
-        <EmptyState icon="pending" title={t('client.home.noSurvey')} />
+        <Stack spacing={4}>
+          {how}
+          <EmptyState icon="pending" title={t('client.home.noSurvey')} />
+        </Stack>
       </section>
     );
   }
@@ -118,6 +148,16 @@ export default async function ClientHome() {
   const cta = CTA[step];
   const statusKey = STATUS_KEYS.has(survey.status) ? survey.status : 'none';
   const left = survey.closesOn ? daysUntil(survey.closesOn, today) : null;
+  // The reminder is for an open survey with links out and a day still ahead (or today).
+  const showReminder =
+    (survey.status === 'in_field' || survey.status === 'scheduled') &&
+    rows.some((r) => r.invited > 0) &&
+    (plan.due || plan.next !== null);
+  const reminder = prepareMessages(locale, {
+    closesOn: survey.closesOn,
+    contact: contactFor(survey.contact, ctx.viewAs?.label ?? session.name),
+    minutes,
+  }).reminder;
   const nextText =
     step === 'share' && plan.next
       ? t('client.home.next.shareUntil', { date: longDate(locale, plan.next) })
@@ -127,6 +167,7 @@ export default async function ClientHome() {
     <section aria-labelledby="client-title">
       {header}
       <Stack spacing={4}>
+        {how}
         <Paper variant="outlined" sx={{ p: 4, borderRadius: 3 }} data-testid="client-survey">
           <Typography variant="sectionTitle" component="h2" sx={{ m: 0, mb: 3 }}>
             {t('client.home.surveyTitle')}
@@ -229,6 +270,13 @@ export default async function ClientHome() {
             </Button>
           ) : null}
         </Paper>
+        {showReminder ? (
+          <HomeReminder
+            date={plan.next ? longDate(locale, plan.next) : null}
+            today={plan.due}
+            text={reminder.text}
+          />
+        ) : null}
       </Stack>
     </section>
   );

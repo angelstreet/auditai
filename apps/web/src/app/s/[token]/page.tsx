@@ -44,6 +44,7 @@ export default async function WelcomePage({
     return (
       <RespondentStatus
         token={params.token}
+        engagementId={invite.engagementId}
         title={t('survey.alreadyTitle')}
         team={team}
         myTier={badge?.mascotTier ?? null}

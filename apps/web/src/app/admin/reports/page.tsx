@@ -24,7 +24,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: { te
   const tenantId = await sessionTenantFor(searchParams.tenant);
   if (!tenantId) {
     return (
-      <section aria-labelledby="reports-title">
+      <section className="wide admin" aria-labelledby="reports-title">
         <PageTitle id="reports-title" title={t('report.list.title')} />
         <EmptyState title={t('admin.common.noTenantsTitle')} />
       </section>
@@ -33,7 +33,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: { te
   const rows = await listReports(tenantId);
   const firstUnstarted = rows.findIndex((r) => r.reportId === null);
   return (
-    <section aria-labelledby="reports-title">
+    <section className="wide admin" aria-labelledby="reports-title">
       <PageTitle
         id="reports-title"
         title={t('report.list.title')}

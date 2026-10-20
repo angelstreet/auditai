@@ -6,10 +6,11 @@ import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { AppIcon, StatusText, useNotify } from '@evolai/ui';
+import { AppIcon, StatusText } from '@evolai/ui';
 import { useI18n } from '@/components/I18nProvider';
+import { useLinkActions } from '@/components/LinkActions';
 import { mailtoHref, whatsappHref } from '@/lib/referentView';
-import { copyText, type PreparedMessage } from './ShareLinks';
+import type { PreparedMessage } from './ShareLinks';
 
 /**
  * One generic reminder for everybody (TASK-S, ADR 0039). The referent knows which link went to
@@ -27,7 +28,7 @@ export default function ReminderCard({
   due: boolean;
 }) {
   const { t } = useI18n();
-  const notify = useNotify();
+  const actions = useLinkActions();
   const [text, setText] = useState(message.text);
 
   // The Home call to action links here (`#reminder`): scroll to it once the page is painted.
@@ -69,19 +70,24 @@ export default function ReminderCard({
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mt: 4 }}>
         <Button
           variant="outlined"
-          onClick={async () =>
-            notify(
-              (await copyText(text))
-                ? t('client.invitations.copied')
-                : t('client.invitations.copyFailed'),
-            )
-          }
+          onClick={() => void actions.copy(text, t('client.invitations.copied'))}
           startIcon={<AppIcon name="copy" size={16} />}
           data-testid="client-reminder-copy"
           sx={{ minHeight: 44 }}
         >
           {t('client.invitations.remindCopy')}
         </Button>
+        {actions.canShare ? (
+          <Button
+            variant="outlined"
+            onClick={() => void actions.share(text)}
+            startIcon={<AppIcon name="share" size={16} />}
+            data-testid="client-reminder-share"
+            sx={{ minHeight: 44 }}
+          >
+            {t('common.copy.share')}
+          </Button>
+        ) : null}
         <Button
           variant="outlined"
           href={mailtoHref(message.subject, text)}
@@ -103,6 +109,7 @@ export default function ReminderCard({
           {t('client.invitations.whatsapp')}
         </Button>
       </Stack>
+      {actions.dialog}
     </Paper>
   );
 }

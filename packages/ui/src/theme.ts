@@ -138,6 +138,14 @@ export const theme: Theme = createTheme({
         }),
       },
     },
+    MuiFormHelperText: {
+      styleOverrides: {
+        // A locked (disabled) form keeps readable help text: MUI's disabled grey fails 4.5:1.
+        root: ({ theme: t }) => ({
+          '&.Mui-disabled': { color: t.vars.palette.text.secondary },
+        }),
+      },
+    },
     MuiTooltip: { defaultProps: { arrow: true } },
     MuiLink: { defaultProps: { underline: 'hover' } },
     MuiCssBaseline: {

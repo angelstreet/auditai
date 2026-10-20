@@ -29,7 +29,7 @@ const COPY = {
     other: 'English',
     launch: 'Lancer l’audit',
     launchConfirm: 'Lancer',
-    live: 'En cours',
+    live: 'Ouverte. Les personnes peuvent répondre avec leur lien.',
     preview: 'Voir le questionnaire',
     previewHeading: 'Aperçu du questionnaire',
     previewText: /Une IA vous donne|Vous donne/i,
@@ -54,7 +54,7 @@ const COPY = {
     other: 'Français',
     launch: 'Launch the audit',
     launchConfirm: 'Launch',
-    live: 'Live',
+    live: 'Open. People can answer with their link.',
     preview: 'Preview the survey',
     previewHeading: 'Survey preview',
     previewText: /Un assistant|Une IA vous donne/i,
@@ -130,7 +130,8 @@ test.describe('audit set-up', () => {
       await page.goto('/admin/teams');
       await page.getByLabel(c.teamName).first().fill(team);
       await page.getByRole('button', { name: c.addTeam }).click();
-      await expect(page.getByText(c.teamAdded)).toBeVisible();
+      // The line under the form and the snackbar say the same words: check the page one.
+      await expect(page.locator('#main').getByText(c.teamAdded)).toBeVisible();
       // The new team is listed with its size and can be resized in place.
       const row = page.locator('li', { has: page.locator(`input[value="${team}"]`) });
       await expect(row).toHaveCount(1);
@@ -232,7 +233,7 @@ test.describe('language', () => {
     await expect(page.locator('html')).toHaveAttribute('lang', 'fr');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(/Missions d’audit/);
     // Statuses are words in the page language.
-    await expect(page.locator('table')).not.toContainText(/\b(Draft|Live|Closed|Scheduled)\b/);
+    await expect(page.locator('table')).not.toContainText(/\b(Draft|Open|Closed|Scheduled)\b/);
   });
 
   test('the employee page follows the engagement language when the browser says English', async ({

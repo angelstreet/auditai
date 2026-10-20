@@ -281,6 +281,126 @@ for (const locale of LOCALES) {
   });
 }
 
+for (const locale of LOCALES) {
+  test(`referent home explains, copies with a fallback and shares (${locale})`, async ({
+    page,
+    context,
+    baseURL,
+  }, testInfo) => {
+    const phone = testInfo.project.name === 'mobile-360';
+    const eng = await engagementC();
+    await setEngagement(eng.id, 'in_field', 8);
+    await setStates(eng.id, 0, 0);
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'], {
+      origin: baseURL as string,
+    });
+    await setLocale(context, baseURL, locale);
+    await signIn(page, REFERENT, /\/client$/);
+
+    // The logo goes to the team space, not to the public welcome page.
+    await expect(page.locator('a.home-link')).toHaveAttribute('href', '/client');
+
+    // "How it works": what the team is asked, how long, who sees what, three steps.
+    const how = page.getByTestId('client-how');
+    await expect(how).toBeVisible();
+    await expect(how).toContainText(/\d+/);
+    await expect(how.locator('ol li')).toHaveCount(3);
+
+    // Links to copy, then the home reminder: a date and one button that copies the message.
+    await page.getByTestId('client-tab-invitations').click();
+    await page.waitForURL(/\/client\/invitations$/);
+    await page.fill('input[name=count]', '2');
+    await page.getByTestId('client-create-links').click();
+    await expect(page.getByTestId('client-create-done')).toBeVisible();
+    await page.goto('/client');
+    const reminder = page.getByTestId('client-home-reminder');
+    await expect(reminder).toBeVisible();
+    await expect(page.getByTestId('client-home-reminder-date')).toContainText(
+      /\d{4}|aujourd|today/,
+    );
+    await page.getByTestId('client-home-reminder-copy').click();
+    expect(await page.evaluate(() => navigator.clipboard.readText())).toMatch(
+      COPY[locale].reminder,
+    );
+    await axe(page, `${locale} home (how it works)`);
+    await noHorizontalScroll(page, `${locale} home (how it works)`);
+
+    // Report tab: what will be received, when, and how to forward it.
+    await page.goto('/client/report');
+    await expect(page.getByTestId('client-report-info')).toBeVisible();
+    await expect(page.getByTestId('client-report-when')).toContainText(/\d{4}/);
+    await expect(page.getByTestId('client-report-info')).toContainText(/PDF/);
+    await axe(page, `${locale} report tab`);
+    await noHorizontalScroll(page, `${locale} report tab`);
+
+    // The clipboard is refused (some phones): the full link shows in a selectable field.
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, 'clipboard', {
+        value: { writeText: () => Promise.reject(new Error('refused')) },
+        configurable: true,
+      });
+      document.execCommand = () => false;
+      (navigator as unknown as { share: (d: unknown) => Promise<void> }).share = async (d) => {
+        (window as unknown as { shared: unknown }).shared = d;
+      };
+    });
+    await page.goto('/client/invitations');
+    const link = ((await page.getByTestId('client-link').first().textContent()) ?? '').trim();
+    expect(link).toMatch(/^https?:\/\/[^/]+\/s\/[\w.-]+$/);
+    // The full link is on screen (it wraps), never cut with an ellipsis.
+    const cut = await page
+      .getByTestId('client-link')
+      .first()
+      .evaluate((e) => e.scrollWidth > e.clientWidth + 1);
+    expect(cut).toBe(false);
+    await page.getByTestId('client-copy-link').first().click();
+    const fallback = page.getByTestId('copy-fallback-text');
+    await expect(fallback).toBeVisible();
+    await expect(fallback).toHaveValue(link);
+    // Let the dialog's fade-in finish: axe reads a half-transparent label as low contrast.
+    await page.waitForTimeout(600);
+    await axe(page, `${locale} copy fallback dialog`);
+    await page.keyboard.press('Escape');
+    await expect(fallback).toBeHidden();
+
+    // Native share sheet when the device has one.
+    await page.getByTestId('client-share-link').first().click();
+    const shared = await page.evaluate(
+      () => (window as unknown as { shared?: { text: string } }).shared?.text ?? '',
+    );
+    expect(shared).toContain(link);
+    if (phone) await noHorizontalScroll(page, `${locale} invitations (phone)`);
+  });
+}
+
+test('the counts agree between the Engagements list and the Invitations page', async ({ page }) => {
+  const eng = await engagementC();
+  await setEngagement(eng.id, 'in_field', 8);
+  await setStates(eng.id, 2, 2);
+  const [db] = await query<{ invited: number; opened: number; revoked: number; created: number }>(
+    `SELECT count(*) FILTER (WHERE status <> 'revoked')::int AS invited,
+            count(*) FILTER (WHERE status IN ('opened','in_progress','submitted'))::int AS opened,
+            count(*) FILTER (WHERE status = 'revoked')::int AS revoked,
+            count(*)::int AS created
+       FROM invitations WHERE engagement_id = $1`,
+    [eng.id],
+  );
+  await signIn(page, OWNER, /\/(admin\/|board)/);
+  await page.goto(`/admin/engagements?tenant=${eng.tenant}`);
+  const row = page.locator('tr', { has: page.locator(`a[href*="${eng.id}"]`) });
+  const cells = await row.locator('td').allTextContents();
+  // td order: status, headcount, invitations, submitted, opened, pending, revoked or expired.
+  expect(Number(cells[2])).toBe(db?.invited);
+  expect(Number(cells[4])).toBe(db?.opened);
+  await page.goto(`/admin/invitations?tenant=${eng.tenant}&engagement=${eng.id}`);
+  const counts = await page.getByTestId('invitation-counts').innerText();
+  expect(counts).toContain(String(db?.created));
+  expect(counts).toMatch(new RegExp(`\\b${db?.invited}\\b`));
+  // The same links, in full, with a copy button each.
+  await expect(page.getByTestId('invite-link-full').first()).toContainText(/\/s\//);
+  await expect(page.getByTestId('invite-copy-all')).toBeVisible();
+});
+
 test('the auditor still sees per-link status; the referent cannot reach it', async ({ page }) => {
   const eng = await engagementC();
   await signIn(page, REFERENT, /\/client$/);

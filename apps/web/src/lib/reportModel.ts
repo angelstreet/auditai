@@ -140,7 +140,10 @@ export const buildSnapshot = (input: SnapshotInput, leaks: LeakSources): Publish
   if (citations.some((c) => !keys.has(c))) return { ok: false, code: 'citation_unknown' };
 
   const accepted = input.steps.filter((s) => s.status === 'accepted');
-  if (accepted.length === 0) return { ok: false, code: 'nothing_accepted' };
+  // A report may rest on findings alone; it needs at least one finding or one accepted step.
+  if (accepted.length === 0 && input.findings.length === 0) {
+    return { ok: false, code: 'nothing_accepted' };
+  }
   const withSteps = new Set(accepted.map((s) => s.opportunityId));
   const opportunities = input.opportunities.filter((o) => withSteps.has(o.id));
   const ranked = rankOpportunities(
@@ -216,6 +219,8 @@ export interface SummaryWords {
   readonly findings: (vars: { list: string }) => string;
   readonly opportunities: (vars: { list: string }) => string;
   readonly closing: string;
+  /** Closing line when no step is accepted yet (no plan to point to). */
+  readonly closingNoSteps: string;
   readonly levelName: (level: string) => string;
   /** List separator, e.g. '; ' (en) or ' ; ' with a no-break space (fr). */
   readonly listSep: string;
@@ -243,6 +248,30 @@ export const draftSummary = (
   if (rankedTitles.length > 0) {
     parts.push(w.opportunities({ list: rankedTitles.slice(0, 2).join(w.listSep) }));
   }
-  parts.push(w.closing);
+  parts.push(rankedTitles.length > 0 ? w.closing : w.closingNoSteps);
   return { text: parts.join(' '), citations: top.map((f) => f.key) };
+};
+
+/** Words of the method note, from the caller's i18n. */
+export interface MethodWords {
+  readonly base: (vars: { people: number; n: number }) => string;
+  readonly themes: (vars: { count: number }) => string;
+  readonly opportunities: (vars: { count: number }) => string;
+  readonly unreviewed: string;
+}
+
+/**
+ * The method and privacy note, generated from what actually happened: it never says the auditor
+ * approved themes or opportunities when there are none.
+ */
+export const methodologyNote = (
+  counts: { answered: number; themes: number; opportunities: number },
+  minGroupSize: number,
+  w: MethodWords,
+): string => {
+  const parts = [w.base({ people: counts.answered, n: minGroupSize })];
+  if (counts.themes > 0) parts.push(w.themes({ count: counts.themes }));
+  if (counts.opportunities > 0) parts.push(w.opportunities({ count: counts.opportunities }));
+  if (counts.themes === 0 && counts.opportunities === 0) parts.push(w.unreviewed);
+  return parts.join(' ');
 };
