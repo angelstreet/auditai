@@ -58,14 +58,17 @@ export default async function QuestionPage({ params }: { params: Params }) {
         options={question.options.map((o) => ({ value: o.value, label: o.label[locale] }))}
         initialChoice={initialChoice}
         nextHref={nextHref}
+        isLast={isLast}
+        skipLabel={t('survey.skip')}
         ariaQuestionLabel={t('survey.answerOptions')}
-        messages={{ saving: t('survey.saving'), saveFailed: t('survey.saveFailed') }}
+        messages={{
+          saving: t('survey.saving'),
+          saveFailed: t('survey.saveFailed'),
+          alreadyFinished: t('survey.alreadyFinished'),
+          incomplete: t('survey.incomplete'),
+          finishFailed: t('survey.finishFailed'),
+        }}
       />
-      <div className="step-bar end">
-        <Link className="link-button" href={nextHref}>
-          {t('survey.skip')} →
-        </Link>
-      </div>
     </div>
   );
 }

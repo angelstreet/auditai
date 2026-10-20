@@ -65,6 +65,8 @@ export const answerValueSchema = z.union([
     choice: z.string().min(1).max(40),
     rationale: z.string().max(2000).nullable(),
   }),
+  /** The person chose to pass on this question. Scored as no answer. */
+  z.object({ kind: z.literal('skipped') }),
 ]);
 
 export type AnswerValue = z.infer<typeof answerValueSchema>;

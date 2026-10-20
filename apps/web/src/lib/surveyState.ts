@@ -189,6 +189,23 @@ export const recordAnswer = async (
   });
 };
 
+/** Remember a skip. An existing answer (or skip) at this position is left as it is. */
+export const recordSkip = async (
+  tenantId: TenantId,
+  submissionId: SubmissionId,
+  questionItemId: string,
+  sequence: number,
+): Promise<void> => {
+  await withTenant(tenantId, async (client) => {
+    await client.query(
+      `INSERT INTO answers (id, tenant_id, submission_id, question_item_id, value_json, sequence)
+       VALUES (gen_random_uuid(), $1, $2, $3, $4, $5)
+       ON CONFLICT (submission_id, question_item_id, sequence) DO NOTHING`,
+      [tenantId, submissionId, questionItemId, { kind: 'skipped' }, sequence],
+    );
+  });
+};
+
 export const setLocale = async (
   tenantId: TenantId,
   submissionId: SubmissionId,

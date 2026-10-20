@@ -133,6 +133,13 @@ export const fr: Messages = {
     saving: 'Enregistrement…',
     saveFailed:
       'Votre réponse n’a pas été enregistrée. Vérifiez votre connexion, puis touchez à nouveau.',
+    alreadyFinished: 'Vous avez déjà terminé ce questionnaire.',
+    incomplete: 'Une question reste ouverte. Répondez-y ou passez-la.',
+    finishFailed:
+      'Nous n’avons pas pu terminer votre questionnaire. Vérifiez votre connexion, puis touchez à nouveau.',
+    oneMoreTitle: 'Une dernière étape',
+    oneMoreBody: 'Vos réponses sont enregistrées. Touchez Terminer pour les envoyer.',
+    finish: 'Terminer',
     thanksTitle: 'Merci, c’est terminé',
     alreadyTitle: 'Vous avez déjà répondu. Merci !',
     teamHeading: 'Votre équipe',
