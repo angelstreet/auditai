@@ -41,7 +41,7 @@ export const AUDIT_GROUPS = {
     'password.reset_request',
     'password.reset',
   ],
-  privacy: ['privacy_request.create', 'privacy_request.handle'],
+  privacy: ['privacy_request.create', 'privacy_request.handle', 'answers.anonymise'],
   reports: [
     'report.create',
     'report.update',

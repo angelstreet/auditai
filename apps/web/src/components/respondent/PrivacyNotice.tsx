@@ -23,6 +23,7 @@ export default function PrivacyNotice({
           <li>{t('survey.privacy1')}</li>
           <li>{t('survey.privacy2')}</li>
           <li>{t('survey.privacy3')}</li>
+          <li>{t('survey.privacy4')}</li>
         </ul>
         <Link href={engagementId ? `/privacy?e=${engagementId}` : '/privacy'}>
           {t('survey.privacyFull')}

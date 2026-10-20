@@ -120,6 +120,7 @@ write a new one that supersedes it.
 | 0041 | [Audit report, improvement catalogue, readiness score](adr/0041-audit-report-improvement-catalogue-readiness.md)         | TASK-V                           | Accepted |
 | 0042 | [Server-side PDF of the audit report](adr/0042-report-pdf-export.md)                                                     | TASK-V                           | Accepted |
 | 0043 | [Optional AI draft of the report summary](adr/0043-ai-draft-of-report-summary.md)                                        | TASK-V                           | Accepted |
+| 0044 | [Anonymise free text before it is stored](adr/0044-anonymise-free-text-on-ingestion.md)                                  | TASK-W                           | Accepted |
 
 ## 4. The gates map (PRD §25.4)
 
@@ -286,7 +287,8 @@ docs/
    ├── 0039-referent-sees-no-per-link-status.md
    ├── 0041-audit-report-improvement-catalogue-readiness.md
    ├── 0042-report-pdf-export.md
-   └── 0043-ai-draft-of-report-summary.md
+   ├── 0043-ai-draft-of-report-summary.md
+   └── 0044-anonymise-free-text-on-ingestion.md
 ```
 
 The contract map of every Zod schema and TS type in `@evolai/contracts`

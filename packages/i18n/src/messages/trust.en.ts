@@ -155,6 +155,7 @@ export const trustEn = {
       report_step_accept: 'Accepted an improvement step',
       report_step_reject: 'Rejected an improvement step',
       privacy_request_handle: 'Marked a privacy request as handled',
+      answers_anonymise: 'Anonymised stored free-text answers',
     },
   },
   notice: {
@@ -180,7 +181,7 @@ export const trustEn = {
       'If your link was sent by email, the address is kept for a short time only to send the link and reminders, then deleted.',
     notCollectedTitle: 'What is not collected',
     notCollected:
-      'Your name. Please do not type names in free text: names are hidden before anyone reads the answers.',
+      'Your name. If you write free text, names, emails and phone numbers are hidden automatically before the answer is saved, so no name is kept. Please do not type them anyway.',
     seesTitle: 'Who sees what',
     seesAuditor: 'The auditor sees the answers linked to your code, never your name.',
     seesReferent: 'The referent of your team sees how many people answered. Never who, never what.',

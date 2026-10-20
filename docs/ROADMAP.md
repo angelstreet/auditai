@@ -58,6 +58,7 @@ Work that came out of the Phase 1 and Phase 2 review. Each task has a brief in `
 | U    | Referent login by link and password reset, privacy notice and request form, audit-trail screen, data-page safety, small-group guard (ADR 0040)   | see git log                | done  |
 | S    | Referent self-service: link list, copy and share, message, generic reminder, progress bands (ADR 0039)                                           | see git log                | done  |
 | V    | Audit report: improvement catalogue and matching, readiness score, report editor and workflow, client Report tab, PDF, AI draft (ADRs 0041-0043) | #51, #53, #54, see git log | done  |
+| W    | Free-text answers anonymised before they are stored, backfill command (ADR 0044)                                                                 | this PR                    | done  |
 | Q    | Per-tenant redaction terms admin: list, add and remove from the admin shell, every change in the audit trail (ADR 0036)                          | #47                        | done  |
 
 CI fixes that landed alongside: #27 (database URL passed through turbo to the tests) and #28 (smokes and

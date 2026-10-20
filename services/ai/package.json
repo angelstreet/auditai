@@ -13,6 +13,7 @@
     "team-rollup-smoke": "node --import tsx scripts/team-rollup-smoke.ts",
     "retention-smoke": "node --import tsx scripts/retention-smoke.ts",
     "retention-run": "node --import tsx scripts/retention-run.ts",
+    "anonymise-backfill": "node --import tsx scripts/anonymise-backfill.ts",
     "eval": "node --import tsx scripts/eval.ts",
     "report-draft": "node --import tsx scripts/report-draft.ts"
   },

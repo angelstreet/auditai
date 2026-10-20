@@ -154,6 +154,7 @@ export const trustFr: Messages['trust'] = {
       report_step_accept: 'A accepté une étape d’amélioration',
       report_step_reject: 'A refusé une étape d’amélioration',
       privacy_request_handle: 'A marqué une demande vie privée comme traitée',
+      answers_anonymise: 'A anonymisé les textes libres déjà enregistrés',
     },
   },
   notice: {
@@ -179,7 +180,7 @@ export const trustFr: Messages['trust'] = {
       'Si votre lien a été envoyé par e-mail, l’adresse n’est gardée que le temps d’envoyer le lien et les rappels, puis supprimée.',
     notCollectedTitle: 'Ce qui n’est pas recueilli',
     notCollected:
-      'Votre nom. Merci de ne pas écrire de noms dans les textes libres : les noms sont masqués avant que quiconque lise les réponses.',
+      'Votre nom. Si vous écrivez un texte libre, les noms, e-mails et numéros de téléphone sont masqués automatiquement avant l’enregistrement : aucun nom n’est conservé. Merci de ne pas les écrire quand même.',
     seesTitle: 'Qui voit quoi',
     seesAuditor: 'L’auditeur voit les réponses liées à votre code, jamais votre nom.',
     seesReferent:
