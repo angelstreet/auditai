@@ -80,12 +80,8 @@ export default function ViewAsBannerBar({
           {compact ? (
             <Box
               component="span"
-              sx={{
-                display: { xs: 'block', sm: 'none' },
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-              }}
+              title={text}
+              sx={{ display: { xs: 'block', sm: 'none' }, overflowWrap: 'anywhere' }}
             >
               {short}
             </Box>

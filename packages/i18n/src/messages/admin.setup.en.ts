@@ -42,7 +42,7 @@ export const setupEn = {
     title: 'Status',
     draft: 'Draft. Nobody can answer yet. Launch when you are ready.',
     scheduled: 'Scheduled. Launch when you are ready.',
-    in_field: 'Live. People can answer with their link.',
+    in_field: 'Open. People can answer with their link.',
     analysis: 'The survey is over. Analysis is under way.',
     review: 'The survey is over. Results are being reviewed.',
     closed: 'Closed. Nobody can answer any more.',

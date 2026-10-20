@@ -8,10 +8,10 @@ export const adminFr: AdminMessages = {
     engagementStatus: {
       draft: 'Brouillon',
       scheduled: 'Planifiée',
-      in_field: 'En cours',
+      in_field: 'Ouverte',
       analysis: 'Analyse',
       review: 'Relecture',
-      closed: 'Terminée',
+      closed: 'Clôturée',
       archived: 'Archivée',
     },
     axis: {

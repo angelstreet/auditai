@@ -83,7 +83,11 @@ export default async function SiteHeader() {
           py: 2,
         }}
       >
-        <Link href="/" aria-label={t('common.homeAria')} className="home-link">
+        <Link
+          href={identity?.workspaceHref ?? '/'}
+          aria-label={t('common.homeAria')}
+          className="home-link"
+        >
           <Logo />
         </Link>
         {identity?.organisation ? (

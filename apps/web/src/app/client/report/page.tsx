@@ -1,11 +1,14 @@
 import type { TenantId } from '@evolai/contracts';
 import Button from '@mui/material/Button';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
 import { AppIcon, EmptyState, PageTitle } from '@evolai/ui';
 import PrintReportButton from '@/components/report/PrintReportButton';
 import ReportView from '@/components/report/ReportView';
 import { requireClientContext } from '@/lib/clientContext';
 import { loadClientSurvey } from '@/lib/clientData';
 import { getT } from '@/lib/i18n';
+import { longDate } from '@/lib/referentMessages';
 import { loadPublishedReport } from '@/lib/reportData';
 
 export const dynamic = 'force-dynamic';
@@ -17,7 +20,7 @@ export const dynamic = 'force-dynamic';
  */
 export default async function ClientReportPage() {
   const { ctx } = await requireClientContext();
-  const { t } = getT();
+  const { t, locale } = getT();
   const survey = await loadClientSurvey(ctx.tenantId, ctx.teamIds);
   const published = survey
     ? await loadPublishedReport(ctx.tenantId as TenantId, survey.engagementId)
@@ -29,6 +32,28 @@ export default async function ClientReportPage() {
         title={t('report.view.clientTitle')}
         subtitle={t('report.view.clientSubtitle')}
       />
+      <Paper
+        variant="outlined"
+        sx={{ p: 4, borderRadius: 3, mb: 4 }}
+        data-testid="client-report-info"
+      >
+        <Typography variant="sectionTitle" component="h2" sx={{ m: 0, mb: 2 }}>
+          {t('report.view.receiveTitle')}
+        </Typography>
+        <Typography variant="body1" sx={{ m: 0, mb: 2 }}>
+          {t('report.view.receiveWhat')}
+        </Typography>
+        {published ? null : (
+          <Typography variant="body1" sx={{ m: 0, mb: 2 }} data-testid="client-report-when">
+            {survey?.closesOn
+              ? t('report.view.receiveWhenDate', { date: longDate(locale, survey.closesOn) })
+              : t('report.view.receiveWhen')}
+          </Typography>
+        )}
+        <Typography variant="body1" sx={{ m: 0 }}>
+          {t('report.view.receiveForward')}
+        </Typography>
+      </Paper>
       {published ? (
         <ReportView
           snapshot={published.snapshot}

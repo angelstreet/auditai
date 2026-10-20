@@ -308,6 +308,14 @@ export const reportEn = {
     stepsFor: 'Steps',
     empty:
       'Your audit report is not published yet. You will find it here once the auditor publishes it.',
+    receiveTitle: 'What you will receive',
+    receiveWhat:
+      'One report for the whole audit: the score, the main findings, the steps to take and a plan for 30, 60 and 90 days. No individual answer.',
+    receiveWhenDate:
+      'The survey closes on {date}. The report appears here after the auditor has read the answers and published it.',
+    receiveWhen:
+      'The report appears here once the survey is over and the auditor has read the answers and published it.',
+    receiveForward: 'To forward it, download the PDF or print this page, then send it by email.',
     clientTitle: 'Audit report',
     clientSubtitle: 'What the audit found and what to do next. Read only.',
     aggregateNote: 'One report for the whole audit, all teams together.',

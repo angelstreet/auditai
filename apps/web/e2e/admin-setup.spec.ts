@@ -29,7 +29,7 @@ const COPY = {
     other: 'English',
     launch: 'Lancer l’audit',
     launchConfirm: 'Lancer',
-    live: 'En cours',
+    live: 'Ouverte',
     preview: 'Voir le questionnaire',
     previewHeading: 'Aperçu du questionnaire',
     previewText: /Une IA vous donne|Vous donne/i,
@@ -54,7 +54,7 @@ const COPY = {
     other: 'Français',
     launch: 'Launch the audit',
     launchConfirm: 'Launch',
-    live: 'Live',
+    live: 'Open',
     preview: 'Preview the survey',
     previewHeading: 'Survey preview',
     previewText: /Un assistant|Une IA vous donne/i,
@@ -232,7 +232,7 @@ test.describe('language', () => {
     await expect(page.locator('html')).toHaveAttribute('lang', 'fr');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(/Missions d’audit/);
     // Statuses are words in the page language.
-    await expect(page.locator('table')).not.toContainText(/\b(Draft|Live|Closed|Scheduled)\b/);
+    await expect(page.locator('table')).not.toContainText(/\b(Draft|Open|Closed|Scheduled)\b/);
   });
 
   test('the employee page follows the engagement language when the browser says English', async ({

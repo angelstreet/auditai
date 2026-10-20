@@ -320,6 +320,15 @@ export const reportFr: Shape<typeof reportEn> = {
     stepsFor: 'Actions',
     empty:
       'Votre rapport d’audit n’est pas encore publié. Vous le trouverez ici dès que l’auditeur l’aura publié.',
+    receiveTitle: 'Ce que vous recevrez',
+    receiveWhat:
+      'Un seul rapport pour tout l’audit : le score, les constats principaux, les actions à mener et un plan à 30, 60 et 90 jours. Aucune réponse individuelle.',
+    receiveWhenDate:
+      'Le questionnaire ferme le {date}. Le rapport apparaît ici quand l’auditeur a lu les réponses et l’a publié.',
+    receiveWhen:
+      'Le rapport apparaît ici quand le questionnaire est terminé et que l’auditeur a lu les réponses et l’a publié.',
+    receiveForward:
+      'Pour le transmettre, téléchargez le PDF ou imprimez cette page, puis envoyez-le par e-mail.',
     clientTitle: 'Rapport d’audit',
     clientSubtitle: 'Ce que l’audit a montré et ce qu’il faut faire ensuite. Lecture seule.',
     aggregateNote: 'Un seul rapport pour tout l’audit, toutes équipes réunies.',
