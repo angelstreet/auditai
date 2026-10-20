@@ -12,6 +12,43 @@ export const DEFAULT_REMINDER_DAYS: readonly number[] = [3, 7];
 /** Hard cap on emails one reminder run may send per engagement (rate limit). */
 export const MAX_REMINDERS_PER_RUN = 200;
 
+/**
+ * The one definition of the invitation numbers, used by the Engagements list and the Invitations
+ * page alike (TASK-Z1). From the number of invitations per status:
+ *  - created   every link made, revoked ones included;
+ *  - invited   links still valid or used: created minus revoked;
+ *  - opened    opened at least once: opened, in progress or answered (so opened >= started >= done);
+ *  - started   in progress or answered;
+ *  - completed answered;
+ *  - waiting   not opened yet;
+ *  - lapsed    expired or declined, still counted as invited.
+ */
+export interface InvitationNumbers {
+  readonly created: number;
+  readonly revoked: number;
+  readonly invited: number;
+  readonly opened: number;
+  readonly started: number;
+  readonly completed: number;
+  readonly waiting: number;
+  readonly lapsed: number;
+}
+
+export const invitationNumbers = (byStatus: Readonly<Record<string, number>>): InvitationNumbers => {
+  const n = (k: string): number => byStatus[k] ?? 0;
+  const created = Object.values(byStatus).reduce((s, v) => s + v, 0);
+  return {
+    created,
+    revoked: n('revoked'),
+    invited: created - n('revoked'),
+    opened: n('opened') + n('in_progress') + n('submitted'),
+    started: n('in_progress') + n('submitted'),
+    completed: n('submitted'),
+    waiting: n('pending'),
+    lapsed: n('expired') + n('declined'),
+  };
+};
+
 export interface TeamCounts {
   readonly teamId: string;
   readonly teamName: string;
@@ -163,7 +200,8 @@ export const surveyLink = (baseUrl: string, token: string): string =>
 
 /**
  * Admin-only base URL: APP_BASE_URL, else the site URL setting (NEXT_PUBLIC_SITE_URL), else the
- * request host (https unless it is localhost). Never a path or query.
+ * request host and protocol (the proxy's `x-forwarded-proto`, else http only for a local host).
+ * Never a path or query.
  */
 export const resolveBaseUrl = (
   env: Record<string, string | undefined>,
@@ -175,7 +213,13 @@ export const resolveBaseUrl = (
     if (configured && /^https?:\/\/[^\s/]+$/.test(configured)) return configured;
   }
   if (host && /^[A-Za-z0-9.-]+(:\d+)?$/.test(host)) {
-    const p = proto === 'http' && /^(localhost|127\.0\.0\.1)(:|$)/.test(host) ? 'http' : 'https';
+    // The proxy's own word wins (production is https, a plain local copy says http). With no
+    // header, a local or private-network host is http and anything else is https.
+    const said = proto?.split(',')[0]?.trim().toLowerCase();
+    const local =
+      /^(localhost|127\.\d+\.\d+\.\d+|10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|[^.]+)(:|$)/.test(host) ||
+      host.endsWith('.local');
+    const p = said === 'http' || said === 'https' ? said : local ? 'http' : 'https';
     return `${p}://${host}`;
   }
   throw new Error('APP_BASE_URL is not set and the request has no usable host.');

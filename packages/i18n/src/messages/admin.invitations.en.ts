@@ -4,6 +4,8 @@ export const invitationsEn = {
   subtitle: 'Create links, follow progress, send reminders. No names are kept.',
   pickEngagement: 'Choose an engagement to manage its invitations.',
   openLink: 'Invitations',
+  counts:
+    '{expected, plural, one {# person expected} other {# people expected}}. {created, plural, one {# link created} other {# links created}}, {revoked} cancelled, so {invited} invited. “Opened” counts everyone who opened their link, including those who answered.',
   tiles: {
     invited: 'Invited',
     opened: 'Opened',
