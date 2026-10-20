@@ -111,7 +111,8 @@ test.describe('the survey is submitted by an explicit finish', () => {
         await page.goto(`/s/${token}/done`);
         await page.reload();
         const again = await state(reference);
-        expect(again?.submitted_at).toBe(after?.submitted_at);
+        expect(String(again?.submitted_at)).toBe(String(after?.submitted_at));
+        expect(after?.submitted_at).not.toBeNull();
         expect(submitCalls).toHaveLength(1);
       });
     }
