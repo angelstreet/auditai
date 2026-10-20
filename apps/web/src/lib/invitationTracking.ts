@@ -34,7 +34,9 @@ export interface InvitationNumbers {
   readonly lapsed: number;
 }
 
-export const invitationNumbers = (byStatus: Readonly<Record<string, number>>): InvitationNumbers => {
+export const invitationNumbers = (
+  byStatus: Readonly<Record<string, number>>,
+): InvitationNumbers => {
   const n = (k: string): number => byStatus[k] ?? 0;
   const created = Object.values(byStatus).reduce((s, v) => s + v, 0);
   return {
@@ -217,8 +219,9 @@ export const resolveBaseUrl = (
     // header, a local or private-network host is http and anything else is https.
     const said = proto?.split(',')[0]?.trim().toLowerCase();
     const local =
-      /^(localhost|127\.\d+\.\d+\.\d+|10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|[^.]+)(:|$)/.test(host) ||
-      host.endsWith('.local');
+      /^(localhost|127\.\d+\.\d+\.\d+|10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|[^.]+)(:|$)/.test(
+        host,
+      ) || host.endsWith('.local');
     const p = said === 'http' || said === 'https' ? said : local ? 'http' : 'https';
     return `${p}://${host}`;
   }

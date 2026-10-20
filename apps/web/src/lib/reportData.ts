@@ -739,7 +739,13 @@ export const addStep = (
       const made = await client.query<{ id: string }>(
         `INSERT INTO opportunities (tenant_id, engagement_id, status, title, description, created_by)
          VALUES ($1, $2, 'approved', $3, $4, $5) RETURNING id`,
-        [tenantId, r.engagementId, from.custom.title.padEnd(3, '.'), from.custom.description, actor],
+        [
+          tenantId,
+          r.engagementId,
+          from.custom.title.padEnd(3, '.'),
+          from.custom.description,
+          actor,
+        ],
       );
       opportunityId = (made.rows[0] as { id: string }).id;
       await client.query(

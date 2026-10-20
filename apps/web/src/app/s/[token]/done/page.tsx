@@ -46,6 +46,7 @@ export default async function DonePage({ params }: { params: Params }) {
   return (
     <RespondentStatus
       token={params.token}
+      engagementId={invite.engagementId}
       title={t('survey.thanksTitle')}
       team={team}
       myTier={badge?.mascotTier ?? null}

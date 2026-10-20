@@ -147,6 +147,7 @@ export function IntakeForm() {
           name="onsiteAppetite"
           label={t('intake.onsiteLabel')}
           defaultValue="limited_team"
+          slotProps={{ inputLabel: { shrink: true } }}
           sx={{ maxWidth: 360 }}
         >
           <MenuItem value="">{t('common.dash')}</MenuItem>
@@ -177,6 +178,7 @@ export function IntakeForm() {
           name="promptInjectionReview"
           label={t('intake.injectionLabel')}
           defaultValue="external_auditor"
+          slotProps={{ inputLabel: { shrink: true } }}
           sx={{ maxWidth: 480 }}
         >
           <MenuItem value="">{t('common.dash')}</MenuItem>

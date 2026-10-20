@@ -114,7 +114,7 @@ export const fr: Messages = {
   privacy: {
     title: 'Politique de confidentialité',
     p1: 'EvolAI s’intéresse aux pratiques de travail et à leurs pistes d’amélioration, pas aux personnes. Nous gardons un code à la place de votre nom ; votre contact d’équipe voit combien de personnes ont répondu, jamais qui a dit quoi, sauf accord de votre part.',
-    p2: 'Votre organisation décide de la durée de conservation. Vous pouvez retirer vos réponses à tout moment en contactant votre contact d’équipe ; elles seront supprimées dans le délai convenu.',
+    p2: 'Votre organisation décide de la durée de conservation. Vous pouvez retirer ou supprimer vos réponses à tout moment avec le formulaire ci-dessous ; il va à l’auditeur, pas à votre responsable.',
     seeAbout: 'Retour à {link}.',
     aboutLink: 'la page d’accueil',
   },
@@ -123,7 +123,8 @@ export const fr: Messages = {
     lede: 'Aidez votre équipe à repérer où l’IA peut faire gagner du temps.',
     duration: '{n, plural, one {# question} other {# questions}} · environ {m} min',
     privacyShort:
-      'Votre nom n’est pas enregistré. Votre entreprise voit des totaux d’équipe, pas vos réponses.',
+      'Votre nom n’est pas enregistré. Votre entreprise voit seulement des totaux d’équipe, jamais vos réponses. Pour retirer ou supprimer vos réponses, utilisez le formulaire de confidentialité : il ne passe pas par votre responsable.',
+    privacyRequest: 'Retirer ou supprimer mes réponses',
     privacyMore: 'Comment vos réponses sont protégées',
     privacy1: 'Nous utilisons un code à la place de votre nom.',
     privacy2: 'Votre contact d’équipe voit combien de personnes ont répondu, pas qui a dit quoi.',

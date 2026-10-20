@@ -343,6 +343,7 @@ function HorizonSelect({
       name={name}
       label={t('report.steps.horizon')}
       defaultValue={value}
+      slotProps={{ inputLabel: { shrink: true } }}
       disabled={disabled}
       sx={{ minWidth: 180 }}
     >
@@ -636,6 +637,7 @@ export function AddStepForm({
                 name="category"
                 label={t('report.steps.category')}
                 defaultValue="simplify"
+                slotProps={{ inputLabel: { shrink: true } }}
               >
                 {improvementCategorySchema.options.map((c) => (
                   <MenuItem key={c} value={c}>

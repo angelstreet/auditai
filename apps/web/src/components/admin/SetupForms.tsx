@@ -93,6 +93,7 @@ export function EngagementForm({
         name="locale"
         label={t('admin.setup.form.locale')}
         defaultValue={values.locale}
+        slotProps={{ inputLabel: { shrink: true } }}
         required
       >
         <MenuItem value="fr" lang="fr">

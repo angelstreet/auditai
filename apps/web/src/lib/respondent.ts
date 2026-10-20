@@ -139,6 +139,18 @@ export const firstUnanswered = (answers: SurveyState['answers'], total: number):
   return total;
 };
 
+/**
+ * The one date shown to a respondent as "open until": the engagement closing date or this link's
+ * own expiry, whichever comes first, because that is the moment answering really stops (TASK-Z1).
+ */
+export const answerDeadline = (
+  closesAt: string | null,
+  linkExpiresAt: string | null,
+): string | null => {
+  if (closesAt && linkExpiresAt) return closesAt < linkExpiresAt ? closesAt : linkExpiresAt;
+  return closesAt ?? linkExpiresAt;
+};
+
 export interface TeamProgress {
   readonly answered: number;
   readonly invited: number;
@@ -159,7 +171,7 @@ export const teamProgress = async (invite: InvitationRecord): Promise<TeamProgre
       `SELECT COUNT(*)::int AS invited,
               COUNT(*) FILTER (WHERE status = 'submitted')::int AS answered
          FROM invitations
-        WHERE tenant_id = $1 AND engagement_id = $2 AND team_id = $3`,
+        WHERE tenant_id = $1 AND engagement_id = $2 AND team_id = $3 AND status <> 'revoked'`,
       [invite.tenantId, invite.engagementId, invite.teamId],
     );
     const engagement = await client.query<{
@@ -182,7 +194,7 @@ export const teamProgress = async (invite: InvitationRecord): Promise<TeamProgre
       invited: counts.rows[0]?.invited ?? 0,
       answered: counts.rows[0]?.answered ?? 0,
       engagementStatus: engagement.rows[0]?.status ?? 'in_field',
-      closesAt: closes ? new Date(closes).toISOString() : null,
+      closesAt: answerDeadline(closes ? new Date(closes).toISOString() : null, invite.expiresAt),
       teamTier: badge.rows[0]?.dominant_tier ?? null,
       contact: engagement.rows[0]?.contact?.trim() || null,
     };

@@ -145,9 +145,9 @@ describe('report snapshot gate', () => {
 
   it('needs at least one accepted step or one finding', () => {
     const none = input().steps.map((s) => ({ ...s, status: 'suggested' as const }));
-    expect(buildSnapshot(input({ steps: none, findings: [], summaryCitations: [] }), noLeaks)).toEqual(
-      { ok: false, code: 'nothing_accepted' },
-    );
+    expect(
+      buildSnapshot(input({ steps: none, findings: [], summaryCitations: [] }), noLeaks),
+    ).toEqual({ ok: false, code: 'nothing_accepted' });
   });
 
   it('publishes a report with findings only', () => {

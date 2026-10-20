@@ -112,7 +112,7 @@ export const en = {
   privacy: {
     title: 'Privacy notice',
     p1: 'EvolAI looks at work practices and ways to improve them, not at individual employees. We keep a code instead of your name; your team contact sees how many people answered, never who said what, unless you agree otherwise.',
-    p2: 'Your organisation decides how long answers are kept. You can withdraw your answers at any time by contacting your team contact; they will be deleted within the agreed period.',
+    p2: 'Your organisation decides how long answers are kept. You can withdraw or delete your answers at any time with the request form below; it goes to the auditor, not to your manager.',
     seeAbout: 'Back to {link}.',
     aboutLink: 'the home page',
   },
@@ -120,7 +120,9 @@ export const en = {
     title: 'Your view on AI at work',
     lede: 'Help your team find where AI can save time.',
     duration: '{n, plural, one {# question} other {# questions}} · about {m} min',
-    privacyShort: 'Your name is not stored. Your company sees team totals, not your answers.',
+    privacyShort:
+      'Your name is not stored. Your company sees only team totals, never your answers. To withdraw or delete your answers, use the privacy form: it does not go through your manager.',
+    privacyRequest: 'Withdraw or delete my answers',
     privacyMore: 'How your answers are protected',
     privacy1: 'We keep a code instead of your name.',
     privacy2: 'Your team contact sees how many people answered, not who said what.',

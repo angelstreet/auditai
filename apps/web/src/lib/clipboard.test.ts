@@ -31,7 +31,9 @@ describe('copyText', () => {
   });
 
   it('falls back to a selected textarea when the clipboard API refuses', async () => {
-    vi.stubGlobal('navigator', { clipboard: { writeText: vi.fn().mockRejectedValue(new Error()) } });
+    vi.stubGlobal('navigator', {
+      clipboard: { writeText: vi.fn().mockRejectedValue(new Error()) },
+    });
     const { area, doc } = fakeDocument(true);
     vi.stubGlobal('document', doc);
     expect(await copyText('https://x.invalid/s/a')).toBe(true);

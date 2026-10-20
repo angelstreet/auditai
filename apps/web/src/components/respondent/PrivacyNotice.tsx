@@ -17,6 +17,13 @@ export default function PrivacyNotice({
         <AppIcon name="privacy" />
         <span>{t('survey.privacyShort')}</span>
       </p>
+      {engagementId ? (
+        <p>
+          <Link href={`/privacy?e=${engagementId}#request`} data-testid="privacy-request-link">
+            {t('survey.privacyRequest')}
+          </Link>
+        </p>
+      ) : null}
       <details>
         <summary>{t('survey.privacyMore')}</summary>
         <ul>

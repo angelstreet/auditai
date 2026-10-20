@@ -6,11 +6,14 @@ import Typography from '@mui/material/Typography';
 import { AppIcon, Mascot, type IconName } from '@evolai/ui';
 import { formatDate, type SupportedLocale, type Translator } from '@evolai/i18n';
 import type { MascotTier } from '@evolai/contracts';
+import PrivacyNotice from '@/components/respondent/PrivacyNotice';
 import ProgressBar from '@/components/ProgressBar';
 import type { TeamProgress } from '@/lib/respondent';
 
 interface Props {
   token: string;
+  /** For the privacy notice: opens the organisation's details and the request form. */
+  engagementId: string;
   title: string;
   team: TeamProgress;
   myTier: MascotTier | null;
@@ -44,7 +47,15 @@ const nextStep = (team: TeamProgress, locale: SupportedLocale, t: Translator): s
  * answer count, one sentence on the next step, and the optional mascot quiz. Counts only, never
  * names or answers (PRD §4.3, §15).
  */
-export default function RespondentStatus({ token, title, team, myTier, locale, t }: Props) {
+export default function RespondentStatus({
+  token,
+  engagementId,
+  title,
+  team,
+  myTier,
+  locale,
+  t,
+}: Props) {
   const steps: ReadonlyArray<{ icon: IconName; text: string }> = [
     { icon: 'success', text: t('survey.nextSaved') },
     { icon: 'time', text: nextStep(team, locale, t) },
@@ -182,6 +193,7 @@ export default function RespondentStatus({ token, title, team, myTier, locale, t
           {t('survey.tip')}
         </Typography>
       </Paper>
+      <PrivacyNotice t={t} engagementId={engagementId} />
     </Stack>
   );
 }

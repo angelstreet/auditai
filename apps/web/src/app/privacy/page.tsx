@@ -25,8 +25,21 @@ export default async function PrivacyPage({ searchParams }: { searchParams: { e?
   const found = engagementId ? await getPublicNotice(engagementId) : null;
   const n = found?.notice ?? null;
   const [before, after] = aroundLink((vars) => t('privacy.seeAbout', vars));
-  const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
-    <Paper variant="outlined" component="section" sx={{ p: 4, borderRadius: 3, mb: 4 }}>
+  const Section = ({
+    title,
+    children,
+    id,
+  }: {
+    title: string;
+    children: React.ReactNode;
+    id?: string;
+  }) => (
+    <Paper
+      variant="outlined"
+      component="section"
+      id={id}
+      sx={{ p: 4, borderRadius: 3, mb: 4, scrollMarginTop: 96 }}
+    >
       <Typography variant="sectionTitle" component="h2" sx={{ mb: 2 }}>
         {title}
       </Typography>
@@ -37,6 +50,7 @@ export default async function PrivacyPage({ searchParams }: { searchParams: { e?
     <section aria-labelledby="privacy-title">
       <h1 id="privacy-title">{t('trust.notice.title')}</h1>
       <p>{t('trust.notice.intro')}</p>
+      <p data-testid="privacy-one-line">{t('survey.privacyShort')}</p>
 
       {n ? (
         <Section title={t('trust.notice.whoTitle')}>
@@ -100,7 +114,7 @@ export default async function PrivacyPage({ searchParams }: { searchParams: { e?
         ) : null}
       </Section>
 
-      <Section title={t('trust.notice.requestTitle')}>
+      <Section id="request" title={t('trust.notice.requestTitle')}>
         {found ? (
           <>
             <p>{t('trust.notice.requestIntro')}</p>

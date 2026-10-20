@@ -124,7 +124,12 @@ export default async function InvitationsPage({ searchParams }: { searchParams: 
         subtitle={t('admin.invitations.subtitle')}
       />
       <StatTiles items={tiles} />
-      <Typography variant="body2" color="text.secondary" data-testid="invitation-counts" sx={{ mb: 4 }}>
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        data-testid="invitation-counts"
+        sx={{ mb: 4 }}
+      >
         {t('admin.invitations.counts', {
           expected: totalsOfLinks.expected,
           created: totalsOfLinks.created,
