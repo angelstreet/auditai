@@ -106,11 +106,11 @@ export const isCompleteQuizSubmission = (answers: Record<string, string>): boole
 export const tierDescriptor = (tier: 'tortoise' | 'fox' | 'owl'): string => {
   switch (tier) {
     case 'tortoise':
-      return "You're at the start of the curve \u2014 a little exposure goes a long way.";
+      return 'You explore AI at your own pace \u2014 small, regular tries can help.';
     case 'fox':
       return "You're a regular explorer \u2014 pragmatic, curious, learning as you go.";
     case 'owl':
-      return "You're an engaged practitioner \u2014 keep sharing what works.";
+      return 'AI is already part of your work \u2014 keep sharing what works.';
   }
 };
 

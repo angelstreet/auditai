@@ -137,11 +137,11 @@ const OwlSvg = ({
 const labelFor = (tier: MascotTier): string => {
   switch (tier) {
     case 'tortoise':
-      return 'Tortoise mascot \u2014 cautious, learning the basics';
+      return 'Tortoise mascot \u2014 goes at its own pace, step by step';
     case 'fox':
       return 'Fox mascot \u2014 pragmatic, regular AI explorer';
     case 'owl':
-      return 'Owl mascot \u2014 engaged, confident AI practitioner';
+      return 'Owl mascot \u2014 AI is already part of its work';
   }
 };
 

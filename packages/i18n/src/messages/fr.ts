@@ -174,7 +174,7 @@ export const fr: Messages = {
   },
   quiz: {
     title: 'Découvrez votre mascotte IA',
-    intro: 'Cinq questions rapides. Il n’y a pas de mauvaise réponse.',
+    intro: 'Cinq questions rapides sur ce que vous faites déjà avec l’IA. Vous obtenez une mascotte, pas une note.',
     privacyShort:
       'Seule la mascotte la plus fréquente de l’équipe est partagée, jamais vos réponses.',
     questionOf: 'Question {i} sur {n}',
@@ -201,14 +201,14 @@ export const fr: Messages = {
     threeTiers: 'Les trois mascottes',
     tier: { tortoise: 'Tortue', fox: 'Renard', owl: 'Chouette' },
     mascotAlt: {
-      tortoise: 'Mascotte tortue — prudente, elle apprend les bases',
+      tortoise: 'Mascotte tortue — avance à son rythme, pas à pas',
       fox: 'Mascotte renard — pragmatique, exploratrice régulière de l’IA',
-      owl: 'Mascotte chouette — engagée, elle utilise l’IA en confiance',
+      owl: 'Mascotte chouette — l’IA fait déjà partie de son travail',
     },
     tierDescriptor: {
-      tortoise: 'Vous débutez. De petits essais réguliers aident beaucoup.',
+      tortoise: 'Vous explorez l’IA à votre rythme. De petits essais réguliers peuvent aider.',
       fox: 'Vous essayez l’IA régulièrement et progressez en pratiquant.',
-      owl: 'Vous utilisez l’IA avec aisance. Partagez ce qui marche avec votre équipe.',
+      owl: 'L’IA fait déjà partie de votre travail. Partagez ce qui marche avec votre équipe.',
     },
   },
   intake: {
