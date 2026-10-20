@@ -434,7 +434,7 @@
           "code": "v1_repeat_task",
           "axis": "practice",
           "question": "Think about your last week at work. Which repetitive task took you the most time?",
-          "text": "I copy the same customer details into the CRM each time. Ask Pat Demo (pat.demo@example.invalid) how it works."
+          "text": "I copy the same customer details into the CRM each time. Ask Pat Demo (pat.demo@synthetic.invalid) how it works."
         },
         {
           "id": "en-contact-2",

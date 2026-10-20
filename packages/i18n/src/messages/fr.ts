@@ -174,7 +174,8 @@ export const fr: Messages = {
   },
   quiz: {
     title: 'Découvrez votre mascotte IA',
-    intro: 'Cinq questions rapides sur ce que vous faites déjà avec l’IA. Vous obtenez une mascotte, pas une note.',
+    intro:
+      'Cinq questions rapides sur ce que vous faites déjà avec l’IA. Vous obtenez une mascotte, pas une note.',
     privacyShort:
       'Seule la mascotte la plus fréquente de l’équipe est partagée, jamais vos réponses.',
     questionOf: 'Question {i} sur {n}',
