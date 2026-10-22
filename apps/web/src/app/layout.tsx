@@ -37,7 +37,7 @@ export function generateMetadata(): Metadata {
     },
     icons: {
       icon: [
-        { url: '/favicon.ico', sizes: 'any' },
+        { url: `${KIT}/02_Icons/favicon.ico`, sizes: 'any' },
         { url: `${KIT}/02_Icons/android-chrome-192x192.png`, sizes: '192x192', type: 'image/png' },
       ],
       apple: `${KIT}/02_Icons/apple-touch-icon.png`,

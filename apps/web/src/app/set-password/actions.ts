@@ -22,7 +22,7 @@ export interface SetPasswordState {
 
 /**
  * Spend the link, set the password, sign the person in and send them to their own surface: a
- * referent to /client, staff to Missions (TASK-U, ADR 0040).
+ * referent to /client, staff to /board (TASK-U, ADR 0040).
  */
 export async function setPasswordAction(
   _prev: SetPasswordState,
@@ -54,5 +54,5 @@ export async function setPasswordAction(
     newSessionPayload({ id: result.userId, name: result.displayName }, memberships),
   );
   cookies().set(SESSION_COOKIE, token, sessionCookieOptions());
-  redirect(staff ? '/admin/engagements' : '/client');
+  redirect(staff ? '/board' : '/client');
 }
