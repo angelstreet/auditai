@@ -1,5 +1,10 @@
 # EvolAI — handover (updated 2026-10-20)
 
+> **2026-10-22: build paused for an independent review.** Read [FABLE_REVIEW_HANDOVER.md](FABLE_REVIEW_HANDOVER.md)
+> first: it restates the goal (a consultant tool: clients onboard before the site visit so we arrive with data),
+> lists every owner complaint, the state of main, the paused tasks AA to AD (unmerged), and the questions to answer.
+> Do not resume or merge AA, AB, AC or AD until the review is back.
+
 Read this first, then [README](../README.md), [ROADMAP](ROADMAP.md), [PRD](PRD.md), the [ADR index](adr/) and
 [AGENTS.md](../AGENTS.md) (rules for AI agents: public repo, no secrets, tests with every change).
 
