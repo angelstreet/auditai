@@ -1,29 +1,8 @@
-import Link from 'next/link';
-import { Logo } from '@/components/Logo';
-import { getT } from '@/lib/i18n';
-import { aroundLink } from '@/lib/richText';
+import { redirect } from 'next/navigation';
 
-export function generateMetadata() {
-  return { title: getT().t('meta.pages.about') };
-}
+/** The front page is the About: old links and bookmarks land there. */
+export const dynamic = 'force-dynamic';
 
-/** Public page: explains that the survey is reached from an invitation link. */
-export default function AboutPage() {
-  const { t } = getT();
-  const [before, after] = aroundLink((vars) => t('about.seePrivacy', vars));
-  return (
-    <section aria-labelledby="about-title">
-      <Logo size="hero" />
-      <p className="tagline">{t('common.tagline')}</p>
-      <h1 id="about-title" className="section-title">
-        {t('about.title')}
-      </h1>
-      <p>{t('about.body')}</p>
-      <p className="muted">
-        {before}
-        <Link href="/privacy">{t('about.privacyLink')}</Link>
-        {after}
-      </p>
-    </section>
-  );
+export default function AboutPage(): never {
+  redirect('/');
 }

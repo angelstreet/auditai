@@ -111,20 +111,20 @@ Remove from the UI (keep data and routes redirecting where needed):
 
 ## 6. Glossary (one word per concept, FR and EN, no "auditor")
 
-| Concept               | EN                     | FR                     | Replaces                               |
-| --------------------- | ---------------------- | ---------------------- | -------------------------------------- |
-| the consultancy       | EvolAI, the EvolAI team| EvolAI, l'équipe EvolAI| auditor, consultant, auditeur          |
-| one client audit      | Mission                | Mission                | engagement, audit, portfolio           |
-| the client company    | Client, organisation   | Client, organisation   | tenant, workspace, locataire           |
-| the client's contact  | Referent               | Référent               | sponsor, contact                       |
-| a person who answers  | a person, your team    | une personne, votre équipe | respondent, pseudonym, employee     |
-| the questionnaire     | Survey                 | Questionnaire          | intake, quiz                           |
-| sent links            | Links                  | Liens                  | invitations, batch                     |
-| collected data        | Answers                | Réponses               | submissions, soumises                  |
-| what EvolAI found     | Findings               | Constats               | themes, analyses, opportunities        |
-| what to do            | Actions                | Actions                | improvement steps, opportunities       |
-| the deliverable       | Report                 | Rapport                | sponsor brief, delivery                |
-| the number            | Readiness score        | Score de préparation   | literacy score, badge                  |
+| Concept              | EN                      | FR                         | Replaces                         |
+| -------------------- | ----------------------- | -------------------------- | -------------------------------- |
+| the consultancy      | EvolAI, the EvolAI team | EvolAI, l'équipe EvolAI    | auditor, consultant, auditeur    |
+| one client audit     | Mission                 | Mission                    | engagement, audit, portfolio     |
+| the client company   | Client, organisation    | Client, organisation       | tenant, workspace, locataire     |
+| the client's contact | Referent                | Référent                   | sponsor, contact                 |
+| a person who answers | a person, your team     | une personne, votre équipe | respondent, pseudonym, employee  |
+| the questionnaire    | Survey                  | Questionnaire              | intake, quiz                     |
+| sent links           | Links                   | Liens                      | invitations, batch               |
+| collected data       | Answers                 | Réponses                   | submissions, soumises            |
+| what EvolAI found    | Findings                | Constats                   | themes, analyses, opportunities  |
+| what to do           | Actions                 | Actions                    | improvement steps, opportunities |
+| the deliverable      | Report                  | Rapport                    | sponsor brief, delivery          |
+| the number           | Readiness score         | Score de préparation       | literacy score, badge            |
 
 Report and PDF text are signed "EvolAI". The referent home today says "l'auditeur" three times on one screen;
 those become "EvolAI".

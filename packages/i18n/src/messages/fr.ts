@@ -14,7 +14,7 @@ export const fr: Messages = {
     homeAria: 'Accueil EvolAI',
     skipToContent: 'Aller au contenu',
     navPrimaryAria: 'principale',
-    nav: { about: 'À propos', privacy: 'Confidentialité' },
+    nav: { privacy: 'Confidentialité' },
     copy: {
       copy: 'Copier',
       copied: 'Copié',
@@ -46,8 +46,8 @@ export const fr: Messages = {
       portfolio: 'Portefeuille',
       workspace: 'Espace de travail',
       roles: {
-        platform_owner: 'Responsable de la plateforme',
-        auditor: 'Auditeur',
+        platform_owner: 'Équipe EvolAI',
+        auditor: 'Équipe EvolAI',
         sponsor: 'Commanditaire',
         viewer: 'Lecteur',
         other: 'Membre',
@@ -56,9 +56,8 @@ export const fr: Messages = {
     menu: { open: 'Ouvrir le menu', close: 'Fermer le menu' },
     footer: {
       navAria: 'Pied de page',
-      rights: 'Logiciel libre sous licence Apache 2.0.',
+      rights: '© EvolAI · Open source, Apache 2.0',
       privacy: 'Confidentialité',
-      about: 'À propos',
       source: 'Code source',
     },
     noTenants:
@@ -77,7 +76,6 @@ export const fr: Messages = {
     ogAlt: 'Logotype EvolAI avec son symbole de marches adaptatives',
     pages: {
       welcome: 'Bienvenue',
-      about: 'À propos',
       privacy: 'Politique de confidentialité',
       quiz: 'Bilan de culture IA',
       quizResult: 'Votre mascotte',
@@ -86,35 +84,25 @@ export const fr: Messages = {
     },
   },
   welcome: {
-    heading: 'Trouvez où l’IA aide vraiment vos équipes',
-    lede: 'Les équipes racontent leur travail. Une personne vérifie chaque constat.',
-    stepsAria: 'Comment ça marche, en quatre étapes',
-    stepsTitle: 'Comment ça marche',
-    step1Title: 'Poser le cadre',
-    step1Body: 'Objectifs, budget, limites.',
-    step2Title: 'Écouter les équipes',
-    step2Body: 'Cinq minutes, sur mobile.',
-    step3Title: 'Relire ensemble',
-    step3Body: 'Chaque constat est sourcé.',
-    step4Title: 'Agir',
-    step4Body: 'Formations et cas d’usage.',
-    ctaIntake: 'Démarrer le cadrage',
-    ctaHow: 'Comment ça marche',
-    trust:
-      'Nous ne demandons jamais de nom. Seulement des totaux d’équipe. Une personne valide tout partage.',
-    visualAlt: 'Les mascottes EvolAI, des premiers pas à un usage confiant de l’IA',
-  },
-
-  about: {
-    title: 'EvolAI — sur invitation',
-    body: 'Ce questionnaire s’ouvre depuis un lien sécurisé envoyé par votre contact d’équipe. Si vous êtes arrivé ici sans lien, demandez-le à votre contact d’équipe.',
-    seePrivacy: 'Consultez la {link} pour savoir comment vos réponses sont traitées.',
-    privacyLink: 'politique de confidentialité',
+    heading: 'Voyez comment vos équipes travaillent vraiment avec l’IA.',
+    lede: 'EvolAI aide les organisations à voir où l’IA aide déjà, où elle est risquée et quoi faire ensuite. Un court questionnaire anonyme, puis une visite et un plan.',
+    stepsAria: 'Comment ça marche, en trois étapes',
+    step1Title: 'Comprendre',
+    step1Body: 'Vos équipes répondent à dix questions, anonymement, en sept minutes.',
+    step2Title: 'Adapter',
+    step2Body: 'Nous venons sur place avec une image déjà claire et travaillons avec vos équipes.',
+    step3Title: 'Évoluer',
+    step3Body:
+      'Vous recevez un score de préparation, des actions priorisées et un plan à 30/60/90 jours.',
+    contact: 'Nous contacter',
+    signIn: 'Se connecter',
+    surveyLine:
+      'Vous avez reçu un lien pour le questionnaire ? Ouvrez-le depuis le message reçu. Aucun compte nécessaire.',
   },
   privacy: {
     title: 'Politique de confidentialité',
     p1: 'EvolAI s’intéresse aux pratiques de travail et à leurs pistes d’amélioration, pas aux personnes. Nous gardons un code à la place de votre nom ; votre contact d’équipe voit combien de personnes ont répondu, jamais qui a dit quoi, sauf accord de votre part.',
-    p2: 'Votre organisation décide de la durée de conservation. Vous pouvez retirer ou supprimer vos réponses à tout moment avec le formulaire ci-dessous ; il va à l’auditeur, pas à votre responsable.',
+    p2: 'Votre organisation décide de la durée de conservation. Vous pouvez retirer ou supprimer vos réponses à tout moment avec le formulaire ci-dessous ; il va à l’équipe EvolAI, pas à votre responsable.',
     seeAbout: 'Retour à {link}.',
     aboutLink: 'la page d’accueil',
   },
@@ -287,7 +275,7 @@ export const fr: Messages = {
     res: { eu_frankfurt: 'UE (Francfort)', us: 'États-Unis', client_vpc: 'VPC du client' },
     injectionLabel: 'Processus de revue des injections de prompt',
     injection: {
-      external_auditor: 'Test d’intrusion trimestriel par un auditeur externe',
+      external_auditor: 'Test d’intrusion trimestriel par un évaluateur externe',
       internal: 'Revue interne uniquement',
       none_yet: 'Pas encore de processus formel — merci de nous conseiller',
     },
@@ -320,7 +308,6 @@ export const fr: Messages = {
   },
   login: {
     title: 'Se connecter',
-    subtitle: 'Pour les auditeurs et consultants de votre organisation.',
     showPassword: 'Afficher le mot de passe',
     hidePassword: 'Masquer le mot de passe',
     signingIn: 'Connexion…',

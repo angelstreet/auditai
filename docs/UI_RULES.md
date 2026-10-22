@@ -4,15 +4,17 @@ One look for every page, dialog and popup, in light and dark. These rules are th
 rules, generalised from the VirtualPyTest guide (`UI_STYLE.md` and its UIUX review) so they do not have to be
 repeated. Read this before touching any screen. Design tokens and the font are in
 [ADR 0025](adr/0025-design-tokens.md) and [ADR 0027](adr/0027-one-font-and-playwright-in-ci.md); respondent
-copy rules are in [UX_AUDIT.md](UX_AUDIT.md).
+copy rules are in [UX_AUDIT.md](UX_AUDIT.md). **Brand and colour tokens come from the brand kit** in
+`apps/web/public/brand/kit/` (logo, icons, Open Graph, palette); see [ADR 0048](adr/0048-brand-kit-tokens-and-contrast-rule.md)
+for the tokens and the teal contrast rule (raw teal never carries small text).
 
 ## 0. Do not reinvent
 
 - **Use a standard component library.** MUI (`@mui/material`) with the Outlined icon set (`@mui/icons-material`),
   themed from our tokens. Text fields, buttons, menus, dialogs, tabs, toggle groups, tooltips, snackbars, tables,
   progress and skeletons are the library's components, never hand-made.
-- **Use the pattern users already know.** Language = a globe icon button opening a menu (or a two-option toggle
-  when only two languages), not two text buttons. Password = a show/hide eye icon. Close = X icon. Settings =
+- **Use the pattern users already know.** Language = one MUI ToggleButtonGroup "FR | EN" (two languages; codes as
+  text, aria-label, keyboard), the same everywhere. Password = a show/hide eye icon. Close = X icon. Settings =
   gear. Back = arrow. Menu = hamburger on phones. Links look like links, buttons like buttons.
 - **Icons over words** for common actions and navigation; always with a tooltip and `aria-label`. Words stay for
   the primary action and anything ambiguous.
@@ -64,8 +66,10 @@ never literal sizes. No ALL CAPS, no `h4` page titles, buttons are not upper-cas
 - Lists of rows in one bordered container split by hairlines; hover tint; row actions appear on hover or in an
   overflow menu, never a column of always-visible trash icons.
 - Tables: fixed column widths, ellipsis plus tooltip on long cells, tabular numbers, header from the theme.
-- Header: logo left, language icon, theme icon, account/login icon on the right; collapses to a menu on phones.
-  No bar chrome: same surface as the page.
+- Header: kit logo left (once per page); FR | EN toggle, theme icon, sign-in or account control on the right.
+  Nothing else. No bar chrome: same surface as the page. Privacy and Source live in one slim footer on every
+  page (single row on desktop, stacked and centred on phones), each link once. Header, content and footer share
+  one container width and left edge.
 
 ## 6. Stable layout (no shift, no flashing)
 

@@ -4,10 +4,10 @@ import type { ClientMessages } from './index.js';
 export const clientFr: ClientMessages = {
   viewAs: {
     section: 'Voir en tant que',
-    me: 'Moi : auditeur',
-    meAria: 'Revenir à votre vue d’auditeur',
-    persona: '{tenant} : {name}, {role}',
-    personaAria: 'Voir l’application comme {name}, {role} chez {tenant}. Lecture seule.',
+    me: 'Moi',
+    meAria: 'Revenir à votre propre vue',
+    persona: '{tenant} · Référent',
+    personaAria: 'Voir l’application comme un {role} chez {tenant}. Lecture seule.',
     current: 'Vue actuelle',
     banner: 'Vous voyez {tenant} en tant que {name} ({role}). Lecture seule.',
     bannerShort: 'Vue de {name}. Lecture seule.',
@@ -44,7 +44,7 @@ export const clientFr: ClientMessages = {
     },
     closes: 'Fermeture le {date}',
     closed: 'Fermé le {date}',
-    noClosingDate: 'Pas encore de date de fermeture. Votre auditeur va la fixer.',
+    noClosingDate: 'Pas encore de date de fermeture. L’équipe EvolAI va la fixer.',
     daysLeft:
       '{count, plural, =0 {Dernier jour aujourd’hui} one {# jour restant} other {# jours restants}}',
     progressTitle: 'Réponses par équipe',
@@ -66,7 +66,7 @@ export const clientFr: ClientMessages = {
       share: 'Envoyez les liens à votre équipe, un lien par personne.',
       shareUntil: 'Envoyez les liens à votre équipe. Un rappel sera utile à partir du {date}.',
       remind: 'Bon jour pour un rappel. Envoyez le même court message à tout le monde.',
-      wait: 'Merci. L’auditeur lit les réponses.',
+      wait: 'Merci. L’équipe EvolAI lit les réponses.',
       results: 'Les résultats sont prêts. Jetez un œil.',
     },
     cta: {
@@ -75,15 +75,15 @@ export const clientFr: ClientMessages = {
       remind: 'Envoyer le rappel',
       results: 'Voir les résultats',
     },
-    noSurvey: 'Aucun questionnaire n’est prévu pour votre équipe. Votre auditeur va le préparer.',
+    noSurvey: 'Aucun questionnaire n’est prévu pour votre équipe. L’équipe EvolAI va le préparer.',
     how: {
       title: 'Comment ça marche',
       ask: 'Votre équipe répond à un court questionnaire sur son travail et son usage de l’IA. Cela prend environ {minutes} minutes.',
-      who: 'Personne au travail ne voit les réponses d’une personne. Vous voyez combien de personnes ont répondu, jamais lesquelles. L’auditeur lit des groupes d’au moins {n} personnes.',
+      who: 'Personne au travail ne voit les réponses d’une personne. Vous voyez combien de personnes ont répondu, jamais lesquelles. L’équipe EvolAI lit des groupes d’au moins {n} personnes.',
       stepsLabel: 'Trois étapes',
       send: 'Envoyer : donnez un lien à chaque personne.',
       remind: 'Rappel : envoyez un seul message à tout le monde, le jour que nous suggérons.',
-      report: 'Rapport : à la fin, l’auditeur publie un rapport ici.',
+      report: 'Rapport : à la fin, l’équipe EvolAI publie un rapport ici.',
     },
     reminder: {
       title: 'Rappel',
@@ -162,7 +162,7 @@ export const clientFr: ClientMessages = {
   },
   results: {
     title: 'Résultats',
-    subtitle: 'Ce que l’auditeur a publié pour votre organisation.',
+    subtitle: 'Ce que l’équipe EvolAI a publié pour votre organisation.',
     empty: 'Rien de publié pour l’instant. Les résultats apparaissent ici après validation.',
     themesTitle: 'Thèmes principaux',
     themesHint: 'Seuls les thèmes cités par au moins {n} personnes sont affichés.',

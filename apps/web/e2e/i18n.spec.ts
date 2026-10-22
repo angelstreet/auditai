@@ -43,14 +43,12 @@ test.describe('i18n negotiation and switching', () => {
     test('switching to English re-renders and persists across navigation', async ({ page }) => {
       await page.goto('/privacy');
       await expect(page.locator('html')).toHaveAttribute('lang', 'fr');
-      await page.getByTestId('language-button').click();
       await page.getByTestId('switch-en').click();
       await expect(page.locator('html')).toHaveAttribute('lang', 'en');
       await expect(page.getByRole('heading', { level: 1 })).toHaveText(/Privacy notice/);
-      await page.goto('/about');
+      await page.goto('/privacy');
       await expect(page.locator('html')).toHaveAttribute('lang', 'en');
-      await page.getByTestId('language-button').click();
-      await expect(page.getByTestId('switch-en')).toHaveAttribute('aria-current', 'true');
+      await expect(page.getByTestId('switch-en')).toHaveAttribute('aria-pressed', 'true');
       await page.getByTestId('switch-fr').click();
       await expect(page.locator('html')).toHaveAttribute('lang', 'fr');
     });

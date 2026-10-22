@@ -11,6 +11,8 @@ import ListItemText from '@mui/material/ListItemText';
 import ListSubheader from '@mui/material/ListSubheader';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { useColorScheme } from '@mui/material/styles';
@@ -19,7 +21,7 @@ import { setLocaleAction } from '@/lib/localeAction';
 import { AppIcon } from '@evolai/ui';
 import { THEME_COOKIE } from '@/lib/themeChoice';
 import { useI18n } from '../I18nProvider';
-import { ViewAsForm, viewAsMenuItems, type ViewAsMenu } from './ViewAsMenuSection';
+import { QUIET_HEADER_SX, ViewAsForm, viewAsMenuItems, type ViewAsMenu } from './ViewAsMenuSection';
 
 const YEAR = 31536000;
 
@@ -30,56 +32,32 @@ const MENU_ITEM_SX = {
   '& .MuiListItemIcon-root': { minWidth: 36 },
 } as const;
 
-/** Globe icon button opening a language menu (docs/UI_RULES.md §0). Same size in every locale. */
-export function LanguageMenu() {
+/** One standard "FR | EN" toggle group (docs/UI_RULES.md §0); codes as text, same in every locale. */
+export function LanguageToggle() {
   const { locale, t } = useI18n();
-  const [anchor, setAnchor] = useState<HTMLElement | null>(null);
   const [, startTransition] = useTransition();
-  const choose = (next: SupportedLocale) => {
-    setAnchor(null);
-    if (next === locale) return;
+  const choose = (_e: MouseEvent<HTMLElement>, next: SupportedLocale | null) => {
+    // An exclusive group reports null when the active button is pressed again: ignore it.
+    if (!next || next === locale) return;
     // Server action: sets the cookie and re-renders on the server in one round trip (no flash).
     startTransition(() => setLocaleAction(next));
   };
   return (
-    <>
-      <Tooltip title={t('common.language.menuAria')}>
-        <IconButton
-          data-testid="language-button"
-          aria-label={t('common.language.menuAria')}
-          aria-haspopup="menu"
-          aria-expanded={anchor ? true : undefined}
-          aria-controls={anchor ? 'language-menu' : undefined}
-          onClick={(e: MouseEvent<HTMLElement>) => setAnchor(e.currentTarget)}
-        >
-          <AppIcon name="language" />
-        </IconButton>
-      </Tooltip>
-      <Menu
-        id="language-menu"
-        anchorEl={anchor}
-        open={anchor !== null}
-        onClose={() => setAnchor(null)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      >
-        {supportedLocales.map((l) => (
-          <MenuItem
-            key={l}
-            lang={l}
-            data-testid={`switch-${l}`}
-            selected={l === locale}
-            aria-current={l === locale ? 'true' : undefined}
-            onClick={() => choose(l)}
-          >
-            <ListItemIcon sx={{ visibility: l === locale ? 'visible' : 'hidden' }}>
-              <AppIcon name="success" />
-            </ListItemIcon>
-            <ListItemText>{t(`common.language.${l}`)}</ListItemText>
-          </MenuItem>
-        ))}
-      </Menu>
-    </>
+    <ToggleButtonGroup
+      exclusive
+      size="small"
+      value={locale}
+      onChange={choose}
+      aria-label={t('common.language.switcherAria')}
+      data-testid="language-toggle"
+      sx={{ '& .MuiToggleButton-root': { minWidth: 44, minHeight: 44, px: 2, fontWeight: 600 } }}
+    >
+      {supportedLocales.map((l) => (
+        <ToggleButton key={l} value={l} lang={l} data-testid={`switch-${l}`}>
+          {l.toUpperCase()}
+        </ToggleButton>
+      ))}
+    </ToggleButtonGroup>
   );
 }
 
@@ -136,6 +114,9 @@ const initialsOf = (name: string): string =>
 export function AccountMenu({ identity }: { identity: Identity | null }) {
   const { t } = useI18n();
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
+  const roleLine = identity
+    ? `${identity.role}${identity.organisation ? ` · ${identity.organisation}` : ''}`
+    : '';
   if (!identity) {
     return (
       <Tooltip title={t('common.account.signIn')}>
@@ -195,31 +176,38 @@ export function AccountMenu({ identity }: { identity: Identity | null }) {
         onClose={() => setAnchor(null)}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        slotProps={{ paper: { sx: { minWidth: 260, maxWidth: 320 } } }}
+        slotProps={{ paper: { sx: { minWidth: 260, width: 320, maxWidth: 'calc(100vw - 32px)' } } }}
       >
         <Box sx={{ px: 4, py: 3 }} data-testid="account-identity">
-          <Typography variant="cardTitle" component="p" sx={{ m: 0 }}>
+          <Typography variant="cardTitle" component="p" noWrap title={identity.name} sx={{ m: 0 }}>
             {identity.name}
           </Typography>
           {identity.email ? (
             <Typography
               variant="body2"
               color="text.secondary"
-              sx={{ m: 0, wordBreak: 'break-all' }}
+              noWrap
+              title={identity.email}
+              sx={{ m: 0 }}
             >
               {identity.email}
             </Typography>
           ) : null}
-          <Typography variant="body2" color="text.secondary" sx={{ m: 0, mt: 2 }}>
-            {identity.role}
-            {identity.organisation ? ` · ${identity.organisation}` : ''}
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            noWrap
+            title={roleLine}
+            sx={{ m: 0, mt: 2 }}
+          >
+            {roleLine}
           </Typography>
         </Box>
         <Divider />
         {identity.viewAs ? viewAsMenuItems(identity.viewAs, t) : null}
         {(identity.organisations?.length ?? 0) > 1
           ? [
-              <ListSubheader key="org-head" component="div" sx={{ lineHeight: '32px' }}>
+              <ListSubheader key="org-head" component="div" sx={QUIET_HEADER_SX}>
                 {t('common.account.switchOrganisation')}
               </ListSubheader>,
               ...(identity.organisations ?? []).map((o) => {
@@ -237,7 +225,13 @@ export function AccountMenu({ identity }: { identity: Identity | null }) {
                     <ListItemIcon sx={{ visibility: current ? 'visible' : 'hidden' }}>
                       <AppIcon name="success" />
                     </ListItemIcon>
-                    <ListItemText>{o.label}</ListItemText>
+                    <ListItemText
+                      slotProps={{ primary: { noWrap: true } }}
+                      sx={{ minWidth: 0 }}
+                      title={o.label}
+                    >
+                      {o.label}
+                    </ListItemText>
                   </MenuItem>
                 );
               }),
@@ -267,41 +261,5 @@ export function AccountMenu({ identity }: { identity: Identity | null }) {
       <form id="account-sign-out-form" method="post" action="/api/auth/logout" hidden />
       {identity.viewAs ? <ViewAsForm /> : null}
     </>
-  );
-}
-
-/** Phone-only hamburger with the text links (About, Privacy). */
-export function NavMenu({ links }: { links: ReadonlyArray<{ href: string; label: string }> }) {
-  const { t } = useI18n();
-  const [anchor, setAnchor] = useState<HTMLElement | null>(null);
-  return (
-    <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
-      <Tooltip title={t('common.menu.open')}>
-        <IconButton
-          data-testid="nav-menu-button"
-          aria-label={t('common.menu.open')}
-          aria-haspopup="menu"
-          aria-expanded={anchor ? true : undefined}
-          aria-controls={anchor ? 'nav-menu' : undefined}
-          onClick={(e: MouseEvent<HTMLElement>) => setAnchor(e.currentTarget)}
-        >
-          <AppIcon name="menu" />
-        </IconButton>
-      </Tooltip>
-      <Menu
-        id="nav-menu"
-        anchorEl={anchor}
-        open={anchor !== null}
-        onClose={() => setAnchor(null)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      >
-        {links.map((l) => (
-          <MenuItem key={l.href} component="a" href={l.href}>
-            {l.label}
-          </MenuItem>
-        ))}
-      </Menu>
-    </Box>
   );
 }

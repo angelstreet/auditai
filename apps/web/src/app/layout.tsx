@@ -12,6 +12,10 @@ import { THEME_INIT_SCRIPT, getThemeChoice } from '@/lib/theme';
 
 const SITE_URL = process.env['NEXT_PUBLIC_SITE_URL'] ?? 'https://bai7w0jcu7s8e.space.minimax.io';
 
+// Brand kit assets (apps/web/public/brand/kit, README.md "Recommended usage"); never home-made ones.
+const KIT = '/brand/kit';
+const OG_IMAGE = `${KIT}/04_Social_GitHub/open_graph_light.png`;
+
 export function generateMetadata(): Metadata {
   const { t } = getT();
   return {
@@ -23,15 +27,22 @@ export function generateMetadata(): Metadata {
       type: 'website',
       url: SITE_URL,
       siteName: 'EvolAI',
-      images: [{ url: '/brand/og.png', width: 1200, height: 630, alt: t('meta.ogAlt') }],
+      images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: t('meta.ogAlt') }],
     },
     twitter: {
       card: 'summary_large_image',
       title: t('meta.title'),
       description: t('meta.description'),
-      images: ['/brand/og.png'],
+      images: [OG_IMAGE],
     },
-    icons: { icon: '/brand/favicon.svg' },
+    icons: {
+      icon: [
+        { url: `${KIT}/02_Icons/favicon.ico`, sizes: 'any' },
+        { url: `${KIT}/02_Icons/android-chrome-192x192.png`, sizes: '192x192', type: 'image/png' },
+      ],
+      apple: `${KIT}/02_Icons/apple-touch-icon.png`,
+    },
+    manifest: `${KIT}/02_Icons/site.webmanifest`,
   };
 }
 

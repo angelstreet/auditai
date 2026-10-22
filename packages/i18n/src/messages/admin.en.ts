@@ -94,7 +94,7 @@ export const adminEn = {
     openIntake: 'Open intake',
     colIntake: 'Intake',
     colField: 'Field',
-    colReview: 'Auditor review',
+    colReview: 'EvolAI team review',
     colOpps: 'Opportunities',
     colDelivery: 'Delivery',
     empty: 'No cards in this column.',
@@ -251,7 +251,7 @@ export const adminEn = {
     noPrompts: 'No follow-up prompts proposed.',
     evidence: 'Evidence ({n})',
     evidenceNote:
-      'Every claim links back to a source row in the application (source link required). The auditor verifies the claim + the source before approving.',
+      'Every claim links back to a source row in the application (source link required). The EvolAI team verifies the claim + the source before approving.',
     noEvidence: 'No evidence claims.',
     colClaim: 'Claim',
     colSource: 'Source',

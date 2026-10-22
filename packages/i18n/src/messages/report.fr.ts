@@ -111,10 +111,11 @@ export const reportFr: Shape<typeof reportEn> = {
     methodBase:
       'Questionnaire anonyme auprès des équipes : {people, plural, one {# personne a répondu} other {# personnes ont répondu}}. Les scores sont des moyennes de groupes d’au moins {n} personnes.',
     methodThemes:
-      '{count, plural, one {L’auditeur a vérifié et approuvé # thème.} other {L’auditeur a vérifié et approuvé # thèmes.}}',
+      '{count, plural, one {L’équipe EvolAI a vérifié et approuvé # thème.} other {L’équipe EvolAI a vérifié et approuvé # thèmes.}}',
     methodOpportunities:
-      '{count, plural, one {L’auditeur a approuvé # opportunité d’amélioration.} other {L’auditeur a approuvé # opportunités d’amélioration.}}',
-    methodUnreviewed: 'Aucun thème ni aucune opportunité n’a encore été approuvé par l’auditeur.',
+      '{count, plural, one {L’équipe EvolAI a approuvé # opportunité d’amélioration.} other {L’équipe EvolAI a approuvé # opportunités d’amélioration.}}',
+    methodUnreviewed:
+      'Aucun thème ni aucune opportunité n’a encore été approuvé par l’équipe EvolAI.',
     methodRefreshed: 'La note de méthode a été réécrite à partir des chiffres actuels.',
   },
   draft: {
@@ -300,7 +301,7 @@ export const reportFr: Shape<typeof reportEn> = {
       d60: 'Mesurer les premiers résultats par rapport au point de départ : temps, qualité, adoption.',
       d90: 'Décider pour chaque changement : garder, adapter ou arrêter, et rendre compte de chaque résultat.',
     },
-    checkpointOwner: 'Commanditaire avec l’auditeur',
+    checkpointOwner: 'Commanditaire avec l’équipe EvolAI',
   },
   view: {
     draftBanner: 'Aperçu. Le client ne le voit pas avant la publication.',
@@ -319,14 +320,14 @@ export const reportFr: Shape<typeof reportEn> = {
     print: 'Imprimer',
     stepsFor: 'Actions',
     empty:
-      'Votre rapport d’audit n’est pas encore publié. Vous le trouverez ici dès que l’auditeur l’aura publié.',
+      'Votre rapport d’audit n’est pas encore publié. Vous le trouverez ici dès que l’équipe EvolAI l’aura publié.',
     receiveTitle: 'Ce que vous recevrez',
     receiveWhat:
       'Un seul rapport pour tout l’audit : le score, les constats principaux, les actions à mener et un plan à 30, 60 et 90 jours. Aucune réponse individuelle.',
     receiveWhenDate:
-      'Le questionnaire ferme le {date}. Le rapport apparaît ici quand l’auditeur a lu les réponses et l’a publié.',
+      'Le questionnaire ferme le {date}. Le rapport apparaît ici quand l’équipe EvolAI a lu les réponses et l’a publié.',
     receiveWhen:
-      'Le rapport apparaît ici quand le questionnaire est terminé et que l’auditeur a lu les réponses et l’a publié.',
+      'Le rapport apparaît ici quand le questionnaire est terminé et que l’équipe EvolAI a lu les réponses et l’a publié.',
     receiveForward:
       'Pour le transmettre, téléchargez le PDF ou imprimez cette page, puis envoyez-le par e-mail.',
     clientTitle: 'Rapport d’audit',

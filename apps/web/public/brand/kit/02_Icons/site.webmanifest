@@ -8,17 +8,17 @@
   "theme_color": "#172B3A",
   "icons": [
     {
-      "src": "/icons/android-chrome-192x192.png",
+      "src": "/brand/kit/02_Icons/android-chrome-192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/icons/android-chrome-512x512.png",
+      "src": "/brand/kit/02_Icons/android-chrome-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
     },
     {
-      "src": "/icons/evolai_maskable.png",
+      "src": "/brand/kit/02_Icons/PNG/evolai_maskable.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
