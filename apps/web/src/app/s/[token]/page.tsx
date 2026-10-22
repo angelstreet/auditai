@@ -8,7 +8,6 @@ import PrivacyNotice from '@/components/respondent/PrivacyNotice';
 import RespondentStatus from '@/components/respondent/RespondentStatus';
 import { firstUnanswered, loadRespondent, teamProgress } from '@/lib/respondent';
 import { getPublicNotice } from '@/lib/privacyNotice';
-import { getCurrentBadgeForPseudonym } from '@/lib/respondentBadgeData';
 import { surveyEstimatedMinutes, totalQuestionCount } from '@/lib/syntheticTemplate';
 import { isSubmitted } from '@/lib/surveyState';
 
@@ -37,17 +36,12 @@ export default async function WelcomePage({
   const total = totalQuestionCount();
 
   if (state.submissionId && (await isSubmitted(invite.tenantId, state.submissionId))) {
-    const [team, badge] = await Promise.all([
-      teamProgress(invite),
-      getCurrentBadgeForPseudonym(invite.tenantId, invite.pseudonym),
-    ]);
+    const team = await teamProgress(invite);
     return (
       <RespondentStatus
-        token={params.token}
         engagementId={invite.engagementId}
         title={t('survey.alreadyTitle')}
         team={team}
-        myTier={badge?.mascotTier ?? null}
         locale={locale}
         t={t}
       />

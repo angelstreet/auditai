@@ -21,12 +21,9 @@ const PUBLIC_PATHS = [
   '/welcome',
   '/about',
   '/privacy',
-  '/intake',
-  '/board',
   '/quiz',
-  '/admin/teams',
-  '/admin/synergies',
-  '/admin/data',
+  '/admin/engagements',
+  '/admin/settings',
 ];
 /** Catalog keys look like `namespace.sub.key`; seeing one in rendered text means a missing message. */
 const RAW_KEY =
@@ -67,15 +64,7 @@ test.describe('public routes (every viewport, layout gate)', () => {
 
   test('mobile-360 has no horizontal scroll on the public surfaces', async ({ page }) => {
     page.setViewportSize({ width: 360, height: 800 });
-    for (const path of [
-      '/welcome',
-      '/board',
-      '/quiz',
-      '/intake',
-      '/admin/engagements',
-      '/admin/teams',
-      '/admin/data',
-    ]) {
+    for (const path of ['/welcome', '/quiz', '/admin/engagements', '/admin/settings']) {
       for (const locale of LOCALES) {
         await page
           .context()

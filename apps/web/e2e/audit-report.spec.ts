@@ -258,11 +258,11 @@ for (const locale of ['fr', 'en'] as const) {
     // The auditor builds the report.
     await setLocale(context, baseURL, locale);
     await signIn(own, OWNER, /\/(admin|board)/);
-    await own.goto(`/admin/reports?tenant=${fx.tenant}`);
-    await axe(own, `${size} ${locale} report list`);
-    const row = own.getByTestId('report-row').filter({ has: own.getByTestId('report-start') });
-    await row.first().getByTestId('report-start').click();
-    await own.waitForURL(new RegExp(`/admin/reports/${fx.engagement}`));
+    // The report is the mission's Report tab (TASK-AD2).
+    await own.goto(`/admin/engagements/${fx.engagement}/report?tenant=${fx.tenant}`);
+    await axe(own, `${size} ${locale} report start`);
+    await own.getByTestId('report-start').click();
+    await own.waitForURL(new RegExp(`/admin/engagements/${fx.engagement}/report`));
     await expect(own.getByTestId('report-editor')).toBeVisible();
 
     const steps = own.getByTestId('report-step');
@@ -294,7 +294,7 @@ for (const locale of ['fr', 'en'] as const) {
     await expect(ref.getByTestId('report-view')).toHaveCount(0);
 
     // Publish behind a confirmation.
-    await own.goto(`/admin/reports/${fx.engagement}?tenant=${fx.tenant}`);
+    await own.goto(`/admin/engagements/${fx.engagement}/report?tenant=${fx.tenant}`);
     await own.getByTestId('report-publish').click();
     await own
       .getByRole('dialog')
@@ -361,18 +361,13 @@ for (const locale of ['fr', 'en'] as const) {
     await setLocale(context, baseURL, locale);
     await signIn(page, OWNER, /\/(admin|board)/);
 
-    // Reports pages use the wide admin container, not the 480 px column.
-    await page.goto(`/admin/reports?tenant=${fx.tenant}`);
-    const listWidth = (await page.locator('section.wide').boundingBox())?.width ?? 0;
+    // The Report tab uses the wide admin container, not the 480 px column.
+    await page.goto(`/admin/engagements/${fx.engagement}/report?tenant=${fx.tenant}`);
+    const listWidth = (await page.locator('section.wide').last().boundingBox())?.width ?? 0;
     if (!phone) expect(listWidth).toBeGreaterThan(900);
-    await noHorizontalScroll(page, `${locale} report list`);
-    await page
-      .getByTestId('report-row')
-      .filter({ has: page.getByTestId('report-start') })
-      .first()
-      .getByTestId('report-start')
-      .click();
-    await page.waitForURL(new RegExp(`/admin/reports/${fx.engagement}`));
+    await noHorizontalScroll(page, `${locale} report start`);
+    await page.getByTestId('report-start').click();
+    await page.waitForURL(new RegExp(`/admin/engagements/${fx.engagement}/report`));
     const editor = page.getByTestId('report-editor');
     await expect(editor).toBeVisible();
     if (!phone) expect((await editor.boundingBox())?.width ?? 0).toBeGreaterThan(900);
@@ -424,7 +419,7 @@ for (const locale of ['fr', 'en'] as const) {
 test('a referent cannot reach the auditor report screens', async ({ page }) => {
   const fx = await resetFixture();
   await signIn(page, REFERENT, /\/client/);
-  await page.goto(`/admin/reports/${fx.engagement}?tenant=${fx.tenant}`);
+  await page.goto(`/admin/engagements/${fx.engagement}/report?tenant=${fx.tenant}`);
   await expect(page).toHaveURL(/\/client/);
   await expect(page.getByTestId('report-editor')).toHaveCount(0);
 });

@@ -373,7 +373,7 @@ for (const locale of LOCALES) {
   });
 }
 
-test('the counts agree between the Engagements list and the Invitations page', async ({ page }) => {
+test('the mission is listed and the Links tab counts agree with the database', async ({ page }) => {
   const eng = await engagementC();
   await setEngagement(eng.id, 'in_field', 8);
   await setStates(eng.id, 2, 2);
@@ -386,13 +386,10 @@ test('the counts agree between the Engagements list and the Invitations page', a
     [eng.id],
   );
   await signIn(page, OWNER, /\/(admin\/|board)/);
+  // The missions list shows the answers; the link counts live in the mission's Links tab.
   await page.goto(`/admin/engagements?tenant=${eng.tenant}`);
-  const row = page.locator('tr', { has: page.locator(`a[href*="${eng.id}"]`) });
-  const cells = await row.locator('td').allTextContents();
-  // td order: status, headcount, invitations, submitted, opened, pending, revoked or expired.
-  expect(Number(cells[2])).toBe(db?.invited);
-  expect(Number(cells[4])).toBe(db?.opened);
-  await page.goto(`/admin/invitations?tenant=${eng.tenant}&engagement=${eng.id}`);
+  await expect(page.locator(`a[href*="${eng.id}"]`).first()).toBeVisible();
+  await page.goto(`/admin/engagements/${eng.id}/invitations?tenant=${eng.tenant}`);
   const counts = await page.getByTestId('invitation-counts').innerText();
   expect(counts).toContain(String(db?.created));
   expect(counts).toMatch(new RegExp(`\\b${db?.invited}\\b`));
@@ -405,7 +402,9 @@ test('the auditor still sees per-link status; the referent cannot reach it', asy
   const eng = await engagementC();
   await signIn(page, REFERENT, /\/client$/);
   for (const path of [
-    `/admin/invitations?tenant=${eng.tenant}&engagement=${eng.id}`,
+    `/admin/engagements/${eng.id}/invitations?tenant=${eng.tenant}`,
+    `/admin/engagements/${eng.id}/answers?tenant=${eng.tenant}`,
+    `/admin/engagements/${eng.id}/answers/export?tenant=${eng.tenant}`,
     `/admin/invitations/export?tenant=${eng.tenant}&engagement=${eng.id}&kind=reminders`,
     `/admin/invitations/sheet?tenant=${eng.tenant}&engagement=${eng.id}`,
   ]) {

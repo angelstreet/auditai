@@ -4,7 +4,6 @@ import { redirect } from 'next/navigation';
 import FinishButton from '@/components/respondent/FinishButton';
 import { firstUnanswered, loadRespondent, teamProgress } from '@/lib/respondent';
 import { totalQuestionCount } from '@/lib/syntheticTemplate';
-import { getCurrentBadgeForPseudonym } from '@/lib/respondentBadgeData';
 import { isSubmitted } from '@/lib/surveyState';
 
 // Always render at request time so the DB connection is fresh.
@@ -38,18 +37,13 @@ export default async function DonePage({ params }: { params: Params }) {
       </div>
     );
   }
-  const [team, badge] = await Promise.all([
-    teamProgress(invite),
-    getCurrentBadgeForPseudonym(invite.tenantId, invite.pseudonym),
-  ]);
+  const team = await teamProgress(invite);
 
   return (
     <RespondentStatus
-      token={params.token}
       engagementId={invite.engagementId}
       title={t('survey.thanksTitle')}
       team={team}
-      myTier={badge?.mascotTier ?? null}
       locale={locale}
       t={t}
     />

@@ -141,6 +141,14 @@ for (const locale of LOCALES) {
     await expect(page).toHaveURL(/\/client$/);
     await page.goto('/board');
     await expect(page).toHaveURL(/\/client$/);
+    // Answers are never shown in view-as (TASK-AD2): page and CSV refuse.
+    await page.goto(`/admin/engagements/${ENGAGEMENT_A}/answers?tenant=${TENANT_A}`);
+    await expect(page).toHaveURL(/\/client$/);
+    const answersCsv = await page.request.get(
+      `/admin/engagements/${ENGAGEMENT_A}/answers/export?tenant=${TENANT_A}`,
+      { maxRedirects: 0 },
+    );
+    expect(answersCsv.status()).toBe(403);
     const api = await page.request.get(
       `/api/admin/invitations?tenant=${TENANT_A}&engagement=${ENGAGEMENT_A}`,
     );
@@ -264,7 +272,12 @@ test('a real referent lands on the team space, may create links, cannot leave it
   expect(lines.length).toBeGreaterThan(5);
   for (const line of lines.slice(1)) expect(line).toContain('Synthetic pilot team');
   // Admin, board, other tenants: closed.
-  for (const path of ['/admin/engagements', '/admin/data', '/board']) {
+  for (const path of [
+    '/admin/engagements',
+    '/admin/settings/data',
+    `/admin/engagements/${ENGAGEMENT_A}/answers?tenant=${TENANT_A}`,
+    '/board',
+  ]) {
     await page.goto(path);
     await expect(page, path).toHaveURL(/\/client$/);
   }

@@ -170,14 +170,4 @@ test.describe('hierarchy and copy length (§13)', () => {
       expect(caps).toBe(0);
     });
   }
-
-  test('the intake save button sits at least 24px under the last card', async ({ page }) => {
-    await signInAsAuditorA(page);
-    await page.goto('/intake');
-    const button = await page.locator('form button[type=submit]').boundingBox();
-    const cards = page.locator('form > .MuiPaper-root');
-    const last = await cards.nth((await cards.count()) - 1).boundingBox();
-    expect(button && last).toBeTruthy();
-    expect((button?.y ?? 0) - ((last?.y ?? 0) + (last?.height ?? 0))).toBeGreaterThanOrEqual(24);
-  });
 });

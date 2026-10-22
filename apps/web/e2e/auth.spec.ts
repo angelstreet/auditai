@@ -37,9 +37,9 @@ const count = async (sql: string, params: unknown[]): Promise<number> => {
 };
 
 test.describe('auditor auth (ADR 0023)', () => {
-  test('anonymous visitors are redirected from /admin/data to /login', async ({ page }) => {
-    await page.goto('/admin/data');
-    await expect(page).toHaveURL(/\/login\?next=%2Fadmin%2Fdata/);
+  test('anonymous visitors are redirected from /admin/settings to /login', async ({ page }) => {
+    await page.goto('/admin/settings');
+    await expect(page).toHaveURL(/\/login\?next=%2Fadmin%2Fsettings/);
     await expect(
       page.getByRole('heading', { level: 1, name: /sign in|connexion|connecter/i }),
     ).toBeVisible();
@@ -51,7 +51,7 @@ test.describe('auditor auth (ADR 0023)', () => {
     await page.fill('input[name=password]', 'not-the-password');
     await page.click('button[type=submit]');
     await expect(page.getByRole('alert')).toContainText('incorrect');
-    await page.goto('/admin/data');
+    await page.goto('/admin/settings');
     await expect(page).toHaveURL(/\/login/);
   });
 
@@ -63,7 +63,7 @@ test.describe('auditor auth (ADR 0023)', () => {
         url: `http://127.0.0.1:${process.env['PW_PORT'] ?? '3200'}`,
       },
     ]);
-    await page.goto('/admin/teams');
+    await page.goto('/admin/settings');
     await expect(page).toHaveURL(/\/login/);
   });
 
@@ -75,11 +75,11 @@ test.describe('auditor auth (ADR 0023)', () => {
     }
   });
 
-  test('a tenant-A user cannot export or erase tenant B (forged tenantId)', async ({ page }) => {
+  test('a tenant-A user cannot erase in tenant B (forged tenantId)', async ({ page }) => {
     await signInAsAuditorA(page);
-    await page.goto('/admin/data');
+    await page.goto('/admin/settings/data');
     // ?tenant=B is ignored: the page stays on a tenant the session grants.
-    await page.goto(`/admin/data?tenant=${TENANT_B}`);
+    await page.goto(`/admin/settings/data?tenant=${TENANT_B}`);
     await expect(page.locator('input[name=tenantId]').first()).toHaveValue(USER_A.tenant);
 
     const exportsB = () =>
@@ -97,30 +97,13 @@ test.describe('auditor auth (ADR 0023)', () => {
         .querySelectorAll<HTMLInputElement>('input[name=tenantId]')
         .forEach((i) => (i.value = t));
     }, TENANT_B);
-    await page.getByRole('button', { name: 'Run export' }).click();
-    await expect(page.getByText('You do not belong to this organisation')).toBeVisible();
-
     await page.fill('input[name=respondentPseudonym]', 'synthetic-employee-001');
     await page.getByRole('button', { name: 'Erase respondent' }).click();
     // Erase only runs from the confirm dialog (UI_RULES §3).
     await page.getByRole('dialog').getByLabel('Respondent code').fill('synthetic-employee-001');
     await page.getByRole('dialog').getByRole('button', { name: 'Erase respondent' }).click();
-    await expect(page.getByText('You do not belong to this organisation').nth(1)).toBeVisible();
+    await expect(page.getByText('You do not belong to this organisation').first()).toBeVisible();
 
     expect([await exportsB(), await erasuresB()]).toEqual(before);
-  });
-
-  test('an export by tenant A records the real user id', async ({ page }) => {
-    await signInAsAuditorA(page);
-    await page.goto('/admin/data');
-    const mine = () =>
-      count(
-        'SELECT count(*) AS n FROM export_requests WHERE tenant_id = $1 AND requested_by = $2',
-        [USER_A.tenant, USER_A.id],
-      );
-    const before = await mine();
-    await page.getByRole('button', { name: 'Run export' }).click();
-    await expect(page.getByText('Exported opportunities')).toBeVisible();
-    expect(await mine()).toBe(before + 1);
   });
 });
