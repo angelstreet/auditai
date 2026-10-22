@@ -126,12 +126,13 @@ test.describe('audit set-up', () => {
       await expect(row).toHaveCount(1);
 
       await page.reload();
-      await page.getByLabel(c.name).fill(`${RUN}-${locale} audit`);
+      // The mission form comes first; the team form below has its own name field.
+      await page.locator('input[name=name]').first().fill(`${RUN}-${locale} audit`);
       await page.getByLabel(c.langLabel).click();
       await page.getByRole('option', { name: c.other }).click();
       await page.getByLabel(c.opensOn).fill('2026-10-19');
       await page.getByLabel(c.closesOn).fill('2026-11-02');
-      await page.getByLabel(new RegExp(team)).check();
+      await page.getByRole('checkbox', { name: new RegExp(team) }).check();
       await page.getByRole('button', { name: c.create }).click();
       await page.waitForURL(/\/admin\/engagements\/[0-9a-f-]+\/settings/);
 

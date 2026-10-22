@@ -388,7 +388,7 @@ test('the mission is listed and the Links tab counts agree with the database', a
   await signIn(page, OWNER, /\/(admin\/|board)/);
   // The missions list shows the answers; the link counts live in the mission's Links tab.
   await page.goto(`/admin/engagements?tenant=${eng.tenant}`);
-  await expect(page.locator(`a[href*="${eng.id}"]`).first()).toBeVisible();
+  await expect(page.locator(`a[href*="${eng.id}"]:visible`).first()).toBeVisible();
   await page.goto(`/admin/engagements/${eng.id}/invitations?tenant=${eng.tenant}`);
   const counts = await page.getByTestId('invitation-counts').innerText();
   expect(counts).toContain(String(db?.created));

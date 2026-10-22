@@ -27,7 +27,7 @@ test('sign-in lands on Missions with one primary action and the mission list', a
   await expect(page).toHaveURL(/\/admin\/engagements$/);
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(/^Missions$/);
   await expect(page.locator('#main .MuiButton-contained:visible')).toHaveCount(1);
-  await expect(page.getByTestId('mission-link').first()).toBeVisible();
+  await expect(page.locator('[data-testid=mission-link]:visible').first()).toBeVisible();
   // One next step per mission, never a second filled button.
   const rows = page.locator(
     '[data-testid=mission-row]:visible, [data-testid=mission-card]:visible',
@@ -39,8 +39,9 @@ test('sign-in lands on Missions with one primary action and the mission list', a
 
 test('the top navigation is Missions and Settings, and it fits', async ({ page }) => {
   await signInAsAuditorA(page);
-  const nav = page.getByRole('navigation', { name: /Admin sections|Sections/ }).first();
+  const nav = page.getByRole('tablist').first();
   await expect(nav.getByRole('tab')).toHaveCount(2);
+  await expect(nav.getByRole('tab', { name: 'Missions' })).toHaveAttribute('aria-selected', 'true');
   const [scroll, client] = await nav.evaluate((el) => [el.scrollWidth, el.clientWidth]);
   expect(scroll).toBeLessThanOrEqual(client);
   await noHorizontalScroll(page, 'nav');

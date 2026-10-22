@@ -8,12 +8,12 @@ test.describe('admin invitations page', () => {
     // Links are a tab of the mission (TASK-AD2).
     await page.goto('/admin/engagements');
     await page
-      .getByTestId('mission-link')
+      .locator('[data-testid=mission-link]:visible')
       .filter({ hasText: /synthetic/i })
       .first()
       .click();
     await page.getByTestId('mission-tab-invitations').click();
-    await expect(page.getByRole('heading', { level: 2, name: 'Links' })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 2, name: 'Links', exact: true })).toBeVisible();
 
     await page
       .getByLabel(/^Links for /)
