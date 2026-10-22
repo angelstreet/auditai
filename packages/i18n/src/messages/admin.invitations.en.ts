@@ -1,9 +1,9 @@
-/** Invitations admin screens (TASK-N, FR-03). Mirrored by `admin.invitations.fr.ts`. */
+/** Links admin screens (TASK-N, FR-03). Mirrored by `admin.invitations.fr.ts`. */
 export const invitationsEn = {
-  title: 'Invitations',
+  title: 'Links',
   subtitle: 'Create links, follow progress, send reminders. No names are kept.',
-  pickEngagement: 'Choose an engagement to manage its invitations.',
-  openLink: 'Invitations',
+  pickEngagement: 'Choose a mission to manage its links.',
+  openLink: 'Links',
   counts:
     '{expected, plural, one {# person expected} other {# people expected}}. {created, plural, one {# link created} other {# links created}}, {revoked} cancelled, so {invited} invited. “Opened” counts everyone who opened their link, including those who answered.',
   tiles: {
@@ -24,7 +24,7 @@ export const invitationsEn = {
     fewerThan: 'Hidden under {n} people to protect privacy',
     hidden: 'Hidden',
     fewerThanHint: 'Hidden under {n} people to protect privacy.',
-    empty: 'No invitation yet. Create the first batch below.',
+    empty: 'No links yet. Create the first ones below.',
   },
   create: {
     title: 'Create links',
@@ -32,7 +32,7 @@ export const invitationsEn = {
     perTeam: 'Links for {team}',
     expiry: 'Valid for (days)',
     submit: 'Create links',
-    noTeams: 'This engagement has no team yet.',
+    noTeams: 'This mission has no team yet.',
     duplicate: 'You created {n} links a moment ago for the same teams. Tick to create them again.',
     duplicateConfirm: 'Yes, create them again',
     addressesTitle: 'Send by email',
@@ -47,9 +47,9 @@ export const invitationsEn = {
     emailHint: 'Off by default. Without it, no address is ever stored.',
     reminderDays: 'Reminders after (days, comma separated)',
     closesOn: 'Closing date',
-    closesOnHint: 'Shown to the team referent and in the invitation message.',
+    closesOnHint: 'Shown to the referent and in the message sent with the links.',
     contact: 'Contact person',
-    contactHint: 'Name and email or phone, shown in the invitation message.',
+    contactHint: 'Name and email or phone, shown in the message sent with the links.',
     save: 'Save options',
   },
   export: {
@@ -81,14 +81,14 @@ export const invitationsEn = {
     empty: 'No open link.',
   },
   batches: {
-    title: 'Link batches',
-    hint: 'Links created together form a batch. You can withdraw a whole batch at once.',
+    title: 'Links by creation date',
+    hint: 'Links created together are grouped. You can withdraw a whole group at once.',
     label: '{n, plural, one {# link} other {# links}} created on {date}',
     stillOpen: '{n} still open',
-    revoke: 'Withdraw the batch',
+    revoke: 'Withdraw these links',
     revokeConfirm:
-      'Every link of this batch that is not completed stops working at once. This cannot be undone.',
-    empty: 'No batch yet.',
+      'Every link of this group not yet answered stops working at once. This cannot be undone.',
+    empty: 'No links yet.',
   },
   sheet: {
     title: 'QR sheet',
@@ -111,15 +111,15 @@ export const invitationsEn = {
     bad_count: 'Enter a number of links between 1 and 2000.',
     bad_expiry: 'Choose between 1 and 90 days.',
     bad_address: 'One of the email addresses is not valid.',
-    bad_team: 'Choose a team of this engagement.',
-    engagement_not_found: 'Engagement not found.',
-    engagement_closed: 'This engagement is closed.',
-    team_not_in_engagement: 'That team is not part of this engagement.',
-    email_off: 'Sending by email is off for this engagement. Turn it on in the options.',
+    bad_team: 'Choose a team of this mission.',
+    engagement_not_found: 'Mission not found.',
+    engagement_closed: 'This mission is closed.',
+    team_not_in_engagement: 'That team is not part of this mission.',
+    email_off: 'Sending by email is off for this mission. Turn it on in the options.',
     email_not_configured: 'Email sending is not set up on this server.',
     email_key_missing: 'Email sending is not set up on this server.',
     duplicate_batch:
-      'The same batch was created less than 10 minutes ago. Tick the box to create it again.',
+      'The same links were created less than 10 minutes ago. Tick the box to create them again.',
     not_open: 'This link is already used, revoked or expired.',
     bad_date: 'Enter a valid closing date, or leave it empty.',
     error: 'Something went wrong. Please try again.',

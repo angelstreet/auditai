@@ -55,6 +55,7 @@ const loadIdentity = async (): Promise<Identity | null> => {
     organisations,
     organisationId: currentId,
     homeHref: '/admin/engagements',
+    settingsHref: '/admin/settings',
     viewAs: await viewAsMenuFor(session, t),
   };
 };

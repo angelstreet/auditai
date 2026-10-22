@@ -44,11 +44,11 @@ export const fr: Messages = {
       switchOrganisation: 'Changer d’organisation',
       switchTitle: 'Organisation',
       portfolio: 'Portefeuille',
-      workspace: 'Espace de travail',
+      workspace: 'Paramètres',
       roles: {
         platform_owner: 'Équipe EvolAI',
         auditor: 'Équipe EvolAI',
-        sponsor: 'Commanditaire',
+        sponsor: 'Référent',
         viewer: 'Lecteur',
         other: 'Membre',
       },

@@ -26,7 +26,7 @@ const COPY = {
     name: 'Nom',
     langLabel: 'Langue du questionnaire',
     other: 'English',
-    launch: 'Lancer l’audit',
+    launch: 'Lancer la mission',
     launchConfirm: 'Lancer',
     live: 'Ouverte. Les personnes peuvent répondre avec leur lien.',
     preview: 'Voir le questionnaire',
@@ -40,11 +40,11 @@ const COPY = {
     addTeam: 'Add team',
     teamName: 'Team name',
     teamAdded: 'Team added.',
-    create: 'Create engagement',
+    create: 'Create mission',
     name: 'Name',
     langLabel: 'Survey language',
     other: 'Français',
-    launch: 'Launch the audit',
+    launch: 'Launch the mission',
     launchConfirm: 'Launch',
     live: 'Open. People can answer with their link.',
     preview: 'Preview the survey',
@@ -102,8 +102,8 @@ test.describe('audit set-up', () => {
       await expect(page.getByTestId('first-run-checklist')).toHaveCount(0);
       await page.getByTestId('account-button').click();
       await expect(
-        page.getByRole('menuitem', { name: /Workspace|Espace de travail|Missions/ }).first(),
-      ).toHaveAttribute('href', '/admin/engagements');
+        page.getByRole('menuitem', { name: /Settings|Paramètres/ }).first(),
+      ).toHaveAttribute('href', '/admin/settings');
     });
 
     test(`add a team, create the engagement, launch it and preview it in ${locale}`, async ({
@@ -186,13 +186,13 @@ test.describe('audit set-up', () => {
       await page.keyboard.press('Tab');
       if (
         await page
-          .getByRole('button', { name: /Create engagement|Créer la mission/ })
+          .getByRole('button', { name: /Create mission|Créer la mission/ })
           .evaluate((el) => el === document.activeElement)
       )
         break;
     }
     await expect(
-      page.getByRole('button', { name: /Create engagement|Créer la mission/ }),
+      page.getByRole('button', { name: /Create mission|Créer la mission/ }),
     ).toBeFocused();
     await page.keyboard.press('Enter');
     await page.waitForURL(/\/admin\/engagements\/[0-9a-f-]+\/settings/);
@@ -255,10 +255,10 @@ test.describe('data page', () => {
     await page.goto('/admin/settings/data');
     const code = 'no-such-respondent-0001';
     await page.locator('input[name=respondentPseudonym]').fill(code);
-    await page.getByRole('button', { name: /Erase respondent|Effacer le répondant/ }).click();
+    await page.getByRole('button', { name: /Erase the answers|Effacer les réponses/ }).click();
     // An unknown code is said plainly before any confirmation step (TASK-U, ADR 0040).
     await expect(
-      page.getByText(/No respondent has this code|Aucun répondant n’a ce code/),
+      page.getByText(/Nobody has this answer code|Personne n’a ce code de réponse/),
     ).toBeVisible();
     await expect(page.getByRole('dialog')).toHaveCount(0);
   });

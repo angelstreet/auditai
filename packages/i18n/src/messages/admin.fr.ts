@@ -2,7 +2,7 @@ import type { AdminMessages } from './index.js';
 import { invitationsFr } from './admin.invitations.fr.js';
 import { setupFr } from './admin.setup.fr.js';
 
-/** Textes d'administration / audit / tableau (français, vouvoiement). */
+/** Textes d’administration et de l’équipe EvolAI (français, vouvoiement). */
 export const adminFr: AdminMessages = {
   enums: {
     engagementStatus: {
@@ -29,19 +29,19 @@ export const adminFr: AdminMessages = {
       archived: 'Archivée',
     },
     exportKind: {
-      opportunities: 'Opportunités',
+      opportunities: 'Constats',
       analyses: 'Analyses',
-      respondent_badges: 'Badges des répondants',
+      respondent_badges: 'Mascottes par personne',
       team_badges: 'Badges des équipes',
       synergies: 'Synergies',
       audit_log: 'Journal d’audit',
     },
     invitationStatus: {
       pending: 'En attente',
-      opened: 'Ouverte',
-      submitted: 'Soumise',
-      revoked: 'Révoquée',
-      expired: 'Expirée',
+      opened: 'Ouvert',
+      submitted: 'Répondu',
+      revoked: 'Annulé',
+      expired: 'Expiré',
     },
   },
   common: {
@@ -51,7 +51,7 @@ export const adminFr: AdminMessages = {
     backToEngagements: '← Retour aux missions',
     backToBoard: '← Tableau du portefeuille',
     backToAnalyses: '← Retour aux analyses',
-    backToOpportunities: '← Retour aux opportunités',
+    backToOpportunities: '← Retour aux constats',
     engagementNotFound: 'Mission introuvable',
     notInTenant: 'Cet élément n’appartient pas à l’organisation affichée.',
     utc: '{value} UTC',
@@ -61,7 +61,7 @@ export const adminFr: AdminMessages = {
     tabsAria: 'Sections d’administration',
     tabPortfolio: 'Portefeuille',
     tabEngagements: 'Missions',
-    tabInvitations: 'Invitations',
+    tabInvitations: 'Liens',
     tabTeams: 'Équipes',
     tabSynergies: 'Synergies',
     tabReports: 'Rapports',
@@ -85,7 +85,7 @@ export const adminFr: AdminMessages = {
       '{n} personnes ont répondu. Les textes libres sont anonymisés et classés par question, sans lien avec une personne.',
     tooFew:
       'Les réponses restent masquées jusqu’à {n} personnes, pour qu’aucune réponse ne désigne quelqu’un.',
-    soFar: 'Réponses à ce jour : {n}.',
+    soFar: 'Réponses à ce jour : {n}.',
     choicesTitle: 'Choix par question',
     textsTitle: 'Textes libres par question',
     noTexts: 'Pas encore de texte libre.',
@@ -93,15 +93,15 @@ export const adminFr: AdminMessages = {
     exportCsv: 'Exporter en CSV',
     exportLater: 'Disponible à partir de {n} réponses.',
     people: '{n, plural, one {# personne} other {# personnes}}',
-    chartAria: 'Réponses à : {question}',
+    chartAria: 'Réponses à : {question}',
   },
   brief: {
     title: 'Synthèse avant la visite',
     intro: 'Ce que chaque équipe a répondu, à lire avant la visite.',
     print: 'Imprimer',
     beforeFive: 'La synthèse apparaît dès que {n} personnes d’une équipe ont répondu.',
-    counts: 'Liens créés : {links}. Réponses : {submitted} sur {expected}.',
-    teamAnswers: 'Réponses : {submitted} sur {expected}',
+    counts: 'Liens créés : {links}. Réponses : {submitted} sur {expected}.',
+    teamAnswers: 'Réponses : {submitted} sur {expected}',
     closes: 'Clôture le {date}',
     teamHidden: 'Masqué jusqu’à {n} réponses',
     rolesTitle: 'Répartition des métiers',
@@ -259,14 +259,14 @@ export const adminFr: AdminMessages = {
   },
   data: {
     title: 'Exports et effacement',
-    intro: 'Exportez des tables et effacez les données d’un répondant.',
+    intro: 'Exportez des tables et effacez les réponses d’une personne.',
     synergiesLink: 'Synergies',
     teamsLink: 'Équipes',
     exportTitle: 'Exporter une table',
     exportBody: 'Un fichier CSV. Chaque export est consigné avec son nombre de lignes.',
-    eraseTitle: 'Effacer les données d’un répondant',
-    eraseBody: 'Supprime les réponses, analyses et badges d’un répondant. Action définitive.',
-    eraseConfirmTitle: 'Effacer ce répondant ?',
+    eraseTitle: 'Effacer les réponses d’une personne',
+    eraseBody: 'Supprime les réponses, analyses et mascottes d’une personne. Action définitive.',
+    eraseConfirmTitle: 'Effacer ces réponses ?',
     eraseConfirmBody:
       'Tout ce qui est conservé pour {pseudonym} est supprimé définitivement. Le journal ne garde qu’une empreinte.',
     cancel: 'Annuler',
@@ -280,21 +280,22 @@ export const adminFr: AdminMessages = {
     colRows: 'Lignes',
     colError: 'Erreur',
     colScope: 'Portée',
-    colPseudonym: 'Code du répondant',
+    colPseudonym: 'Code de réponse',
     colTarget: 'Type de cible',
     working: 'En cours…',
     exportKind: 'Type d’export',
     runExport: 'Lancer l’export',
     csvPreview: 'Aperçu du CSV',
-    pseudonym: 'Code du répondant',
+    pseudonym: 'Code de réponse',
     pseudonymPlaceholder: 'p. ex. synthetic-employee-007',
-    erase: 'Effacer le répondant',
+    erase: 'Effacer les réponses',
     errInvalidTenant: 'Cette organisation n’est pas valide',
     errInvalidKind: 'Type d’export invalide',
-    errInvalidPseudonym: 'Ce code de répondant n’est pas valide',
+    errInvalidPseudonym: 'Ce code de réponse n’est pas valide',
     exported: 'Export réalisé : {kind}',
     errExport: 'L’export a échoué. Veuillez réessayer.',
-    removed: '{rows} ligne(s) supprimée(s) ; {events} événement(s) de suppression écrit(s)',
+    removed:
+      '{rows, plural, one {# ligne supprimée} other {# lignes supprimées}}, {events, plural, one {# suppression consignée} other {# suppressions consignées}}.',
     errDelete: 'La suppression a échoué. Veuillez réessayer.',
   },
   analyses: {

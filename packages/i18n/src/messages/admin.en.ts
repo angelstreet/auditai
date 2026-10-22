@@ -1,6 +1,6 @@
 import { invitationsEn } from './admin.invitations.en.js';
 import { setupEn } from './admin.setup.en.js';
-/** Admin / auditor / board copy (English). Mirrored by `admin.fr.ts`. */
+/** Admin and EvolAI team copy (English). Mirrored by `admin.fr.ts`. */
 export const adminEn = {
   enums: {
     engagementStatus: {
@@ -27,9 +27,9 @@ export const adminEn = {
       archived: 'Archived',
     },
     exportKind: {
-      opportunities: 'Opportunities',
+      opportunities: 'Findings',
       analyses: 'Analyses',
-      respondent_badges: 'Respondent badges',
+      respondent_badges: 'Mascots per person',
       team_badges: 'Team badges',
       synergies: 'Synergies',
       audit_log: 'Audit log',
@@ -37,19 +37,19 @@ export const adminEn = {
     invitationStatus: {
       pending: 'Waiting',
       opened: 'Opened',
-      submitted: 'Submitted',
-      revoked: 'Revoked',
+      submitted: 'Answered',
+      revoked: 'Cancelled',
       expired: 'Expired',
     },
   },
   common: {
     noTenantsTitle: 'No organisation',
     noTenantsBody: 'No organisation is set up yet. Run {command} to load demo data.',
-    backToEngagements: '← Back to engagements',
+    backToEngagements: '← Back to missions',
     backToBoard: '← Portfolio board',
     backToAnalyses: '← Back to analyses',
-    backToOpportunities: '← Back to opportunities',
-    engagementNotFound: 'Engagement not found',
+    backToOpportunities: '← Back to findings',
+    engagementNotFound: 'Mission not found',
     notInTenant: 'This item is not in the organisation you are viewing.',
     utc: '{value} UTC',
     pending: 'pending',
@@ -57,8 +57,8 @@ export const adminEn = {
     tabSettings: 'Settings',
     tabsAria: 'Admin sections',
     tabPortfolio: 'Portfolio',
-    tabEngagements: 'Engagements',
-    tabInvitations: 'Invitations',
+    tabEngagements: 'Missions',
+    tabInvitations: 'Links',
     tabTeams: 'Teams',
     tabSynergies: 'Synergies',
     tabReports: 'Reports',
@@ -252,15 +252,14 @@ export const adminEn = {
   },
   data: {
     title: 'Data exports and erasure',
-    intro: "Export tables and erase a respondent's data.",
+    intro: 'Export tables and erase the answers of one person.',
     synergiesLink: 'Synergies',
     teamsLink: 'Teams',
     exportTitle: 'Export a table',
     exportBody: 'A CSV file. Each export is logged with its row count.',
-    eraseTitle: "Erase a respondent's data",
-    eraseBody:
-      'Removes all answers, analyses and badges for one respondent. This cannot be undone.',
-    eraseConfirmTitle: 'Erase this respondent?',
+    eraseTitle: 'Erase the answers of one person',
+    eraseBody: 'Removes all answers, analyses and mascots of one person. This cannot be undone.',
+    eraseConfirmTitle: 'Erase these answers?',
     eraseConfirmBody:
       'Everything held for {pseudonym} is removed for good. The log keeps only a hash.',
     cancel: 'Cancel',
@@ -274,21 +273,22 @@ export const adminEn = {
     colRows: 'Rows',
     colError: 'Error',
     colScope: 'Scope',
-    colPseudonym: 'Respondent code',
+    colPseudonym: 'Answer code',
     colTarget: 'Target kind',
     working: 'Working…',
     exportKind: 'Export kind',
     runExport: 'Run export',
     csvPreview: 'CSV preview',
-    pseudonym: 'Respondent code',
+    pseudonym: 'Answer code',
     pseudonymPlaceholder: 'e.g. synthetic-employee-007',
-    erase: 'Erase respondent',
+    erase: 'Erase the answers',
     errInvalidTenant: 'This organisation is not valid',
     errInvalidKind: 'Invalid export kind',
-    errInvalidPseudonym: 'This respondent code is not valid',
+    errInvalidPseudonym: 'This answer code is not valid',
     exported: 'Exported {kind}',
     errExport: 'Export failed. Please try again.',
-    removed: 'Removed {rows} row(s); wrote {events} deletion event(s)',
+    removed:
+      '{rows, plural, one {# row removed} other {# rows removed}}, {events, plural, one {# deletion logged} other {# deletions logged}}.',
     errDelete: 'Deletion failed. Please try again.',
   },
   analyses: {
@@ -380,7 +380,7 @@ export const adminEn = {
     impactLabel: 'Impact score (0 – 1, optional)',
     creating: 'Creating…',
     create: 'Create opportunity',
-    errInvalidIds: 'This analysis or engagement could not be found',
+    errInvalidIds: 'This analysis or mission could not be found',
     errTitle: 'Title must be 3 – 200 characters',
     errImpact: 'Impact score must be between 0 and 1',
     errNotFound: 'Analysis not found for this organisation',

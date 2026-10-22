@@ -1,7 +1,7 @@
 # FR / EN glossary
 
-One word per concept in both languages. Respondent screens use the left column of "Respondent";
-admin screens may use the technical term. French uses vouvoiement everywhere (ADR 0024).
+One word per concept in both languages. Respondent screens use the "Respondent screens" table;
+admin and client screens use the second table. French uses vouvoiement everywhere (ADR 0024).
 
 ## Respondent screens
 
@@ -18,20 +18,29 @@ admin screens may use the technical term. French uses vouvoiement everywhere (AD
 | Remove my answers          | delete my answers          | supprimer mes réponses       |
 | Tap on a phone             | tap                        | toucher / appui              |
 
-## Admin and consultant screens
+## Admin (EvolAI team) and client (referent) screens
 
-| Concept            | EN          | FR              |
-| ------------------ | ----------- | --------------- |
-| tenant             | tenant      | locataire       |
-| engagement         | engagement  | mission         |
-| pseudonym          | pseudonym   | pseudonyme      |
-| analysis           | analysis    | analyse         |
-| opportunity        | opportunity | opportunité     |
-| synergy            | synergy     | synergie        |
-| approve (analysis) | approve     | valider         |
-| erasure            | erasure     | effacement      |
-| audit log          | audit log   | journal d’audit |
-| model route        | model route | route du modèle |
+One word per concept on every staff and referent screen (docs/FABLE_REVIEW_2026-10-22.md §6). The words in
+"Replaces" never appear on screen; some stay as code identifiers and catalog key names only.
+
+| Concept                   | EN                      | FR                         | Replaces                                   |
+| ------------------------- | ----------------------- | -------------------------- | ------------------------------------------ |
+| The consultancy           | EvolAI, the EvolAI team | EvolAI, l’équipe EvolAI    | auditor, consultant, auditeur              |
+| One client audit          | Mission                 | Mission                    | engagement, audit, portfolio               |
+| The client company        | Client, organisation    | Client, organisation       | tenant, workspace, locataire               |
+| The client’s contact      | Referent                | Référent                   | sponsor, contact, commanditaire            |
+| A person who answers      | a person, your team     | une personne, votre équipe | respondent, pseudonym, employee, répondant |
+| The questionnaire         | Survey                  | Questionnaire              | intake, quiz, enquête                      |
+| Sent links                | Links                   | Liens                      | invitations, batch, lot                    |
+| Collected data            | Answers                 | Réponses                   | submissions, soumises                      |
+| What EvolAI found         | Findings                | Constats                   | themes, analyses, opportunities            |
+| What to do                | Actions                 | Actions                    | improvement steps, opportunities           |
+| The deliverable           | Report                  | Rapport                    | sponsor brief, delivery                    |
+| The number                | Readiness score         | Score de préparation       | literacy score, badge                      |
+| A person’s code (erasure) | Answer code             | Code de réponse            | respondent code, pseudonym                 |
+| Approve                   | approve                 | approuver / valider        |                                            |
+| Erasure                   | erasure                 | effacement                 |                                            |
+| Audit log                 | Audit trail             | Journal d’audit            |                                            |
 
 ## Typography (checked by `packages/i18n/src/index.test.ts`)
 

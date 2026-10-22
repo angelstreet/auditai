@@ -27,8 +27,8 @@ const THEMES = [
   { axis: 'literacy', label: 'Vérification des réponses de l’IA' },
 ];
 const COPY = {
-  fr: { inReview: 'En relecture', published: 'Publié', title: 'Rapport d’audit' },
-  en: { inReview: 'In review', published: 'Published', title: 'Audit report' },
+  fr: { inReview: 'En relecture', published: 'Publié', title: 'Rapport' },
+  en: { inReview: 'In review', published: 'Published', title: 'Report' },
 } as const;
 
 const databaseUrl = (): string =>

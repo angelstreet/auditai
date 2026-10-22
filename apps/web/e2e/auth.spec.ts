@@ -98,10 +98,10 @@ test.describe('auditor auth (ADR 0023)', () => {
         .forEach((i) => (i.value = t));
     }, TENANT_B);
     await page.fill('input[name=respondentPseudonym]', 'synthetic-employee-001');
-    await page.getByRole('button', { name: 'Erase respondent' }).click();
+    await page.getByRole('button', { name: 'Erase the answers' }).click();
     // Erase only runs from the confirm dialog (UI_RULES §3).
-    await page.getByRole('dialog').getByLabel('Respondent code').fill('synthetic-employee-001');
-    await page.getByRole('dialog').getByRole('button', { name: 'Erase respondent' }).click();
+    await page.getByRole('dialog').getByLabel('Answer code').fill('synthetic-employee-001');
+    await page.getByRole('dialog').getByRole('button', { name: 'Erase the answers' }).click();
     await expect(page.getByText('You do not belong to this organisation').first()).toBeVisible();
 
     expect([await exportsB(), await erasuresB()]).toEqual(before);

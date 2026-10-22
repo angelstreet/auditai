@@ -22,7 +22,7 @@ export const clientFr: ClientMessages = {
   nav: {
     aria: 'Espace équipe',
     home: 'Accueil',
-    invitations: 'Invitations',
+    invitations: 'Liens',
     results: 'Résultats',
     report: 'Rapport',
   },
@@ -94,7 +94,7 @@ export const clientFr: ClientMessages = {
     },
   },
   invitations: {
-    title: 'Invitations',
+    title: 'Liens',
     subtitle: 'Les liens de l’équipe {team}. Un lien par personne. Aucun nom n’est gardé.',
     createTitle: 'Créer des liens',
     team: 'Équipe',
@@ -164,10 +164,10 @@ export const clientFr: ClientMessages = {
     title: 'Résultats',
     subtitle: 'Ce que l’équipe EvolAI a publié pour votre organisation.',
     empty: 'Rien de publié pour l’instant. Les résultats apparaissent ici après validation.',
-    themesTitle: 'Thèmes principaux',
-    themesHint: 'Seuls les thèmes cités par au moins {n} personnes sont affichés.',
+    themesTitle: 'Constats principaux',
+    themesHint: 'Seuls les constats cités par au moins {n} personnes sont affichés.',
     themePeople: 'Cité par {count} personnes',
-    opportunitiesTitle: 'Pistes d’action',
+    opportunitiesTitle: 'Actions',
   },
   forbidden: 'Cette page n’est pas disponible dans votre espace équipe.',
 };

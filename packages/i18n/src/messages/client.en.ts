@@ -23,7 +23,7 @@ export const clientEn = {
   nav: {
     aria: 'Team space',
     home: 'Home',
-    invitations: 'Invitations',
+    invitations: 'Links',
     results: 'Results',
     report: 'Report',
   },
@@ -94,7 +94,7 @@ export const clientEn = {
     },
   },
   invitations: {
-    title: 'Invitations',
+    title: 'Links',
     subtitle: 'Links for {team}. One link per person. No names are kept.',
     createTitle: 'Create links',
     team: 'Team',
@@ -164,10 +164,10 @@ export const clientEn = {
     title: 'Results',
     subtitle: 'What the EvolAI team has published for your organisation.',
     empty: 'Nothing published yet. Results appear here once the EvolAI team approves them.',
-    themesTitle: 'Main themes',
-    themesHint: 'Only themes raised by at least {n} people are shown.',
+    themesTitle: 'Main findings',
+    themesHint: 'Only findings raised by at least {n} people are shown.',
     themePeople: 'Raised by {count} people',
-    opportunitiesTitle: 'Ideas to act on',
+    opportunitiesTitle: 'Actions',
   },
   forbidden: 'This page is not available in your team space.',
 } as const;

@@ -2,14 +2,14 @@ import type { reportEn } from './report.en.js';
 
 type Shape<T> = { [K in keyof T]: T[K] extends string ? string : Shape<T[K]> };
 
-/** Rapport d’audit (TASK-V, ADR 0041). Même structure que `report.en.ts`. */
+/** Rapport de mission (TASK-V, ADR 0041). Même structure que `report.en.ts`. */
 export const reportFr: Shape<typeof reportEn> = {
   nav: { tab: 'Rapports', client: 'Rapport' },
   list: {
-    title: 'Rapports d’audit',
+    title: 'Rapports',
     subtitle: 'Préparez ce que reçoit le client : constats, score, actions et plan.',
-    empty: 'Aucun audit pour l’instant. Créez d’abord une mission dans Missions.',
-    colAudit: 'Audit',
+    empty: 'Aucune mission pour l’instant. Créez-en d’abord une dans Missions.',
+    colAudit: 'Mission',
     colState: 'Rapport',
     colVisible: 'Visible par le client',
     colUpdated: 'Mis à jour',
@@ -36,7 +36,7 @@ export const reportFr: Shape<typeof reportEn> = {
       'Cette version est publiée et verrouillée. Commencez une nouvelle version pour la modifier.',
     language: 'Rédigé en {language}.',
     fewPeople:
-      '{count, plural, one {Seule # personne a répondu} other {Seules # personnes ont répondu}}. Le score et les thèmes sont masqués sous {n}. Vous pouvez quand même publier un rapport avec des constats ou vos propres actions.',
+      '{count, plural, one {Seule # personne a répondu} other {Seules # personnes ont répondu}}. Le score et les constats sont masqués sous {n}. Vous pouvez quand même publier un rapport avec vos propres actions.',
     pdfLater: 'Le PDF sera disponible dès que le rapport sera publié.',
     readOnlyViewAs: 'Lecture seule pendant que vous voyez l’application comme une autre personne.',
   },
@@ -46,7 +46,7 @@ export const reportFr: Shape<typeof reportEn> = {
     publish: 'Publier',
     publishTitle: 'Publier ce rapport ?',
     publishBody:
-      'Le référent et le commanditaire verront la version {version} dans leur espace et pourront la télécharger. Vous pourrez la retirer plus tard.',
+      'Le référent verra la version {version} dans son espace et pourra la télécharger. Vous pourrez la retirer plus tard.',
     publishConfirm: 'Publier',
     publishNeedsReview: 'Marquez le rapport prêt pour relecture avant de le publier.',
     unpublish: 'Retirer la publication',
@@ -85,7 +85,7 @@ export const reportFr: Shape<typeof reportEn> = {
     citation_unknown:
       'La synthèse cite un constat qui n’est plus approuvé. Mettez les cases à jour.',
     nothing_accepted:
-      'Rien à publier pour l’instant. Approuvez un thème dans Analyses, ou ajoutez une étape avec « Rédiger la mienne » sous Actions d’amélioration.',
+      'Rien à publier pour l’instant. Ajoutez une action avec « Rédiger la mienne » sous Actions.',
     contains_name:
       'Le rapport contient un nom de la liste « noms à masquer ». Retirez-le avant de publier.',
     contains_quote:
@@ -96,7 +96,7 @@ export const reportFr: Shape<typeof reportEn> = {
   sections: {
     title: 'Titre',
     summary: 'Synthèse',
-    summaryHelp: 'Vos mots, pour le commanditaire. Aucun nom, aucune citation de réponse.',
+    summaryHelp: 'Vos mots, pour le client. Aucun nom, aucune citation de réponse.',
     citations: 'Constats sur lesquels repose la synthèse',
     citationsHelp: 'Chaque affirmation garde sa source : cochez les constats utilisés.',
     noFindings:
@@ -111,11 +111,10 @@ export const reportFr: Shape<typeof reportEn> = {
     methodBase:
       'Questionnaire anonyme auprès des équipes : {people, plural, one {# personne a répondu} other {# personnes ont répondu}}. Les scores sont des moyennes de groupes d’au moins {n} personnes.',
     methodThemes:
-      '{count, plural, one {L’équipe EvolAI a vérifié et approuvé # thème.} other {L’équipe EvolAI a vérifié et approuvé # thèmes.}}',
+      '{count, plural, one {L’équipe EvolAI a vérifié et approuvé # constat.} other {L’équipe EvolAI a vérifié et approuvé # constats.}}',
     methodOpportunities:
-      '{count, plural, one {L’équipe EvolAI a approuvé # opportunité d’amélioration.} other {L’équipe EvolAI a approuvé # opportunités d’amélioration.}}',
-    methodUnreviewed:
-      'Aucun thème ni aucune opportunité n’a encore été approuvé par l’équipe EvolAI.',
+      '{count, plural, one {L’équipe EvolAI a approuvé # action.} other {L’équipe EvolAI a approuvé # actions.}}',
+    methodUnreviewed: 'L’équipe EvolAI n’a encore approuvé aucun constat ni aucune action.',
     methodRefreshed: 'La note de méthode a été réécrite à partir des chiffres actuels.',
   },
   draft: {
@@ -126,7 +125,7 @@ export const reportFr: Shape<typeof reportEn> = {
     findings: 'Ce qui ressort le plus : {list}.',
     opportunities: 'Les premières actions que nous recommandons : {list}.',
     closing: 'Le plan ci-dessous indique qui fait quoi dans les 30, 60 et 90 prochains jours.',
-    closingNoSteps: 'Aucune étape d’amélioration n’est encore recommandée.',
+    closingNoSteps: 'Aucune action n’est encore recommandée.',
   },
   ai: {
     title: 'Brouillon IA',
@@ -182,16 +181,16 @@ export const reportFr: Shape<typeof reportEn> = {
   },
   findings: {
     title: 'Constats clés',
-    subtitle: 'Thèmes approuvés, cités par au moins {n} personnes.',
+    subtitle: 'Constats approuvés, cités par au moins {n} personnes.',
     people: '{count, plural, one {cité par # personne} other {cité par # personnes}}',
     empty: 'Aucun constat à afficher.',
   },
   steps: {
-    title: 'Actions d’amélioration',
+    title: 'Actions',
     subtitle:
-      'Proposées à partir du catalogue pour chaque opportunité approuvée. Retenez, modifiez ou écartez chacune.',
+      'Proposées à partir du catalogue pour chaque constat approuvé. Retenez, modifiez ou écartez chacune, ou rédigez la vôtre.',
     noOpportunity:
-      'Aucune opportunité approuvée. Approuvez des opportunités, ou rédigez votre propre action ici.',
+      'Aucun constat approuvé pour l’instant. Vous pouvez rédiger votre propre action ici.',
     suggestAgain: 'Proposer à nouveau',
     why: 'Pourquoi : {tags}',
     whyPicked: 'Choisie dans le catalogue.',
@@ -222,7 +221,7 @@ export const reportFr: Shape<typeof reportEn> = {
     addCustom: 'Rédiger la mienne',
     pick: 'Choisir une action',
     prerequisites: 'Avant de commencer',
-    none: 'Aucune action pour cette opportunité.',
+    none: 'Aucune action pour ce constat.',
     level: { low: 'Faible', medium: 'Moyen', high: 'Élevé' },
     horizonName: { d30: 'Sous 30 jours', d60: 'Sous 60 jours', d90: 'Sous 90 jours' },
     categoryName: {
@@ -240,7 +239,7 @@ export const reportFr: Shape<typeof reportEn> = {
       data_owner: 'Responsable des données',
       training: 'Responsable formation',
       security_privacy: 'Sécurité et confidentialité',
-      sponsor: 'Commanditaire',
+      sponsor: 'Référent',
     },
     tag: {
       manual_reentry: 'information saisie deux fois',
@@ -264,7 +263,7 @@ export const reportFr: Shape<typeof reportEn> = {
     },
   },
   ranking: {
-    title: 'Opportunités par priorité',
+    title: 'Actions par priorité',
     subtitle: 'Impact élevé et effort faible en premier.',
     matrix: 'Impact et effort',
     matrixAria: 'Impact en fonction de l’effort : {list}',
@@ -282,7 +281,7 @@ export const reportFr: Shape<typeof reportEn> = {
       fill_in: 'Impact faible, effort faible : quand il y a du temps.',
       reconsider: 'Impact faible, effort plus important : sans doute pas maintenant.',
     },
-    empty: 'Retenez des actions pour classer les opportunités.',
+    empty: 'Retenez des actions pour les classer.',
   },
   plan: {
     title: 'Les 30, 60 et 90 prochains jours',
@@ -301,7 +300,7 @@ export const reportFr: Shape<typeof reportEn> = {
       d60: 'Mesurer les premiers résultats par rapport au point de départ : temps, qualité, adoption.',
       d90: 'Décider pour chaque changement : garder, adapter ou arrêter, et rendre compte de chaque résultat.',
     },
-    checkpointOwner: 'Commanditaire avec l’équipe EvolAI',
+    checkpointOwner: 'Référent avec l’équipe EvolAI',
   },
   view: {
     draftBanner: 'Aperçu. Le client ne le voit pas avant la publication.',
@@ -320,19 +319,19 @@ export const reportFr: Shape<typeof reportEn> = {
     print: 'Imprimer',
     stepsFor: 'Actions',
     empty:
-      'Votre rapport d’audit n’est pas encore publié. Vous le trouverez ici dès que l’équipe EvolAI l’aura publié.',
+      'Votre rapport n’est pas encore publié. Vous le trouverez ici dès que l’équipe EvolAI l’aura publié.',
     receiveTitle: 'Ce que vous recevrez',
     receiveWhat:
-      'Un seul rapport pour tout l’audit : le score, les constats principaux, les actions à mener et un plan à 30, 60 et 90 jours. Aucune réponse individuelle.',
+      'Un seul rapport pour toute la mission : le score, les constats principaux, les actions à mener et un plan à 30, 60 et 90 jours. Aucune réponse individuelle.',
     receiveWhenDate:
       'Le questionnaire ferme le {date}. Le rapport apparaît ici quand l’équipe EvolAI a lu les réponses et l’a publié.',
     receiveWhen:
       'Le rapport apparaît ici quand le questionnaire est terminé et que l’équipe EvolAI a lu les réponses et l’a publié.',
     receiveForward:
       'Pour le transmettre, téléchargez le PDF ou imprimez cette page, puis envoyez-le par e-mail.',
-    clientTitle: 'Rapport d’audit',
-    clientSubtitle: 'Ce que l’audit a montré et ce qu’il faut faire ensuite. Lecture seule.',
-    aggregateNote: 'Un seul rapport pour tout l’audit, toutes équipes réunies.',
+    clientTitle: 'Rapport',
+    clientSubtitle: 'Ce qu’EvolAI a constaté et ce qu’il faut faire ensuite. Lecture seule.',
+    aggregateNote: 'Un seul rapport pour toute la mission, toutes équipes réunies.',
     page: 'Page {page} sur {pages}',
     contents: 'Sommaire',
   },
