@@ -43,13 +43,7 @@ const nextStep = (team: TeamProgress, locale: SupportedLocale, t: Translator): s
  * answer count and one sentence on the next step; the page ends calm, no quiz (TASK-AD2). Counts only, never
  * names or answers (PRD §4.3, §15).
  */
-export default function RespondentStatus({
-  engagementId,
-  title,
-  team,
-  locale,
-  t,
-}: Props) {
+export default function RespondentStatus({ engagementId, title, team, locale, t }: Props) {
   const steps: ReadonlyArray<{ icon: IconName; text: string }> = [
     { icon: 'success', text: t('survey.nextSaved') },
     { icon: 'time', text: nextStep(team, locale, t) },

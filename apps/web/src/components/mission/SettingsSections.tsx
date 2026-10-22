@@ -15,7 +15,13 @@ export async function TeamsSection({ tenantId }: { tenantId: TenantId }) {
   const { t } = getT();
   const teams = await listTeamsSetup(tenantId);
   return (
-    <Paper variant="outlined" component="section" id="teams" aria-labelledby="teams-title" sx={CARD_SX}>
+    <Paper
+      variant="outlined"
+      component="section"
+      id="teams"
+      aria-labelledby="teams-title"
+      sx={CARD_SX}
+    >
       <Typography id="teams-title" variant="sectionTitle" component="h2">
         {t('admin.setup.teams.addTitle')}
       </Typography>
@@ -47,7 +53,13 @@ export async function NamesToHideSection({ tenantId }: { tenantId: TenantId }) {
     readRedactionTrail(tenantId),
   ]);
   return (
-    <Paper variant="outlined" component="section" id="names" aria-labelledby="names-title" sx={CARD_SX}>
+    <Paper
+      variant="outlined"
+      component="section"
+      id="names"
+      aria-labelledby="names-title"
+      sx={CARD_SX}
+    >
       <Typography id="names-title" variant="sectionTitle" component="h2">
         {t('admin.redaction.title')}
       </Typography>

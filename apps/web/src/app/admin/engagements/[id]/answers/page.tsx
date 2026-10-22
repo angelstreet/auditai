@@ -63,8 +63,18 @@ export default async function AnswersPage({ params }: { params: { id: string } }
         </>
       ) : (
         <>
-          <Paper variant="outlined" component="section" aria-labelledby="choices-title" sx={CARD_SX}>
-            <Typography id="choices-title" variant="sectionTitle" component="h3" sx={{ mt: 0, mb: 4 }}>
+          <Paper
+            variant="outlined"
+            component="section"
+            aria-labelledby="choices-title"
+            sx={CARD_SX}
+          >
+            <Typography
+              id="choices-title"
+              variant="sectionTitle"
+              component="h3"
+              sx={{ mt: 0, mb: 4 }}
+            >
               {t('admin.answers.choicesTitle')}
             </Typography>
             {view.choices.map((c) => (
@@ -84,7 +94,12 @@ export default async function AnswersPage({ params }: { params: { id: string } }
             aria-labelledby="texts-title"
             sx={CARD_SX}
           >
-            <Typography id="texts-title" variant="sectionTitle" component="h3" sx={{ mt: 0, mb: 4 }}>
+            <Typography
+              id="texts-title"
+              variant="sectionTitle"
+              component="h3"
+              sx={{ mt: 0, mb: 4 }}
+            >
               {t('admin.answers.textsTitle')}
             </Typography>
             {view.texts.length === 0 ? (

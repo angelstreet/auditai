@@ -15,7 +15,9 @@ const TABS = [
 export function WorkspaceTabs({ tenantId }: { tenantId: string }) {
   const { t } = useI18n();
   const pathname = usePathname() ?? '';
-  const current = TABS.find((x) => x.href !== '/admin/settings' && pathname.startsWith(x.href))?.href ?? '/admin/settings';
+  const current =
+    TABS.find((x) => x.href !== '/admin/settings' && pathname.startsWith(x.href))?.href ??
+    '/admin/settings';
   return (
     <Tabs
       component="nav"

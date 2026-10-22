@@ -45,7 +45,8 @@ export default async function PreviewPage({
       <Link href={`/admin/engagements/${setup.id}/settings?tenant=${current}`} lang={locale}>
         {t('admin.setup.preview.back')}
       </Link>
-      <PageTitle level="h2"
+      <PageTitle
+        level="h2"
         id="preview-title"
         title={t('admin.setup.preview.title')}
         subtitle={t('admin.setup.preview.intro')}
