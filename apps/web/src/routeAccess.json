@@ -3,15 +3,15 @@
   "routes": {
     "/": {
       "access": "public",
-      "reason": "Redirect to /welcome; no data."
+      "reason": "Static front page: copy and links, reads nothing from the database."
     },
     "/welcome": {
       "access": "public",
-      "reason": "Static product page; links to /intake, reads nothing from the database."
+      "reason": "Redirect to /; no data."
     },
     "/about": {
       "access": "public",
-      "reason": "Static text."
+      "reason": "Redirect to /; no data."
     },
     "/privacy": {
       "access": "public",

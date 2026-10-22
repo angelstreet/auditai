@@ -8,7 +8,10 @@ import { getT } from '@/lib/i18n';
 
 const SOURCE_URL = 'https://github.com/angelstreet/evolai';
 
-/** Footer (docs/UI_RULES.md §13): logo mark, trust line, About, Privacy and Source links. */
+/**
+ * Footer (docs/UI_RULES.md §13), one slim row on every page: symbol and licence line left,
+ * Privacy and Source right; stacked and centred on phones. Each link appears once per page.
+ */
 export default function SiteFooter() {
   const { t } = getT();
   return (
@@ -20,7 +23,13 @@ export default function SiteFooter() {
       <Stack
         direction={{ xs: 'column', sm: 'row' }}
         className="container footer-row"
-        sx={{ alignItems: { sm: 'center' }, justifyContent: 'space-between', gap: 3, py: 6 }}
+        sx={{
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          textAlign: { xs: 'center', sm: 'left' },
+          gap: 3,
+          py: 4,
+        }}
       >
         <Stack direction="row" sx={{ alignItems: 'center', gap: 3 }}>
           <Logo iconOnly />
@@ -32,11 +41,8 @@ export default function SiteFooter() {
           direction="row"
           component="nav"
           aria-label={t('common.footer.navAria')}
-          sx={{ flexWrap: 'wrap', columnGap: 5, rowGap: 2 }}
+          sx={{ flexWrap: 'wrap', justifyContent: 'center', columnGap: 5, rowGap: 2 }}
         >
-          <Link className="nav-link" href="/about">
-            {t('common.footer.about')}
-          </Link>
           <Link className="nav-link" href="/privacy">
             {t('common.footer.privacy')}
           </Link>

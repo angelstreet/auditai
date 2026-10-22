@@ -5,10 +5,10 @@
 export const clientEn = {
   viewAs: {
     section: 'View as',
-    me: 'Me: auditor',
-    meAria: 'Go back to your own auditor view',
-    persona: '{tenant}: {name}, {role}',
-    personaAria: 'See the app as {name}, {role} at {tenant}. Read only.',
+    me: 'Me',
+    meAria: 'Go back to your own view',
+    persona: '{tenant} · {role}',
+    personaAria: 'See the app as a {role} at {tenant}. Read only.',
     current: 'Current view',
     banner: 'You are viewing {tenant} as {name} ({role}). Read only.',
     bannerShort: 'Viewing as {name}. Read only.',
@@ -18,7 +18,7 @@ export const clientEn = {
     backAria: 'Leave the client view and go back to your own view',
     readOnly:
       'Read only: you are viewing the app as a client. Go back to your view to make changes.',
-    roles: { team_referent: 'referent' },
+    roles: { team_referent: 'Referent' },
   },
   nav: {
     aria: 'Team space',
@@ -66,7 +66,7 @@ export const clientEn = {
       share: 'Share the links with your team, one link per person.',
       shareUntil: 'Share the links with your team. A reminder makes sense from {date}.',
       remind: 'Good day for a reminder. Send the same short message to everybody.',
-      wait: 'Thank you. The auditor is reading the answers.',
+      wait: 'Thank you. The EvolAI team is reading the answers.',
       results: 'Results are ready. Have a look.',
     },
     cta: {
@@ -79,11 +79,11 @@ export const clientEn = {
     how: {
       title: 'How it works',
       ask: 'Your team answers a short survey on how it works and uses AI. It takes about {minutes} minutes.',
-      who: 'Nobody at work sees a person’s answers. You see how many people answered, never who. The auditor reads groups of at least {n} people.',
+      who: 'Nobody at work sees a person’s answers. You see how many people answered, never who. The EvolAI team reads groups of at least {n} people.',
       stepsLabel: 'Three steps',
       send: 'Send: give one link to each person.',
       remind: 'Remind: send one message to everybody, on the day we suggest.',
-      report: 'Report: when the survey is over, the auditor publishes a report here.',
+      report: 'Report: when the survey is over, the EvolAI team publishes a report here.',
     },
     reminder: {
       title: 'Reminder',
@@ -162,8 +162,8 @@ export const clientEn = {
   },
   results: {
     title: 'Results',
-    subtitle: 'What the auditor has published for your organisation.',
-    empty: 'Nothing published yet. Results appear here once the auditor approves them.',
+    subtitle: 'What the EvolAI team has published for your organisation.',
+    empty: 'Nothing published yet. Results appear here once the EvolAI team approves them.',
     themesTitle: 'Main themes',
     themesHint: 'Only themes raised by at least {n} people are shown.',
     themePeople: 'Raised by {count} people',

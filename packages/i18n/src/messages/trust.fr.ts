@@ -182,11 +182,11 @@ export const trustFr: Messages['trust'] = {
     notCollected:
       'Votre nom. Si vous écrivez un texte libre, les noms, e-mails et numéros de téléphone sont masqués automatiquement avant l’enregistrement : aucun nom n’est conservé. Merci de ne pas les écrire quand même.',
     seesTitle: 'Qui voit quoi',
-    seesAuditor: 'L’auditeur voit les réponses liées à votre code, jamais votre nom.',
+    seesAuditor: 'L’équipe EvolAI voit les réponses liées à votre code, jamais votre nom.',
     seesReferent:
       'Le référent de votre équipe voit combien de personnes ont répondu. Jamais qui, jamais quoi.',
     seesSponsor:
-      'Le commanditaire voit les résultats relus et approuvés par l’auditeur, pour des groupes de {n} personnes ou plus.',
+      'Le commanditaire voit les résultats relus et approuvés par l’équipe EvolAI, pour des groupes de {n} personnes ou plus.',
     retentionTitle: 'Combien de temps c’est gardé',
     retention:
       'Les réponses sont gardées {days, plural, one {# jour} other {# jours}}, puis supprimées.',
@@ -194,7 +194,7 @@ export const trustFr: Messages['trust'] = {
     hosting: 'Stockage : {region}.',
     providers: 'Prestataires qui traitent des données pour nous : {list}.',
     aiTitle: 'Usage de l’IA',
-    ai: 'L’IA aide l’auditeur à résumer les réponses. Elle n’utilise que ce service approuvé : {route}. Une personne relit chaque résultat de l’IA avant que quiconque d’autre le voie.',
+    ai: 'L’IA aide l’équipe EvolAI à résumer les réponses. Elle n’utilise que ce service approuvé : {route}. Une personne relit chaque résultat de l’IA avant que quiconque d’autre le voie.',
     rightsTitle: 'Vos droits',
     rights:
       'Vous pouvez demander à voir, corriger ou supprimer vos réponses, vous retirer, ou vous opposer. Vous n’avez pas à passer par votre responsable.',
@@ -204,7 +204,7 @@ export const trustFr: Messages['trust'] = {
       'Ouvrez cette page depuis votre lien d’invitation pour voir les détails de votre organisation et envoyer une demande.',
     requestTitle: 'Vous retirer ou supprimer vos réponses',
     requestIntro:
-      'Envoyez votre demande ici. L’auditeur la reçoit directement. Votre responsable et votre équipe ne la voient pas.',
+      'Envoyez votre demande ici. L’équipe EvolAI la reçoit directement. Votre responsable et votre équipe ne la voient pas.',
     kind: 'Que souhaitez-vous ?',
     kindErase: 'Supprimer mes réponses',
     kindWithdraw: 'Ne plus utiliser mes réponses',
@@ -217,7 +217,7 @@ export const trustFr: Messages['trust'] = {
     replyHelp: 'Gardé seulement jusqu’au traitement de la demande.',
     send: 'Envoyer la demande',
     sending: 'Envoi…',
-    sent: 'Demande envoyée. L’auditeur s’en occupe. Merci.',
+    sent: 'Demande envoyée. L’équipe EvolAI s’en occupe. Merci.',
     errTooMany: 'Trop de demandes. Réessayez plus tard.',
     errInvalid: 'Vérifiez le formulaire et réessayez.',
     errFailed: 'La demande n’a pas pu être envoyée. Réessayez.',

@@ -102,10 +102,10 @@ export const reportEn = {
     methodBase:
       'Anonymous survey of the teams: {people, plural, one {# person answered} other {# people answered}}. Scores are averages of groups of at least {n} people.',
     methodThemes:
-      '{count, plural, one {The auditor checked and approved # theme.} other {The auditor checked and approved # themes.}}',
+      '{count, plural, one {The EvolAI team checked and approved # theme.} other {The EvolAI team checked and approved # themes.}}',
     methodOpportunities:
-      '{count, plural, one {The auditor approved # improvement opportunity.} other {The auditor approved # improvement opportunities.}}',
-    methodUnreviewed: 'No theme or opportunity was approved by the auditor yet.',
+      '{count, plural, one {The EvolAI team approved # improvement opportunity.} other {The EvolAI team approved # improvement opportunities.}}',
+    methodUnreviewed: 'No theme or opportunity was approved by the EvolAI team yet.',
     methodRefreshed: 'The method note was rewritten from the current counts.',
   },
   draft: {
@@ -288,7 +288,7 @@ export const reportEn = {
       d60: 'Measure early results against the starting point: time, quality, adoption.',
       d90: 'Decide for each change: keep, adapt or stop, and report every result.',
     },
-    checkpointOwner: 'Sponsor with the auditor',
+    checkpointOwner: 'Sponsor with the EvolAI team',
   },
   view: {
     draftBanner: 'Preview. The client does not see this until you publish.',
@@ -307,14 +307,14 @@ export const reportEn = {
     print: 'Print',
     stepsFor: 'Steps',
     empty:
-      'Your audit report is not published yet. You will find it here once the auditor publishes it.',
+      'Your audit report is not published yet. You will find it here once the EvolAI team publishes it.',
     receiveTitle: 'What you will receive',
     receiveWhat:
       'One report for the whole audit: the score, the main findings, the steps to take and a plan for 30, 60 and 90 days. No individual answer.',
     receiveWhenDate:
-      'The survey closes on {date}. The report appears here after the auditor has read the answers and published it.',
+      'The survey closes on {date}. The report appears here after the EvolAI team has read the answers and published it.',
     receiveWhen:
-      'The report appears here once the survey is over and the auditor has read the answers and published it.',
+      'The report appears here once the survey is over and the EvolAI team has read the answers and published it.',
     receiveForward: 'To forward it, download the PDF or print this page, then send it by email.',
     clientTitle: 'Audit report',
     clientSubtitle: 'What the audit found and what to do next. Read only.',

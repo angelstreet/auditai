@@ -97,7 +97,7 @@ export const adminFr: AdminMessages = {
     openIntake: 'Ouvrir le cadrage',
     colIntake: 'Cadrage',
     colField: 'Terrain',
-    colReview: 'Relecture de l’auditeur',
+    colReview: 'Relecture de l’équipe EvolAI',
     colOpps: 'Opportunités',
     colDelivery: 'Livraison',
     empty: 'Aucune carte dans cette colonne.',
@@ -256,7 +256,7 @@ export const adminFr: AdminMessages = {
     noPrompts: 'Aucune question de suivi proposée.',
     evidence: 'Preuves ({n})',
     evidenceNote:
-      'Chaque affirmation renvoie à une ligne source de l’application (lien vers la source obligatoire). L’auditeur vérifie l’affirmation et sa source avant de valider.',
+      'Chaque affirmation renvoie à une ligne source de l’application (lien vers la source obligatoire). L’équipe EvolAI vérifie l’affirmation et sa source avant de valider.',
     noEvidence: 'Aucune preuve.',
     colClaim: 'Affirmation',
     colSource: 'Source',

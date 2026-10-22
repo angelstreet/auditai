@@ -1,13 +1,13 @@
 import type { CSSProperties } from 'react';
 
 /**
- * EvolAI logo and wordmark component (M8 rebrand).
+ * EvolAI logo and wordmark component, drawn from the brand kit (apps/web/public/brand/kit, 01_Logos).
  *
- * Renders the adaptive-steps symbol (three leaves, ascending amber → blue → teal)
+ * Renders the Adaptive Steps symbol (three ascending steps, apricot → blue → teal)
  * plus the "EvolAI" wordmark with "AI" highlighted in the brand teal.
  *
  * Two sizes:
- *   - default  (36px icon + text-lg wordmark) for the top navigation
+ *   - default  (28px icon + text-lg wordmark) for the top navigation
  *   - "hero"   (64px icon + text-2xl wordmark) for the about / landing pages
  *
  * The icon is drawn from the brand kit palette (amber, blue, teal, deep navy tokens).
@@ -26,7 +26,7 @@ interface LogoProps {
 }
 
 const ICON_SIZES = {
-  default: 36,
+  default: 28,
   hero: 64,
 } as const;
 
@@ -49,11 +49,12 @@ export function Logo({ size = 'default', iconOnly = false, className, style }: L
   const wordmarkSize = WORDMARK_SIZES[size];
   return (
     <span
+      data-testid={iconOnly ? 'brand-symbol' : 'brand-logo'}
       className={['brand', className].filter(Boolean).join(' ')}
       style={{
         display: 'inline-flex',
         alignItems: 'center',
-        gap: iconSize * 0.33,
+        gap: iconSize * 0.4,
         color: NAVY,
         fontWeight: 700,
         fontSize: `var(${wordmarkSize})`,
@@ -64,24 +65,15 @@ export function Logo({ size = 'default', iconOnly = false, className, style }: L
       }}
     >
       <svg
-        viewBox="0 0 60 60"
-        width={iconSize}
+        viewBox="8 30 166 113"
+        width={Math.round(iconSize * 1.47)}
         height={iconSize}
         aria-hidden="true"
         focusable="false"
       >
-        <path
-          d="M16 50 C 6 50, 2 38, 10 30 C 16 24, 22 26, 26 32 C 28 36, 28 44, 22 48 C 20 49.5, 18 50, 16 50 Z"
-          fill={AMBER}
-        />
-        <path
-          d="M28 44 C 18 44, 14 30, 22 22 C 28 16, 34 18, 38 24 C 40 28, 40 38, 34 42 C 32 43.5, 30 44, 28 44 Z"
-          fill={BLUE}
-        />
-        <path
-          d="M40 38 C 28 38, 24 22, 32 12 C 38 4, 46 6, 50 14 C 52 18, 52 30, 46 36 C 44 37.5, 42 38, 40 38 Z"
-          fill={TEAL}
-        />
+        <path d="M 8 131 L 8 112 Q 8 100 20 100 H 49 V 116 Q 49 143 22 143 H 8 Z" fill={AMBER} />
+        <path d="M 59 140 V 82 Q 59 68 73 68 H 109 V 99 Q 109 140 70 140 Z" fill={BLUE} />
+        <path d="M 119 139 V 46 Q 119 30 135 30 H 174 V 98 Q 174 139 133 139 Z" fill={TEAL} />
       </svg>
       {!iconOnly && (
         <span style={{ whiteSpace: 'nowrap' }}>

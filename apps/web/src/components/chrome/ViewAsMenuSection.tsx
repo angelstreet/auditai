@@ -21,6 +21,14 @@ export interface ViewAsMenu {
   readonly currentId: string | null;
 }
 
+/** Quiet section header, same left edge as the rows below it. */
+export const QUIET_HEADER_SX = {
+  bgcolor: 'transparent',
+  lineHeight: '32px',
+  color: 'text.secondary',
+  fontSize: 'var(--text-xs, 0.75rem)',
+} as const;
+
 const FORM_ID = 'view-as-form';
 
 /** The form the "View as" entries submit (outside the menu, so the menu keeps its ARIA roles). */
@@ -29,7 +37,7 @@ export function ViewAsForm() {
 }
 
 /**
- * "View as" section of the account menu (TASK-P, ADR 0035), owner only: "Me: auditor" plus one
+ * "View as" section of the account menu (TASK-P, ADR 0035), owner only: "Me" plus one
  * entry per client persona. Each entry is a submit button of {@link ViewAsForm} carrying its value,
  * so it works without JavaScript and the server decides. Returned as an array: MUI Menu does not
  * accept fragments.
@@ -53,21 +61,18 @@ export function viewAsMenuItems(menu: ViewAsMenu, t: ReturnType<typeof useI18n>[
       aria-current={current ? 'true' : undefined}
       title={current ? `${aria} (${t('client.viewAs.current')})` : aria}
       data-testid={value === 'self' ? 'view-as-self' : 'view-as-persona'}
-      sx={{ width: '100%' }}
+      sx={{ width: '100%', minHeight: 44, gap: 0, textAlign: 'left' }}
     >
-      <ListItemIcon>
+      <ListItemIcon sx={{ minWidth: 36 }}>
         <AppIcon name={current ? 'success' : icon} />
       </ListItemIcon>
-      <ListItemText primaryTypographyProps={{ sx: { whiteSpace: 'normal' } }}>{label}</ListItemText>
+      <ListItemText slotProps={{ primary: { noWrap: true } }} sx={{ minWidth: 0 }}>
+        {label}
+      </ListItemText>
     </MenuItem>
   );
   return [
-    <ListSubheader
-      key="view-as-title"
-      component="div"
-      role="presentation"
-      sx={{ bgcolor: 'transparent', lineHeight: 2.5, color: 'text.secondary' }}
-    >
+    <ListSubheader key="view-as-title" component="div" role="presentation" sx={QUIET_HEADER_SX}>
       {t('client.viewAs.section')}
     </ListSubheader>,
     entry(

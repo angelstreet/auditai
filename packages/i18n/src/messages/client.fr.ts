@@ -4,10 +4,10 @@ import type { ClientMessages } from './index.js';
 export const clientFr: ClientMessages = {
   viewAs: {
     section: 'Voir en tant que',
-    me: 'Moi : auditeur',
-    meAria: 'Revenir à votre vue d’auditeur',
-    persona: '{tenant} : {name}, {role}',
-    personaAria: 'Voir l’application comme {name}, {role} chez {tenant}. Lecture seule.',
+    me: 'Moi',
+    meAria: 'Revenir à votre propre vue',
+    persona: '{tenant} · {role}',
+    personaAria: 'Voir l’application comme un {role} chez {tenant}. Lecture seule.',
     current: 'Vue actuelle',
     banner: 'Vous voyez {tenant} en tant que {name} ({role}). Lecture seule.',
     bannerShort: 'Vue de {name}. Lecture seule.',
@@ -17,7 +17,7 @@ export const clientFr: ClientMessages = {
     backAria: 'Quitter la vue client et revenir à votre vue',
     readOnly:
       'Lecture seule : vous voyez l’application comme un client. Revenez à votre vue pour modifier.',
-    roles: { team_referent: 'référent' },
+    roles: { team_referent: 'Référent' },
   },
   nav: {
     aria: 'Espace équipe',
@@ -66,7 +66,7 @@ export const clientFr: ClientMessages = {
       share: 'Envoyez les liens à votre équipe, un lien par personne.',
       shareUntil: 'Envoyez les liens à votre équipe. Un rappel sera utile à partir du {date}.',
       remind: 'Bon jour pour un rappel. Envoyez le même court message à tout le monde.',
-      wait: 'Merci. L’auditeur lit les réponses.',
+      wait: 'Merci. L’équipe EvolAI lit les réponses.',
       results: 'Les résultats sont prêts. Jetez un œil.',
     },
     cta: {
@@ -79,11 +79,11 @@ export const clientFr: ClientMessages = {
     how: {
       title: 'Comment ça marche',
       ask: 'Votre équipe répond à un court questionnaire sur son travail et son usage de l’IA. Cela prend environ {minutes} minutes.',
-      who: 'Personne au travail ne voit les réponses d’une personne. Vous voyez combien de personnes ont répondu, jamais lesquelles. L’auditeur lit des groupes d’au moins {n} personnes.',
+      who: 'Personne au travail ne voit les réponses d’une personne. Vous voyez combien de personnes ont répondu, jamais lesquelles. L’équipe EvolAI lit des groupes d’au moins {n} personnes.',
       stepsLabel: 'Trois étapes',
       send: 'Envoyer : donnez un lien à chaque personne.',
       remind: 'Rappel : envoyez un seul message à tout le monde, le jour que nous suggérons.',
-      report: 'Rapport : à la fin, l’auditeur publie un rapport ici.',
+      report: 'Rapport : à la fin, l’équipe EvolAI publie un rapport ici.',
     },
     reminder: {
       title: 'Rappel',
@@ -162,7 +162,7 @@ export const clientFr: ClientMessages = {
   },
   results: {
     title: 'Résultats',
-    subtitle: 'Ce que l’auditeur a publié pour votre organisation.',
+    subtitle: 'Ce que l’équipe EvolAI a publié pour votre organisation.',
     empty: 'Rien de publié pour l’instant. Les résultats apparaissent ici après validation.',
     themesTitle: 'Thèmes principaux',
     themesHint: 'Seuls les thèmes cités par au moins {n} personnes sont affichés.',

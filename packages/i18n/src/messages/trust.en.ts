@@ -183,17 +183,17 @@ export const trustEn = {
     notCollected:
       'Your name. If you write free text, names, emails and phone numbers are hidden automatically before the answer is saved, so no name is kept. Please do not type them anyway.',
     seesTitle: 'Who sees what',
-    seesAuditor: 'The auditor sees the answers linked to your code, never your name.',
+    seesAuditor: 'The EvolAI team sees the answers linked to your code, never your name.',
     seesReferent: 'The referent of your team sees how many people answered. Never who, never what.',
     seesSponsor:
-      'The sponsor sees results that the auditor has reviewed and approved, for groups of {n} people or more.',
+      'The sponsor sees results that the EvolAI team has reviewed and approved, for groups of {n} people or more.',
     retentionTitle: 'How long it is kept',
     retention: 'Answers are kept for {days, plural, one {# day} other {# days}}, then deleted.',
     hostingTitle: 'Where it is stored and who helps us',
     hosting: 'Stored in: {region}.',
     providers: 'Service providers that handle data for us: {list}.',
     aiTitle: 'Use of AI',
-    ai: 'AI helps the auditor summarise answers. It uses only this approved service: {route}. A person reviews every AI result before anyone else sees it.',
+    ai: 'AI helps the EvolAI team summarise answers. It uses only this approved service: {route}. A person reviews every AI result before anyone else sees it.',
     rightsTitle: 'Your rights',
     rights:
       'You can ask to see, correct or delete your answers, to withdraw, or to object. You do not need to go through your manager.',
@@ -203,7 +203,7 @@ export const trustEn = {
       'Open this page from your invitation link to see the details for your organisation and to send a request.',
     requestTitle: 'Withdraw or delete your answers',
     requestIntro:
-      'Send a request here. The auditor receives it directly. Your manager and your team do not.',
+      'Send a request here. The EvolAI team receives it directly. Your manager and your team do not.',
     kind: 'What do you want?',
     kindErase: 'Delete my answers',
     kindWithdraw: 'Stop using my answers',
@@ -215,7 +215,7 @@ export const trustEn = {
     replyHelp: 'Kept only until the request is handled.',
     send: 'Send request',
     sending: 'Sending…',
-    sent: 'Request sent. The auditor will handle it. Thank you.',
+    sent: 'Request sent. The EvolAI team will handle it. Thank you.',
     errTooMany: 'Too many requests. Try again later.',
     errInvalid: 'Check the form and try again.',
     errFailed: 'The request could not be sent. Try again.',

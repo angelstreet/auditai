@@ -10,7 +10,7 @@ import { orderTenants, preferredOrg } from '@/lib/orgContext';
 import { allowedTenantIds } from '@/lib/tenantAccess';
 import { getT } from '@/lib/i18n';
 import { clientIdentity, viewAsMenuFor } from '@/lib/viewAsIdentity';
-import { AccountMenu, LanguageMenu, NavMenu, ThemeToggle, type Identity } from './HeaderControls';
+import { AccountMenu, LanguageToggle, ThemeToggle, type Identity } from './HeaderControls';
 
 const KNOWN_ROLES = new Set(['platform_owner', 'auditor', 'sponsor', 'viewer']);
 
@@ -54,17 +54,13 @@ const loadIdentity = async (): Promise<Identity | null> => {
 };
 
 /**
- * Header (docs/UI_RULES.md §5, §11): logo left; About and Privacy links; language, theme and
- * account icon controls right; the links fold into a hamburger on phones. Same surface as the
+ * Header (docs/UI_RULES.md §5, §11): logo left; FR | EN, theme icon and the sign-in or account
+ * control right. Nothing else: Privacy and Source live in the footer. Same surface as the
  * page, a hairline below.
  */
 export default async function SiteHeader() {
   const { t } = getT();
   const identity = await loadIdentity();
-  const links = [
-    { href: '/about', label: t('common.nav.about') },
-    { href: '/privacy', label: t('common.nav.privacy') },
-  ];
   return (
     <Box
       component="header"
@@ -129,21 +125,9 @@ export default async function SiteHeader() {
             '@media (max-width: 359.98px)': { gap: 0 },
           }}
         >
-          <Stack
-            direction="row"
-            className="nav-links"
-            sx={{ display: { xs: 'none', sm: 'flex' }, gap: 5, mr: 3 }}
-          >
-            {links.map((l) => (
-              <Link key={l.href} href={l.href} className="nav-link">
-                {l.label}
-              </Link>
-            ))}
-          </Stack>
-          <LanguageMenu />
+          <LanguageToggle />
           <ThemeToggle />
           <AccountMenu identity={identity} />
-          <NavMenu links={links} />
         </Stack>
       </Stack>
     </Box>
