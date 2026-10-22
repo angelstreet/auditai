@@ -154,6 +154,7 @@ export const trustFr: Messages['trust'] = {
       report_step_accept: 'A accepté une étape d’amélioration',
       report_step_reject: 'A refusé une étape d’amélioration',
       privacy_request_handle: 'A marqué une demande vie privée comme traitée',
+      analysis_run: 'A lancé l’analyse des réponses',
       answers_anonymise: 'A anonymisé les textes libres déjà enregistrés',
     },
   },

@@ -935,6 +935,24 @@ const checkWith = async (
   const inputs = await loadInputsWith(client, tenantId, r.engagementId);
   if (!inputs) return { ok: false, code: 'invalid' };
   const steps = await loadSteps(client, tenantId, r.id);
+  const check = await snapshotFor(client, tenantId, r, publishedAt, inputs, steps);
+  if (check.ok || check.code !== 'nothing_accepted') return check;
+  // With no analysis at all, "approve a theme" points at a step that does not exist yet.
+  const any = await client.query(
+    'SELECT 1 FROM analyses WHERE tenant_id = $1 AND engagement_id = $2 LIMIT 1',
+    [tenantId, r.engagementId],
+  );
+  return any.rowCount ? check : { ok: false, code: 'nothing_accepted_no_analysis' };
+};
+
+const snapshotFor = async (
+  client: pg.PoolClient,
+  tenantId: string,
+  r: ReportRow,
+  publishedAt: string,
+  inputs: ReportInputs,
+  steps: Awaited<ReturnType<typeof loadSteps>>,
+): Promise<PublishCheck> => {
   return buildSnapshot(
     {
       version: r.version,

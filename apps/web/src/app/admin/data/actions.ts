@@ -11,6 +11,8 @@ import {
 import { handlePrivacyRequest } from '@/lib/privacyRequests';
 import type { MessageKey } from '@evolai/i18n';
 import { runExport } from '@/lib/exportData';
+import { AnswersGroupTooSmallError } from '@/lib/answersData';
+import { MIN_GROUP_SIZE } from '@/lib/invitationTracking';
 import { resolveActor } from '@/lib/authServer';
 import { enumLabel, getT } from '@/lib/i18n';
 
@@ -55,6 +57,9 @@ export async function triggerExportAction(
       csv: { filename: `evolai-${kindRaw}.csv`, body: csv },
     };
   } catch (err) {
+    if (err instanceof AnswersGroupTooSmallError) {
+      return { ok: false, message: t('admin.data.errAnswersTooFew', { n: MIN_GROUP_SIZE }) };
+    }
     console.error('export failed', err);
     return { ok: false, message: t('admin.data.errExport') };
   }

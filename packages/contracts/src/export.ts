@@ -18,6 +18,7 @@ export const exportKindSchema = z.enum([
   'team_badges',
   'synergies',
   'audit_log',
+  'answers',
 ]);
 export type ExportKind = z.infer<typeof exportKindSchema>;
 

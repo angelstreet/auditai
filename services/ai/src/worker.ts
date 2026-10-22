@@ -28,8 +28,14 @@ export interface WorkerOptions {
   readonly databaseUrl?: string;
   /** Identifier of the model route, stored on the analyses row. */
   readonly modelRoute?: string;
-  /** pg client (for tests). */
-  readonly client?: pg.Client;
+  /** pg client (for tests, or a caller that scopes the connection itself). */
+  readonly client?: pg.ClientBase;
+  /**
+   * The caller already opened a transaction with the tenant scope on `client` (the web app's
+   * "Run analysis"). Skip the session-level `SET ROLE` / service-account flag, which would leak into
+   * a pooled connection.
+   */
+  readonly scopedClient?: boolean;
   /** Env to resolve the AI route from. Defaults to process.env. */
   readonly env?: NodeJS.ProcessEnv;
   /** AI config (allowlist, caps, rates). Defaults to `loadAiConfig(env)`. */
@@ -42,7 +48,7 @@ export interface WorkerOptions {
 const DEFAULT_MODEL_ROUTE = 'rule-based/v1';
 
 const loadPipelineInput = async (
-  client: pg.Client,
+  client: pg.ClientBase,
   submissionId: string,
 ): Promise<PipelineInput | null> => {
   const subRes = await client.query<SubmissionRow>(
@@ -73,7 +79,7 @@ const loadPipelineInput = async (
   return { submission: sub, answers: ansRes.rows, questionItems: items };
 };
 
-const loadRedactionTerms = async (client: pg.Client, tenantId: string): Promise<string[]> => {
+const loadRedactionTerms = async (client: pg.ClientBase, tenantId: string): Promise<string[]> => {
   const r = await client.query<{ term: string }>(
     'SELECT term FROM ai_redaction_terms WHERE tenant_id = $1',
     [tenantId],
@@ -81,7 +87,7 @@ const loadRedactionTerms = async (client: pg.Client, tenantId: string): Promise<
   return r.rows.map((x) => x.term);
 };
 
-const loadMonthSpend = async (client: pg.Client, tenantId: string): Promise<number> => {
+const loadMonthSpend = async (client: pg.ClientBase, tenantId: string): Promise<number> => {
   const r = await client.query<{ spend: string }>(
     `SELECT COALESCE(SUM(cost_amount), 0)::text AS spend
        FROM analyses
@@ -93,7 +99,7 @@ const loadMonthSpend = async (client: pg.Client, tenantId: string): Promise<numb
 
 /** Write a model-drafted analysis. `approved_at` stays NULL: an auditor must approve it. */
 const writeLlmAnalysis = async (
-  client: pg.Client,
+  client: pg.ClientBase,
   input: PipelineInput,
   { payload, meta }: LlmPipelineResult,
 ): Promise<void> => {
@@ -163,7 +169,7 @@ export const processSubmission = async (
   options: WorkerOptions = {},
 ): Promise<AnalysisPayload | null> => {
   const url = options.databaseUrl ?? process.env['DATABASE_URL'];
-  if (!url) {
+  if (!url && !options.client) {
     throw new Error('DATABASE_URL is required to run the AI worker');
   }
   const env = options.env ?? process.env;
@@ -176,10 +182,12 @@ export const processSubmission = async (
   const modelRoute = provider ? provider.route.id : (options.modelRoute ?? DEFAULT_MODEL_ROUTE);
   const ownsClient = !options.client;
   const client = options.client ?? new pg.Client({ connectionString: url });
-  if (ownsClient) await client.connect();
+  if (ownsClient) await (client as pg.Client).connect();
   try {
-    await client.query('SET ROLE auditai_app');
-    await client.query(`SET app.is_service_account = 'on'`);
+    if (!options.scopedClient) {
+      await client.query('SET ROLE auditai_app');
+      await client.query(`SET app.is_service_account = 'on'`);
+    }
 
     const input = await loadPipelineInput(client, submissionId);
     if (!input) return null;
@@ -223,7 +231,7 @@ export const processSubmission = async (
     );
     return payload;
   } finally {
-    if (ownsClient) await client.end();
+    if (ownsClient) await (client as pg.Client).end();
   }
 };
 

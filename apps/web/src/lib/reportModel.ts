@@ -77,6 +77,7 @@ export type PublishCheck =
         | 'citation_missing'
         | 'citation_unknown'
         | 'nothing_accepted'
+        | 'nothing_accepted_no_analysis'
         | 'contains_name'
         | 'contains_quote'
         | 'invalid';

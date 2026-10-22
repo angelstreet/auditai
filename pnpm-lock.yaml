@@ -50,6 +50,9 @@ importers:
       '@emotion/styled':
         specifier: 11.14.1
         version: 11.14.1(@emotion/react@11.14.0(@types/react@18.3.12)(react@18.3.1))(@types/react@18.3.12)(react@18.3.1)
+      '@evolai/ai':
+        specifier: workspace:*
+        version: link:../../services/ai
       '@evolai/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts

@@ -78,6 +78,8 @@ export const reportEn = {
     citation_unknown: 'The summary cites a finding that is no longer approved. Update the ticks.',
     nothing_accepted:
       'Nothing to publish yet. Approve a theme in Analyses, or add a step with “Write my own” under Improvement steps.',
+    nothing_accepted_no_analysis:
+      'Nothing to publish yet. Run the analysis in Analyses, or add a step with “Write my own” under Improvement steps.',
     contains_name:
       'The report contains a name from the "names to hide" list. Remove it before publishing.',
     contains_quote:

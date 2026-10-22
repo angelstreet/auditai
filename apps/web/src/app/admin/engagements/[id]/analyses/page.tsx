@@ -7,8 +7,11 @@ import { engagementLabelFor, listAnalysesForEngagement } from '@/lib/auditorData
 import { tenantLabel } from '@/lib/adminData';
 import { sessionTenantIds } from '@/lib/authServer';
 import type { EngagementId, TenantId } from '@evolai/contracts';
+import { RunAnalysisForm } from './RunAnalysisForm';
 
 export const dynamic = 'force-dynamic';
+// The analysis runs inside the click's request: give it the time the pipeline is bounded to.
+export const maxDuration = 60;
 
 interface PageProps {
   params: { id: string };
@@ -80,7 +83,12 @@ export default async function AnalysesListPage({ params, searchParams }: PagePro
         <Link href={`/admin/engagements/${params.id}/opportunities?tenant=${tenantId}`}>
           {t('admin.analyses.viewOpps')}
         </Link>
+        {' \u00b7 '}
+        <Link href={`/admin/engagements/${params.id}/answers?tenant=${tenantId}`}>
+          {t('admin.analyses.viewAnswers')}
+        </Link>
       </p>
+      <RunAnalysisForm tenantId={tenantId} engagementId={engagementId} />
       <table>
         <thead>
           <tr>

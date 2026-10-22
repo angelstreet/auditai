@@ -19,6 +19,7 @@ describe('export trail (M15, FR-09)', () => {
       'team_badges',
       'synergies',
       'audit_log',
+      'answers',
     ]);
     expect(exportStatusSchema.options).toEqual(['pending', 'completed', 'failed']);
   });

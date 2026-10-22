@@ -33,6 +33,7 @@ export const adminEn = {
       team_badges: 'Team badges',
       synergies: 'Synergies',
       audit_log: 'Audit log',
+      answers: 'Answers',
     },
     invitationStatus: {
       pending: 'Waiting',
@@ -210,6 +211,8 @@ export const adminEn = {
     errInvalidPseudonym: 'This respondent code is not valid',
     exported: 'Exported {kind}',
     errExport: 'Export failed. Please try again.',
+    errAnswersTooFew:
+      'Answers can only be exported once {n} people have answered the same engagement. That is not the case yet.',
     removed: 'Removed {rows} row(s); wrote {events} deletion event(s)',
     errDelete: 'Deletion failed. Please try again.',
   },
@@ -227,6 +230,36 @@ export const adminEn = {
     colAction: 'Action',
     none: 'No analyses for this engagement yet. They appear once survey answers have been analysed.',
     review: 'Review',
+    viewAnswers: 'View answers',
+    run: {
+      button: 'Run analysis',
+      running: 'Analysing…',
+      help: 'Analyses the submitted answers that have no analysis yet. Names are masked before any call to an AI model, and nothing is shown to the client without your approval.',
+      done: '{analysed} answer set(s) analysed, {themes} theme(s) found. Review and approve each analysis below.',
+      partial: ' {remaining} left: run the analysis again to continue.',
+      nothingNew: 'Nothing new to analyse: all {total} submitted answer sets already have an analysis.',
+      method: 'Method: {route}.',
+      ruleBased: 'Fixed-rule automatic method, no AI model.',
+      tooFew: 'At least {n} people must have answered before the analysis can run ({have} so far).',
+      noRoute: 'No approved AI model. Ask the platform administrator to choose an approved method, then run it again.',
+      failed: 'The analysis could not finish. Nothing was shown to the client. Please try again.',
+      notFound: 'Engagement not found.',
+    },
+  },
+  answers: {
+    title: 'Answers — {org}',
+    intro:
+      '{n} people have answered. Free texts are anonymised and listed with no link to a person.',
+    tooFew:
+      'Answers are only shown once {min} people have answered ({have} so far). Below that, a lone answer could point at someone.',
+    choicesTitle: 'Choices per question',
+    colQuestion: 'Question',
+    colChoice: 'Answer',
+    colCount: 'People',
+    textsTitle: 'Free texts',
+    noTexts: 'No free text.',
+    endComment: 'Closing comment',
+    export: 'Export the answers (CSV)',
   },
   analysis: {
     title: 'Analysis — respondent {pseudonym}',

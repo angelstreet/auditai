@@ -2,6 +2,7 @@ import type { ExportKind, ExportRequest, TenantId, UserId } from '@evolai/contra
 import { exportKindSchema } from '@evolai/contracts';
 import { withTenant } from './db';
 import { MIN_GROUP_SIZE } from './invitationTracking';
+import { answersExportRows } from './answersData';
 
 /**
  * Export data layer (M15, FR-09, PRD §15, §25.4).
@@ -66,6 +67,14 @@ export const runExport = async (
         columnLabels ? rows.columns.map((c) => columnLabels[c] ?? c) : rows.columns,
         rows.values,
       );
+      if (kind === 'answers') {
+        // Counts only, never a value: the trail says who took the answers out and how much.
+        await client.query(
+          `INSERT INTO audit_log (tenant_id, actor_user_id, action, target_kind, target_id, payload_json)
+           VALUES ($1, $2, 'export.complete', 'export_request', $3, $4)`,
+          [tenantId, actorUserId, inserted.id, JSON.stringify({ kind, rows: rows.values.length })],
+        );
+      }
       const upd = await client.query<ExportRequestRow>(
         `UPDATE export_requests
             SET status = 'completed', row_count = $2, completed_at = now()
@@ -158,6 +167,9 @@ const materialiseQuery = async (
       );
       return { columns: r.fields.map((f) => f.name), values: r.rows.map(toRow) };
     }
+    case 'answers':
+      // Pseudonym, question, anonymised value, time. Only engagements past the minimum group.
+      return answersExportRows(client, tenantId);
     case 'audit_log': {
       const r = await client.query(
         `SELECT id, actor_user_id, action, target_kind, target_id, payload_json, created_at

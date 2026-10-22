@@ -86,6 +86,8 @@ export const reportFr: Shape<typeof reportEn> = {
       'La synthèse cite un constat qui n’est plus approuvé. Mettez les cases à jour.',
     nothing_accepted:
       'Rien à publier pour l’instant. Approuvez un thème dans Analyses, ou ajoutez une étape avec « Rédiger la mienne » sous Actions d’amélioration.',
+    nothing_accepted_no_analysis:
+      'Rien à publier pour l’instant. Lancez l’analyse dans Analyses, ou ajoutez une étape avec « Rédiger la mienne » sous Actions d’amélioration.',
     contains_name:
       'Le rapport contient un nom de la liste « noms à masquer ». Retirez-le avant de publier.',
     contains_quote:

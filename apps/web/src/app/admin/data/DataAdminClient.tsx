@@ -30,6 +30,7 @@ const KINDS = [
   'team_badges',
   'synergies',
   'audit_log',
+  'answers',
 ] as const;
 
 const PSEUDONYM_PATTERN = /^[a-z0-9-]{8,64}$/;

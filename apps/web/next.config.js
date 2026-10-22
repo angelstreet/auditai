@@ -51,6 +51,8 @@ const nextConfig = {
     // path because the server action layer only landed in M10.)
     '@evolai/contracts',
     '@evolai/domain',
+    // TASK-AA: the "Run analysis" button runs the AI worker's pipeline from source.
+    '@evolai/ai',
     // TASK-C: web imports catalogs from @evolai/i18n and mascots from @evolai/ui; both are
     // consumed from source with NodeNext-style specifiers.
     '@evolai/i18n',
