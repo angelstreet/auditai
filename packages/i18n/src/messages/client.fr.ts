@@ -6,7 +6,7 @@ export const clientFr: ClientMessages = {
     section: 'Voir en tant que',
     me: 'Moi',
     meAria: 'Revenir à votre propre vue',
-    persona: '{tenant} · {role}',
+    persona: '{tenant} · Référent',
     personaAria: 'Voir l’application comme un {role} chez {tenant}. Lecture seule.',
     current: 'Vue actuelle',
     banner: 'Vous voyez {tenant} en tant que {name} ({role}). Lecture seule.',
@@ -17,7 +17,7 @@ export const clientFr: ClientMessages = {
     backAria: 'Quitter la vue client et revenir à votre vue',
     readOnly:
       'Lecture seule : vous voyez l’application comme un client. Revenez à votre vue pour modifier.',
-    roles: { team_referent: 'Référent' },
+    roles: { team_referent: 'référent' },
   },
   nav: {
     aria: 'Espace équipe',
@@ -44,7 +44,7 @@ export const clientFr: ClientMessages = {
     },
     closes: 'Fermeture le {date}',
     closed: 'Fermé le {date}',
-    noClosingDate: 'Pas encore de date de fermeture. Votre auditeur va la fixer.',
+    noClosingDate: 'Pas encore de date de fermeture. L’équipe EvolAI va la fixer.',
     daysLeft:
       '{count, plural, =0 {Dernier jour aujourd’hui} one {# jour restant} other {# jours restants}}',
     progressTitle: 'Réponses par équipe',
@@ -75,7 +75,7 @@ export const clientFr: ClientMessages = {
       remind: 'Envoyer le rappel',
       results: 'Voir les résultats',
     },
-    noSurvey: 'Aucun questionnaire n’est prévu pour votre équipe. Votre auditeur va le préparer.',
+    noSurvey: 'Aucun questionnaire n’est prévu pour votre équipe. L’équipe EvolAI va le préparer.',
     how: {
       title: 'Comment ça marche',
       ask: 'Votre équipe répond à un court questionnaire sur son travail et son usage de l’IA. Cela prend environ {minutes} minutes.',

@@ -50,16 +50,10 @@ export function LanguageToggle() {
       onChange={choose}
       aria-label={t('common.language.switcherAria')}
       data-testid="language-toggle"
-      sx={{ '& .MuiToggleButton-root': { minWidth: 44, minHeight: 36, px: 2, fontWeight: 600 } }}
+      sx={{ '& .MuiToggleButton-root': { minWidth: 44, minHeight: 44, px: 2, fontWeight: 600 } }}
     >
       {supportedLocales.map((l) => (
-        <ToggleButton
-          key={l}
-          value={l}
-          lang={l}
-          data-testid={`switch-${l}`}
-          aria-label={t(`common.language.${l}`)}
-        >
+        <ToggleButton key={l} value={l} lang={l} data-testid={`switch-${l}`}>
           {l.toUpperCase()}
         </ToggleButton>
       ))}

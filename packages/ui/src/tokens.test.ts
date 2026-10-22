@@ -135,6 +135,22 @@ describe('design tokens', () => {
     expect(ratio(r('--color-on-highlight'), r('--color-highlight'))).toBeGreaterThanOrEqual(4.5);
   });
 
+  it('teal contrast rule (brand kit, ADR 0048): raw teal is for fills, never small text', () => {
+    const r = resolveIn(light);
+    const teal = r('--color-teal');
+    // Teal on white and white on teal fail AA (about 2.9:1): never used for small text or labels.
+    expect(ratio(teal, '#ffffff')).toBeLessThan(4.5);
+    // Ink text on filled teal, and teal on the dark ink, pass.
+    expect(ratio(r('--color-navy'), teal)).toBeGreaterThanOrEqual(4.5);
+    expect(ratio(teal, r('--color-navy'))).toBeGreaterThanOrEqual(4.5);
+    // The darker teal tokens carry small text, links and white-on-fill buttons on light.
+    expect(ratio(palette.light.accentInk, palette.light.surface)).toBeGreaterThanOrEqual(4.5);
+    expect(ratio(palette.light.onAccent, palette.light.accent)).toBeGreaterThanOrEqual(4.5);
+    // On the dark page the lighter teal ink passes and the filled button uses ink text.
+    expect(ratio(palette.dark.accentInk, palette.dark.bg)).toBeGreaterThanOrEqual(4.5);
+    expect(ratio(palette.dark.onAccent, palette.dark.accent)).toBeGreaterThanOrEqual(4.5);
+  });
+
   it('keeps the type scale small', () => {
     const sizes = [...light.keys()].filter((k) => k.startsWith('--text-'));
     expect(sizes.length).toBeLessThanOrEqual(7);

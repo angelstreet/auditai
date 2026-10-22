@@ -7,7 +7,7 @@ export const clientEn = {
     section: 'View as',
     me: 'Me',
     meAria: 'Go back to your own view',
-    persona: '{tenant} · {role}',
+    persona: '{tenant} · Referent',
     personaAria: 'See the app as a {role} at {tenant}. Read only.',
     current: 'Current view',
     banner: 'You are viewing {tenant} as {name} ({role}). Read only.',
@@ -18,7 +18,7 @@ export const clientEn = {
     backAria: 'Leave the client view and go back to your own view',
     readOnly:
       'Read only: you are viewing the app as a client. Go back to your view to make changes.',
-    roles: { team_referent: 'Referent' },
+    roles: { team_referent: 'referent' },
   },
   nav: {
     aria: 'Team space',
@@ -45,7 +45,7 @@ export const clientEn = {
     },
     closes: 'Closes on {date}',
     closed: 'Closed on {date}',
-    noClosingDate: 'No closing date yet. Your auditor will set it.',
+    noClosingDate: 'No closing date yet. The EvolAI team will set it.',
     daysLeft: '{count, plural, =0 {Last day today} one {# day left} other {# days left}}',
     progressTitle: 'Answers by team',
     answered: '{done} of {total} answered',
@@ -75,7 +75,7 @@ export const clientEn = {
       remind: 'Send the reminder',
       results: 'See results',
     },
-    noSurvey: 'No survey is planned for your team yet. Your auditor will set it up.',
+    noSurvey: 'No survey is planned for your team yet. The EvolAI team will set it up.',
     how: {
       title: 'How it works',
       ask: 'Your team answers a short survey on how it works and uses AI. It takes about {minutes} minutes.',

@@ -18,6 +18,10 @@
  *      text button; no `secondary`, `success`, `warning` or `info` buttons (UI_RULES §3).
  *  11. No ALL CAPS through styles: no `text-transform: uppercase` (UI_RULES §2).
  *
+ * 12. Brand (ADR 0048): `<Logo` lives only in the shared header and footer (apps/web/src/components/chrome),
+ *     never in a page or card; no mascot on a public or first-impression page (front page, sign-in and
+ *     password pages, privacy, the shared chrome).
+ *
  * Exceptions are whole files, listed below with the reason. Exit 1 on any finding.
  */
 
@@ -91,7 +95,11 @@ const buttonTags = (text) => {
   return tags;
 };
 
-/** Whole-file rules 7 to 10; exported for the test. */
+const LOGO_HOMES = /^apps\/web\/src\/components\/(chrome\/|Logo\.tsx$)/;
+const NO_MASCOT =
+  /^apps\/web\/src\/(app\/(page|login|forgot-password|set-password|privacy|welcome|about|layout)[/.]|components\/(chrome|auth)\/)/;
+
+/** Whole-file rules 7 to 12; exported for the test. */
 export const scanFile = (rel, text) => {
   const out = [];
   if (!/\.tsx?$/.test(rel)) return out;
@@ -101,6 +109,18 @@ export const scanFile = (rel, text) => {
     }
     if (EMOJI.test(line)) out.push(`${rel}:${i + 1}: emoji (use AppIcon)`);
   });
+  if (rel.startsWith('apps/web/src/') && !LOGO_HOMES.test(rel)) {
+    text.split('\n').forEach((line, i) => {
+      if (/<Logo\b/.test(line))
+        out.push(`${rel}:${i + 1}: <Logo> outside the shared header and footer`);
+    });
+  }
+  if (NO_MASCOT.test(rel)) {
+    text.split('\n').forEach((line, i) => {
+      if (/\bMascot\b/.test(line))
+        out.push(`${rel}:${i + 1}: mascot on a public or first-impression page`);
+    });
+  }
   const tags = buttonTags(text);
   const filled = tags.filter((b) => /variant=["']contained["']/.test(b.tag));
   if (filled.length > 1) {

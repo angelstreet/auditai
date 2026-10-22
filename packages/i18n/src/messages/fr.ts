@@ -97,7 +97,7 @@ export const fr: Messages = {
     contact: 'Nous contacter',
     signIn: 'Se connecter',
     surveyLine:
-      'Vous avez reçu un lien pour le questionnaire ? Ouvrez-le depuis le message reçu. Aucun compte nécessaire.',
+      'Vous avez reçu un lien pour le questionnaire ? Ouvrez-le depuis le message reçu. Aucun compte nécessaire.',
   },
   privacy: {
     title: 'Politique de confidentialité',
@@ -275,7 +275,7 @@ export const fr: Messages = {
     res: { eu_frankfurt: 'UE (Francfort)', us: 'États-Unis', client_vpc: 'VPC du client' },
     injectionLabel: 'Processus de revue des injections de prompt',
     injection: {
-      external_auditor: 'Test d’intrusion trimestriel par un auditeur externe',
+      external_auditor: 'Test d’intrusion trimestriel par un évaluateur externe',
       internal: 'Revue interne uniquement',
       none_yet: 'Pas encore de processus formel — merci de nous conseiller',
     },

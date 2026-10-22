@@ -67,3 +67,16 @@ test('button colours', () => {
   assert.equal(fileHits('<Button color="secondary">X</Button>').length, 1);
   assert.equal(fileHits('<Button color="error">X</Button>').length, 1);
 });
+
+test('the logo lives only in the shared chrome, and public pages carry no mascot', () => {
+  assert.equal(scanFile('apps/web/src/app/login/page.tsx', '<Logo iconOnly />').length, 1);
+  assert.deepEqual(scanFile('apps/web/src/components/chrome/SiteHeader.tsx', '<Logo />'), []);
+  assert.equal(
+    scanFile('apps/web/src/app/page.tsx', "import { Mascot } from '@evolai/ui';").length,
+    1,
+  );
+  assert.deepEqual(
+    scanFile('apps/web/src/components/respondent/RespondentStatus.tsx', '<Mascot tier="fox" />'),
+    [],
+  );
+});

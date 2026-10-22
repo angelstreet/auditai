@@ -228,7 +228,6 @@ test.describe('language', () => {
   test('switching language re-renders at once, with no English left over', async ({ page }) => {
     await signInAsAuditorA(page);
     await page.goto('/admin/engagements');
-    await page.getByTestId('language-button').click();
     await page.getByTestId('switch-fr').click();
     await expect(page.locator('html')).toHaveAttribute('lang', 'fr');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(/Missions d’audit/);

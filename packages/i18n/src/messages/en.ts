@@ -262,7 +262,7 @@ export const en = {
     res: { eu_frankfurt: 'EU (Frankfurt)', us: 'US', client_vpc: 'Client VPC' },
     injectionLabel: 'Prompt-injection review process',
     injection: {
-      external_auditor: 'Quarterly red-team by external auditor',
+      external_auditor: 'Quarterly red-team by external reviewer',
       internal: 'Internal review only',
       none_yet: 'No formal process yet — please propose',
     },

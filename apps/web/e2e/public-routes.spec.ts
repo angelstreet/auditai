@@ -57,12 +57,12 @@ test.describe('public routes (every viewport, layout gate)', () => {
     }
   }
 
-  test('/ 30x-redirects to /welcome on every viewport', async ({ page }) => {
-    const response = await page.goto('/', { waitUntil: 'domcontentloaded' });
-    // Final URL after the redirect.
-    // Static prerender redirects client-side; wait for it rather than racing DOMContentLoaded.
-    await page.waitForURL(/\/welcome$/);
-    expect(response?.status(), 'redirect chain lands at 200').toBeLessThan(400);
+  test('/welcome and /about land on the front page', async ({ page }) => {
+    for (const old of ['/welcome', '/about']) {
+      const response = await page.goto(old, { waitUntil: 'domcontentloaded' });
+      await page.waitForURL(/\/$/);
+      expect(response?.status(), `${old} redirect chain lands at 200`).toBeLessThan(400);
+    }
   });
 
   test('mobile-360 has no horizontal scroll on the public surfaces', async ({ page }) => {
@@ -101,7 +101,7 @@ test.describe('public routes (every viewport, layout gate)', () => {
   });
 
   test('no clipped labels at the viewport edges', async ({ page }) => {
-    await page.goto('/welcome');
+    await page.goto('/');
     // The hero heading + the first CTA are both inside the viewport.
     const heading = page.locator('h1').first();
     await expect(heading).toBeInViewport();

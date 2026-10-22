@@ -29,12 +29,17 @@ export default function FrontPage() {
   const email = process.env['CONTACT_EMAIL']?.trim();
   const contactHref = email ? `mailto:${email}` : '/privacy';
   return (
-    <Box component="section" aria-labelledby="welcome-title" sx={{ pt: { xs: 4, md: 10 } }}>
+    <Box
+      component="section"
+      aria-labelledby="welcome-title"
+      className="wide"
+      sx={{ pt: { xs: 4, md: 10 } }}
+    >
       <Typography
         id="welcome-title"
         variant="pageTitle"
         component="h1"
-        sx={{ m: 0, maxWidth: '22ch', fontSize: { md: 'var(--text-2xl)' } }}
+        sx={{ m: 0, maxWidth: '30ch', fontSize: { md: 'var(--text-2xl)' } }}
       >
         {t('welcome.heading')}
       </Typography>

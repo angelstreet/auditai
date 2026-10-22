@@ -94,7 +94,7 @@ export const adminEn = {
     openIntake: 'Open intake',
     colIntake: 'Intake',
     colField: 'Field',
-    colReview: 'Auditor review',
+    colReview: 'EvolAI team review',
     colOpps: 'Opportunities',
     colDelivery: 'Delivery',
     empty: 'No cards in this column.',

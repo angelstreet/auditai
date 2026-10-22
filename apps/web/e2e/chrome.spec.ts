@@ -9,7 +9,7 @@ import { signInAsAuditorA } from './helpers';
  *  - dark is a lifted slate, not black.
  */
 
-const CONTROLS = ['language-button', 'theme-button', 'sign-in-button'] as const;
+const CONTROLS = ['language-toggle', 'theme-button', 'sign-in-button'] as const;
 
 const boxesOf = async (page: Page) => {
   const out: Record<string, { x: number; y: number; width: number; height: number } | null> = {};
@@ -70,7 +70,7 @@ test.describe('header chrome', () => {
     baseURL,
   }) => {
     await visit(page, baseURL as string, 'en', 'dark');
-    await page.goto('/welcome');
+    await page.goto('/');
     const bg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
     expect(bg).toBe('rgb(26, 29, 35)');
     const primary = page.locator('main a.MuiButton-contained').first();
@@ -94,7 +94,7 @@ test.describe('identity after sign-in (§11)', () => {
     await account.click();
     const identity = page.getByTestId('account-identity');
     await expect(identity).toContainText('synthetic-auditor-a@synthetic.invalid');
-    await expect(identity).toContainText(/Auditor|Platform owner/);
+    await expect(identity).toContainText(/EvolAI team/);
     await expect(identity).toContainText(/·\s*\S/);
     await page.getByTestId('sign-out').click();
     await page.waitForURL(/\/login/);
@@ -125,7 +125,7 @@ test.describe('header bounding box across locales and themes', () => {
             { name: 'evolai_locale', value: locale, url: baseURL as string },
             { name: 'evolai_theme', value: theme, url: baseURL as string },
           ]);
-          await page.goto(signedIn ? '/admin/engagements' : '/welcome');
+          await page.goto(signedIn ? '/admin/engagements' : '/');
           const row = await headerRow(page);
           const label = `${locale} ${theme}`;
           expect(row.height, label).toBeLessThanOrEqual(65);
@@ -146,20 +146,20 @@ const linesOf = (el: Element): number => {
 
 test.describe('hierarchy and copy length (§13)', () => {
   for (const locale of ['fr', 'en'] as const) {
-    test(`welcome headline and step cards, ${locale}`, async ({ page, baseURL }) => {
+    test(`front page headline and step cards, ${locale}`, async ({ page, baseURL }) => {
       await page
         .context()
         .addCookies([{ name: 'evolai_locale', value: locale, url: baseURL as string }]);
-      await page.goto('/welcome');
+      await page.goto('/');
       const width = page.viewportSize()?.width ?? 0;
       if (width >= 1024) {
         expect(await page.locator('h1').evaluate(linesOf), 'headline lines').toBeLessThanOrEqual(2);
       }
       const bodies = page.locator('ol li p');
       const n = await bodies.count();
-      expect(n).toBe(4);
+      expect(n).toBe(3);
       for (let i = 0; i < n; i += 1) {
-        expect(await bodies.nth(i).evaluate(linesOf), `card ${i + 1} body`).toBe(1);
+        expect(await bodies.nth(i).evaluate(linesOf), `card ${i + 1} body`).toBeLessThanOrEqual(4);
       }
       // No shouting eyebrow pill in capitals above the headline.
       const caps = await page

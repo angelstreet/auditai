@@ -98,7 +98,7 @@ for (const locale of LOCALES) {
     await expect(page.getByTestId('view-as-self')).toBeVisible();
     const persona = page.getByTestId('view-as-persona');
     await expect(persona).toHaveCount(1);
-    await expect(persona).toContainText('Sam Synthetic');
+    await expect(persona).toContainText(/Synthetic client C · (Référent|Referent)/);
     // Let the menu finish its fade-in: axe reads half-transparent text as low contrast.
     await expect(page.locator('.MuiPopover-paper').first()).toHaveCSS('opacity', '1');
     await axe(page, `${locale} account menu`);

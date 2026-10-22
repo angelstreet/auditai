@@ -19,6 +19,9 @@ const BANNED: ReadonlyArray<[string, RegExp, RegExp?]> = [
   ['raw id', /\b(ids?|uuids?)\b|identifiants?\b/i],
   ['tie-break rule in text', /ties go to|[ée]galit[ée]\s*:\s*renard/i],
   ['Fewer than N', /\bfewer than\b|\bmoins de \d/i, /^client\./],
+  // The consultancy is "EvolAI" / "l'équipe EvolAI" (docs/FABLE_REVIEW_2026-10-22.md §6). The `auditor`
+  // role stays a code identifier only; it never reaches a catalog string.
+  ['auditor / auditeur / consultant', /\bauditors?\b|\baudit(eur|rice)s?\b|\bconsultants?\b/i],
   ['redactor', /\bredactor\b|\brédacteur\b/i],
 ];
 
