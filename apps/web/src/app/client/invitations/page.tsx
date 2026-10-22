@@ -7,12 +7,17 @@ import { EmptyState, PageTitle } from '@evolai/ui';
 import ReminderCard from '@/components/client/ReminderCard';
 import ShareLinks from '@/components/client/ShareLinks';
 import { requireClientContext } from '@/lib/clientContext';
-import { firstLinkOn, loadClientSurvey, loadTeamNames } from '@/lib/clientData';
+import {
+  earliestLinkExpiryOn,
+  firstLinkOn,
+  loadClientSurvey,
+  loadTeamNames,
+} from '@/lib/clientData';
 import { getT } from '@/lib/i18n';
 import { listTeamLinks } from '@/lib/invitationData';
 import { resolveBaseUrl } from '@/lib/invitationTracking';
 import { longDate, prepareMessages } from '@/lib/referentMessages';
-import { contactFor, reminderPlan } from '@/lib/referentView';
+import { contactFor, effectiveCloseDay, reminderPlan } from '@/lib/referentView';
 import { surveyEstimatedMinutes } from '@/lib/syntheticTemplate';
 import CreateLinksForm from './CreateLinksForm';
 
@@ -49,12 +54,13 @@ export default async function ClientInvitations() {
     h.get('x-forwarded-host') ?? h.get('host'),
     h.get('x-forwarded-proto'),
   );
-  const [links, firstOn] = await Promise.all([
+  const [links, firstOn, expiryOn] = await Promise.all([
     listTeamLinks(ctx.tenantId as TenantId, survey.engagementId, baseUrl, ctx.teamIds),
     firstLinkOn(ctx.tenantId, survey.engagementId, ctx.teamIds),
+    earliestLinkExpiryOn(ctx.tenantId, survey.engagementId, ctx.teamIds),
   ]);
   const facts = {
-    closesOn: survey.closesOn,
+    closesOn: effectiveCloseDay(survey.closesOn, expiryOn),
     contact: contactFor(survey.contact, ctx.viewAs?.label ?? session.name),
     minutes: surveyEstimatedMinutes(),
   };

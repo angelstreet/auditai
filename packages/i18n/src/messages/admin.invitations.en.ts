@@ -6,6 +6,8 @@ export const invitationsEn = {
   openLink: 'Links',
   counts:
     '{expected, plural, one {# person expected} other {# people expected}}. {created, plural, one {# link created} other {# links created}}, {revoked} cancelled, so {invited} invited. “Opened” counts everyone who opened their link, including those who answered.',
+  countsNoExpected:
+    'Expected headcount not set: enter the team size to track progress. {created, plural, one {# link created} other {# links created}}, {revoked} cancelled, so {invited} invited. “Opened” counts everyone who opened their link, including those who answered.',
   tiles: {
     invited: 'Invited',
     opened: 'Opened',
@@ -69,7 +71,7 @@ export const invitationsEn = {
   },
   manage: {
     copyAll: 'Copy all links',
-    title: 'Open links',
+    title: 'Links to send',
     code: 'Code',
     team: 'Team',
     expires: 'Valid until',
@@ -78,7 +80,7 @@ export const invitationsEn = {
     regenerate: 'New link',
     revokeConfirm: 'Revoke this link? It stops working at once.',
     regenerated: 'New link (the old one no longer works):',
-    empty: 'No open link.',
+    empty: 'No link to send.',
   },
   batches: {
     title: 'Links by creation date',

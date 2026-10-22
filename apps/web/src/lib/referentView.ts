@@ -81,6 +81,20 @@ export const addDays = (day: string, days: number): string =>
   new Date(new Date(`${day}T00:00:00Z`).getTime() + days * DAY_MS).toISOString().slice(0, 10);
 
 /** Whole days from `today` to `day` (negative when past). */
+/**
+ * The one date the referent is told ("answer before"): the closing day or the earliest day a
+ * still-open link stops working, whichever comes first (same rule as `answerDeadline`, TASK-AB).
+ */
+export const effectiveCloseDay = (
+  closesOn: string | null,
+  earliestLinkExpiry: string | null,
+): string | null =>
+  closesOn && earliestLinkExpiry
+    ? closesOn < earliestLinkExpiry
+      ? closesOn
+      : earliestLinkExpiry
+    : (closesOn ?? earliestLinkExpiry);
+
 export const daysUntil = (day: string, today: string): number =>
   Math.round(
     (new Date(`${day}T00:00:00Z`).getTime() - new Date(`${today}T00:00:00Z`).getTime()) / DAY_MS,
