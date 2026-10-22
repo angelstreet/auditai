@@ -1,22 +1,18 @@
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { AppIcon, Mascot, type IconName } from '@evolai/ui';
+import { AppIcon, type IconName } from '@evolai/ui';
 import { formatDate, type SupportedLocale, type Translator } from '@evolai/i18n';
-import type { MascotTier } from '@evolai/contracts';
 import PrivacyNotice from '@/components/respondent/PrivacyNotice';
 import ProgressBar from '@/components/ProgressBar';
 import type { TeamProgress } from '@/lib/respondent';
 
 interface Props {
-  token: string;
   /** For the privacy notice: opens the organisation's details and the request form. */
   engagementId: string;
   title: string;
   team: TeamProgress;
-  myTier: MascotTier | null;
   locale: SupportedLocale;
   t: Translator;
 }
@@ -44,18 +40,10 @@ const nextStep = (team: TeamProgress, locale: SupportedLocale, t: Translator): s
 
 /**
  * "How is my team doing, what happens next" (done page and return visit). One glance: the team
- * answer count, one sentence on the next step, and the optional mascot quiz. Counts only, never
+ * answer count and one sentence on the next step; the page ends calm, no quiz (TASK-AD2). Counts only, never
  * names or answers (PRD §4.3, §15).
  */
-export default function RespondentStatus({
-  token,
-  engagementId,
-  title,
-  team,
-  myTier,
-  locale,
-  t,
-}: Props) {
+export default function RespondentStatus({ engagementId, title, team, locale, t }: Props) {
   const steps: ReadonlyArray<{ icon: IconName; text: string }> = [
     { icon: 'success', text: t('survey.nextSaved') },
     { icon: 'time', text: nextStep(team, locale, t) },
@@ -100,12 +88,6 @@ export default function RespondentStatus({
           ariaLabel={t('survey.teamProgressAria')}
           valueText={teamLine}
         />
-        {team.teamTier ? (
-          <p className="inline-mascot">
-            <Mascot tier={team.teamTier} size={40} label={t(`quiz.mascotAlt.${team.teamTier}`)} />
-            {t('survey.teamMascot', { tier: t(`quiz.tier.${team.teamTier}`) })}
-          </p>
-        ) : null}
       </Paper>
 
       <section aria-labelledby="next-title">
@@ -135,50 +117,6 @@ export default function RespondentStatus({
             : t('survey.contactNone')}
         </Typography>
       </section>
-
-      <Paper
-        component="section"
-        id="mascot"
-        variant="outlined"
-        aria-labelledby="mascot-title"
-        sx={{ p: 5, borderRadius: 3 }}
-      >
-        {myTier ? (
-          <>
-            <Typography
-              id="mascot-title"
-              variant="sectionTitle"
-              component="h2"
-              className="inline-mascot"
-              sx={{ m: 0 }}
-            >
-              <Mascot tier={myTier} size={64} label={t(`quiz.mascotAlt.${myTier}`)} />
-              {t('survey.yourMascot', { tier: t(`quiz.tier.${myTier}`) })}
-            </Typography>
-            <Typography variant="body1" component="p" sx={{ mt: 3, mb: 2 }}>
-              {t(`quiz.tierDescriptor.${myTier}`)}
-            </Typography>
-            <Typography variant="body2" component="p" color="text.secondary" sx={{ mt: 0, mb: 4 }}>
-              {t('quiz.mascotIntro')}
-            </Typography>
-            <Button variant="outlined" href={`/s/${token}/quiz`}>
-              {t('survey.retakeQuiz')}
-            </Button>
-          </>
-        ) : (
-          <>
-            <Typography id="mascot-title" variant="sectionTitle" component="h2" sx={{ m: 0 }}>
-              {t('survey.quizTitle')}
-            </Typography>
-            <Typography variant="body1" component="p" sx={{ mt: 3, mb: 4 }}>
-              {t('survey.quizBody')}
-            </Typography>
-            <Button variant="contained" href={`/s/${token}/quiz`}>
-              {t('survey.quizCta')}
-            </Button>
-          </>
-        )}
-      </Paper>
 
       <Paper
         component="section"

@@ -19,7 +19,6 @@ const RUN = `e2e-setup-${Date.now()}`;
 const COPY = {
   fr: {
     org: 'Synthetic tenant A',
-    steps: ['Créer la mission', 'Ajouter les équipes', 'Créer les liens', 'Suivre', 'Consulter'],
     addTeam: 'Ajouter l’équipe',
     teamName: 'Nom de l’équipe',
     teamAdded: 'Équipe ajoutée.',
@@ -27,7 +26,7 @@ const COPY = {
     name: 'Nom',
     langLabel: 'Langue du questionnaire',
     other: 'English',
-    launch: 'Lancer l’audit',
+    launch: 'Lancer la mission',
     launchConfirm: 'Lancer',
     live: 'Ouverte. Les personnes peuvent répondre avec leur lien.',
     preview: 'Voir le questionnaire',
@@ -38,21 +37,14 @@ const COPY = {
   },
   en: {
     org: 'Synthetic tenant A',
-    steps: [
-      'Create the engagement',
-      'Add the teams',
-      'Create the links',
-      'Follow progress',
-      'Review',
-    ],
     addTeam: 'Add team',
     teamName: 'Team name',
     teamAdded: 'Team added.',
-    create: 'Create engagement',
+    create: 'Create mission',
     name: 'Name',
     langLabel: 'Survey language',
     other: 'Français',
-    launch: 'Launch the audit',
+    launch: 'Launch the mission',
     launchConfirm: 'Launch',
     live: 'Open. People can answer with their link.',
     preview: 'Preview the survey',
@@ -96,26 +88,22 @@ test.describe('audit set-up', () => {
   for (const locale of LOCALES) {
     const c = COPY[locale];
 
-    test(`sign-in lands on the portfolio with the organisation and the guide in ${locale}`, async ({
+    test(`sign-in lands on Missions with the organisation and one primary action in ${locale}`, async ({
       page,
       context,
       baseURL,
     }) => {
       await setLocale(context, baseURL, locale);
       await signInAsAuditorA(page);
-      await expect(page).toHaveURL(/\/board$/);
+      // Missions is the home (TASK-AD2): a list, one filled button, no portfolio or checklist.
+      await expect(page).toHaveURL(/\/admin\/engagements$/);
       await expect(page.getByTestId('header-organisation')).toHaveText(c.org);
-      const guide = page.getByTestId('first-run-checklist');
-      await expect(guide).toBeVisible();
-      await expect(guide.locator('ol > li')).toHaveCount(5);
-      for (const [i, text] of c.steps.entries()) {
-        await expect(guide.locator('ol > li').nth(i)).toContainText(text);
-      }
-      // The workspace link keeps the portfolio, not a data page.
+      await expect(page.locator('#main .MuiButton-contained:visible')).toHaveCount(1);
+      await expect(page.getByTestId('first-run-checklist')).toHaveCount(0);
       await page.getByTestId('account-button').click();
       await expect(
-        page.getByRole('menuitem', { name: /Workspace|Espace de travail/ }),
-      ).toHaveAttribute('href', '/board');
+        page.getByRole('menuitem', { name: /Settings|Paramètres/ }).first(),
+      ).toHaveAttribute('href', '/admin/settings');
     });
 
     test(`add a team, create the engagement, launch it and preview it in ${locale}`, async ({
@@ -127,7 +115,8 @@ test.describe('audit set-up', () => {
       await signInAsAuditorA(page);
       const team = `${RUN}-${locale} Équipe pilote`;
 
-      await page.goto('/admin/teams');
+      // Teams are added where the mission is set up (TASK-AD2).
+      await page.goto('/admin/engagements/new');
       await page.getByLabel(c.teamName).first().fill(team);
       await page.getByRole('button', { name: c.addTeam }).click();
       // The line under the form and the snackbar say the same words: check the page one.
@@ -136,13 +125,14 @@ test.describe('audit set-up', () => {
       const row = page.locator('li', { has: page.locator(`input[value="${team}"]`) });
       await expect(row).toHaveCount(1);
 
-      await page.goto('/admin/engagements/new');
-      await page.getByLabel(c.name).fill(`${RUN}-${locale} audit`);
+      await page.reload();
+      // The mission form comes first; the team form below has its own name field.
+      await page.locator('input[name=name]').first().fill(`${RUN}-${locale} audit`);
       await page.getByLabel(c.langLabel).click();
       await page.getByRole('option', { name: c.other }).click();
       await page.getByLabel(c.opensOn).fill('2026-10-19');
       await page.getByLabel(c.closesOn).fill('2026-11-02');
-      await page.getByLabel(new RegExp(team)).check();
+      await page.getByRole('checkbox', { name: new RegExp(team) }).check();
       await page.getByRole('button', { name: c.create }).click();
       await page.waitForURL(/\/admin\/engagements\/[0-9a-f-]+\/settings/);
 
@@ -173,7 +163,7 @@ test.describe('audit set-up', () => {
         .or(page.getByRole('button', { name: c.preview }))
         .first()
         .click();
-      await expect(page.getByRole('heading', { level: 1, name: c.previewHeading })).toBeVisible();
+      await expect(page.getByRole('heading', { level: 2, name: c.previewHeading })).toBeVisible();
       const question =
         locale === 'fr' ? /An AI tool gives you an answer/ : /Un outil d’IA vous donne une réponse/;
       await expect(page.getByText(question).first()).toBeVisible();
@@ -197,13 +187,13 @@ test.describe('audit set-up', () => {
       await page.keyboard.press('Tab');
       if (
         await page
-          .getByRole('button', { name: /Create engagement|Créer la mission/ })
+          .getByRole('button', { name: /Create mission|Créer la mission/ })
           .evaluate((el) => el === document.activeElement)
       )
         break;
     }
     await expect(
-      page.getByRole('button', { name: /Create engagement|Créer la mission/ }),
+      page.getByRole('button', { name: /Create mission|Créer la mission/ }),
     ).toBeFocused();
     await page.keyboard.press('Enter');
     await page.waitForURL(/\/admin\/engagements\/[0-9a-f-]+\/settings/);
@@ -213,13 +203,13 @@ test.describe('audit set-up', () => {
 test.describe('organisation memory', () => {
   test('?tenant= is remembered and a made-up id changes nothing', async ({ page, context }) => {
     await signInAsAuditorA(page);
-    await page.goto(`/admin/teams?tenant=${TENANT_A}`);
+    await page.goto(`/admin/settings?tenant=${TENANT_A}`);
     const cookie = (await context.cookies()).find((x) => x.name === 'evolai_org');
     expect(cookie?.value).toBe(TENANT_A);
-    await page.goto('/admin/data');
+    await page.goto('/admin/settings/data');
     await expect(page.getByTestId('header-organisation')).toHaveText('Synthetic tenant A');
     // An organisation the session does not hold is ignored, never shown.
-    await page.goto('/admin/teams?tenant=99999999-9999-4999-8999-999999999990');
+    await page.goto('/admin/settings?tenant=99999999-9999-4999-8999-999999999990');
     await expect(page.getByTestId('header-organisation')).toHaveText('Synthetic tenant A');
   });
 });
@@ -230,9 +220,11 @@ test.describe('language', () => {
     await page.goto('/admin/engagements');
     await page.getByTestId('switch-fr').click();
     await expect(page.locator('html')).toHaveAttribute('lang', 'fr');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText(/Missions d’audit/);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(/^Missions$/);
     // Statuses are words in the page language.
-    await expect(page.locator('table')).not.toContainText(/\b(Draft|Open|Closed|Scheduled)\b/);
+    await expect(page.locator('#main')).not.toContainText(
+      /\b(Draft|Open|Closed|Report published)\b/,
+    );
   });
 
   test('the employee page follows the engagement language when the browser says English', async ({
@@ -261,25 +253,14 @@ test.describe('data page', () => {
     page,
   }) => {
     await signInAsAuditorA(page);
-    await page.goto('/admin/data');
+    await page.goto('/admin/settings/data');
     const code = 'no-such-respondent-0001';
     await page.locator('input[name=respondentPseudonym]').fill(code);
-    await page.getByRole('button', { name: /Erase respondent|Effacer le répondant/ }).click();
+    await page.getByRole('button', { name: /Erase the answers|Effacer les réponses/ }).click();
     // An unknown code is said plainly before any confirmation step (TASK-U, ADR 0040).
     await expect(
-      page.getByText(/No respondent has this code|Aucun répondant n’a ce code/),
+      page.getByText(/Nobody has this answer code|Personne n’a ce code de réponse/),
     ).toBeVisible();
     await expect(page.getByRole('dialog')).toHaveCount(0);
-  });
-
-  test('an export shows a download button and plain column names', async ({ page }) => {
-    await signInAsAuditorA(page);
-    await page.goto('/admin/data');
-    await page.getByRole('button', { name: /Run export|Lancer l’export/ }).click();
-    const download = page.getByTestId('export-download');
-    await expect(download).toBeVisible();
-    await expect(download).toHaveAttribute('download', /\.csv$/);
-    const preview = page.locator('pre.csv-preview');
-    await expect(preview).not.toContainText('engagement_id');
   });
 });

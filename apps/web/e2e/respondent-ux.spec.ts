@@ -107,24 +107,11 @@ test.describe('respondent path is short, plain and in one language', () => {
       // One tap to start plus one per question (a text answer is typed, then one tap on Next).
       expect(taps).toBeLessThanOrEqual(11);
 
-      // Done: team progress at a glance, what happens next, one primary action (optional quiz).
+      // Done: team progress at a glance and what happens next; it ends calm, no quiz (TASK-AD2).
       await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
       await expect(page.getByRole('progressbar')).toBeVisible();
-      await expect(page.locator('main .MuiButton-contained')).toHaveCount(1);
+      await expect(page.locator('main a[href$="/quiz"]')).toHaveCount(0);
       await expectPlainScreen(page, `${locale} done`);
-
-      // Optional quiz: one question per screen, progress shown, last tap submits.
-      await page.locator('main .MuiButton-contained').click();
-      await expect(page).toHaveURL(/\/quiz$/);
-      const questions = await page.locator('fieldset.question').count();
-      for (let i = 0; i < questions; i += 1) {
-        await expect(page.getByRole('progressbar')).toBeVisible();
-        await expect(page.locator('fieldset.question:not([hidden])')).toHaveCount(1);
-        await expectPlainScreen(page, `${locale} quiz ${i + 1}`);
-        await page.locator('fieldset.question:not([hidden]) label.option-button').last().click();
-      }
-      await page.waitForURL((u) => !u.pathname.endsWith('/quiz'));
-      await expect(page.locator('#mascot svg')).toBeVisible();
 
       // Return visit: the status view, no dead end, still plain.
       await page.goto(`/s/${token}`);

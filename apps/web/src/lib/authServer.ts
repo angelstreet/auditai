@@ -6,6 +6,7 @@ import { getT } from './i18n';
 import { orderTenants, preferredOrg } from './orgContext';
 import { allowedTenantIds, effectiveContext, isTenantAllowed, pickTenant } from './tenantAccess';
 import { auditViewAs, trailPath } from './viewAsAudit';
+import { realFirst, testTenantIds } from './testData';
 
 /** Request path set by the middleware, for the view-as trail. */
 export const requestPath = (): string => trailPath(headers().get('x-evolai-path'));
@@ -35,7 +36,9 @@ const requireStaffSession = async (): Promise<SessionPayload> => {
 export const sessionTenantIds = async (): Promise<readonly TenantId[]> => {
   const session = await requireStaffSession();
   // The organisation chosen in the header comes first, so `tenants[0]` is the one being worked on.
-  return orderTenants(allowedTenantIds(session), preferredOrg()) as TenantId[];
+  // Test organisations go last (TASK-AD2), so the default one is a real client.
+  const ids = realFirst(allowedTenantIds(session), await testTenantIds());
+  return orderTenants(ids, preferredOrg()) as TenantId[];
 };
 
 export const sessionTenantFor = async (requested: string | undefined): Promise<TenantId | null> => {

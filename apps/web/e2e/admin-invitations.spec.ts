@@ -5,13 +5,15 @@ import { signInAsAuditorA } from './helpers';
 test.describe('admin invitations page', () => {
   test('creates links, shows progress and exports bare links', async ({ page }) => {
     await signInAsAuditorA(page);
-    await page.goto('/admin/invitations');
+    // Links are a tab of the mission (TASK-AD2).
+    await page.goto('/admin/engagements');
     await page
-      .getByRole('link')
+      .locator('[data-testid=mission-link]:visible')
       .filter({ hasText: /synthetic/i })
       .first()
       .click();
-    await expect(page.getByRole('heading', { level: 1, name: 'Invitations' })).toBeVisible();
+    await page.getByTestId('mission-tab-invitations').click();
+    await expect(page.getByRole('heading', { level: 2, name: 'Links', exact: true })).toBeVisible();
 
     await page
       .getByLabel(/^Links for /)
@@ -35,7 +37,8 @@ test.describe('admin invitations page', () => {
     await expect(page.getByRole('progressbar').first()).toBeVisible();
 
     const url = new URL(page.url());
-    const q = `tenant=${url.searchParams.get('tenant')}&engagement=${url.searchParams.get('engagement')}`;
+    const engagement = url.pathname.split('/')[3];
+    const q = `tenant=${url.searchParams.get('tenant')}&engagement=${engagement}`;
     const csv = await page.request.get(`/admin/invitations/export?${q}`);
     expect(csv.status()).toBe(200);
     const body = await csv.text();

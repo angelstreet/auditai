@@ -34,6 +34,10 @@ const nextConfig = {
   eslint: { ignoreDuringBuilds: process.env['NEXT_SKIP_BUILD_CHECKS'] === '1' },
   typescript: { ignoreBuildErrors: process.env['NEXT_SKIP_BUILD_CHECKS'] === '1' },
   poweredByHeader: false,
+  async rewrites() {
+    // Browsers ask for /favicon.ico on their own; serve the kit's icon instead of a copy (TASK-AD2).
+    return [{ source: '/favicon.ico', destination: '/brand/kit/02_Icons/favicon.ico' }];
+  },
   async headers() {
     const noindex = [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }];
     return [

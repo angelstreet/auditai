@@ -46,6 +46,7 @@ export default async function PreviewPage({
         {t('admin.setup.preview.back')}
       </Link>
       <PageTitle
+        level="h2"
         id="preview-title"
         title={t('admin.setup.preview.title')}
         subtitle={t('admin.setup.preview.intro')}

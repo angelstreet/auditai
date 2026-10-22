@@ -37,7 +37,7 @@ export async function addRedactionTermAction(
   if (!who.ok) return { ok: false, message: who.message };
   try {
     const row = await addRedactionTerm(who.tenantId, parsed.data.term, who.actor);
-    revalidatePath('/admin/redaction');
+    revalidatePath('/admin', 'layout');
     return { ok: true, message: t('admin.redaction.added', { term: row.term }), term: '' };
   } catch (err) {
     console.error('redaction term add failed', err);
@@ -64,7 +64,7 @@ export async function removeRedactionTermAction(
     if (!result.removed) {
       return { ok: false, message: t('admin.redaction.errRemove') };
     }
-    revalidatePath('/admin/redaction');
+    revalidatePath('/admin', 'layout');
     return {
       ok: true,
       message: t('admin.redaction.removed', { term: result.term }),

@@ -45,11 +45,11 @@ export const en = {
       switchOrganisation: 'Switch organisation',
       switchTitle: 'Organisation',
       portfolio: 'Portfolio',
-      workspace: 'Workspace',
+      workspace: 'Settings',
       roles: {
         platform_owner: 'EvolAI team',
         auditor: 'EvolAI team',
-        sponsor: 'Sponsor',
+        sponsor: 'Referent',
         viewer: 'Viewer',
         other: 'Member',
       },

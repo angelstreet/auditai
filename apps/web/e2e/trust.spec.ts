@@ -31,7 +31,7 @@ const COPY = {
     forgotDone: /Si cette adresse est connue/,
     created: 'Création…',
     warn: 'Pas encore configuré',
-    noSuch: /Aucun répondant n’a ce code/,
+    noSuch: /Personne n’a ce code de réponse/,
     previewTitle: 'Ceci sera effacé',
     sent: /Demande envoyée/,
     hidden: /Masqué sous 5 personnes/,
@@ -45,7 +45,7 @@ const COPY = {
     forgotDone: /If this address is known/,
     created: 'Creating…',
     warn: 'Not configured yet',
-    noSuch: /No respondent has this code/,
+    noSuch: /Nobody has this answer code/,
     previewTitle: 'This will be erased',
     sent: /Request sent/,
     hidden: /Hidden under 5 people/,
@@ -166,7 +166,7 @@ for (const locale of LOCALES) {
 
     await setLocale(context, baseURL, locale);
     await signIn(page, OWNER, /\/(admin\/|board)/);
-    await page.goto(`/admin/teams?tenant=${ctx.tenantC}`);
+    await page.goto(`/admin/settings?tenant=${ctx.tenantC}`);
     const card = page.getByTestId('referent-card').filter({ hasText: referent.name });
     await expect(card).toBeVisible();
     await axe(page, `${locale} teams with referents`);
@@ -248,7 +248,7 @@ for (const locale of LOCALES) {
     await stranger.close();
 
     // The trail has the invitation and the choice of password, in plain words, with no address.
-    await page.goto(`/admin/audit?tenant=${ctx.tenantC}`);
+    await page.goto(`/admin/settings/audit?tenant=${ctx.tenantC}`);
     await expect(page.getByTestId('audit-table')).toContainText(copy.inviteAudit);
     expect(await page.getByTestId('audit-table').innerText()).not.toContain(address);
     await axe(page, `${locale} audit trail`);
@@ -349,7 +349,7 @@ for (const locale of LOCALES) {
       [ctx.tenantC, code],
     );
     expect(rows).toEqual([{ kind: 'erase' }]);
-    await page.goto(`/admin/data?tenant=${ctx.tenantC}`);
+    await page.goto(`/admin/settings/data?tenant=${ctx.tenantC}`);
     const table = page.getByTestId('privacy-requests');
     await expect(table).toContainText(code);
     await table.locator('tr', { hasText: code }).locator('button[type=submit]').click();
@@ -404,7 +404,7 @@ for (const locale of LOCALES) {
     const copy = COPY[locale];
     await setLocale(context, baseURL, locale);
     await signIn(page, AUDITOR_A, /\/(admin\/|board)/);
-    await page.goto(`/admin/data?tenant=${TENANT_A}`);
+    await page.goto(`/admin/settings/data?tenant=${TENANT_A}`);
     await axe(page, `${locale} data page`);
 
     // An unknown code is said plainly, before any confirmation, and nothing is recorded.
@@ -421,7 +421,7 @@ for (const locale of LOCALES) {
     ).toHaveLength(before.length);
 
     // Find a code by date: codes only, no identity, then use one.
-    await page.goto(`/admin/data?tenant=${TENANT_A}&from=2000-01-01&to=2099-12-31`);
+    await page.goto(`/admin/settings/data?tenant=${TENANT_A}&from=2000-01-01&to=2099-12-31`);
     const results = page.getByTestId('code-results');
     await expect(results).toBeVisible();
     const text = await results.innerText();
@@ -444,37 +444,6 @@ for (const locale of LOCALES) {
     await page.keyboard.press('Escape');
     await expect(dialog).toHaveCount(0);
     await noOverflow(page, `${locale} data`);
-  });
-
-  test(`a team under the minimum group shows no mascot (${locale})`, async ({
-    context,
-    page,
-    baseURL,
-  }) => {
-    const copy = COPY[locale];
-    const ctx = await clientC();
-    await setLocale(context, baseURL, locale);
-    const upsert = (n: number) =>
-      run(
-        `INSERT INTO team_badges (tenant_id, team_id, dominant_tier, member_count, tortoise_count, fox_count, owl_count)
-         VALUES ($1, $2, 'fox', $3, 0, $3, 0)
-         ON CONFLICT (team_id) DO UPDATE SET member_count = EXCLUDED.member_count, fox_count = EXCLUDED.fox_count`,
-        [ctx.tenantC, ctx.teamC, n],
-      );
-    try {
-      await upsert(3);
-      await signIn(page, OWNER, /\/(admin\/|board)/);
-      await page.goto(`/admin/teams?tenant=${ctx.tenantC}`);
-      await expect(page.getByTestId('small-group-note')).toContainText(copy.hidden);
-      await expect(page.locator('.tier-fox')).toHaveCount(0);
-      await axe(page, `${locale} teams (hidden group)`);
-      await upsert(5);
-      await page.goto(`/admin/teams?tenant=${ctx.tenantC}`);
-      await expect(page.getByTestId('small-group-note')).toHaveCount(0);
-      await expect(page.locator('.tier-fox').first()).toBeVisible();
-    } finally {
-      await run(`DELETE FROM team_badges WHERE team_id = $1`, [ctx.teamC]);
-    }
   });
 }
 

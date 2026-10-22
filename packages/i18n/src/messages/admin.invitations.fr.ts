@@ -1,11 +1,11 @@
-/** Écrans d’invitations (TASK-N, FR-03). Miroir de `admin.invitations.en.ts`. */
+/** Écrans des liens (TASK-N, FR-03). Miroir de `admin.invitations.en.ts`. */
 export const invitationsFr = {
-  title: 'Invitations',
+  title: 'Liens',
   subtitle: 'Créez des liens, suivez l’avancement, relancez. Aucun nom n’est conservé.',
-  pickEngagement: 'Choisissez une mission pour gérer ses invitations.',
-  openLink: 'Invitations',
+  pickEngagement: 'Choisissez une mission pour gérer ses liens.',
+  openLink: 'Liens',
   counts:
-    '{expected, plural, one {# personne attendue} other {# personnes attendues}}. {created, plural, one {# lien créé} other {# liens créés}}, {revoked} annulé(s), donc {invited} invité(s). « Ouvert » compte toutes les personnes qui ont ouvert leur lien, y compris celles qui ont répondu.',
+    '{expected, plural, one {# personne attendue} other {# personnes attendues}}. {created, plural, one {# lien créé} other {# liens créés}}, {revoked, plural, one {# annulé} other {# annulés}}, donc {invited, plural, one {# personne invitée} other {# personnes invitées}}. « Ouvert » compte toutes les personnes qui ont ouvert leur lien, y compris celles qui ont répondu.',
   tiles: {
     invited: 'Invités',
     opened: 'Ouverts',
@@ -24,7 +24,7 @@ export const invitationsFr = {
     fewerThan: 'Masqué sous {n} personnes pour protéger la vie privée',
     hidden: 'Masqué',
     fewerThanHint: 'Masqué sous {n} personnes pour protéger la vie privée.',
-    empty: 'Aucune invitation pour l’instant. Créez le premier lot ci-dessous.',
+    empty: 'Aucun lien pour l’instant. Créez les premiers ci-dessous.',
   },
   create: {
     title: 'Créer des liens',
@@ -48,9 +48,9 @@ export const invitationsFr = {
     emailHint: 'Désactivé par défaut. Sans cela, aucune adresse n’est jamais conservée.',
     reminderDays: 'Relances après (jours, séparés par des virgules)',
     closesOn: 'Date de clôture',
-    closesOnHint: 'Visible par le référent et dans le message d’invitation.',
+    closesOnHint: 'Visible par le référent et dans le message envoyé avec les liens.',
     contact: 'Personne à contacter',
-    contactHint: 'Nom et e-mail ou téléphone, repris dans le message d’invitation.',
+    contactHint: 'Nom et e-mail ou téléphone, repris dans le message envoyé avec les liens.',
     save: 'Enregistrer',
   },
   export: {
@@ -82,14 +82,14 @@ export const invitationsFr = {
     empty: 'Aucun lien ouvert.',
   },
   batches: {
-    title: 'Lots de liens',
-    hint: 'Les liens créés ensemble forment un lot. Vous pouvez retirer un lot entier d’un coup.',
+    title: 'Liens par date de création',
+    hint: 'Les liens créés ensemble sont regroupés. Vous pouvez retirer tout un groupe d’un coup.',
     label: '{n, plural, one {# lien créé} other {# liens créés}} le {date}',
     stillOpen: '{n} encore ouverts',
-    revoke: 'Retirer le lot',
+    revoke: 'Retirer ces liens',
     revokeConfirm:
-      'Tous les liens de ce lot non terminés cessent de fonctionner aussitôt. Cette action est définitive.',
-    empty: 'Aucun lot pour l’instant.',
+      'Tous les liens de ce groupe sans réponse cessent de fonctionner aussitôt. Cette action est définitive.',
+    empty: 'Aucun lien pour l’instant.',
   },
   sheet: {
     title: 'Planche de QR codes',
@@ -120,7 +120,7 @@ export const invitationsFr = {
     email_not_configured: 'L’envoi d’e-mails n’est pas configuré sur ce serveur.',
     email_key_missing: 'L’envoi d’e-mails n’est pas configuré sur ce serveur.',
     duplicate_batch:
-      'Le même lot a été créé il y a moins de dix minutes. Cochez la case pour le créer à nouveau.',
+      'Les mêmes liens ont été créés il y a moins de dix minutes. Cochez la case pour les créer à nouveau.',
     not_open: 'Ce lien est déjà utilisé, révoqué ou expiré.',
     bad_date: 'Saisissez une date de clôture valide, ou laissez vide.',
     error: 'Une erreur est survenue. Veuillez réessayer.',

@@ -63,7 +63,7 @@ test.describe('one font on every surface', () => {
     expect(await primaryFamily(page, 'button[type=submit]')).toBe(seen['login']);
 
     await signInAsAuditorA(page);
-    await page.goto('/admin/teams');
+    await page.goto('/admin/engagements');
     seen['admin'] = await primaryFamily(page);
     expect(await primaryFamily(page, 'h1')).toBe(seen['admin']);
 

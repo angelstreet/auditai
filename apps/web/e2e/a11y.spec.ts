@@ -144,22 +144,6 @@ test.describe('respondent path, keyboard only, with axe on every page', () => {
       await expect(page.locator('#next-title + ol li')).toHaveCount(3);
       await scan(page, `${locale} done`);
 
-      // Optional quiz with arrows only.
-      await tabTo(page, 'main .MuiButton-contained');
-      await page.keyboard.press('Enter');
-      await expect(page).toHaveURL(/\/quiz$/);
-      await scan(page, `${locale} quiz`);
-      const questions = await page.locator('fieldset.question').count();
-      for (let i = 0; i < questions; i += 1) {
-        await expect.poll(() => focusedIs(page, 'main h1') || i === 0).toBe(true);
-        await tabTo(page, 'fieldset.question:not([hidden]) input[type=radio]');
-        await expectFocusRing(page, `quiz ${i + 1}`);
-        await page.keyboard.press('ArrowDown');
-        await page.keyboard.press('Space');
-      }
-      await page.waitForURL((u) => !u.pathname.endsWith('/quiz'));
-      await scan(page, `${locale} quiz result`);
-
       // Return view.
       await page.goto(`/s/${token}`);
       await scan(page, `${locale} return`);
@@ -215,11 +199,13 @@ test.describe('login and admin pages', () => {
         '/admin/engagements/new',
         '/admin/engagements/a5555555-4555-4555-8555-555555555555/settings',
         '/admin/engagements/a5555555-4555-4555-8555-555555555555/preview',
-        '/admin/teams',
-        '/admin/synergies',
-        '/admin/data',
-        '/intake',
-        '/board',
+        '/admin/engagements/a5555555-4555-4555-8555-555555555555',
+        '/admin/engagements/a5555555-4555-4555-8555-555555555555/invitations',
+        '/admin/engagements/a5555555-4555-4555-8555-555555555555/answers',
+        '/admin/engagements/a5555555-4555-4555-8555-555555555555/report',
+        '/admin/settings',
+        '/admin/settings/data',
+        '/admin/settings/audit',
         '/welcome',
         '/about',
         '/privacy',

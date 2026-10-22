@@ -94,6 +94,8 @@ export interface Identity {
   readonly homeHref?: string;
   /** Where "Workspace" leads: the admin area, or the team space for a client view. */
   readonly workspaceHref?: string;
+  /** Account menu "Settings": workspace Settings for staff (TASK-AD2); the client home otherwise. */
+  readonly settingsHref?: string;
   /** Owner only: the "View as" section (TASK-P). */
   readonly viewAs?: ViewAsMenu | null;
 }
@@ -216,7 +218,7 @@ export function AccountMenu({ identity }: { identity: Identity | null }) {
                   <MenuItem
                     key={o.id}
                     component="a"
-                    href={`${identity.homeHref ?? '/board'}?tenant=${encodeURIComponent(o.id)}`}
+                    href={`${identity.homeHref ?? '/admin/engagements'}?tenant=${encodeURIComponent(o.id)}`}
                     selected={current}
                     aria-current={current ? 'true' : undefined}
                     sx={MENU_ITEM_SX}
@@ -238,7 +240,11 @@ export function AccountMenu({ identity }: { identity: Identity | null }) {
               <Divider key="org-div" />,
             ]
           : null}
-        <MenuItem component="a" href={identity.workspaceHref ?? '/board'} sx={MENU_ITEM_SX}>
+        <MenuItem
+          component="a"
+          href={identity.settingsHref ?? identity.workspaceHref ?? '/admin/engagements'}
+          sx={MENU_ITEM_SX}
+        >
           <ListItemIcon>
             <AppIcon name="settings" />
           </ListItemIcon>

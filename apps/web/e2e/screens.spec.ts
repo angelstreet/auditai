@@ -71,7 +71,6 @@ test.describe('screenshot sweep', () => {
             ['07-survey-start', `/s/${fresh}`],
             ['15-quiz', '/quiz'],
             ['16-quiz-result-missing', '/quiz/result'],
-            ['18-board', '/board'],
             ['19-not-found', '/does-not-exist'],
             ['20-bad-link', `/s/${'x'.repeat(10)}.${'y'.repeat(40)}`],
           ] as const) {
@@ -84,10 +83,7 @@ test.describe('screenshot sweep', () => {
             if (!res || res.status() >= 400 || page.url().endsWith('/done')) break;
             await shoot(page, dir, `08-question-${i + 1}`);
           }
-          for (const [name, path] of [
-            ['12-done', `/s/${fresh}/done`],
-            ['13-team-quiz', `/s/${fresh}/quiz`],
-          ] as const) {
+          for (const [name, path] of [['12-done', `/s/${fresh}/done`]] as const) {
             await page.goto(path);
             await shoot(page, dir, name);
           }
@@ -103,34 +99,19 @@ test.describe('screenshot sweep', () => {
           await shoot(page, dir, '30-admin-after-sign-in');
           await page.goto('/admin/engagements');
           await shoot(page, dir, '30-admin-engagements');
+          const mission = '/admin/engagements/a5555555-4555-4555-8555-555555555555';
           for (const [name, path] of [
-            ['31-admin-teams', '/admin/teams'],
-            ['32-admin-synergies', '/admin/synergies'],
-            ['33-admin-data', '/admin/data'],
-            ['17-intake', '/intake'],
+            ['31-mission-overview', mission],
+            ['32-mission-links', `${mission}/invitations`],
+            ['33-mission-answers', `${mission}/answers`],
+            ['34-mission-report', `${mission}/report`],
+            ['35-mission-settings', `${mission}/settings`],
+            ['36-settings-members', '/admin/settings'],
+            ['37-settings-data', '/admin/settings/data'],
+            ['38-settings-audit', '/admin/settings/audit'],
           ] as const) {
             await page.goto(path);
             await shoot(page, dir, name);
-          }
-          await page.goto('/admin/engagements');
-          const analyses = page.locator('a[href*="/analyses"]').first();
-          if (await analyses.count()) {
-            await page.goto((await analyses.getAttribute('href')) as string);
-            await shoot(page, dir, '34-admin-analyses');
-            const one = page.locator('a[href*="/analyses/"]').first();
-            if (await one.count()) {
-              await page.goto((await one.getAttribute('href')) as string);
-              await shoot(page, dir, '35-admin-analysis');
-            }
-          }
-          await page.goto('/admin/engagements');
-          const opps = page.locator('a[href$="/opportunities"]').first();
-          if (await opps.count()) {
-            const href = (await opps.getAttribute('href')) as string;
-            await page.goto(href);
-            await shoot(page, dir, '36-admin-opportunities');
-            await page.goto(`${href}/new`);
-            await shoot(page, dir, '37-admin-opportunity-new');
           }
           await context.close();
         }

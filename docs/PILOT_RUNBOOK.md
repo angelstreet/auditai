@@ -181,10 +181,11 @@ Say so to the client rather than discovering it later.
 
 ## 6. After the pilot
 
-1. Export the data from the **Data** tab before anything else; it is the
-   fastest way to analyse the answers outside the app.
-2. Keep the audit-trail export with the report you send the sponsor.
-3. Retention and erasure requests are handled on the **Data** tab.
+1. Open the mission, tab **Answers**: counts per choice and the anonymised free texts by question, with no link
+   to a person. Press **Export CSV** for the same answers in a spreadsheet (pseudonym, question, answer, time).
+   Both stay hidden, and the CSV is refused, until five people have answered.
+2. Keep the audit-trail export (**Settings**, **Audit trail**) with the report you send the referent.
+3. Retention and erasure requests are handled in **Settings**, **Data and erasure**.
 4. Start a new report version rather than editing a published one if the plan
    changes.
 

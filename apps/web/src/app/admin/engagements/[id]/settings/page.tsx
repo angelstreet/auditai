@@ -1,11 +1,11 @@
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import { AppIcon, PageTitle, StatusText } from '@evolai/ui';
+import { PageTitle, StatusText } from '@evolai/ui';
 import { EngagementForm } from '@/components/admin/SetupForms';
 import NoticeForm from '@/components/admin/NoticeForm';
+import { NamesToHideSection, TeamsSection } from '@/components/mission/SettingsSections';
 import StatusPanel from '@/components/admin/StatusPanel';
 import { sessionTenantIds } from '@/lib/authServer';
 import { enumLabel, getT } from '@/lib/i18n';
@@ -37,10 +37,10 @@ export default async function EngagementSettingsPage({ params, searchParams }: P
   const locked = setup.status === 'closed' || setup.status === 'archived';
   return (
     <section className="wide admin" aria-labelledby="settings-title">
-      <Link href={`/admin/engagements?${q}`}>{t('admin.setup.form.back')}</Link>
       <PageTitle
+        level="h2"
         id="settings-title"
-        title={setup.name ?? setup.organisationName}
+        title={t('admin.missions.tabs.settings')}
         subtitle={t('admin.setup.form.editIntro')}
         actions={
           <Button variant="outlined" href={`/admin/engagements/${setup.id}/preview?${q}`}>
@@ -68,7 +68,7 @@ export default async function EngagementSettingsPage({ params, searchParams }: P
         <EngagementForm
           tenantId={current}
           teams={teams.map((x) => ({ id: x.id, name: x.name, size: x.expectedHeadcount }))}
-          teamsHref={`/admin/teams?${q}`}
+          teamsHref="#teams"
           values={{
             engagementId: setup.id,
             name: setup.name ?? setup.organisationName,
@@ -93,13 +93,8 @@ export default async function EngagementSettingsPage({ params, searchParams }: P
           />
         </Paper>
       ) : null}
-      <Button
-        variant="text"
-        href={`/admin/invitations?${q}&engagement=${setup.id}`}
-        endIcon={<AppIcon name="forward" size={20} />}
-      >
-        {t('admin.invitations.openLink')}
-      </Button>
+      <TeamsSection tenantId={current} />
+      <NamesToHideSection tenantId={current} />
     </section>
   );
 }
