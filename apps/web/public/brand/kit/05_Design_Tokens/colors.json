@@ -1,0 +1,29 @@
+{
+  "brand": "EvolAI",
+  "tagline": "Understand. Adapt. Evolve.",
+  "colors": {
+    "midnight_ink": "#172B3A",
+    "evolution_teal": "#19A999",
+    "discovery_blue": "#4A7FE8",
+    "warm_apricot": "#FFB86A",
+    "cloud": "#F7FAFC",
+    "slate": "#536575",
+    "white": "#FFFFFF"
+  },
+  "fonts": {
+    "preferred": "Inter or Manrope (license/availability to confirm)",
+    "fallback": "system-ui, Arial, sans-serif"
+  },
+  "themes": {
+    "light": {
+      "background": "#F7FAFC",
+      "foreground": "#172B3A",
+      "accent": "#19A999"
+    },
+    "dark": {
+      "background": "#172B3A",
+      "foreground": "#FFFFFF",
+      "accent": "#19A999"
+    }
+  }
+}

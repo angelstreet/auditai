@@ -1,0 +1,17 @@
+/* EvolAI — starter tokens; contrast-test each UI text pairing */
+:root {
+  --evolai-midnight-ink: #172B3A;
+  --evolai-evolution-teal: #19A999;
+  --evolai-discovery-blue: #4A7FE8;
+  --evolai-warm-apricot: #FFB86A;
+  --evolai-cloud: #F7FAFC;
+  --evolai-slate: #536575;
+  --evolai-white: #FFFFFF;
+  --evolai-bg: var(--evolai-cloud);
+  --evolai-text: var(--evolai-midnight-ink);
+  --evolai-font: Inter, Manrope, system-ui, sans-serif;
+}
+[data-theme="dark"] {
+  --evolai-bg: var(--evolai-midnight-ink);
+  --evolai-text: var(--evolai-white);
+}
