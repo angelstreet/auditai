@@ -216,7 +216,7 @@ export function AccountMenu({ identity }: { identity: Identity | null }) {
                   <MenuItem
                     key={o.id}
                     component="a"
-                    href={`${identity.homeHref ?? '/board'}?tenant=${encodeURIComponent(o.id)}`}
+                    href={`${identity.homeHref ?? '/admin/engagements'}?tenant=${encodeURIComponent(o.id)}`}
                     selected={current}
                     aria-current={current ? 'true' : undefined}
                     sx={MENU_ITEM_SX}
@@ -238,7 +238,11 @@ export function AccountMenu({ identity }: { identity: Identity | null }) {
               <Divider key="org-div" />,
             ]
           : null}
-        <MenuItem component="a" href={identity.workspaceHref ?? '/board'} sx={MENU_ITEM_SX}>
+        <MenuItem
+          component="a"
+          href={identity.workspaceHref ?? '/admin/engagements'}
+          sx={MENU_ITEM_SX}
+        >
           <ListItemIcon>
             <AppIcon name="settings" />
           </ListItemIcon>

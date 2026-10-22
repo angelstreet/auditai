@@ -54,11 +54,14 @@ export function PageTitle({
   subtitle,
   actions,
   id,
+  level = 'h1',
 }: {
   title: ReactNode;
   subtitle?: ReactNode;
   actions?: ReactNode;
   id?: string;
+  /** `h2` inside a page that already has its title, such as a mission tab. */
+  level?: 'h1' | 'h2';
 }) {
   return (
     <Stack
@@ -67,7 +70,12 @@ export function PageTitle({
       sx={{ alignItems: { sm: 'flex-end' }, justifyContent: 'space-between', mb: 6 }}
     >
       <Box sx={{ minWidth: 0 }}>
-        <Typography id={id} variant="pageTitle" component="h1" sx={{ maxWidth: '24ch', m: 0 }}>
+        <Typography
+          id={id}
+          variant={level === 'h1' ? 'pageTitle' : 'sectionTitle'}
+          component={level}
+          sx={{ maxWidth: '24ch', m: 0 }}
+        >
           {title}
         </Typography>
         {subtitle ? (

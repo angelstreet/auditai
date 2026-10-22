@@ -48,7 +48,7 @@ export async function triggerExportAction(
       },
     });
     const { csv } = await runExport(who.tenantId, kindRaw as never, who.actor, labels);
-    revalidatePath('/admin/data');
+    revalidatePath('/admin/settings', 'layout');
     return {
       ok: true,
       message: t('admin.data.exported', { kind: enumLabel(t, 'exportKind', kindRaw) }),
@@ -81,9 +81,7 @@ export async function triggerDeletePseudonymAction(
       return { ok: false, message: t('admin.setup.data.confirmMismatch') };
     }
     const result = await deletePseudonym(who.tenantId, pseudonym, who.actor);
-    revalidatePath('/admin/data');
-    revalidatePath('/admin/synergies');
-    revalidatePath('/admin/teams');
+    revalidatePath('/admin/settings', 'layout');
     return {
       ok: true,
       message: t('admin.setup.data.removedPlain', { rows: result.removedRowCount }),
@@ -137,7 +135,7 @@ export async function handleRequestAction(
   if (!who.ok) return { ok: false, message: who.message };
   if (!/^[0-9a-f-]{36}$/i.test(id)) return { ok: false, message: t('admin.data.errDelete') };
   const done = await handlePrivacyRequest(who.tenantId, who.actor, id);
-  revalidatePath('/admin/data');
+  revalidatePath('/admin/settings', 'layout');
   return done
     ? { ok: true, message: t('trust.data.handledOk') }
     : { ok: false, message: t('admin.data.errDelete') };

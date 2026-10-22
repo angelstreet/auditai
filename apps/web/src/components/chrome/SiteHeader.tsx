@@ -9,6 +9,7 @@ import { getSession } from '@/lib/authServer';
 import { orderTenants, preferredOrg } from '@/lib/orgContext';
 import { allowedTenantIds } from '@/lib/tenantAccess';
 import { getT } from '@/lib/i18n';
+import { listableIds, realFirst, showTestData, testTenantIds } from '@/lib/testData';
 import { clientIdentity, viewAsMenuFor } from '@/lib/viewAsIdentity';
 import { AccountMenu, LanguageToggle, ThemeToggle, type Identity } from './HeaderControls';
 
@@ -22,7 +23,12 @@ const loadIdentity = async (): Promise<Identity | null> => {
   const asClient = await clientIdentity(session, t);
   if (asClient) return asClient;
   // The organisation chosen with the switcher (cookie) comes first; never silently the first one.
-  const ids = orderTenants(allowedTenantIds(session), preferredOrg());
+  // Test organisations are not listed unless the owner turned on "Show test data" (TASK-AD2).
+  const testIds = await testTenantIds();
+  const ids = orderTenants(
+    listableIds(realFirst(allowedTenantIds(session), testIds), testIds, showTestData()),
+    preferredOrg(),
+  );
   const currentId = ids[0] ?? session.tenants[0]?.id ?? null;
   const first = session.tenants.find((m) => m.id === currentId) ?? session.tenants[0];
   const roleKey = first && KNOWN_ROLES.has(first.role) ? first.role : 'other';
@@ -48,7 +54,7 @@ const loadIdentity = async (): Promise<Identity | null> => {
     organisationCount: new Set(session.tenants.map((m) => m.id)).size,
     organisations,
     organisationId: currentId,
-    homeHref: '/board',
+    homeHref: '/admin/engagements',
     viewAs: await viewAsMenuFor(session, t),
   };
 };

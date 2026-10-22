@@ -1,5 +1,6 @@
 import { PageTitle } from '@evolai/ui';
 import { EngagementForm } from '@/components/admin/SetupForms';
+import { TeamsSection } from '@/components/mission/SettingsSections';
 import { sessionTenantIds } from '@/lib/authServer';
 import { getT } from '@/lib/i18n';
 import { listTeamsSetup } from '@/lib/setupData';
@@ -33,9 +34,10 @@ export default async function NewEngagementPage({
       <EngagementForm
         tenantId={current}
         teams={teams.map((x) => ({ id: x.id, name: x.name, size: x.expectedHeadcount }))}
-        teamsHref={`/admin/teams?tenant=${current}`}
+        teamsHref="#teams"
         values={{ name: '', locale, opensOn: '', closesOn: '', teamIds: [] }}
       />
+      <TeamsSection tenantId={current} />
     </section>
   );
 }

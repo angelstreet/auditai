@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 /**
  * TASK-U (ADR 0040): forgot-password gives the same answer for every address and is rate limited;
- * set-password lands a referent on /client and staff on /board; the owner's invite is audited by
+ * set-password lands a referent on /client and staff on Missions; the owner's invite is audited by
  * the data layer and never touches another organisation.
  */
 const s = vi.hoisted(() => ({
@@ -166,9 +166,9 @@ describe('set password landing', () => {
     expect(s.audits).toEqual(['password.set']);
   });
 
-  it('sends staff to the portfolio', async () => {
+  it('sends staff to Missions', async () => {
     s.memberships = [{ id: 't1', role: 'auditor' }];
-    await expect(run()).rejects.toThrow('redirect:/board');
+    await expect(run()).rejects.toThrow('redirect:/admin/engagements');
   });
 
   it('signs nobody in without a surface to land on', async () => {

@@ -16,9 +16,9 @@ export const dynamic = 'force-dynamic';
 const redirectTo = (path: string) =>
   new NextResponse(null, { status: 303, headers: { location: path } });
 
-/** Same-origin relative paths under /admin or /board only; anything else goes to the portfolio. */
+/** Same-origin relative paths under /admin or /board only; anything else goes to Missions. */
 const safeNext = (raw: string | null): string =>
-  raw && /^\/(admin|board)(\/[A-Za-z0-9_\-./?=&%]*)?$/.test(raw) ? raw : '/board';
+  raw && /^\/(admin|board)(\/[A-Za-z0-9_\-./?=&%]*)?$/.test(raw) ? raw : '/admin/engagements';
 
 /** A team referent lands on the client surface; staff keep their `next` (TASK-P). */
 const landing = (staff: boolean, raw: string | null): string =>

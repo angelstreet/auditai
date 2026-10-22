@@ -5,16 +5,11 @@ import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import { useI18n } from '@/components/I18nProvider';
 
+// Two entries (TASK-AD2, ADR 0049): a consultant thinks in missions; everything about one mission
+// lives in its tabs, everything about the workspace in Settings.
 const SECTIONS = [
-  { href: '/board', key: 'tabPortfolio' },
-  { href: '/admin/engagements', key: 'tabEngagements' },
-  { href: '/admin/invitations', key: 'tabInvitations' },
-  { href: '/admin/teams', key: 'tabTeams' },
-  { href: '/admin/synergies', key: 'tabSynergies' },
-  { href: '/admin/reports', key: 'tabReports' },
-  { href: '/admin/data', key: 'tabData' },
-  { href: '/admin/redaction', key: 'tabRedaction' },
-  { href: '/admin/audit', key: 'tabAudit' },
+  { href: '/admin/engagements', key: 'tabMissions' },
+  { href: '/admin/settings', key: 'tabSettings' },
 ] as const;
 
 /**
@@ -33,8 +28,6 @@ export default function AdminTabs() {
       component="nav"
       aria-label={t('admin.common.tabsAria')}
       value={current?.href ?? false}
-      variant="scrollable"
-      scrollButtons={false}
       sx={{ mb: 6, borderBottom: 1, borderColor: 'divider', displayPrint: 'none' }}
     >
       {SECTIONS.map((s) => (

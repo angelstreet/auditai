@@ -70,9 +70,8 @@ const guard = async (fd: FormData) => {
   return { ...who, reportId: isUuid(reportId) ? reportId : null };
 };
 
-const done = (engagementId: string): void => {
-  if (isUuid(engagementId)) revalidatePath(`/admin/reports/${engagementId}`);
-  revalidatePath('/admin/reports');
+const done = (): void => {
+  revalidatePath('/admin/engagements', 'layout');
 };
 
 const run = async (
@@ -83,7 +82,7 @@ const run = async (
   if (!g) return { ok: false, code: 'forbidden' };
   try {
     const out = await fn(g);
-    done(String(fd.get('engagementId') ?? ''));
+    done();
     return out;
   } catch (err) {
     return { ok: false, code: codeOf(err) };
@@ -117,8 +116,9 @@ export async function startReportAction(
   } catch (err) {
     return { ok: false, code: codeOf(err) };
   }
-  revalidatePath('/admin/reports');
-  redirect(`/admin/reports/${engagementId}?tenant=${g.tenantId}`);
+
+  revalidatePath('/admin/engagements', 'layout');
+  redirect(`/admin/engagements/${engagementId}/report?tenant=${g.tenantId}`);
 }
 
 export async function saveSectionsAction(

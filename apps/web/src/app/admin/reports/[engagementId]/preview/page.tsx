@@ -26,7 +26,7 @@ export default async function ReportPreviewPage({
 }) {
   const { t } = getT();
   const tenantId = await sessionTenantFor(searchParams.tenant);
-  const editorHref = `/admin/reports/${params.engagementId}${tenantId ? `?tenant=${tenantId}` : ''}`;
+  const editorHref = `/admin/engagements/${params.engagementId}/report${tenantId ? `?tenant=${tenantId}` : ''}`;
   const back = (
     <Button
       component={Link}

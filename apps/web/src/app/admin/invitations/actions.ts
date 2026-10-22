@@ -91,7 +91,7 @@ export async function createInvitationsAction(
       emailSent = res.sent;
       emailFailed = res.failed;
     }
-    revalidatePath('/admin/invitations');
+    revalidatePath('/admin/engagements', 'layout');
     return { ok: true, code: 'created', count: out.invitations.length, emailSent, emailFailed };
   } catch (err) {
     const code = codeOf(err);
@@ -125,7 +125,7 @@ export async function updateInvitationSettingsAction(
       closesOn,
       contact: parseContact(fd.get('contact')),
     });
-    revalidatePath('/admin/invitations');
+    revalidatePath('/admin/engagements', 'layout');
     revalidatePath('/client', 'layout');
     return { ok: true, code: 'saved' };
   } catch (err) {
@@ -141,7 +141,7 @@ export async function markRemindedAction(
   if (!g) return { ok: false, code: 'forbidden' };
   try {
     const count = await markReminded(g.who.tenantId, g.engagementId, g.who.actor);
-    revalidatePath('/admin/invitations');
+    revalidatePath('/admin/engagements', 'layout');
     return { ok: true, code: 'reminded', count };
   } catch (err) {
     return { ok: false, code: codeOf(err) };
@@ -157,7 +157,7 @@ export async function revokeBatchAction(
   if (!g || !isUuid(batchId)) return { ok: false, code: 'forbidden' };
   try {
     const count = await revokeBatch(g.who.tenantId, g.engagementId, batchId, g.who.actor);
-    revalidatePath('/admin/invitations');
+    revalidatePath('/admin/engagements', 'layout');
     return { ok: true, code: 'batch_revoked', count };
   } catch (err) {
     return { ok: false, code: codeOf(err) };
@@ -180,10 +180,10 @@ export async function invitationOperationAction(
       await extend(g.who.tenantId, invitationId, g.who.actor, Number(fd.get('days') ?? 7));
     } else if (op === 'regenerate') {
       const link = await regenerate(g.who.tenantId, invitationId, g.who.actor, baseUrl());
-      revalidatePath('/admin/invitations');
+      revalidatePath('/admin/engagements', 'layout');
       return { ok: true, code: 'regenerated', link };
     } else return { ok: false, code: 'error' };
-    revalidatePath('/admin/invitations');
+    revalidatePath('/admin/engagements', 'layout');
     return { ok: true, code: op === 'revoke' ? 'revoked' : 'extended' };
   } catch (err) {
     return { ok: false, code: codeOf(err) };
