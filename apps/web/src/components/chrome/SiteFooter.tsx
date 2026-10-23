@@ -33,7 +33,11 @@ export default function SiteFooter() {
       >
         <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'center', gap: 3 }}>
           <Logo iconOnly />
-          <Typography variant="body2" color="text.secondary" sx={{ m: 0, whiteSpace: 'nowrap' }}>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ m: 0, whiteSpace: { xs: 'normal', sm: 'nowrap' } }}
+          >
             {t('common.footer.rights')}
           </Typography>
         </Stack>
@@ -46,7 +50,7 @@ export default function SiteFooter() {
             justifyContent: 'center',
             columnGap: 5,
             rowGap: 2,
-            '& a': { whiteSpace: 'nowrap' },
+            '& a': { whiteSpace: { xs: 'normal', sm: 'nowrap' } },
           }}
         >
           <Link className="nav-link" href="/privacy">
