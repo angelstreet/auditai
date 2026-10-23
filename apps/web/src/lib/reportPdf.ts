@@ -281,7 +281,7 @@ export const renderReportPdf = (
   }
 
   // Plan
-  heading(t('report.plan.title'));
+  if (s.plan.length > 0) heading(t('report.plan.title'));
   for (const h of HORIZONS) {
     const items = s.plan.filter((p) => p.horizon === h);
     if (items.length === 0) continue;

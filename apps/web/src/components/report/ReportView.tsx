@@ -343,36 +343,38 @@ export default function ReportView({
         </Box>
       </Section>
 
-      <Section id="rv-plan" title={t('report.plan.title')}>
-        <Stack spacing={3}>
-          {HORIZONS.map((h) => {
-            const items = s.plan.filter((p) => p.horizon === h);
-            if (items.length === 0) return null;
-            return (
-              <Box key={h} sx={{ breakInside: 'avoid' }}>
-                <Typography variant="cardTitle" component="h3" sx={{ m: 0 }}>
-                  {t(`report.steps.horizonName.${h}`)}
-                </Typography>
-                <Box component="ul" sx={{ m: 0, mt: 1, pl: 5 }}>
-                  {items.map((p) => (
-                    <Box component="li" key={p.id} sx={{ py: 1 }}>
-                      <Typography variant="body1" component="span">
-                        {p.text}
-                      </Typography>
-                      {p.owner ? (
-                        <Typography variant="body2" color="text.secondary" component="span">
-                          {' · '}
-                          {p.owner}
+      {s.plan.length > 0 ? (
+        <Section id="rv-plan" title={t('report.plan.title')}>
+          <Stack spacing={3}>
+            {HORIZONS.map((h) => {
+              const items = s.plan.filter((p) => p.horizon === h);
+              if (items.length === 0) return null;
+              return (
+                <Box key={h} sx={{ breakInside: 'avoid' }}>
+                  <Typography variant="cardTitle" component="h3" sx={{ m: 0 }}>
+                    {t(`report.steps.horizonName.${h}`)}
+                  </Typography>
+                  <Box component="ul" sx={{ m: 0, mt: 1, pl: 5 }}>
+                    {items.map((p) => (
+                      <Box component="li" key={p.id} sx={{ py: 1 }}>
+                        <Typography variant="body1" component="span">
+                          {p.text}
                         </Typography>
-                      ) : null}
-                    </Box>
-                  ))}
+                        {p.owner ? (
+                          <Typography variant="body2" color="text.secondary" component="span">
+                            {' · '}
+                            {p.owner}
+                          </Typography>
+                        ) : null}
+                      </Box>
+                    ))}
+                  </Box>
                 </Box>
-              </Box>
-            );
-          })}
-        </Stack>
-      </Section>
+              );
+            })}
+          </Stack>
+        </Section>
+      ) : null}
 
       <Section id="rv-risks" title={t('report.view.risksTitle')}>
         {s.risks.length === 0 ? (

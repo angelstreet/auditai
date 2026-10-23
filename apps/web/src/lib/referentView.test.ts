@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
+import { createTranslator } from '@evolai/i18n';
 import {
+  effectiveCloseDay,
   addDays,
   bandOf,
   barValue,
@@ -222,5 +224,30 @@ describe('messages and share links', () => {
     expect(parseClosingDay('')).toBeNull();
     expect(parseClosingDay('2026-02-30')).toBe('invalid');
     expect(parseClosingDay('31/10/2026')).toBe('invalid');
+  });
+});
+
+describe('effectiveCloseDay (message date = earlier of closing day and link expiry)', () => {
+  it('takes the earlier date', () => {
+    expect(effectiveCloseDay('2026-11-20', '2026-11-05')).toBe('2026-11-05');
+    expect(effectiveCloseDay('2026-11-03', '2026-11-05')).toBe('2026-11-03');
+  });
+  it('falls back to whichever exists', () => {
+    expect(effectiveCloseDay('2026-11-20', null)).toBe('2026-11-20');
+    expect(effectiveCloseDay(null, '2026-11-05')).toBe('2026-11-05');
+    expect(effectiveCloseDay(null, null)).toBeNull();
+  });
+});
+
+describe('invitation counter sentence when the headcount is unset', () => {
+  it('says so instead of "0 personne attendue"', () => {
+    const t = createTranslator('fr');
+    const vars = { expected: 0, created: 3, revoked: 0, invited: 3 };
+    const text = t('admin.invitations.countsNoExpected', vars);
+    expect(text).toContain('Effectif attendu non renseigné : indiquez la taille de l’équipe');
+    expect(text).not.toContain('0 personne');
+    expect(createTranslator('en')('admin.invitations.countsNoExpected', vars)).toContain(
+      'Expected headcount not set',
+    );
   });
 });

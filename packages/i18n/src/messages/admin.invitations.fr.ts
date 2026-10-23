@@ -6,6 +6,8 @@ export const invitationsFr = {
   openLink: 'Liens',
   counts:
     '{expected, plural, one {# personne attendue} other {# personnes attendues}}. {created, plural, one {# lien créé} other {# liens créés}}, {revoked, plural, one {# annulé} other {# annulés}}, donc {invited, plural, one {# personne invitée} other {# personnes invitées}}. « Ouvert » compte toutes les personnes qui ont ouvert leur lien, y compris celles qui ont répondu.',
+  countsNoExpected:
+    'Effectif attendu non renseigné : indiquez la taille de l’équipe pour suivre l’avancement. {created, plural, one {# lien créé} other {# liens créés}}, {revoked, plural, one {# annulé} other {# annulés}}, donc {invited, plural, one {# personne invitée} other {# personnes invitées}}. « Ouvert » compte toutes les personnes qui ont ouvert leur lien, y compris celles qui ont répondu.',
   tiles: {
     invited: 'Invités',
     opened: 'Ouverts',
@@ -70,7 +72,7 @@ export const invitationsFr = {
   },
   manage: {
     copyAll: 'Copier tous les liens',
-    title: 'Liens ouverts',
+    title: 'Liens à diffuser',
     code: 'Code',
     team: 'Équipe',
     expires: 'Valable jusqu’au',
@@ -79,7 +81,7 @@ export const invitationsFr = {
     regenerate: 'Nouveau lien',
     revokeConfirm: 'Révoquer ce lien ? Il cesse de fonctionner immédiatement.',
     regenerated: 'Nouveau lien (l’ancien ne fonctionne plus) :',
-    empty: 'Aucun lien ouvert.',
+    empty: 'Aucun lien à diffuser.',
   },
   batches: {
     title: 'Liens par date de création',

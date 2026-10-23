@@ -106,12 +106,17 @@ export default async function InvitationsPage({ params, searchParams }: Props) {
         data-testid="invitation-counts"
         sx={{ mb: 4 }}
       >
-        {t('admin.invitations.counts', {
-          expected: totalsOfLinks.expected,
-          created: totalsOfLinks.created,
-          revoked: totalsOfLinks.revoked,
-          invited: totalsOfLinks.created - totalsOfLinks.revoked,
-        })}
+        {t(
+          totalsOfLinks.expected > 0
+            ? 'admin.invitations.counts'
+            : 'admin.invitations.countsNoExpected',
+          {
+            expected: totalsOfLinks.expected,
+            created: totalsOfLinks.created,
+            revoked: totalsOfLinks.revoked,
+            invited: totalsOfLinks.created - totalsOfLinks.revoked,
+          },
+        )}
       </Typography>
       <InvitationsPanel
         copy={copy}

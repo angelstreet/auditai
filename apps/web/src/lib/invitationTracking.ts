@@ -200,6 +200,9 @@ export const toCsv = (header: readonly string[], rows: readonly (readonly string
 export const surveyLink = (baseUrl: string, token: string): string =>
   `${baseUrl.replace(/\/+$/, '')}/s/${token}`;
 
+/** Production domain, used when the request arrives on a platform hostname. */
+export const PRODUCTION_BASE_URL = 'https://www.evolai.io';
+
 /**
  * Admin-only base URL: APP_BASE_URL, else the site URL setting (NEXT_PUBLIC_SITE_URL), else the
  * request host (https, except http for a local or private-network host).
@@ -214,6 +217,8 @@ export const resolveBaseUrl = (
     const configured = env[key]?.replace(/\/+$/, '');
     if (configured && /^https?:\/\/[^\s/]+$/.test(configured)) return configured;
   }
+  // Never hand out a *.vercel.app link: that hostname is the platform's, not the product's.
+  if (host && /\.vercel\.app(:\d+)?$/i.test(host)) return PRODUCTION_BASE_URL;
   if (host && /^[A-Za-z0-9.-]+(:\d+)?$/.test(host)) {
     // Production is https: a public host always gets https, whatever a header says. A local or
     // private-network host (a plain local copy) gets http unless the proxy says it is https.

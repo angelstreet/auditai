@@ -128,6 +128,23 @@ export const firstLinkOn = async (
     return rows[0]?.first_on ?? null;
   });
 
+/** Earliest expiry day (ISO) among the referent's links still waiting for an answer, or null. */
+export const earliestLinkExpiryOn = async (
+  tenantId: string,
+  engagementId: string,
+  teamIds: readonly string[],
+): Promise<string | null> =>
+  withTenant(tenantId as TenantId, async (client) => {
+    const { rows } = await client.query<{ first_on: string | null }>(
+      `SELECT to_char(MIN(expires_at) AT TIME ZONE 'UTC', 'YYYY-MM-DD') AS first_on
+         FROM invitations
+        WHERE tenant_id = $1 AND engagement_id = $2 AND team_id = ANY($3::uuid[])
+          AND status IN ('pending','opened','in_progress')`,
+      [tenantId, engagementId, teamIds],
+    );
+    return rows[0]?.first_on ?? null;
+  });
+
 export interface PublishedTheme {
   readonly axis: string;
   readonly label: string;

@@ -8,6 +8,7 @@ import type { Translator } from '@evolai/i18n';
 import { AppIcon, EmptyState, IconTile, PageTitle, StatusText } from '@evolai/ui';
 import { requireClientContext } from '@/lib/clientContext';
 import {
+  earliestLinkExpiryOn,
   firstLinkOn,
   loadClientSurvey,
   loadPublishedResults,
@@ -21,13 +22,13 @@ import {
   barValue,
   contactFor,
   daysUntil,
+  effectiveCloseDay,
   nextStep,
   reminderPlan,
   type NextStep,
   type Participation,
 } from '@/lib/referentView';
-import { estimatedMinutes } from '@/lib/respondent';
-import { totalQuestionCount } from '@/lib/syntheticTemplate';
+import { surveyEstimatedMinutes } from '@/lib/syntheticTemplate';
 import HomeReminder from '@/components/client/HomeReminder';
 
 export const dynamic = 'force-dynamic';
@@ -87,7 +88,7 @@ const participationText = (t: Translator, p: Participation): { main: string; hin
 export default async function ClientHome() {
   const { session, ctx } = await requireClientContext();
   const { t, locale } = getT();
-  const minutes = estimatedMinutes(totalQuestionCount());
+  const minutes = surveyEstimatedMinutes();
   const teams = await loadTeamNames(ctx.tenantId, ctx.teamIds);
   const teamName = teams.join(', ');
   const header = (
@@ -131,11 +132,13 @@ export default async function ClientHome() {
       </section>
     );
   }
-  const [rows, results, firstOn] = await Promise.all([
+  const [rows, results, firstOn, expiryOn] = await Promise.all([
     referentProgress(ctx.tenantId, survey, ctx.teamIds),
     loadPublishedResults(ctx.tenantId, survey.engagementId),
     firstLinkOn(ctx.tenantId, survey.engagementId, ctx.teamIds),
+    earliestLinkExpiryOn(ctx.tenantId, survey.engagementId, ctx.teamIds),
   ]);
+  const closeDay = effectiveCloseDay(survey.closesOn, expiryOn);
   const today = new Date().toISOString().slice(0, 10);
   const plan = reminderPlan({
     closesOn: survey.closesOn,
@@ -147,14 +150,14 @@ export default async function ClientHome() {
   const step = nextStep({ status: survey.status, rows, hasResults, plan });
   const cta = CTA[step];
   const statusKey = STATUS_KEYS.has(survey.status) ? survey.status : 'none';
-  const left = survey.closesOn ? daysUntil(survey.closesOn, today) : null;
+  const left = closeDay ? daysUntil(closeDay, today) : null;
   // The reminder is for an open survey with links out and a day still ahead (or today).
   const showReminder =
     (survey.status === 'in_field' || survey.status === 'scheduled') &&
     rows.some((r) => r.invited > 0) &&
     (plan.due || plan.next !== null);
   const reminder = prepareMessages(locale, {
-    closesOn: survey.closesOn,
+    closesOn: closeDay,
     contact: contactFor(survey.contact, ctx.viewAs?.label ?? session.name),
     minutes,
   }).reminder;
@@ -192,11 +195,11 @@ export default async function ClientHome() {
           >
             <AppIcon name="date" />
             <Typography variant="body1" sx={{ m: 0 }}>
-              {survey.closesOn === null || left === null
+              {closeDay === null || left === null
                 ? t('client.home.noClosingDate')
                 : left < 0
-                  ? t('client.home.closed', { date: longDate(locale, survey.closesOn) })
-                  : `${t('client.home.closes', { date: longDate(locale, survey.closesOn) })} · ${t('client.home.daysLeft', { count: left })}`}
+                  ? t('client.home.closed', { date: longDate(locale, closeDay) })
+                  : `${t('client.home.closes', { date: longDate(locale, closeDay) })} · ${t('client.home.daysLeft', { count: left })}`}
             </Typography>
           </Stack>
         </Paper>

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { ORG_UUID, orderTenants } from './orgShared';
-import { resolveBaseUrl } from './invitationTracking';
+import { PRODUCTION_BASE_URL, resolveBaseUrl } from './invitationTracking';
 
 const A = '11111111-1111-4111-8111-111111111111';
 const B = '22222222-2222-4222-8222-222222222222';
@@ -38,6 +38,14 @@ describe('resolveBaseUrl and the site URL setting', () => {
     ).toBe('https://site.invalid');
     expect(resolveBaseUrl({}, 'h.invalid', 'http')).toBe('https://h.invalid');
     expect(resolveBaseUrl({}, 'localhost:3000', 'http')).toBe('http://localhost:3000');
+  });
+  it('never emits a *.vercel.app link, falls back to the production domain', () => {
+    expect(resolveBaseUrl({}, 'evolai.vercel.app', 'https')).toBe(PRODUCTION_BASE_URL);
+    expect(resolveBaseUrl({}, 'evolai-git-x-team.vercel.app', null)).toBe(PRODUCTION_BASE_URL);
+    expect(resolveBaseUrl({ APP_BASE_URL: 'https://app.invalid' }, 'x.vercel.app', null)).toBe(
+      'https://app.invalid',
+    );
+    expect(resolveBaseUrl({}, 'www.evolai.io', 'https')).toBe('https://www.evolai.io');
   });
   it('ignores a malformed site URL', () => {
     expect(resolveBaseUrl({ NEXT_PUBLIC_SITE_URL: 'javascript:alert(1)' }, 'h.invalid', null)).toBe(
